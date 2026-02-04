@@ -49,7 +49,6 @@ public class PersistenceTestFixture : TestFixture, IDisposable
                     .EnableRetryOnFailure()
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
                     .MigrationsAssembly(typeof(GarneauTemplateDbContext).Assembly.FullName));
-            options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
         });
 
         DbContext = serviceCollection.BuildServiceProvider().GetService<GarneauTemplateDbContext>()!;
