@@ -4,6 +4,7 @@ import {createRouter, createWebHistory} from "vue-router";
 
 import Login from "@/views/Login.vue";
 import TwoFactor from "@/views/TwoFactor.vue";
+import addModule from "@/views/admin/members/AdminaddModule.vue"
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
@@ -37,6 +38,15 @@ const router = createRouter({
       meta: {
         title: "routes.login.name"
       }
+    },
+    {
+      path:i18n.t("route.addModule.path"),
+      alias: getLocalizedRoutes("routes.addModule.path"),
+      name: "addModule",
+      component:addModule,
+      meta:{
+        title:"routes.addModule.name"
+      },
     },
     {
       path: i18n.t("routes.twoFactor.path"),

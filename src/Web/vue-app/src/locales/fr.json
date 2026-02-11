@@ -1,5 +1,10 @@
 {
   "routes": {
+    "addModule":{
+      "path":"/Ajouter-module",
+      "fullPath":"/Ajouter-module",
+      "name": "Ajouter un Module"
+    },
     "login": {
       "path": "/connexion",
       "fullPath": "/connexion",

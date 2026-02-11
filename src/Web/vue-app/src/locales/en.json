@@ -1,5 +1,10 @@
 {
   "routes": {
+    "addModule":{
+      "path":"/addModule",
+      "fullPath":"/addModule",
+      "name": "Add new Module"
+    },
     "login": {
       "path": "/login",
       "fullPath": "/login",
