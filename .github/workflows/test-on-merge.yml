@@ -1,0 +1,63 @@
+name: Run Tests on Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: YourStrong!Passw0rd
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: src/Web/vue-app
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: src/Web/vue-app
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --no-restore
+
+      - name: Run Infrastructure tests
+        run: dotnet test --no-build tests/Tests.Infrastructure
+
+      - name: Run Application tests
+        run: dotnet test --no-build tests/Tests.Application
+
+      - name: Run Domain tests
+        run: dotnet test --no-build tests/Tests.Domain
+
+      - name: Run Web tests
+        run: dotnet test --no-build tests/Tests.Web
