@@ -21,6 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set CI test connection string
+        run: |
+          echo '{"ConnectionStrings":{"DefaultConnection":"Server=localhost;Database=garneau_template_tests;User ID=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;"}}' > tests/Tests.Common/appsettings.json
+
       - name: Wait for SQL Server
         run: |
           for i in {1..30}; do
