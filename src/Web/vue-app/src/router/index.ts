@@ -4,7 +4,7 @@ import {createRouter, createWebHistory} from "vue-router";
 
 import Login from "@/views/Login.vue";
 import TwoFactor from "@/views/TwoFactor.vue";
-import addModule from "@/views/admin/members/AdminaddModule.vue"
+import addModule from "@/views/admin/members/AdminAddModule.vue"
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
