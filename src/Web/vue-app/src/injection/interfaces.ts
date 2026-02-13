@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 import {
   ICreateBookRequest,
+  ICreateModuleRequest,
   IEditBookRequest,
   IForgotPasswordRequest,
   ILoginRequest,
@@ -61,6 +62,10 @@ export interface IBookService {
   createBook(request: ICreateBookRequest): Promise<SucceededOrNotResponse>
 
   editBook(request: IEditBookRequest): Promise<SucceededOrNotResponse>
+}
+
+export interface IModulesService{
+  createModule(request:ICreateModuleRequest):Promise<SucceededOrNotResponse>
 }
 
 export interface IUserService {
