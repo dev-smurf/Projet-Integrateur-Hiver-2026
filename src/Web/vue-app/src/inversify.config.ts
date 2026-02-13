@@ -8,6 +8,7 @@ import {
   IApiService,
   IAuthenticationService,
   IBookService,
+  IModulesService,
   IMemberService,
   IUserService
 } from "@/injection/interfaces";
@@ -15,6 +16,7 @@ import {
   ApiService,
   AuthenticationService,
   BookService,
+  ModuleService,
   MemberService,
   UserService
 } from "@/services";
@@ -25,6 +27,7 @@ dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axi
 dependencyInjection.bind<IApiService>(TYPES.IApiService).to(ApiService).inSingletonScope()
 dependencyInjection.bind<IAdministratorService>(TYPES.IAdministratorService).to(AdministratorService).inSingletonScope()
 dependencyInjection.bind<IAuthenticationService>(TYPES.IAuthenticationService).to(AuthenticationService).inSingletonScope()
+dependencyInjection.bind<IModulesService>(TYPES.IModulesService).to(ModuleService).inSingletonScope()
 dependencyInjection.bind<IBookService>(TYPES.IBookService).to(BookService).inSingletonScope()
 dependencyInjection.bind<IMemberService>(TYPES.IMemberService).to(MemberService).inSingletonScope()
 dependencyInjection.bind<IUserService>(TYPES.IUserService).to(UserService).inSingletonScope()
@@ -48,6 +51,9 @@ function useBookService() {
 function useUserService() {
   return dependencyInjection.get<IUserService>(TYPES.IUserService);
 }
+function useModulesService(){
+  return dependencyInjection.get<IModulesService>(TYPES.IModulesService)
+}
 
 
 export {
@@ -56,5 +62,6 @@ export {
   useAuthenticationService,
   useBookService,
   useMemberService,
-  useUserService
+  useUserService,
+  useModulesService
 };
