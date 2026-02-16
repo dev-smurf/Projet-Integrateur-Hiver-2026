@@ -88,7 +88,7 @@ async function sendLoginRequest() {
   if (succeededOrNotResponse.succeeded) {
     let user = await userService.getCurrentUser()
     userStore.setUser(user)
-    userStore.setUsername(loginRequest. value.username)
+    userStore.setUsername(loginRequest.value.username)
     apiStore.setNeedToLogout(false)
     await router.push(t("routes.account.path"))
     preventMultipleSubmit.value = false;
