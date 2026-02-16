@@ -26,8 +26,6 @@
     <button class="btn btn--full btn--purple btn--big" @click="sendLoginRequest" :disabled="preventMultipleSubmit">
       {{ t('pages.login.submit') }}
     </button>
-    <button class="btn btn--full btn--purple btn--big" @click="rentrer">rentrer admin</button>
-    <button class="btn btn--full btn--purple btn--big" @click="rentrer_user">rentrer user</button>
 
   </Card>
 </template>
@@ -72,32 +70,6 @@ function addFormInputRef(ref: typeof FormInput) {
 
 async function handleValidation(name: string, validationStatus: Status) {
   inputValidationStatuses[name] = validationStatus.valid
-}
-
-async function rentrer(){
-   preventMultipleSubmit.value = true;
-
-   let user = new User()
-   user.roles.push(Role.Admin)
-    userStore.setUser(user)
-    userStore.setUsername("gogo")
-    apiStore.setNeedToLogout(false)
-    await router.push(t("routes.account.path"))
-    preventMultipleSubmit.value = false;
-    return;
-}
-
-async function rentrer_user(){
-   preventMultipleSubmit.value = true;
-
-   let user = new User()
-   user.roles.push(Role.Member)
-    userStore.setUser(user)
-    userStore.setUsername("gogo")
-    apiStore.setNeedToLogout(false)
-    await router.push(t("routes.account.path"))
-    preventMultipleSubmit.value = false;
-    return;
 }
 
 async function sendLoginRequest() {
