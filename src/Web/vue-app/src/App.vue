@@ -28,6 +28,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-@use "./sass/index.scss";
+@use"./sass/index.scss";
 </style>
 
