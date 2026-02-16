@@ -28,44 +28,77 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useI18n } from "vue3-i18n";
 import { modulesStore } from "@/stores/modulesStore";
-import {ICreateModuleRequest} from "@/types/requests/createModuleRequest";
+import { ICreateModuleRequest } from "@/types/requests/createModuleRequest";
 import { Module } from "@/types/entities/modules";
-import { useModulesService} from "@/inversify.config";
-import {notifyError, notifySuccess} from "@/notify";
-import {useRouter} from "vue-router";
+import { useModulesService } from "@/inversify.config";
+import { notifyError, notifySuccess } from "@/notify";
+import { useRouter } from "vue-router";
 
-
-const {t} =useI18n() 
-const store = modulesStore()
-const moduleService = useModulesService()
+const { t } = useI18n();
+const store = modulesStore();
+const moduleService = useModulesService();
 const router = useRouter();
 
-const props= defineProps<{
-    module? : Module
-    name: string
-    contenue:string
-    sujet:string
-}>()
-
-const module = new Module
+const module = ref<Module>({
+    nom: "",
+    contenue: "",
+    sujet: ""
+});
 
 async function handleSubmit() {
-    let succeededOrNotResponse = await moduleService.createModule(module as ICreateModuleRequest)
-     if (succeededOrNotResponse && succeededOrNotResponse.succeeded) {
-        // a changer book pour module et verifier le reste
-        notifySuccess(t('validation.book.add.success'))
+
+    console.log("yo je me creer")
+  Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
+
+    const succeededOrNotResponse =
+        await moduleService.createModule(module.value as ICreateModuleRequest);
+
+    if (succeededOrNotResponse?.succeeded) {
+
+        notifySuccess(t("validation.module.add.success"));
+
         setTimeout(() => {
             router.back();
         }, 1500);
+
     } else {
-        let errorMessages = succeededOrNotResponse.getErrorMessages('validation.book.add');
-        if (errorMessages.length == 0)
-            notifyError(t('validation.book.add.errorOccured'))
+
+        const errorMessages =
+            succeededOrNotResponse?.getErrorMessages("validation.module.add") ?? [];
+
+        if (errorMessages.length === 0)
+            notifyError(t("validation.module.add.errorOccured"));
         else
-            notifyError(errorMessages[0])
+            notifyError(errorMessages[0]);
     }
 }
 
+// async function handleSubmit() {
+//   Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
+
+//   if (Object.values(errors.value).some((err) => err !== '')) {
+//     notifyError(t('global.formErrorNotification'))
+//     return
+//   }
+
+//   const response = await store.addModule(module.value)
+
+//   if (response?.succeeded) {
+//     notifySuccess(t('routes.addModule.success'))
+//     module.value = { nom: '', contenue: '', sujet: '' }
+//   } else {
+//     notifyError(response?.errors?.[0]?.errorMessage || t('routes.addModule.error'))
+//   }
+// }
+
+function validateField(field: keyof Module) {
+  if (!module.value[field] || module.value[field].trim() === '') {
+    errors.value[field] = `${field} est requis`
+  } else {
+    errors.value[field] = ''
+  }
+}
 </script>
