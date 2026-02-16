@@ -49,8 +49,7 @@ const module = ref<Module>({
 });
 
 async function handleSubmit() {
-
- // Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
+    
 
     const succeededOrNotResponse =
         await moduleService.createModule(module.value as ICreateModuleRequest);
