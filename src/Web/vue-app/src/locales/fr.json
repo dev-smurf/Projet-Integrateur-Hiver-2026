@@ -1,4 +1,14 @@
 {
+    "errors":{
+    "module":{
+      "add":{
+        "success":"Le module a été créé avec succès.",
+        "errorOccured":"Une erreur est survenue lors de la création du module."
+      }
+      
+    }
+
+  },
   "routes": {
     "addModule":{
       "path":"/Ajouter-module",

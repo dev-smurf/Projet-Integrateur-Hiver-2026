@@ -50,15 +50,14 @@ const module = ref<Module>({
 
 async function handleSubmit() {
 
-    console.log("yo je me creer")
-  Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
+ // Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
 
     const succeededOrNotResponse =
         await moduleService.createModule(module.value as ICreateModuleRequest);
 
     if (succeededOrNotResponse?.succeeded) {
 
-        notifySuccess(t("validation.module.add.success"));
+        notifySuccess(t("errors.module.add.success"));
 
         setTimeout(() => {
             router.back();
@@ -67,38 +66,15 @@ async function handleSubmit() {
     } else {
 
         const errorMessages =
-            succeededOrNotResponse?.getErrorMessages("validation.module.add") ?? [];
+            succeededOrNotResponse?.getErrorMessages("errors.module.add") ?? [];
 
         if (errorMessages.length === 0)
-            notifyError(t("validation.module.add.errorOccured"));
+            notifyError(t("errors.module.add.errorOccured"));
         else
             notifyError(errorMessages[0]);
     }
 }
 
-// async function handleSubmit() {
-//   Object.keys(module.value).forEach((key) => validateField(key as keyof Module))
 
-//   if (Object.values(errors.value).some((err) => err !== '')) {
-//     notifyError(t('global.formErrorNotification'))
-//     return
-//   }
 
-//   const response = await store.addModule(module.value)
-
-//   if (response?.succeeded) {
-//     notifySuccess(t('routes.addModule.success'))
-//     module.value = { nom: '', contenue: '', sujet: '' }
-//   } else {
-//     notifyError(response?.errors?.[0]?.errorMessage || t('routes.addModule.error'))
-//   }
-// }
-
-function validateField(field: keyof Module) {
-  if (!module.value[field] || module.value[field].trim() === '') {
-    errors.value[field] = `${field} est requis`
-  } else {
-    errors.value[field] = ''
-  }
-}
 </script>
