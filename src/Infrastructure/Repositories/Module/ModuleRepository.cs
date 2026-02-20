@@ -1,20 +1,21 @@
-
 using Domain.Repositories;
+using Persistence;
 
 namespace Infrastructure.Repositories.Module;
 
 public class ModuleRepository: IModuleRepository
 {
     
-    public ModuleRepository()
+    private readonly GarneauTemplateDbContext _context;
+
+    public ModuleRepository(GarneauTemplateDbContext context)
     {
-        
+        _context = context;
     }
 
-    public List<System.Reflection.Module> GetModules()
+    public async Task Create(Domain.Entities.Module module)
     {
-
-        // j'ai pas pull entity
-     return new List<System.Reflection.Module>();   
+        _context.Modules.Add(module);
+        await _context.SaveChangesAsync();
     }
 }

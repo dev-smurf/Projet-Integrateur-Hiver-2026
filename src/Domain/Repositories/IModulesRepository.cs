@@ -1,8 +1,9 @@
-using System.Reflection;
+using Domain.Entities;
 
 namespace Domain.Repositories;
 
 public interface IModuleRepository
 {
-    List<Module> GetModules();
+    Task Create(Module module);
+ 
 }
