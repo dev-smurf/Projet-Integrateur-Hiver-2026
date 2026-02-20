@@ -28,7 +28,7 @@ public class CreateModuleEndpoint : EndpointWithSanitizedRequest<CreateModulesRe
 
     public override async Task HandleAsync(CreateModulesRequest req, CancellationToken ct)
 {
-    var newModule = _mapper.Map<Domain.Entities.Module>(req);
+    var newModule = _mapper.Map<Module>(req);   
     await _moduleService.Create(newModule);
     
 }
