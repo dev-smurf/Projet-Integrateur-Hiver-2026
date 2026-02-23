@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(GarneauTemplateDbContext))]
-    [Migration("20260223161138_InitialMigration")]
+    [Migration("20260223164325_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
