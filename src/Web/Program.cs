@@ -61,10 +61,7 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-if (!app.Environment.IsProduction())
-{
-    await app.Services.InitializeAndSeedDatabase();
-}
+await app.Services.InitializeAndSeedDatabase();
 
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
