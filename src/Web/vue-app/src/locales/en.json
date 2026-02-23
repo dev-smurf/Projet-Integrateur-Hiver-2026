@@ -3,7 +3,7 @@
     "module":{
       "add":{
         "success":"Module was successfully created.",
-        "errorOccured":"Error occured while creating module."
+        "errorOccured":"Error occured while creating module.","server":"Error from the server"
       }
       
     }

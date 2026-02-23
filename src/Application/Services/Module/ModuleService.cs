@@ -17,9 +17,9 @@ public class ModuleService:IModuleService
         _moduleService = moduleService;
         _moduleRepository = moduleRepository;
     }
-public async Task<Domain.Entities.Module> CreateModule(ModuleDto moduleDto)
+public async Task<Domain.Entities.Module> CreateModule(Domain.Entities.Module module)
 {
-    var newModule = await _moduleService.CreateModule(moduleDto);
+    var newModule = await _moduleService.CreateModule(module);
     return newModule;
 }
 

@@ -1,0 +1,8 @@
+namespace Application.Exceptions.Module;
+
+
+public class ModuleWhitContenuAlredyExist: Exception
+{
+public MOduleWhitContenuAlredyExist(string message) : base(message) { }
+}
+

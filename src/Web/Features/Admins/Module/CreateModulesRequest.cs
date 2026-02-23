@@ -1,27 +1,24 @@
+using Microsoft.AspNetCore.Http;
 using Web.Features.Common;
-
-namespace Web.Features.Admins.Members.CreateMember;
 
 public class CreateModulesRequest : ISanitizable
 {
-    public string FirstName { get; set; } = null!;
-    public string LastName { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public string PhoneNumber { get; set; } = null!;
-    public int? PhoneExtension { get; set; }
-    public int? Apartment { get; set; }
-    public string Street { get; set; } = null!;
-    public string City { get; set; } = null!;
-    public string ZipCode { get; set; } = null!;
-
+    public string? NameFr { get; set; }
+    public string? NameEn { get; set; }
+    public string? ContenueFr { get; set; }
+    public string? ContenueEn { get; set; }
+    public string? SujetFr { get; set; }
+    public string? SujetEn { get; set; }
+    
+    public string? CardImageBase64 { get; set; } 
     public void Sanitize()
     {
-        FirstName = FirstName.Trim();
-        LastName = LastName.Trim();
-        Email = Email.Trim();
-        PhoneNumber = PhoneNumber.Trim();
-        Street = Street.Trim();
-        City = City.Trim();
-        ZipCode = ZipCode.Trim();
+        NameFr = NameFr?.Trim();
+        NameEn = NameEn?.Trim();
+        ContenueFr = ContenueFr?.Trim();
+        ContenueEn = ContenueEn?.Trim();
+        SujetFr = SujetFr?.Trim();
+        SujetEn = SujetEn?.Trim();
     }
 }
+
