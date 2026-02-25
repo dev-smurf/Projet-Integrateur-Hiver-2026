@@ -1,6 +1,6 @@
 @use "../tools" as *;
 .navbar {
-  background-color: $color-green-medium;
+  background-color: $color-black;
   padding-top: 0;
   display: flex;
   justify-content: space-between;
@@ -19,17 +19,18 @@
   }
 
   &__title {
-    background-color: $color-white;
+    background-color: $color-grey-darker;
+    color: $color-white;
     font-size: rem(13);
     line-height: rem(16);
-    border-top: 1px solid $color-green;
+    border-top: 1px solid $color-grey-dark;
   }
 
   &__drawer-btn {
     font-size: rem(16);
     line-height: rem(16);
     color: $color-white;
-    @include backgroundColorHover($color-green);
+    @include backgroundColorHover($color-grey-darker);
 
     .icon {
       flex-shrink: 0;
@@ -51,22 +52,29 @@
     width: 100%;
     padding: 12px 20px;
     border-radius: $common-border-radius;
+    color: $color-grey;
     @include colorHover($color-white);
 
     &.router-link-active {
       color: $color-white;
-      background-color: $color-green-medium;
+      background-color: $color-grey-darker;
       pointer-events: none;
     }
   }
 
   &__footer {
-    border-top: 1px solid $color-green-lighter;
+    border-top: 1px solid $color-grey-dark;
     padding: 40px 48px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 32px;
+  }
+
+  &__logout {
+    color: $color-grey;
+    font-weight: 600;
+    @include colorHover($color-white);
   }
 }
 
