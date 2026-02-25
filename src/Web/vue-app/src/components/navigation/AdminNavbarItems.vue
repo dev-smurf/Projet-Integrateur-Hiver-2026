@@ -7,6 +7,7 @@
     </li>
     <li>
       <Subnav :routeKey="'admin'"/>
+      <Subnav :routeKey="'admin.children.modules'" />
     </li>
   </ul>
 </template>

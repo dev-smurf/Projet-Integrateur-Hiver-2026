@@ -10,6 +10,11 @@
       "fullPath": "/authentification-a-deux-facteurs",
       "name": "Authentification à deux facteurs"
     },
+    "modules": {
+  "path": "modules",
+  "fullPath": "/administration/modules",
+  "name": "Modules"
+    },
     "forgotPassword": {
       "path": "/mot-de-passe-oublie",
       "fullPath": "/mot-de-passe-oublie",
@@ -44,6 +49,11 @@
             "fullPath": "/administration/membres/:id/modifier",
             "name": "Modifier un membre"
           }
+        },
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules"
         }
       }
     },

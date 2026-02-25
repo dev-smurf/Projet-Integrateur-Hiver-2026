@@ -12,6 +12,7 @@ import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
+import AdminModuleIndex from "@/views/admin/AdminModuleIndex.vue";
 
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
@@ -107,6 +108,19 @@ const router = createRouter({
               props: true
             },
           ],
+        }
+        ,
+        {
+          path: i18n.t("routes.admin.children.modules.path"),
+          name: "admin.children.modules",
+          component: Admin,
+          children: [
+            {
+              path: "",
+              name: "admin.children.modules.index",
+              component: AdminModuleIndex,
+            }
+          ]
         }
       ]
     },
