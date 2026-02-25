@@ -44,6 +44,11 @@
             "fullPath": "/administration/members/:id/edit",
             "name": "Edit a member"
           }
+        },
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules"
         }
       }
     },
@@ -74,6 +79,11 @@
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
       }
+    },
+      "modules": {
+      "path": "modules",
+      "fullPath": "/administration/modules",
+      "name": "Modules"
     },
     "twoFactor": {
       "code": "Code",

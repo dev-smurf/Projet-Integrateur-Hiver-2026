@@ -1,0 +1,154 @@
+@use "../tools" as *;
+
+.authentication-page {
+  // Fond déjà géré par _authentification-page.scss → vert moyen + vagues
+
+  &__container {
+    position: relative;
+    z-index: 1; // au-dessus des vagues
+  }
+
+  .login-split {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    background-color: $color-white;
+    border-radius: $common-border-radius;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+    @include breakpoint(sm-down) {
+      flex-direction: column;
+    }
+  }
+
+  .login-image {
+    flex: 1;
+    min-height: 420px;
+    background: linear-gradient(135deg, $color-green-medium 0%, $color-green-dark 100%);
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.92;
+      mix-blend-mode: luminosity; // pour un effet plus doux avec le vert
+    }
+  }
+
+  .login-form {
+    flex: 1.15;
+    padding: 56px 48px;
+    background: $color-white;
+
+    @include breakpoint(sm-down) {
+      padding: 40px 24px;
+    }
+  }
+
+  .welcome-title {
+    font-family: $font-montserrat;
+    font-size: rem(28);
+    font-weight: 700;
+    color: $color-green-dark;
+    text-align: center;
+    margin: 0 0 16px;
+  }
+
+  .welcome-subtitle {
+    font-size: rem(15);
+    line-height: rem(22);
+    color: $color-grey-medium;
+    text-align: center;
+    margin: 0 0 48px;
+  }
+
+  .auth-form-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .form-input {
+    margin-bottom: 28px;
+  }
+
+  .signin-button {
+    @extend .btn !optional;
+    background-color: $color-green;
+    border-color: $color-green;
+    color: $color-white;
+    font-size: rem(16);
+    padding: 16px 24px;
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover {
+      background-color: $color-green-dark;
+      border-color: $color-green-dark;
+    }
+
+    &:disabled {
+      background-color: $color-grey-light;
+      border-color: $color-grey;
+    }
+  }
+
+  .forgot-password-link {
+    @extend .text-link !optional;
+    font-size: rem(14);
+  }
+
+  .or-text {
+    text-align: center;
+    color: $color-grey-medium;
+    font-size: rem(14);
+    margin: 40px 0 24px;
+  }
+
+  .social-buttons {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+
+    @include breakpoint(sm-up) {
+      flex-direction: row;
+    }
+  }
+
+  .btn-social {
+    @extend .btn !optional;
+    flex: 1;
+    justify-content: center;
+    gap: 12px;
+    font-size: rem(14);
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .btn-google {
+    background-color: $color-white;
+    border-color: $color-border;
+    color: $color-black;
+
+    &:hover {
+      background-color: $color-grey-lighter;
+    }
+  }
+
+  .btn-facebook {
+    background-color: #1877f2;
+    border-color: #1877f2;
+    color: $color-white;
+
+    &:hover {
+      background-color: #1565c0;
+    }
+  }
+}
