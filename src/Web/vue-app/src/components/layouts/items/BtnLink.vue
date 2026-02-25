@@ -1,4 +1,4 @@
-<template>
+ <template>
   <router-link v-if="path" :to="path" class="btn btn--icon-translate-hover">
     {{ name }}
     <IconArrow class="icon" />

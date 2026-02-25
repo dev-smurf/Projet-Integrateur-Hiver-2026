@@ -6,20 +6,21 @@
   font-size: rem(13);
   line-height: rem(15);
   font-weight: 700;
-  background-color: $color-green-light;
+  background-color: $color-green;
   border: 1px solid $color-green;
   border-radius: $common-border-radius;
   cursor: pointer;
   width: fit-content;
   text-transform: none;
-  color: $color-text;
+  color: $color-white;
   align-items: center;
+  @include btnHover($color-green-dark, $color-white);
 
   //States ----------
   &--red {
     border-color: $color-red;
     background-color: rgba($color-red, 0.5);
-    @include btnHover($color-red, $color-text)
+    @include btnHover($color-red, $color-white)
   }
 
   &--square {
