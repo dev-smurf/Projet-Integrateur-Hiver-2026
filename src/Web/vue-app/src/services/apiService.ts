@@ -73,10 +73,8 @@ export class ApiService implements IApiService {
       retryRequest: boolean
   ) {
     try {
-      return await axios
-          .get(
-              `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`
-          )
+        return await this._httpClient
+          .get(`/authentication/refresh-token`)
           .then((response: AxiosResponse<SucceededOrNotResponse>) => {
             if (!response.data) return;
 

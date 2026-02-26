@@ -1,14 +1,19 @@
 <template>
   <div class="login-page">
     <div class="login-page__container">
-      <h1 class="login-page__heading">Connexion</h1>
-      <p class="login-page__sub">Accédez à votre espace personnel.</p>
+      <h1 class="login-page__heading text-center">Connexion</h1>
+      <p class="login-page__sub text-center">
+        Accédez à votre espace personnel.
+      </p>
 
       <div class="login-page__card" @keyup.enter="sendLoginRequest">
         <Loader v-if="preventMultipleSubmit" />
 
         <!-- Email -->
-        <div class="login-page__field" :class="{ 'login-page__field--error': emailError }">
+        <div
+          class="login-page__field"
+          :class="{ 'login-page__field--error': emailError }"
+        >
           <label for="login-email" class="login-page__label">Courriel</label>
           <input
             id="login-email"
@@ -20,18 +25,25 @@
             @blur="validateEmail"
             @input="clearEmailError"
           />
-          <span v-if="emailError" class="login-page__error">{{ emailError }}</span>
+          <span v-if="emailError" class="login-page__error">{{
+            emailError
+          }}</span>
         </div>
 
         <!-- Password -->
-        <div class="login-page__field" :class="{ 'login-page__field--error': passwordError }">
+        <div
+          class="login-page__field"
+          :class="{ 'login-page__field--error': passwordError }"
+        >
           <div class="login-page__label-row">
-            <label for="login-password" class="login-page__label">Mot de passe</label>
+            <label for="login-password" class="login-page__label"
+              >Mot de passe</label
+            >
             <router-link
               :to="{ path: t('routes.forgotPassword.path') }"
               class="login-page__forgot"
             >
-              {{ t('pages.login.forgotPassword') }}
+              {{ t("pages.login.forgotPassword") }}
             </router-link>
           </div>
           <input
@@ -44,7 +56,9 @@
             @blur="validatePassword"
             @input="clearPasswordError"
           />
-          <span v-if="passwordError" class="login-page__error">{{ passwordError }}</span>
+          <span v-if="passwordError" class="login-page__error">{{
+            passwordError
+          }}</span>
         </div>
 
         <!-- Submit -->
@@ -53,109 +67,114 @@
           :disabled="preventMultipleSubmit"
           class="login-page__submit"
         >
-          {{ t('pages.login.submit') }}
+          {{ t("pages.login.submit") }}
         </button>
       </div>
 
-      <p class="login-page__copy">&copy; {{ new Date().getFullYear() }} Garneau</p>
+      <p class="login-page__copy">
+        &copy; {{ new Date().getFullYear() }} Garneau
+      </p>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
+import { useI18n } from "vue3-i18n";
+import { useRouter } from "vue-router";
+import { useAuthenticationService, useUserService } from "@/inversify.config";
+import { useUserStore } from "@/stores/userStore";
+import { notifyError } from "@/notify";
+import { ILoginRequest } from "@/types/requests/loginRequest";
+import Loader from "@/components/layouts/items/Loader.vue";
+import { useApiStore } from "@/stores/apiStore";
 
-import { ref } from "vue"
-import { useI18n } from "vue3-i18n"
-import { useRouter } from "vue-router"
-import { useAuthenticationService, useUserService } from "@/inversify.config"
-import { useUserStore } from "@/stores/userStore"
-import { notifyError } from "@/notify"
-import { ILoginRequest } from "@/types/requests/loginRequest"
-import Loader from "@/components/layouts/items/Loader.vue"
-import { useApiStore } from "@/stores/apiStore"
+const { t } = useI18n();
+const router = useRouter();
+const apiStore = useApiStore();
+const userStore = useUserStore();
+const userService = useUserService();
+const authenticationService = useAuthenticationService();
 
-const { t } = useI18n()
-const router = useRouter()
-const apiStore = useApiStore()
-const userStore = useUserStore()
-const userService = useUserService()
-const authenticationService = useAuthenticationService()
+const loginRequest = ref<ILoginRequest>({ username: "", password: "" });
+const preventMultipleSubmit = ref<boolean>(false);
 
-const loginRequest = ref<ILoginRequest>({ username: '', password: '' })
-const preventMultipleSubmit = ref<boolean>(false)
-
-const emailError = ref<string>('')
-const passwordError = ref<string>('')
+const emailError = ref<string>("");
+const passwordError = ref<string>("");
 
 function validateEmail() {
   if (!loginRequest.value.username) {
-    emailError.value = 'Le courriel est obligatoire.'
+    emailError.value = "Le courriel est obligatoire.";
   } else {
-    emailError.value = ''
+    emailError.value = "";
   }
 }
 
 function validatePassword() {
   if (!loginRequest.value.password) {
-    passwordError.value = 'Le mot de passe est obligatoire.'
+    passwordError.value = "Le mot de passe est obligatoire.";
   } else {
-    passwordError.value = ''
+    passwordError.value = "";
   }
 }
 
 function clearEmailError() {
-  if (emailError.value) validateEmail()
+  if (emailError.value) validateEmail();
 }
 
 function clearPasswordError() {
-  if (passwordError.value) validatePassword()
+  if (passwordError.value) validatePassword();
 }
 
 function validateAll(): boolean {
-  validateEmail()
-  validatePassword()
-  return !emailError.value && !passwordError.value
+  validateEmail();
+  validatePassword();
+  return !emailError.value && !passwordError.value;
 }
 
 async function sendLoginRequest() {
-  if (preventMultipleSubmit.value) return
+  if (preventMultipleSubmit.value) return;
 
-  preventMultipleSubmit.value = true
+  preventMultipleSubmit.value = true;
 
   if (!validateAll()) {
-    notifyError(t('validation.errorsInForm'))
-    preventMultipleSubmit.value = false
-    return
+    notifyError(t("validation.errorsInForm"));
+    preventMultipleSubmit.value = false;
+    return;
   }
 
-  let succeededOrNotResponse = await authenticationService.login(loginRequest.value)
+  let succeededOrNotResponse = await authenticationService.login(
+    loginRequest.value,
+  );
   if (succeededOrNotResponse.succeeded) {
-    let user = await userService.getCurrentUser()
-    userStore.setUser(user)
-    userStore.setUsername(loginRequest.value.username)
-    apiStore.setNeedToLogout(false)
-    await router.push(t("routes.account.path"))
-    preventMultipleSubmit.value = false
-    return
+    let user = await userService.getCurrentUser();
+    userStore.setUser(user);
+    userStore.setUsername(loginRequest.value.username);
+    apiStore.setNeedToLogout(false);
+    await router.push(t("routes.account.path"));
+    preventMultipleSubmit.value = false;
+    return;
   }
 
-  let twoFactorRequired = succeededOrNotResponse.errors.some(x => x.errorType == "TwoFactorRequired")
+  let twoFactorRequired = succeededOrNotResponse.errors.some(
+    (x) => x.errorType == "TwoFactorRequired",
+  );
   if (twoFactorRequired) {
-    userStore.setUsername(loginRequest.value.username)
-    await router.push(t("routes.twoFactor.path"))
-    preventMultipleSubmit.value = false
-    return
+    userStore.setUsername(loginRequest.value.username);
+    await router.push(t("routes.twoFactor.path"));
+    preventMultipleSubmit.value = false;
+    return;
   }
 
-  let errorMessages = succeededOrNotResponse.getErrorMessages('pages.login.validation')
+  let errorMessages = succeededOrNotResponse.getErrorMessages(
+    "pages.login.validation",
+  );
   if (errorMessages.length == 0)
-    notifyError(t('pages.login.validation.errorOccured'))
-  else
-    notifyError(errorMessages[0])
+    notifyError(t("pages.login.validation.errorOccured"));
+  else notifyError(errorMessages[0]);
 
-  preventMultipleSubmit.value = false
+  preventMultipleSubmit.value = false;
 }
-
 </script>
 
 <style scoped lang="scss">

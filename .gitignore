@@ -682,7 +682,7 @@ FodyWeavers.xsd
 
 appsettings.local.json
 .dev
-
+src/Web/appsettings.Development.json
 src/Web/wwwroot/css
 src/Web/wwwroot/css/*
 src/Web/wwwroot/js

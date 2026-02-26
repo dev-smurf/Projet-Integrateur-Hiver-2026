@@ -31,7 +31,9 @@ public static class CookieHelper
             Secure = secure,
             HttpOnly = httpOnly,
             IsEssential = true,
-            SameSite = SameSiteMode.Strict
+            // Use SameSite=None only when the cookie is marked Secure (required by browsers).
+            // For local non-HTTPS development (Secure=false) fall back to Lax to avoid browsers dropping the cookie.
+            SameSite = secure ? SameSiteMode.None : SameSiteMode.Lax
         };
 
         response.Cookies.Append(cookieName, cookieValue, cookieOptions);

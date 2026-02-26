@@ -50,12 +50,16 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "corsDomains",
         policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetSection("CorsDomains")
+            var origins = builder.Configuration.GetSection("CorsDomains")
                     .GetChildren()
                     .Select(c => c.Value)
-                    .ToArray()!)
+                    .Select(v => string.IsNullOrWhiteSpace(v) ? v : (v.StartsWith("http") ? v : $"https://{v}"))
+                    .ToArray()!;
+
+            policy.WithOrigins(origins)
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
@@ -95,7 +99,7 @@ app.UseExceptionHandler(c => c.Run(async context =>
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseCors("corsDomains");
 app.UseAuthentication();
 app.UseAuthorization();
 
