@@ -3,8 +3,8 @@
 public class ForgotPasswordNotificationModel : NotificationModel
 {
     public string Link { get; set; }
-    
-    public ForgotPasswordNotificationModel(string destination, string locale, string link) 
+
+    public ForgotPasswordNotificationModel(string destination, string locale, string link)
         : base(destination, locale)
     {
         Link = link;
@@ -13,8 +13,8 @@ public class ForgotPasswordNotificationModel : NotificationModel
     public override string TemplateId()
     {
         if (Locale == "fr")
-            return "d-ccea0bf1594048259d41fb52c2c23614";
-        return "d-6bceb5f892064a7b95cc03fe16b45943";
+            return "d-e0eb0eb2bd2d40e1a167fa08c71b3e1d";
+        return "d-b6252ba68bc44a1bb5bf8ae759c3f8d5";
     }
 
     public override object TemplateData()
