@@ -7,3 +7,4 @@ export * from './loginRequest'
 export * from './resetPasswordRequest'
 export * from './twoFactorRequest'
 export * from './createModuleRequest'
+export * from "./editModuleRequest"

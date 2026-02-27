@@ -1,57 +1,78 @@
 import { IModulesService } from "@/injection/interfaces";
-import { ApiService } from "./apiService";
-import { ICreateModuleRequest } from "@/types/requests";
+import { injectable } from "inversify";
 import { SucceededOrNotResponse } from "@/types/responses";
+import { AxiosError, AxiosResponse } from "axios";
+import { ApiService } from "@/services";
+import { ICreateModuleRequest, IEditModuleRequest } from "@/types/requests";
 
+@injectable()
 export class ModuleService extends ApiService implements IModulesService {
 
+    /**
+     * Crée un nouveau module
+     */
     public async createModule(request: ICreateModuleRequest): Promise<SucceededOrNotResponse> {
-        try {
-           const apiUrl = import.meta.env.VITE_API_BASE_URL;
+        const formData = new FormData();
+        if (request.nameFr) formData.append("NameFr", request.nameFr);
+        if (request.nameEn) formData.append("NameEn", request.nameEn);
+        if (request.contenueFr) formData.append("ContenueFr", request.contenueFr);
+        if (request.contenueEn) formData.append("ContenueEn", request.contenueEn);
+        if (request.sujetFr) formData.append("SujetFr", request.sujetFr);
+        if (request.sujetEn) formData.append("SujetEn", request.sujetEn);
+        if (request.cardImage) formData.append("CardImage", request.cardImage);
 
-            const response = await fetch(`${apiUrl}/module`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(request),
+        const response = await this._httpClient
+            .post<ICreateModuleRequest, AxiosResponse<SucceededOrNotResponse>>(
+                `${import.meta.env.VITE_API_BASE_URL}/module`,
+                formData,
+                this.headersWithFormDataContentType()
+            )
+            .catch((error: AxiosError): AxiosResponse<SucceededOrNotResponse> => {
+                return error.response as AxiosResponse<SucceededOrNotResponse>;
             });
 
-            let data: any;
-            try {
-                data = await response.json();
-            } catch {
-                data = {
-                    succeeded: false,
-                    errors: [{ errorType: "server", errorMessage: "Réponse invalide" }]
-                };
-            }
+        const succeededOrNotResponse = response.data as SucceededOrNotResponse;
+        return new SucceededOrNotResponse(
+            succeededOrNotResponse.succeeded,
+            succeededOrNotResponse.errors
+        );
+    }
 
-            if (!response.ok) {
-                return new SucceededOrNotResponse(
-                    data.succeeded ?? false,
-                    data.errors ?? [{ errorType: "server", errorMessage: `HTTP ${response.status}` }]
-                );
-            }
+    /**
+     * Met à jour un module existant
+     * Cette méthode est requise par IModulesService
+     */
+    public async updateModule(id: string, request: IEditModuleRequest): Promise<SucceededOrNotResponse> {
+        const formData = new FormData();
 
-            return new SucceededOrNotResponse(
-                data.succeeded,
-                data.errors
-            );
+        // On ajoute l'ID au body car souvent requis par les validateurs C#
+        formData.append("Id", id);
 
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error(error.message);
-            } else {
-                console.error("Erreur inconnue", error);
-            }
+        if (request.nameFr) formData.append("NameFr", request.nameFr);
+        if (request.nameEn) formData.append("NameEn", request.nameEn);
+        if (request.contenueFr) formData.append("ContenueFr", request.contenueFr);
+        if (request.contenueEn) formData.append("ContenueEn", request.contenueEn);
+        if (request.sujetFr) formData.append("SujetFr", request.sujetFr);
+        if (request.sujetEn) formData.append("SujetEn", request.sujetEn);
 
-            return new SucceededOrNotResponse(false, [
-                {
-                    errorType: "network",
-                    errorMessage: "Erreur réseau"
-                }
-            ]);
+        if (request.cardImage) {
+            formData.append("CardImage", request.cardImage);
         }
+
+        const response = await this._httpClient
+            .put<IEditModuleRequest, AxiosResponse<SucceededOrNotResponse>>(
+                `${import.meta.env.VITE_API_BASE_URL}/module/${id}`,
+                formData,
+                this.headersWithFormDataContentType()
+            )
+            .catch((error: AxiosError): AxiosResponse<SucceededOrNotResponse> => {
+                return error.response as AxiosResponse<SucceededOrNotResponse>;
+            });
+
+        const succeededOrNotResponse = response.data as SucceededOrNotResponse;
+        return new SucceededOrNotResponse(
+            succeededOrNotResponse.succeeded,
+            succeededOrNotResponse.errors
+        );
     }
 }

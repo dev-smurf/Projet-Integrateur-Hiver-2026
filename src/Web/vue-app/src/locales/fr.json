@@ -10,10 +10,10 @@
     }
 
   },
-  "routes": {
+  "route": {
     "addModule":{
-      "path":"/Ajouter-module",
-      "fullPath":"/Ajouter-module",
+      "path":"/ajouter-module",
+      "fullPath":"/ajouter-module",
       "name": "Ajouter un Module"
     },
     "login": {
