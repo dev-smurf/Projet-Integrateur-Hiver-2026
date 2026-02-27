@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Domain.Entities;
 using Domain.Repositories;
 using Domain.Common;
-using System.Text;
-using System.Net;
-using FastEndpoints.Security;
 
 public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNotResponse>
 {
@@ -18,51 +15,50 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
 
     public override void Configure()
     {
+        AllowFileUploads();
         Post("module");
         Roles(Domain.Constants.User.Roles.ADMINISTRATOR);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
         DontCatchExceptions();
     }
 
-public override async Task HandleAsync(CreateModulesRequest req, CancellationToken ct)
-{
-    req.Sanitize();
-
-    string? cardImageUrl = null;
-    if (!string.IsNullOrEmpty(req.CardImageBase64))
+    public override async Task HandleAsync(CreateModulesRequest req, CancellationToken ct)
     {
-        cardImageUrl = await SaveFileFromBase64(req.CardImageBase64);
+        req.Sanitize();
+
+        string? cardImageUrl = null;
+        if (!string.IsNullOrEmpty(req.CardImageBase64))
+        {
+            cardImageUrl = await SaveFileFromBase64(req.CardImageBase64);
+        }
+
+        var newModule = new Module
+        {
+            NameFr = req.NameFr,
+            NameEn = string.IsNullOrWhiteSpace(req.NameEn) ? req.NameFr : req.NameEn,           // 👈
+            ContenueFr = req.ContenueFr,
+            ContenueEn = string.IsNullOrWhiteSpace(req.ContenueEn) ? req.ContenueFr : req.ContenueEn, // 👈
+            SujetFr = req.SujetFr,
+            SujetEn = string.IsNullOrWhiteSpace(req.SujetEn) ? req.SujetFr : req.SujetEn,       // 👈
+            CardImageUrl = cardImageUrl
+        };
+
+        await _moduleService.Create(newModule);
+        await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 
-    var newModule = new Module
+    private static async Task<string> SaveFileFromBase64(string base64, string folder = "uploads")
     {
-        NameFr = req.NameFr,
-        NameEn = req.NameEn,
-        ContenueFr = req.ContenueFr,
-        ContenueEn = req.ContenueEn,
-        SujetFr = req.SujetFr,
-        SujetEn = req.SujetEn,
-        CardImageUrl = cardImageUrl
-    };
+        var bytes = Convert.FromBase64String(base64);
+        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
 
-    await _moduleService.Create(newModule);
+        if (!Directory.Exists(savePath))
+            Directory.CreateDirectory(savePath);
 
-    await Send.OkAsync(new SucceededOrNotResponse(true));
-}
+        var fileName = $"{Guid.NewGuid()}.png";
+        var fullPath = Path.Combine(savePath, fileName);
+        await File.WriteAllBytesAsync(fullPath, bytes);
 
-private static async Task<string> SaveFileFromBase64(string base64, string folder = "uploads")
-{
-    var bytes = Convert.FromBase64String(base64);
-    var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
-    if (!Directory.Exists(savePath))
-        Directory.CreateDirectory(savePath);
-
-    var fileName = $"{Guid.NewGuid()}.png"; // tu peux détecter le format si tu veux
-    var fullPath = Path.Combine(savePath, fileName);
-
-    await File.WriteAllBytesAsync(fullPath, bytes);
-
-    return $"/{folder}/{fileName}";
-}
-
+        return $"/{folder}/{fileName}";
+    }
 }

@@ -61,7 +61,6 @@ export class ApiService implements IApiService {
   }
 
   private getAccessToken() {
-    debugger
     return new Cookies().get("accessToken");
   }
 
