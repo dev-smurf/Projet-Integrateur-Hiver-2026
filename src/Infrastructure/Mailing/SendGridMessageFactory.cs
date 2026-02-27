@@ -1,4 +1,4 @@
-﻿using Application.Services.Notifications.Models;
+﻿﻿using Application.Services.Notifications.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
