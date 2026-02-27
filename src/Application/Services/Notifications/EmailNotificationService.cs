@@ -38,9 +38,10 @@ public class EmailNotificationService : INotificationService
         return await _emailSender.SendAsync(model);
     }
 
-    public async Task<SucceededOrNotResponse> SendAccountCreatedNotification(User user, string link)
+    public async Task<SucceededOrNotResponse> SendAccountCreatedNotification(string firstName, User user, string link)
     {
         var model = new AcountCreateNotificationModel(
+            firstName,
             user.Email!,
             EMAIL_DEFAULT_CULTURE,
             link);

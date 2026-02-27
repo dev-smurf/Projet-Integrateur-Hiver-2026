@@ -3,11 +3,13 @@ namespace Application.Services.Notifications.Models;
 public class AcountCreateNotificationModel : NotificationModel
 {
     public string Link { get; set; }
+    public string FirstName { get; set; }
 
-    public AcountCreateNotificationModel(string destination, string locale, string link)
+    public AcountCreateNotificationModel(string firstname, string destination, string locale, string link)
         : base(destination, locale)
     {
         Link = link;
+        FirstName = firstname;
     }
 
     public override string TemplateId()
@@ -21,7 +23,8 @@ public class AcountCreateNotificationModel : NotificationModel
     {
         return new
         {
-            ButtonUrl = Link
+            ButtonUrl = Link,
+            Username = FirstName
         };
     }
 }

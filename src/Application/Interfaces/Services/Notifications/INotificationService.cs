@@ -7,5 +7,5 @@ public interface INotificationService
 {
     Task<SucceededOrNotResponse> SendForgotPasswordNotification(User user, string link);
     Task<SucceededOrNotResponse> SendTwoFactorAuthenticationCodeNotification(User user, string code);
-    Task<SucceededOrNotResponse> SendAccountCreatedNotification(User user, string link);
+    Task<SucceededOrNotResponse> SendAccountCreatedNotification(string firstName, User user, string link);
 }
