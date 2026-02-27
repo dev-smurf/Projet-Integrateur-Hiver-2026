@@ -30,6 +30,11 @@
       "fullPath": "/administration",
       "name": "Administration",
       "children": {
+        "dashboard": {
+          "path": "dashboard",
+          "fullPath": "/administration/dashboard",
+          "name": "Dashboard"
+        },
         "members": {
           "path": "members",
           "fullPath": "/administration/members",
@@ -71,6 +76,34 @@
     }
   },
   "pages": {
+    "admin": {
+      "dashboard": {
+        "title": "Admin Dashboard",
+        "subtitle": "Welcome back! Here's an overview of your platform.",
+        "stats": {
+          "modules": "Total Modules",
+          "modulesLabel": "Active modules",
+          "members": "Total Members",
+          "membersLabel": "Registered members",
+          "activities": "Recent Activities",
+          "activitiesLabel": "Total activities",
+          "activeNow": "Active Now",
+          "activeNowLabel": "Currently online"
+        },
+        "actions": {
+          "manageModules": "Manage Modules",
+          "manageMembers": "Manage Members",
+          "settings": "Settings"
+        },
+        "recentActivities": {
+          "title": "Recent Activities",
+          "placeholder": "Search by name or module...",
+          "allRoles": "All Roles",
+          "empty": "No activities found.",
+          "ago": "ago"
+        }
+      }
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",
@@ -79,11 +112,6 @@
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
       }
-    },
-      "modules": {
-      "path": "modules",
-      "fullPath": "/administration/modules",
-      "name": "Modules"
     },
     "twoFactor": {
       "code": "Code",

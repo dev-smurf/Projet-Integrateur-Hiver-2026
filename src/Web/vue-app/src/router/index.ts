@@ -9,6 +9,7 @@ import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 
 import Admin from "../views/admin/Admin.vue";
+import AdminDashboard from "../views/admin/AdminDashboard.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
@@ -85,6 +86,22 @@ const router = createRouter({
         noLinkInBreadcrumbs: true,
       },
       children: [
+        {
+          path: "",
+          redirect: { name: "admin.children.dashboard.index" },
+        },
+        {
+          path: "dashboard",
+          name: "admin.children.dashboard",
+          component: Admin,
+          children: [
+            {
+              path: "",
+              name: "admin.children.dashboard.index",
+              component: AdminDashboard,
+            }
+          ]
+        },
         {
           path: i18n.t("routes.admin.children.members.path"),
           name: "admin.children.members",
