@@ -26,6 +26,7 @@
     <button class="btn btn--full btn--purple btn--big" @click="sendLoginRequest" :disabled="preventMultipleSubmit">
       {{ t('pages.login.submit') }}
     </button>
+
   </Card>
 </template>
 <script lang="ts" setup>
@@ -45,6 +46,8 @@ import FormInput from "@/components/forms/FormInput.vue";
 import TextLink from "@/components/layouts/items/TextLink.vue";
 import { useApiStore } from "@/stores/apiStore";
 import Loader from "@/components/layouts/items/Loader.vue";
+import { User } from "@/types";
+import { Role } from "@/types/enums";
 
 const { t } = useI18n()
 const router = useRouter();

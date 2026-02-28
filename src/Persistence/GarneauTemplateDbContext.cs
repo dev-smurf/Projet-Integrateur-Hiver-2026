@@ -42,6 +42,8 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<Book> Books { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
+   public DbSet<Domain.Entities.Module> Modules { get; set; } = null!;
+
     public GarneauTemplateDbContext()
     {
     }
