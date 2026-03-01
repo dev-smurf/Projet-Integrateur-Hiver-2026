@@ -40,7 +40,7 @@ public class EmailNotificationService : INotificationService
 
     public async Task<SucceededOrNotResponse> SendAccountCreatedNotification(string firstName, User user, string link)
     {
-        var model = new AcountCreateNotificationModel(
+        var model = new AcountCreatedNotificationModel(
             firstName,
             user.Email!,
             EMAIL_DEFAULT_CULTURE,

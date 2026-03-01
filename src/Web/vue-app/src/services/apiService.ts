@@ -123,8 +123,6 @@ export class ApiService implements IApiService {
     };
   }
 
-
-
   public buildEmptyBody(): string {
     return '{}'
   }

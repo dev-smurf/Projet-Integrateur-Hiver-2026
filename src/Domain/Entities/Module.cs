@@ -1,29 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Common;
-using Microsoft.AspNetCore.Http;
+﻿using Domain.Common;
 
 namespace Domain.Entities
 {
     public class Module : AuditableAndSoftDeletableEntity
     {
-        public string? NameFr { get; set; }
-        public string? NameEn { get; set; }
-        public string? ContenueFr { get; set; }
-        public string? ContenueEn { get; set; }
-        [NotMapped]
-        public IFormFile? CardImage { get; set; }
-        public string? CardImageUrl {get;set;}
-        public string? SujetFr { get; set; }
-        public string? SujetEn { get; set; }
+        public string Nom { get; private set; } = null!;
+        public string Contenu { get; private set; } = null!;
+        public string Sujet { get; private set; } = null!;
+
 
         public void SanitizeForSaving()
         {
-            if (NameFr != null) NameFr = NameFr.Trim();
-            if (NameEn != null) NameEn = NameEn.Trim();
-            if (ContenueFr != null) ContenueFr = ContenueFr.Trim();
-            if (ContenueEn != null) ContenueEn = ContenueEn.Trim();
-            if (SujetFr != null) SujetFr = SujetFr.Trim();
-            if (SujetEn != null) SujetEn = SujetEn.Trim();
+            Nom = Nom.Trim();  
+            Contenu = Contenu.Trim();
+            Sujet = Sujet.Trim();
         }
+
     }
 }
