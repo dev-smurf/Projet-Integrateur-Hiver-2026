@@ -1,0 +1,30 @@
+// colors — Maxiforme-inspired palette
+$color-white: #ffffff;
+$color-black: #050505;
+
+$color-grey-darker: #1A1A1A;
+$color-grey-dark: #232323;
+$color-grey-medium: #5C5C5C;
+$color-grey: #d3d3d3;
+$color-grey-light: #EFEFEF;
+$color-grey-lighter: #fafafa;
+
+$color-green-medium: #0d0d0d;
+$color-green: #d92626;
+$color-green-light: #fce8e8;
+$color-green-lighter: #fafafa;
+
+$color-red-dark: #6E3E3E;
+$color-red: #ff6568;
+$color-red-light: #EBBBBB;
+
+$color-green-dark: #b31e1e;
+$color-green-light: #fce8e8;
+
+$color-yellow-dark: #775227;
+$color-yellow: #D0810A;
+$color-yellow-light: #F4DFB1;
+
+$color-text: $color-black;
+$color-border: rgba($color-grey-medium, 0.2);
+$color-shadow: rgba($color-black, 0.1);
