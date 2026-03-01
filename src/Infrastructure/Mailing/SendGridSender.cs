@@ -39,9 +39,23 @@ public class SendGridSender : IEmailSender
 
     private async Task<List<Error>> GetErrorListFromResponse(Response response)
     {
-        var deserializedResponse = await response.DeserializeResponseBodyAsync();
-        string stringErrorList = Convert.ToString(deserializedResponse.First().Value);
-        var errors = JsonSerializer.Deserialize<List<SendGridError>>(stringErrorList);
-        return errors == null ? [] : errors.Select(x => new Error("SendGridError", x.Message)).ToList();
+        var body = await response.Body.ReadAsStringAsync();
+
+        if (string.IsNullOrEmpty(body))
+            return new List<Error>();
+
+        try
+        {
+            var sendGridErrors = JsonSerializer.Deserialize<List<SendGridError>>(body,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return sendGridErrors?.Select(x => new Error("SendGridError", x.Message)).ToList()
+                ?? new List<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to deserialize SendGrid error response. Raw body: {body}", body);
+            return new List<Error> { new Error("SendGridError", body) };
+        }
     }
 }
