@@ -1,18 +1,34 @@
 {
-  "errors": {
-    "module": {
-      "add": {
-        "success": "Le module a été créé avec succès.",
-        "errorOccured": "Une erreur est survenue lors de la création du module.",
-        "server": "Une erreur est survenue lors de la création du module"
-      }
+    "errors":{
+    "module":{
+      "add":{
+        "success":"Le module a été créé avec succès.",
+        "errorOccured":"Une erreur est survenue lors de la création du module.",
+        "server": "Une erreur est survenue lors de la creation du module"
+      }      
     }
   },
-  "routes": {
-    "addModule": {
-      "path": "/ajouter-module",
-      "fullPath": "/ajouter-module",
+  "Form_Add_Module":{
+      "fields":{
+        "name":"Nom",
+        "content":"Contenu",
+        "subject":"Sujet",
+        "image":"Image",
+        "imagePreview":"Aperçu de l'image"
+      }
+    },
+    "common": {
+      "Ajouter": "Ajouter",
+      "cancel": "Annuler"
+    },
+  
+
+  "route": {
+    "addModule":{
+      "path":"/ajouter-module",
+      "fullPath":"/ajouter-module",
       "name": "Ajouter un Module"
+      
     },
     "login": {
       "path": "/connexion",

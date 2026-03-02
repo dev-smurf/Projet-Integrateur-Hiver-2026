@@ -13,11 +13,11 @@ export class ModuleService extends ApiService implements IModulesService {
     const formData = new FormData();
 
     formData.append("NameFr",      request.nameFr ?? "");
-    formData.append("NameEn",      request.nameEn || request.nameFr || "");       
+    formData.append("NameEn",      request.nameEn || request.nameFr || ""); 
     formData.append("ContenueFr",  request.contenueFr ?? "");
-    formData.append("ContenueEn",  request.contenueEn || request.contenueFr || ""); // 👈 fallback Fr
+    formData.append("ContenueEn",  request.contenueEn || request.contenueFr || ""); 
     formData.append("SujetFr",     request.sujetFr ?? "");
-    formData.append("SujetEn",     request.sujetEn || request.sujetFr || "");     // 👈 fallback Fr
+    formData.append("SujetEn",     request.sujetEn || request.sujetFr || "");    
 
     if (request.cardImage) {
       const base64 = await fileToBase64(request.cardImage);

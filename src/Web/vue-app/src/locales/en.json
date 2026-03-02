@@ -8,6 +8,19 @@
       }
     }
   },
+   "Form_Add_Module":{
+      "fields":{
+        "name":"Name",
+        "content":"Content",
+        "subject":"Subject",
+        "image":"Image",
+        "imagePreview":"Image preview"
+      }
+    },
+    "common": {
+      "Ajouter": "Add",
+      "cancel": "Cancel"
+    },
   "routes": {
     "addModule": {
       "path": "/addModule",
