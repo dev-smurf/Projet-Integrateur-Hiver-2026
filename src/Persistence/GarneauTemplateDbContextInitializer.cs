@@ -33,7 +33,34 @@ public class GarneauTemplateDbContextInitializer
     {
         try
         {
-            await _context.Database.MigrateAsync();
+            var pendingMigrations = (await _context.Database.GetPendingMigrationsAsync()).ToList();
+            if (pendingMigrations.Count == 0)
+                return;
+
+            // If the database already has the schema (from old consolidated migrations),
+            // mark the new migrations as applied instead of re-running them.
+            var connection = _context.Database.GetDbConnection();
+            await connection.OpenAsync();
+            await using var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AspNetRoles'";
+            var result = await command.ExecuteScalarAsync();
+            var tablesAlreadyExist = result != null && Convert.ToInt32(result) > 0;
+
+            if (tablesAlreadyExist)
+            {
+                foreach (var migration in pendingMigrations)
+                {
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
+                        "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
+                        migration, "8.0.11");
+                }
+                _logger.LogInformation("Database schema already exists. Marked {Count} migrations as applied.", pendingMigrations.Count);
+            }
+            else
+            {
+                await _context.Database.MigrateAsync();
+            }
         }
         catch (Exception ex)
         {
