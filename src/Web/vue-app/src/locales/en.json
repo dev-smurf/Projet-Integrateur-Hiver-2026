@@ -8,19 +8,19 @@
       }
     }
   },
-   "Form_Add_Module":{
-      "fields":{
-        "name":"Name",
-        "content":"Content",
-        "subject":"Subject",
-        "image":"Image",
-        "imagePreview":"Image preview"
-      }
-    },
-    "common": {
-      "Ajouter": "Add",
-      "cancel": "Cancel"
-    },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Name",
+      "content": "Content",
+      "subject": "Subject",
+      "image": "Image",
+      "imagePreview": "Image preview"
+    }
+  },
+  "common": {
+    "Ajouter": "Add",
+    "cancel": "Cancel"
+  },
   "routes": {
     "addModule": {
       "path": "/addModule",
@@ -56,25 +56,37 @@
       "path": "/administration",
       "fullPath": "/administration",
       "name": "Administration",
-      "members": {
-        "path": "members",
-        "fullPath": "/administration/members",
-        "name": "Members",
-        "add": {
-          "path": "add",
-          "fullPath": "/administration/members/add",
-          "name": "Add a member"
+      "children": {
+        "members": {
+          "path": "members",
+          "fullPath": "/administration/members",
+          "name": "Members",
+          "add": {
+            "path": "add",
+            "fullPath": "/administration/members/add",
+            "name": "Add a member"
+          },
+          "edit": {
+            "path": ":id/edit",
+            "fullPath": "/administration/members/:id/edit",
+            "name": "Edit a member"
+          }
         },
-        "edit": {
-          "path": ":id/edit",
-          "fullPath": "/administration/members/:id/edit",
-          "name": "Edit a member"
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules Management",
+          "add": {
+            "path": "add",
+            "fullPath": "/administration/modules/add",
+            "name": "Add a Module"
+          },
+          "edit": {
+            "path": "edit/:id",
+            "fullPath": "/administration/modules/edit/:id",
+            "name": "Edit Module"
+          }
         }
-      },
-      "modules": {
-        "path": "modules",
-        "fullPath": "/administration/modules",
-        "name": "Modules"
       }
     },
     "books": {
@@ -96,6 +108,23 @@
     }
   },
   "pages": {
+    "modules": {
+      "list": {
+        "title": "Available Modules",
+        "empty": "No modules found in the database."
+      },
+      "form": {
+        "nameFr": "Name (FR)",
+        "nameEn": "Name (EN)",
+        "subjectFr": "Subject (FR)",
+        "subjectEn": "Subject (EN)",
+        "contentFr": "Content (FR)",
+        "contentEn": "Content (EN)"
+      },
+      "delete": {
+        "confirmation": "Confirm deletion?"
+      }
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",
@@ -240,6 +269,9 @@
     }
   },
   "global": {
+    "id": "ID",
+    "designation": "Designation",
+    "subject": "Subject / Category",
     "free": "Free",
     "menu": "Menu",
     "title": "Title",
@@ -267,8 +299,8 @@
     "important": "Important",
     "addFile": "Add file",
     "addFiles": "Add files",
-    "replaceFile": "Remplace file",
-    "replaceFiles": "Remplace files",
+    "replaceFile": "Replace file",
+    "replaceFiles": "Replace files",
     "removeFile": "Remove this file",
     "uploadZippedFolder-tooltip": "If you want to transmit multiple documents, please upload <strong>a compressed folder.</strong>",
     "update": "Update",
@@ -322,23 +354,23 @@
         "success": "Book was successfully created.",
         "errorOccured": "Error occured while creating book.",
         "bookNotFoundException": "Could not find book.",
-        "bookWithIsbnAlreadyExistsException": "A book with same ISBN already exits.",
-        "invalidFrenchName": "Le titre du livre en français est manquant.",
-        "invalidEnglishName": "Le titre du livre en anglais est manquant.",
-        "invalidFrenchDescription": "La description du livre en français est manquante.",
-        "invalidEnglishDescription": "La description du livre en anglais est manquante.",
-        "invalidIsbn": "L'ISBN doit être de 17 caractères et contenir quatre tirets.",
-        "invalidAuthor": "L'auteur du livre est manquant.",
-        "invalidEditor": "L'éditeur du livre est manquant.",
-        "invalidYearOfPublication": "L'année de publication doit être plus grande que zéro.",
-        "invalidNumberOfPages": "Le nombre de pages doit être plus grand que zéro.",
-        "invalidPrice": "Le prix du livre doit être plus grand que zéro."
+        "bookWithIsbnAlreadyExistsException": "A book with same ISBN already exists.",
+        "invalidFrenchName": "The French book title is missing.",
+        "invalidEnglishName": "The English book title is missing.",
+        "invalidFrenchDescription": "The French book description is missing.",
+        "invalidEnglishDescription": "The English book description is missing.",
+        "invalidIsbn": "ISBN must be 17 characters and contain four dashes.",
+        "invalidAuthor": "The author of the book is missing.",
+        "invalidEditor": "The publisher of the book is missing.",
+        "invalidYearOfPublication": "The publication year must be greater than zero.",
+        "invalidNumberOfPages": "The number of pages must be greater than zero.",
+        "invalidPrice": "Book price must be greater than zero."
       },
       "edit": {
         "success": "Book was successfully updated.",
         "errorOccured": "Error occured while updating book.",
         "bookNotFoundException": "Could not find book.",
-        "bookWithIsbnAlreadyExistsException": "Another book with same ISBN already exits.",
+        "bookWithIsbnAlreadyExistsException": "Another book with same ISBN already exists.",
         "emptyBookId": "The book id is missing.",
         "invalidFrenchName": "The French book title is missing.",
         "invalidEnglishName": "The English book title is missing.",
