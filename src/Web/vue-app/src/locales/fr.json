@@ -121,6 +121,9 @@
         "contentFr": "Contenu (FR)",
         "contentEn": "Contenu (EN)"
       },
+      "edit": {
+        "imageHelp": "Format recommandé : largeur supérieure à 700px (ratio 2:1)"
+      },
       "delete": {
         "confirmation": "Confirmer la suppression ?"
       }
@@ -275,6 +278,11 @@
     "id": "ID",
     "designation": "Désignation",
     "subject": "Sujet / Catégorie",
+    "nameFr": "Nom (FR)",
+    "subjectFr": "Sujet (FR)",
+    "contentFr": "Contenu (FR)",
+    "coverImage": "Image de couverture",
+    "saving": "Enregistrement...",
     "free": "Gratuit(e)",
     "menu": "Menu",
     "title": "Titre",
@@ -353,6 +361,12 @@
     "phoneNumber": "Le numéro de téléphone doit respecter le format 555-555-5555.",
     "errorsInForm": "Il y a des erreurs dans le formulaire.",
     "errorOccured": "Une erreur est survenue.",
+    "module": {
+      "notFound": "Le module n'a pas pu être trouvé.",
+      "edit": {
+        "success": "Le module a été modifié avec succès."
+      }
+    },
     "book": {
       "add": {
         "success": "Le livre a été créé avec succès.",
