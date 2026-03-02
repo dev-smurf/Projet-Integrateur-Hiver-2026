@@ -17,6 +17,33 @@ namespace Application.Services.Module
             _moduleRepository = moduleRepository;
         }
 
+        public async Task<List<ModuleDto>> getAllModules()
+        {
+            var modules = await _moduleRepository.GetAllAsync();
+
+            return modules.Select(m => new ModuleDto
+            {
+                Id = m.Id.ToString(),
+                nameFr = m.NameFr ?? "",
+                sujetFr = m.SujetFr ?? ""
+            }).ToList();
+        }
+
+
+        public async Task<ModuleDto> getModule(string id)
+        {
+            var module = await _moduleRepository.GetByIdAsync(Guid.Parse(id));
+
+            if (module == null) return null;
+
+            return new ModuleDto
+            {
+                Id = module.Id.ToString(),
+                nameFr = module.NameFr ?? "",
+                sujetFr = module.SujetFr ?? ""
+            };
+        }
+
         public async Task<ModuleDto> CreateModule(CreateModuleDto request)
         {
             var module = new Domain.Entities.Module
@@ -34,18 +61,6 @@ namespace Application.Services.Module
                 nameFr = newModule.NameFr ?? "",
                 sujetFr = newModule.SujetFr ?? ""
             };
-        }
-
-        public async Task<List<ModuleDto>> GetAllModules()
-        {
-            var modules = await _moduleRepository.GetAllAsync();
-
-            return modules.Select(m => new ModuleDto
-            {
-                Id = m.Id.ToString(),
-                nameFr = m.NameFr ?? "",
-                sujetFr = m.SujetFr ?? ""
-            }).ToList();
         }
     }
 }

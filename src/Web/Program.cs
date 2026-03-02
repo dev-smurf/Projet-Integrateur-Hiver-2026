@@ -25,6 +25,7 @@ builder.Services
 
 builder.Services.AddSignalR();
 builder.Configuration.AddJsonFile("appsettings.local.json", true);
+
 builder.Services
     .AddFastEndpoints()
     .SwaggerDocument(x =>
@@ -33,7 +34,7 @@ builder.Services
         x.ShortSchemaNames = true;
     });
 
-// Logging
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console()
@@ -46,11 +47,16 @@ Log.Logger = new LoggerConfiguration()
         return handledErrors!.Contains(x.Exception.GetType().Name);
     })
     .CreateLogger();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(Log.Logger);
 
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
+
+
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+
+builder.Services.AddScoped<IModuleService, ModuleService>();
 
 builder.Services.AddCors(options =>
 {
@@ -66,8 +72,8 @@ builder.Services.AddCors(options =>
         });
 });
 
-
 var app = builder.Build();
+
 if (!app.Environment.IsProduction())
 {
     await app.Services.InitializeAndSeedDatabase();
@@ -76,8 +82,6 @@ if (!app.Environment.IsProduction())
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
 {
-    // the order of QueryStringRequestCultureProvider and CookieRequestCultureProvider is switched,
-    // so the RequestLocalizationMiddleware looks for the cultures from the cookies first, then query string.
     var questStringCultureProvider = options.RequestCultureProviders[0];
     options.RequestCultureProviders.RemoveAt(0);
     options.RequestCultureProviders.Insert(1, questStringCultureProvider);
@@ -92,7 +96,10 @@ app.UseExceptionHandler(c => c.Run(async context =>
     if (exceptionHandler?.Error == null)
         return;
 
-    var responseBody = new SucceededOrNotResponse(false, exceptionHandler.Error.ErrorObject());
+    var responseBody = new SucceededOrNotResponse(false, new Domain.Common.Error(
+    "InternalError",
+    exceptionHandler.Error.Message
+));
     switch (exceptionHandler.Error)
     {
         case ValidationFailureException exception:
@@ -111,9 +118,6 @@ app.UseAuthorization();
 
 app.UseFastEndpoints(config => { config.Endpoints.RoutePrefix = "api"; });
 app.UseSwaggerGen();
-
-// SPA fallback - serve Vue app for any non-API route
 app.MapFallbackToFile("vue/index.html");
 
 app.Run();
-

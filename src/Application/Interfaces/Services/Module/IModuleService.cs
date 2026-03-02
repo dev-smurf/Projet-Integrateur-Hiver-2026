@@ -6,7 +6,11 @@ namespace Application.Interfaces.Services.Module
 {
     public interface IModuleService
     {
+
+        Task<List<ModuleDto>> getAllModules();
+
+
+        Task<ModuleDto> getModule(string id);
         Task<ModuleDto> CreateModule(CreateModuleDto request);
-        Task<List<ModuleDto>> GetAllModules();
     }
 }

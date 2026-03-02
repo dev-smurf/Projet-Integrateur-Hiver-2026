@@ -1,26 +1,3 @@
-<template>
-    <div class="content-grid content-grid--subpage content-grid--subpage-table">
-        <div class="content-grid__header">
-            <h1 class="back-link">{{ t('routes.admin.children.modules.name') }}</h1>
-            <div class="content-grid__filters">
-                <SearchInput v-model="searchValue" />
-            </div>
-        </div>
-
-        <div class="content-grid__actions">
-            <BtnLink :name="t('routes.admin.children.modules.add.name')"
-                     :path="{ path: t('routes.admin.children.modules.add.fullPath') }" />
-        </div>
-
-        <DataTable :headers="moduleHeader"
-                   :is-loading="isLoading"
-                   :items="tableModules"
-                   :total-items="tableModules.length"
-                   :search-value="searchValue"
-                   @delete="onDelete" />
-    </div>
-</template>
-
 <script lang="ts" setup>
     import { ref, onMounted, computed } from 'vue';
     import { useI18n } from "vue3-i18n";
@@ -42,6 +19,7 @@
     onMounted(async () => {
         try {
             isLoading.value = true;
+            // Note: Ensure your backend is running at this port
             const response = await fetch('https://localhost:7101/api/modules');
             if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
             const data = await response.json();
@@ -60,9 +38,9 @@
         }
     });
 
-
     const tableModules = computed(() => {
-        const filtered = modules.value.filt     *      *      *      *      *      * er(m =>
+        // FIXED: Removed the stray asterisks and the space in 'filter'
+        const filtered = modules.value.filter(m =>
             m.nameFr.toLowerCase().includes(searchValue.value.toLowerCase()) ||
             m.sujetFr.toLowerCase().includes(searchValue.value.toLowerCase())
         );
