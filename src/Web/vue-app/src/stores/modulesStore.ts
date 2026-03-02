@@ -1,71 +1,83 @@
-<template>
-  <div>
-    <h1 v-text="t('routes.addModule.name')"></h1>
-    <form novalidate @submit.prevent="handleSubmit" enctype="multipart/form-data">
-      <div>
-        <label for="name">Nom :</label>
-        <input type="text" id="name" v-model="_module.nameFr" />
-      </div>
-      <div>
-        <label for="contenue">Contenu :</label>
-        <input type="text" id="contenue" v-model="_module.contenueFr" />
-      </div>
-      <div>
-        <label for="sujet">Sujet :</label>
-        <input type="text" id="sujet" v-model="_module.sujetFr" />
-      </div>
-      <div>
-        <label for="img">Image:</label>
-        <input type="file" id="img" accept="image/*" @change="handleImageChange" />
-        <img v-if="imagePreview" :src="imagePreview" alt="Aperçu" style="max-width: 200px; margin-top: 8px;" />
-      </div>
-      <button type="submit">Ajouter</button>
-    </form>
-  </div>
-</template>
-
-<script lang="ts" setup>
-import { ref } from "vue";
-import { useI18n } from "vue3-i18n";
+import { IModulesService } from "@/injection/interfaces";
+import { injectable } from "inversify";
+import { ApiService } from "@/services";
+import { SucceededOrNotResponse } from "@/types/responses";
+import { AxiosError, AxiosResponse } from "axios";
 import { ICreateModuleRequest } from "@/types/requests/createModuleRequest";
-import { useModulesService } from "@/inversify.config";
-import { notifyError, notifySuccess } from "@/notify";
-import { useRouter } from "vue-router";
+import { IEditModuleRequest } from "@/types/requests/editModuleRequest";
 
-const { t } = useI18n();
-const moduleService = useModulesService();
-const router = useRouter();
+@injectable()
+export class ModuleService extends ApiService implements IModulesService {
 
-const _module = ref<ICreateModuleRequest>({
-  nameFr: "",
-  contenueFr: "",
-  sujetFr: "",
-  cardImage: null,
-});
+  public async createModule(request: ICreateModuleRequest): Promise<SucceededOrNotResponse> {
+    const formData = new FormData();
 
-const imagePreview = ref<string | null>(null);
+    formData.append("NameFr",      request.nameFr ?? "");
+    formData.append("NameEn",      request.nameEn || request.nameFr || ""); 
+    formData.append("ContenueFr",  request.contenueFr ?? "");
+    formData.append("ContenueEn",  request.contenueEn || request.contenueFr || ""); 
+    formData.append("SujetFr",     request.sujetFr ?? "");
+    formData.append("SujetEn",     request.sujetEn || request.sujetFr || "");    
 
-function handleImageChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    _module.value.cardImage = input.files[0];
-    imagePreview.value = URL.createObjectURL(input.files[0]);
+    if (request.cardImage) {
+      const base64 = await fileToBase64(request.cardImage);
+      formData.append("CardImageBase64", base64);
+    }
+
+    const response = await this._httpClient
+      .post<ICreateModuleRequest, AxiosResponse<any>>(
+        `${import.meta.env.VITE_API_BASE_URL}/module`,
+        formData
+      )
+      .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
+        return error.response as AxiosResponse<SucceededOrNotResponse>;
+      });
+
+    const succeededOrNotResponse = response.data as SucceededOrNotResponse;
+    return new SucceededOrNotResponse(succeededOrNotResponse.succeeded, succeededOrNotResponse.errors);
+  }
+
+  public async updateModule(id: string, request: IEditModuleRequest): Promise<SucceededOrNotResponse> {
+    const formData = new FormData();
+
+    formData.append("Id", id);
+    formData.append("NameFr",      request.nameFr ?? "");
+    formData.append("NameEn",      request.nameEn || request.nameFr || "");       // 👈 fallback Fr
+    formData.append("ContenueFr",  request.contenueFr ?? "");
+    formData.append("ContenueEn",  request.contenueEn || request.contenueFr || ""); // 👈 fallback Fr
+    formData.append("SujetFr",     request.sujetFr ?? "");
+    formData.append("SujetEn",     request.sujetEn || request.sujetFr || "");     // 👈 fallback Fr
+
+    if (request.cardImage) {
+      const base64 = await fileToBase64(request.cardImage);
+      formData.append("CardImageBase64", base64);
+    }
+
+    const response = await this._httpClient
+      .put<IEditModuleRequest, AxiosResponse<SucceededOrNotResponse>>(
+        `${import.meta.env.VITE_API_BASE_URL}/module/${id}`,
+        formData
+      )
+      .catch((error: AxiosError): AxiosResponse<SucceededOrNotResponse> => {
+        return error.response as AxiosResponse<SucceededOrNotResponse>;
+      });
+
+    const data = response?.data;
+    return new SucceededOrNotResponse(
+      data?.succeeded ?? false,
+      data?.errors ?? []
+    );
   }
 }
 
-async function handleSubmit() {
-  const succeededOrNotResponse = await moduleService.createModule(_module.value);
-  if (succeededOrNotResponse?.succeeded) {
-    notifySuccess(t("errors.module.add.success"));
-    setTimeout(() => {
-      router.back();
-    }, 1500);
-  } else {
-    const errorMessages = succeededOrNotResponse?.getErrorMessages("errors.module.add") ?? [];
-    if (errorMessages.length === 0)
-      notifyError(t("errors.module.add.errorOccured"));
-    else
-      notifyError(errorMessages[0]);
-  }
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1]);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
-</script>
