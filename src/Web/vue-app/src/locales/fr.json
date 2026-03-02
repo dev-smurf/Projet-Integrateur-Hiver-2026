@@ -1,21 +1,5 @@
 {
-    "errors":{
-    "module":{
-      "add":{
-        "success":"Le module a été créé avec succès.",
-        "errorOccured":"Une erreur est survenue lors de la création du module.",
-        "server": "Une erreur est survenue lors de la creation du module"
-      }
-      
-    }
-
-  },
-  "route": {
-    "addModule":{
-      "path":"/ajouter-module",
-      "fullPath":"/ajouter-module",
-      "name": "Ajouter un Module"
-    },
+  "routes": {
     "login": {
       "path": "/connexion",
       "fullPath": "/connexion",

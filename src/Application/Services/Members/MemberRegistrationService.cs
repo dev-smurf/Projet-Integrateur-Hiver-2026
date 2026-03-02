@@ -65,7 +65,6 @@ public class MemberRegistrationService : IMemberRegistrationService
         }
         catch
         {
-            //On ne fait rien si l'envoi du courriel échoue, l'utilisateur pourra quand même réinitialiser son mot de passe manuellement en utilisant la fonction "Mot de passe oublié" de l'application. De plus, cela évite que l'inscription échoue à cause d'un problème avec le service de notification.
         }
 
         return member;

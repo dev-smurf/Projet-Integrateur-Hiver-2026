@@ -3,8 +3,8 @@
 public class TwoFactorAuthenticationNotificationModel : NotificationModel
 {
     public string Code { get; set; }
-
-    public TwoFactorAuthenticationNotificationModel(string destination, string locale, string code)
+    
+    public TwoFactorAuthenticationNotificationModel(string destination, string locale, string code) 
         : base(destination, locale)
     {
         Code = code;

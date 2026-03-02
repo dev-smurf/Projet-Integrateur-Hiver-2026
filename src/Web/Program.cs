@@ -1,11 +1,9 @@
 using Application;
 using Domain.Common;
 using Domain.Extensions;
-using Domain.Repositories;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
-using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
 using Serilog;
@@ -46,7 +44,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(Log.Logger);
 
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -64,10 +61,7 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-if (!app.Environment.IsProduction())
-{
-    await app.Services.InitializeAndSeedDatabase();
-}
+await app.Services.InitializeAndSeedDatabase();
 
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
@@ -112,4 +106,3 @@ app.UseSwaggerGen();
 app.MapFallbackToFile("vue/index.html");
 
 app.Run();
-
