@@ -1,9 +1,12 @@
-namespace Application.Interfaces.Services.Module;
+using Application.Interfaces.Services.Module.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-using Domain.Entities;
-
-public interface IModuleService
+namespace Application.Interfaces.Services.Module
 {
-    Task<Module> CreateModule(Module moduleDto);
-
+    public interface IModuleService
+    {
+        Task<ModuleDto> CreateModule(CreateModuleDto request);
+        Task<List<ModuleDto>> GetAllModules();
+    }
 }

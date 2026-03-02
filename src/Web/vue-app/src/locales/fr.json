@@ -1,19 +1,17 @@
 {
-    "errors":{
-    "module":{
-      "add":{
-        "success":"Le module a été créé avec succès.",
-        "errorOccured":"Une erreur est survenue lors de la création du module.",
-        "server": "Une erreur est survenue lors de la creation du module"
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Le module a été créé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création du module.",
+        "server": "Une erreur est survenue lors de la création du module"
       }
-      
     }
-
   },
-  "route": {
-    "addModule":{
-      "path":"/ajouter-module",
-      "fullPath":"/ajouter-module",
+  "routes": {
+    "addModule": {
+      "path": "/ajouter-module",
+      "fullPath": "/ajouter-module",
       "name": "Ajouter un Module"
     },
     "login": {
@@ -60,6 +58,18 @@
             "fullPath": "/administration/membres/:id/modifier",
             "name": "Modifier un membre"
           }
+        },
+        "modules": {
+          "index": {
+            "path": "modules",
+            "fullPath": "/administration/modules",
+            "name": "Liste des Modules"
+          },
+          "edit": {
+            "path": "modifier/:id",
+            "fullPath": "/administration/modules/modifier/:id",
+            "name": "Modifier le Module"
+          }
         }
       }
     },
@@ -82,6 +92,20 @@
     }
   },
   "pages": {
+    "modules": {
+      "list": {
+        "title": "Modules disponibles",
+        "empty": "Aucun module trouvé dans la base de données."
+      },
+      "form": {
+        "nameFr": "Nom (FR)",
+        "nameEn": "Nom (EN)",
+        "subjectFr": "Sujet (FR)",
+        "subjectEn": "Sujet (EN)",
+        "contentFr": "Contenu (FR)",
+        "contentEn": "Contenu (EN)"
+      }
+    },
     "login": {
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",
@@ -107,7 +131,7 @@
     "forgotPassword": {
       "tooltip": "Si le nom d'utilisateur est valide, un email sera envoyé à l'adresse indiquée avec un lien pour réinitialiser votre mot de passe",
       "validation": {
-        "success": "Courriel de réinitalisation du mot de passe envoyé.",
+        "success": "Courriel de réinitialisation du mot de passe envoyé.",
         "invalidUsername": "Le nom d'utilisateur est invalide.",
         "invalidResetPasswordRelativeUrl": "L'URL de réinitialisation du mot de passe est introuvable.",
         "errorOccured": "Une erreur est survenue lors de l'envoi du courriel de réinitialisation du mot de passe."
@@ -115,9 +139,9 @@
     },
     "resetPassword": {
       "validation": {
-        "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
+        "success": "Mot de passe réinitialisé avec succès. Vous serez redirigé à la page de connexion.",
         "invalidUserId": "L'identifiant de l'utilisateur est invalide.",
-        "invalidToken": "Le token de réinitalisation du mot de passe est invalide.",
+        "invalidToken": "Le token de réinitialisation du mot de passe est invalide.",
         "invalidPassword": "Le mot de passe est invalide.",
         "invalidPasswordConfirmation": "La confirmation du mot de passe est invalide.",
         "passwordTooShort": "Doit contenir au moins 8 caractères.",
@@ -269,6 +293,7 @@
     "no": "Non",
     "search": "Rechercher",
     "transfer": "Transférer",
+    "changeLanguage": "Changer la langue",
     "formErrorNotification": "Il y a des erreurs dans le formulaire.",
     "quickLinks": "Liens rapides",
     "undefined": "ND",
@@ -294,7 +319,7 @@
   },
   "validation": {
     "empty": "Veuillez renseigner ce champ.",
-    "email": "Veuillez entrer un adresse courriel valide.",
+    "email": "Veuillez entrer une adresse courriel valide.",
     "min": "La valeur doit être d'au moins {min}.",
     "max": "La valeur doit être plus petite ou égale à {max}.",
     "fileMin": "Un minimum de {min} fichier{s} est requis.",

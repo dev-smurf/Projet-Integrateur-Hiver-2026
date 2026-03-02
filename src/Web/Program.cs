@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
 using Serilog;
 using Web.Extensions;
+using Application.Interfaces.Services.Module.Dto;
+using Domain.Entities;
+using Application.Interfaces.Services.Module;
+using Application.Services.Module;
 
 var builder = WebApplication.CreateBuilder(args);
 

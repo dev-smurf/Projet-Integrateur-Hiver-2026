@@ -49,8 +49,9 @@ export interface IBookService {
 
 export interface IModulesService {
     createModule(request: ICreateModuleRequest): Promise<SucceededOrNotResponse>
-    // Signature ajoutée pour la modification
     updateModule(id: string, request: IEditModuleRequest): Promise<SucceededOrNotResponse>
+    getAllModules(): Promise<any[]>;
+    getModule(id: string): Promise<any>;
 }
 
 export interface IUserService {

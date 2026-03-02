@@ -13,7 +13,7 @@ export class ModuleService extends ApiService implements IModulesService {
     const formData = new FormData();
 
     formData.append("NameFr",      request.nameFr ?? "");
-    formData.append("NameEn",      request.nameEn || request.nameFr || "");       // 👈 fallback Fr
+    formData.append("NameEn",      request.nameEn || request.nameFr || "");       
     formData.append("ContenueFr",  request.contenueFr ?? "");
     formData.append("ContenueEn",  request.contenueEn || request.contenueFr || ""); // 👈 fallback Fr
     formData.append("SujetFr",     request.sujetFr ?? "");

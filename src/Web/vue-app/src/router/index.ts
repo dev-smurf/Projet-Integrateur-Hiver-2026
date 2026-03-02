@@ -1,22 +1,28 @@
-import i18n from "@/i18n";
 import { Role } from "@/types/enums";
 import { createRouter, createWebHistory } from "vue-router";
+
+// Imports des vues
 import Login from "@/views/Login.vue";
 import TwoFactor from "@/views/TwoFactor.vue";
-import addModule from "@/views/admin/members/AdminAddModule.vue";
-import EditModuleForm from "@/views/admin/members/EditModuleForm.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
+
+// Administration
 import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
+import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
+import addModule from "@/views/admin/members/AdminAddModule.vue";
+import EditModuleForm from "@/views/admin/members/EditModuleForm.vue";
+
+// Livres
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
-import { getLocalizedRoutes } from "@/locales/helpers";
+
 import { useUserStore } from "@/stores/userStore";
 
 const router = createRouter({
@@ -26,62 +32,31 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: i18n.t("routes.login.path"),
-            alias: getLocalizedRoutes("routes.login.path"),
+            path: "/connexion",
             name: "login",
             component: Login,
-            meta: {
-                title: "routes.login.name"
-            }
+            meta: { title: "routes.login.name" }
         },
         {
-            path: i18n.t("route.addModule.path"),
-            alias: getLocalizedRoutes("routes.addModule.path"),
+            path: "/ajouter-module",
             name: "addModule",
             component: addModule,
-            meta: {
-                title: "routes.addModule.name"
-            },
+            meta: { title: "routes.addModule.name" }
         },
         {
-            path: i18n.t("routes.twoFactor.path"),
-            alias: getLocalizedRoutes("routes.twoFactor.path"),
+            path: "/authentification-a-deux-facteurs",
             name: "twoFactor",
             component: TwoFactor,
-            meta: {
-                title: "routes.twoFactor.name"
-            }
+            meta: { title: "routes.twoFactor.name" }
         },
         {
-            path: i18n.t("routes.forgotPassword.path"),
-            alias: getLocalizedRoutes("routes.forgotPassword.path"),
-            name: "forgotPassword",
-            component: ForgotPassword,
-            meta: {
-                title: "routes.forgotPassword.name"
-            }
-        },
-        {
-            path: i18n.t("routes.resetPassword.path"),
-            alias: getLocalizedRoutes("routes.resetPassword.path"),
-            name: "resetPassword",
-            component: ResetPassword,
-            props: (route) => ({ userId: route.query.userId, token: route.query.token }),
-            meta: {
-                title: "routes.resetPassword.name"
-            }
-        },
-        {
-            path: i18n.t("routes.account.path"),
-            alias: getLocalizedRoutes("routes.account.path"),
+            path: "/mon-compte",
             name: "account",
             component: Account,
-            meta: {
-                title: "routes.account.name"
-            }
+            meta: { title: "routes.account.name" }
         },
         {
-            path: i18n.t("routes.admin.path"),
+            path: "/administration",
             name: "admin",
             component: Admin,
             meta: {
@@ -89,10 +64,10 @@ const router = createRouter({
                 noLinkInBreadcrumbs: true,
             },
             children: [
+                // SECTION MEMBRES
                 {
-                    path: i18n.t("routes.admin.children.members.path"),
+                    path: "membres",
                     name: "admin.children.members",
-                    component: Admin,
                     children: [
                         {
                             path: "",
@@ -100,33 +75,40 @@ const router = createRouter({
                             component: AdminMemberIndex,
                         },
                         {
-                            path: i18n.t("routes.admin.children.members.add.path"),
+                            path: "ajouter",
                             name: "admin.children.members.add",
                             component: AdminAddMemberForm,
                         },
                         {
-                            path: i18n.t("routes.admin.children.members.edit.path"),
-                            alias: i18n.t("routes.admin.children.members.edit.path"),
+                            path: ":id/modifier",
                             name: "admin.children.members.edit",
                             component: AdminEditMemberForm,
                             props: true
+                        }
+                    ],
+                },
+                // SECTION MODULES
+                {
+                    path: "modules",
+                    name: "admin.children.modules",
+                    children: [
+                        {
+                            path: "",
+                            name: "admin.children.modules.index", // Match avec routes.admin.children.modules.index.name
+                            component: AdminModuleList,
                         },
                         {
-                            path: "edit-module/:id",
-                            name: "admin.children.modules.edit",
+                            path: "modifier/:id",
+                            name: "admin.children.modules.edit", // Match avec routes.admin.children.modules.edit.name
                             component: EditModuleForm,
-                            props: true,
-                            meta: {
-                                title: "Modifier le Module"
-                            }
-                        },
-                    ],
+                            props: true
+                        }
+                    ]
                 }
             ]
         },
         {
-            path: i18n.t("routes.books.path"),
-            alias: getLocalizedRoutes("routes.books.path"),
+            path: "/livres",
             name: "books",
             component: Books,
             meta: {
@@ -138,54 +120,45 @@ const router = createRouter({
                     path: "",
                     name: "books.index",
                     component: BookIndex,
-                    meta: {
-                        title: "routes.books.name"
-                    }
                 },
                 {
-                    path: i18n.t("routes.books.children.add.path"),
-                    alias: getLocalizedRoutes("routes.books.children.add.path"),
+                    path: "ajouter",
                     name: "books.children.add",
                     component: AddBookForm,
-                    meta: {
-                        title: "routes.books.children.add.name"
-                    }
                 },
                 {
-                    path: i18n.t("routes.books.children.edit.path"),
-                    alias: getLocalizedRoutes("routes.books.children.edit.path"),
+                    path: ":id/modifier",
                     name: "books.children.edit",
                     component: EditBookForm,
-                    props: true,
-                    meta: {
-                        title: "routes.books.children.edit.name"
-                    }
+                    props: true
                 }
             ]
         },
+        // Redirection par défaut vers l'accueil/login
+        {
+            path: "/:pathMatch(.*)*",
+            redirect: "/connexion"
+        }
     ]
 });
 
 router.beforeEach(async (to, from) => {
-    const userStore = useUserStore()
+    const userStore = useUserStore();
 
+    // Redirection de la racine
     if (to.path === "/") {
-        if (userStore.user.email)
-            return { name: "account" };
-        return { name: "login" };
+        return userStore.user?.email ? { name: "account" } : { name: "login" };
     }
 
-    if (!to.meta.requiredRole)
-        return;
+    // Protection des routes par rôle
+    if (!to.meta.requiredRole) return;
 
-    const isRoleArray = Array.isArray(to.meta.requiredRole)
-    const doesNotHaveGivenRole = !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
-    const hasNoRoleAmongRoleList = isRoleArray && !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
-    if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
-        return {
-            name: "account",
-        };
+    const hasRole = userStore.hasRole(to.meta.requiredRole as Role);
+
+    if (!hasRole) {
+        return { name: "account" };
     }
 });
 
 export const Router = router;
+export default router;

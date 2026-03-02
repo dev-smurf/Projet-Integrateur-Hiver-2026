@@ -13,7 +13,13 @@ public class ModuleRepository : IModuleRepository
         _context = context;
     }
 
-    // Récupérer un module par son ID (Nécessaire pour la modification)
+    public async Task<IEnumerable<Domain.Entities.Module>> GetAllAsync()
+    {
+        return await _context.Modules
+            .Where(m => m.Deleted == null)
+            .ToListAsync();
+    }
+
     public async Task<Domain.Entities.Module?> GetByIdAsync(Guid id)
     {
         return await _context.Modules.FindAsync(id);
@@ -31,7 +37,6 @@ public class ModuleRepository : IModuleRepository
         await _context.SaveChangesAsync();
     }
 
-    // Si ton interface IModuleRepository demande toujours AddAsync :
     public async Task<Domain.Entities.Module> AddAsync(Domain.Entities.Module module)
     {
         _context.Modules.Add(module);

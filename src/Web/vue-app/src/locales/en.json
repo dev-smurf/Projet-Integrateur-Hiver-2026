@@ -1,18 +1,17 @@
 {
-  "errors":{
-    "module":{
-      "add":{
-        "success":"Module was successfully created.",
-        "errorOccured":"Error occured while creating module.","server":"Error from the server"
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module was successfully created.",
+        "errorOccured": "Error occured while creating module.",
+        "server": "Error from the server"
       }
-      
     }
-
   },
   "routes": {
-    "addModule":{
-      "path":"/addModule",
-      "fullPath":"/addModule",
+    "addModule": {
+      "path": "/addModule",
+      "fullPath": "/addModule",
       "name": "Add new Module"
     },
     "login": {
@@ -44,22 +43,25 @@
       "path": "/administration",
       "fullPath": "/administration",
       "name": "Administration",
-      "children": {
-        "members": {
-          "path": "members",
-          "fullPath": "/administration/members",
-          "name": "Members",
-          "add": {
-            "path": "add",
-            "fullPath": "/administration/members/add",
-            "name": "Add a member"
-          },
-          "edit": {
-            "path": ":id/edit",
-            "fullPath": "/administration/members/:id/edit",
-            "name": "Edit a member"
-          }
+      "members": {
+        "path": "members",
+        "fullPath": "/administration/members",
+        "name": "Members",
+        "add": {
+          "path": "add",
+          "fullPath": "/administration/members/add",
+          "name": "Add a member"
+        },
+        "edit": {
+          "path": ":id/edit",
+          "fullPath": "/administration/members/:id/edit",
+          "name": "Edit a member"
         }
+      },
+      "modules": {
+        "path": "modules",
+        "fullPath": "/administration/modules",
+        "name": "Modules"
       }
     },
     "books": {
