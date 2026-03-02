@@ -134,7 +134,7 @@ const router = createRouter({
                 }
             ]
         },
-        // Redirection par défaut vers l'accueil/login
+        // Redirection par dï¿½faut vers l'accueil/login
         {
             path: "/:pathMatch(.*)*",
             redirect: "/connexion"
@@ -150,7 +150,7 @@ router.beforeEach(async (to, from) => {
         return userStore.user?.email ? { name: "account" } : { name: "login" };
     }
 
-    // Protection des routes par rôle
+    // Protection des routes par rï¿½le
     if (!to.meta.requiredRole) return;
 
     const hasRole = userStore.hasRole(to.meta.requiredRole as Role);

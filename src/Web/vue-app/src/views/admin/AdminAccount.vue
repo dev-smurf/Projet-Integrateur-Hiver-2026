@@ -8,10 +8,12 @@
       <div class="content-grid__header">
         <h2>{{t('pages.account.loginInfos')}}</h2>
       </div>
-
-      <p> line ici : </p>
+<div>
+    <p> line ici : </p>
       <TextLink :path="{path: t('routes.addModule.path') }"
                   :text="t('routes.addModule.name')" />  
+</div>
+  
     </div>
   </div>
 </template>
