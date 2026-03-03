@@ -154,7 +154,7 @@
 import { onMounted } from 'vue';
 import { useI18n } from 'vue3-i18n';
 import { useActivityStore } from '@/stores/activityStore';
-import Loader from '@/components/layouts/items/Loader.vue';
+// import Loader from '@/components/layouts/items/Loader.vue';
 import '../../sass/blocks/AdminDashboard.scss';
 
 const { t } = useI18n();

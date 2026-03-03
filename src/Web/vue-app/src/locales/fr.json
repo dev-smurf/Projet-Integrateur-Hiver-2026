@@ -58,9 +58,6 @@
         "modules": {
           "path": "modules",
           "fullPath": "/administration/modules",
-<<<<<<< HEAD
-          "name": "Modules"
-=======
           "name": "Modules",
           "add": {
             "path": "ajouter",
@@ -72,7 +69,6 @@
             "fullPath": "/administration/modules/:id/modifier",
             "name": "Modifier un module"
           }
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
         }
       }
     },
@@ -95,45 +91,6 @@
     }
   },
   "pages": {
-<<<<<<< HEAD
-    "admin": {
-      "dashboard": {
-        "title": "Tableau de bord Admin",
-        "subtitle": "Bienvenue ! Voici un aperçu de votre plateforme.",
-        "stats": {
-          "modules": "Total des modules",
-          "modulesLabel": "Modules actifs",
-          "members": "Total des membres",
-          "membersLabel": "Membres inscrits",
-          "activities": "Activités récentes",
-          "activitiesLabel": "Nombre total d'activités",
-          "activeNow": "Actifs maintenant",
-          "activeNowLabel": "En ligne actuellement"
-        },
-        "actions": {
-          "manageModules": "Gérer les modules",
-          "manageMembers": "Gérer les membres",
-          "settings": "Paramètres"
-        },
-        "recentActivities": {
-          "title": "Activités récentes",
-          "placeholder": "Chercher par nom ou module...",
-          "allRoles": "Tous les rôles",
-          "empty": "Aucune activité trouvée.",
-          "ago": "il y a"
-        }
-      }
-    },
-    "modules": {
-      "title": "Modules",
-      "emptyMessage": "Aucun module trouvé.",
-      "headers": {
-        "name": "Nom",
-        "description": "Description"
-      },
-      "createButton": "Ajouter un module",
-      "deleteConfirmation": "Voulez-vous vraiment supprimer ce module ?"
-=======
     "dashboard": {
       "welcome": "Bienvenue",
       "accountDesc": "Gérer votre profil et vos paramètres.",
@@ -149,7 +106,6 @@
       "readOnly": "Ce champ ne peut pas être modifié.",
       "updateSuccess": "Profil mis à jour avec succès.",
       "updateError": "Une erreur est survenue lors de la mise à jour du profil."
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
     },
     "login": {
       "username": "Nom d'utilisateur",

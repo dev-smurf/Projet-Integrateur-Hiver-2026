@@ -44,7 +44,7 @@
 import { onMounted, computed } from "vue";
 import { useI18n } from "vue3-i18n";
 import { useModuleStore } from "@/stores/moduleStore";
-import Loader from "@/components/layouts/items/Loader.vue";
+// import Loader from "@/components/layouts/items/Loader.vue";
 import { useRouter } from "vue-router";
 import "../../sass/blocks/AdminModuleIndex.scss";
 

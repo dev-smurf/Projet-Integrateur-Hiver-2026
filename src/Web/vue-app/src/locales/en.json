@@ -58,9 +58,6 @@
         "modules": {
           "path": "modules",
           "fullPath": "/administration/modules",
-<<<<<<< HEAD
-          "name": "Modules"
-=======
           "name": "Modules",
           "add": {
             "path": "add",
@@ -72,7 +69,6 @@
             "fullPath": "/administration/modules/:id/edit",
             "name": "Edit a module"
           }
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
         }
       }
     },
@@ -95,35 +91,6 @@
     }
   },
   "pages": {
-<<<<<<< HEAD
-    "admin": {
-      "dashboard": {
-        "title": "Admin Dashboard",
-        "subtitle": "Welcome back! Here's an overview of your platform.",
-        "stats": {
-          "modules": "Total Modules",
-          "modulesLabel": "Active modules",
-          "members": "Total Members",
-          "membersLabel": "Registered members",
-          "activities": "Recent Activities",
-          "activitiesLabel": "Total activities",
-          "activeNow": "Active Now",
-          "activeNowLabel": "Currently online"
-        },
-        "actions": {
-          "manageModules": "Manage Modules",
-          "manageMembers": "Manage Members",
-          "settings": "Settings"
-        },
-        "recentActivities": {
-          "title": "Recent Activities",
-          "placeholder": "Search by name or module...",
-          "allRoles": "All Roles",
-          "empty": "No activities found.",
-          "ago": "ago"
-        }
-      }
-=======
     "dashboard": {
       "welcome": "Welcome",
       "accountDesc": "Manage your profile and settings.",
@@ -139,7 +106,6 @@
       "readOnly": "This field cannot be modified.",
       "updateSuccess": "Profile updated successfully.",
       "updateError": "An error occurred while updating your profile."
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
     },
     "login": {
       "submit": "Log in",

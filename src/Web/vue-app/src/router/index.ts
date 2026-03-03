@@ -14,13 +14,9 @@ import AdminDashboard from "../views/admin/AdminDashboard.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
-<<<<<<< HEAD
-import AdminModuleIndex from "@/views/admin/AdminModuleIndex.vue";
-=======
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
 import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
 import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
 
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
@@ -114,43 +110,6 @@ const router = createRouter({
         },
         {
           path: i18n.t("routes.admin.children.members.path"),
-<<<<<<< HEAD
-          name: "admin.children.members",
-          component: Admin,
-          children: [
-            {
-              path: "",
-              name: "admin.children.members.index",
-              component: AdminMemberIndex,
-            },
-            {
-              path: i18n.t("routes.admin.children.members.add.path"),
-              name: "admin.children.members.add",
-              component: AdminAddMemberForm,
-            },
-            {
-              path: i18n.t("routes.admin.children.members.edit.path"),
-              alias: i18n.t("routes.admin.children.members.edit.path"),
-              name: "admin.children.members.edit",
-              component: AdminEditMemberForm,
-              props: true
-            },
-          ],
-        }
-        ,
-        {
-          path: i18n.t("routes.admin.children.modules.path"),
-          name: "admin.children.modules",
-          component: Admin,
-          children: [
-            {
-              path: "",
-              name: "admin.children.modules.index",
-              component: AdminModuleIndex,
-            }
-          ]
-        }
-=======
           name: "admin.children.members.index",
           component: AdminMemberIndex,
         },
@@ -181,7 +140,6 @@ const router = createRouter({
           component: AdminModuleEdit,
           props: true
         },
->>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
       ]
     },
     {
