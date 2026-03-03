@@ -23,9 +23,20 @@
       </div>
     </div>
 
-    <!-- Loading state -->
-    <div v-if="loading" class="flex justify-center py-12">
-      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    <!-- Skeleton loading -->
+    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-for="n in 6" :key="n" class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+        <div class="h-44 bg-gray-200" />
+        <div class="p-4 space-y-3">
+          <div class="h-5 bg-gray-200 rounded w-3/4" />
+          <div class="h-3 bg-gray-200 rounded w-full" />
+          <div class="h-3 bg-gray-200 rounded w-2/3" />
+        </div>
+        <div class="border-t border-gray-100 px-4 py-3 flex justify-around">
+          <div class="h-4 bg-gray-200 rounded w-16" />
+          <div class="h-4 bg-gray-200 rounded w-20" />
+        </div>
+      </div>
     </div>
 
     <!-- Empty state -->
@@ -44,7 +55,7 @@
         <div class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
           <img
             v-if="mod.cardImageUrl"
-            :src="mod.cardImageUrl"
+            :src="imageUrl(mod.cardImageUrl)"
             :alt="mod.nameFr"
             class="w-full h-full object-cover"
           />
@@ -127,9 +138,11 @@
 <script lang="ts" setup>
 import {ref, computed, onMounted} from "vue";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight, BookOpen} from "lucide-vue-next";
+import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen} from "lucide-vue-next";
 import {useModulesService} from "@/inversify.config";
 import type {ModuleDto} from "@/types/entities";
+
+const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 
 const {notify} = useNotification();
 const modulesService = useModulesService();
@@ -140,6 +153,12 @@ const searchValue = ref("");
 const pageIndex = ref(1);
 const pageSize = 9;
 const moduleToDelete = ref<ModuleDto | null>(null);
+
+function imageUrl(path: string | undefined): string {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return backendUrl + path;
+}
 
 const filtered = computed(() => {
   const q = searchValue.value.toLowerCase().trim();
