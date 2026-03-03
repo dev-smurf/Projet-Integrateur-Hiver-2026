@@ -87,7 +87,34 @@
       <router-view />
     </main>
 
-    <notifications position="bottom right" />
+    <notifications position="bottom right" :duration="4000" :speed="300" width="360">
+      <template #body="{ item, close }">
+        <div
+          class="mb-3 mr-3 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
+          :class="item.type === 'success' ? 'bg-white border border-green-200' : 'bg-white border border-red-200'"
+        >
+          <div class="flex items-start gap-3 px-4 py-3">
+            <div
+              class="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+              :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'"
+            >
+              <CheckCircle2 v-if="item.type === 'success'" class="w-3.5 h-3.5" />
+              <XCircle v-else class="w-3.5 h-3.5" />
+            </div>
+            <p class="text-sm text-gray-700 flex-1 leading-snug">{{ item.text }}</p>
+            <button @click="close" class="text-gray-300 hover:text-gray-500 transition shrink-0 mt-0.5">
+              <X class="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
+            <div
+              class="h-full toast-progress"
+              :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+            />
+          </div>
+        </div>
+      </template>
+    </notifications>
   </div>
 </template>
 
@@ -96,7 +123,7 @@ import {computed, ref, onMounted, onUnmounted} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import Cookies from "universal-cookie";
-import {LayoutDashboard, BookOpen, Shield, LogOut, Languages} from "lucide-vue-next";
+import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X} from "lucide-vue-next";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
 import {useMemberService, useAdministratorService, useAuthenticationService} from "@/inversify.config";

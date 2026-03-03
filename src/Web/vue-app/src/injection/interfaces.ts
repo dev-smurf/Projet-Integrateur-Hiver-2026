@@ -21,6 +21,8 @@ export interface IApiService {
 
 export interface IAdministratorService {
   getAuthenticated(): Promise<Administrator | undefined>
+
+  updateMyProfile(data: { firstName: string; lastName: string }): Promise<SucceededOrNotResponse>
 }
 
 
@@ -47,6 +49,12 @@ export interface IMemberService {
   createMember(member: Member): Promise<SucceededOrNotResponse>
 
   updateMember(member: Member): Promise<SucceededOrNotResponse>
+
+  updateMyProfile(data: {
+    firstName: string; lastName: string;
+    phoneNumber?: string; phoneExtension?: number;
+    apartment?: number; street?: string; city?: string; zipCode?: string;
+  }): Promise<SucceededOrNotResponse>
 
   deleteMember(id: Guid): Promise<SucceededOrNotResponse>
 }
