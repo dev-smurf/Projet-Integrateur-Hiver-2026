@@ -3,7 +3,7 @@ import {Role} from "@/types/enums";
 import {createRouter, createWebHistory} from "vue-router";
 
 import Login from "@/views/Login.vue";
-import TwoFactor from "@/views/TwoFactor.vue";
+
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
@@ -37,15 +37,6 @@ const router = createRouter({
       component: Login,
       meta: {
         title: "routes.login.name"
-      }
-    },
-    {
-      path: i18n.t("routes.twoFactor.path"),
-      alias: getLocalizedRoutes("routes.twoFactor.path"),
-      name: "twoFactor",
-      component: TwoFactor,
-      meta: {
-        title: "routes.twoFactor.name"
       }
     },
     {
