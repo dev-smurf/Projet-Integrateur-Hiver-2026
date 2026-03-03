@@ -77,8 +77,6 @@ public class UpdateModuleEndpoint : Endpoint<EditModuleRequest, SucceededOrNotRe
             entity.CardImageUrl = await SaveFile(req.CardImage);
         }
 
-        entity.SanitizeForSaving();
-
         Logger.LogInformation("[UpdateModule] Mise à jour en base de données...");
         await _repository.UpdateAsync(entity);
 
