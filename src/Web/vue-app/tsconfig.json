@@ -19,24 +19,29 @@
     "baseUrl": ".",
     "types": [
       "vite/client",
-      "reflect-metadata"
+      "reflect-metadata",
+      "node"
     ],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "lib": [
       "ES2020",
       "DOM",
       "DOM.Iterable"
-    ]
+    ],
+    "allowJs": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/**/*.d.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "**/*.spec.ts"
   ],
   "references": [
     { "path": "./tsconfig.node.json" }

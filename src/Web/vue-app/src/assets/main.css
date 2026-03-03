@@ -1,15 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-crimson-950: #1a0a0a;
-  --color-crimson-900: #2d1111;
-  --color-crimson-800: #4a1c1c;
-  --color-crimson-700: #6b2525;
-  --color-crimson-600: #8b3232;
-  --color-crimson-500: #a83a3a;
-  --color-crimson-400: #c45050;
-  --color-crimson-300: #d87878;
-  --color-crimson-200: #e8a5a5;
-  --color-crimson-100: #f5d5d5;
-  --color-crimson-50: #faf0f0;
+  --color-brand-950: #0f0f0f;
+  --color-brand-900: #1a1a1a;
+  --color-brand-800: #262626;
+  --color-brand-700: #333333;
+  --color-brand-600: #c0392b;
+  --color-brand-500: #d44637;
+  --color-brand-400: #e05c4d;
+  --color-brand-300: #e88478;
+  --color-brand-200: #f0aaa2;
+  --color-brand-100: #f8d5d1;
+  --color-brand-50: #fdf2f1;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Toast notifications */
+.vue-notification-group {
+  z-index: 9999 !important;
+}
+
+/* Enter animation: slide in from right */
+.vn-fade-enter-active {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vn-fade-enter-from {
+  opacity: 0;
+  transform: translateX(80px);
+}
+
+.vn-fade-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Leave animation: slide down + fade out */
+.vn-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vn-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 100px;
+}
+
+.vn-fade-leave-to {
+  opacity: 0;
+  transform: translateY(16px);
+  max-height: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Move animation for stacked toasts adjusting position */
+.vn-fade-move {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast-progress {
+  animation: shrink 4s linear forwards;
+}
+
+@keyframes shrink {
+  from { width: 100%; }
+  to { width: 0%; }
 }

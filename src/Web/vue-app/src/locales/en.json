@@ -20,6 +20,11 @@
       "fullPath": "/reset-password",
       "name": "Reset password"
     },
+    "dashboard": {
+      "path": "/dashboard",
+      "fullPath": "/dashboard",
+      "name": "Dashboard"
+    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",
@@ -53,7 +58,21 @@
         "modules": {
           "path": "modules",
           "fullPath": "/administration/modules",
+<<<<<<< HEAD
           "name": "Modules"
+=======
+          "name": "Modules",
+          "add": {
+            "path": "add",
+            "fullPath": "/administration/modules/add",
+            "name": "Add a module"
+          },
+          "edit": {
+            "path": ":id/edit",
+            "fullPath": "/administration/modules/:id/edit",
+            "name": "Edit a module"
+          }
+>>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
         }
       }
     },
@@ -76,6 +95,7 @@
     }
   },
   "pages": {
+<<<<<<< HEAD
     "admin": {
       "dashboard": {
         "title": "Admin Dashboard",
@@ -103,6 +123,23 @@
           "ago": "ago"
         }
       }
+=======
+    "dashboard": {
+      "welcome": "Welcome",
+      "accountDesc": "Manage your profile and settings.",
+      "membersDesc": "View and manage members.",
+      "booksDesc": "Browse and manage books."
+    },
+    "account": {
+      "personalInfo": "Personal information",
+      "contactInfo": "Contact information",
+      "address": "Address",
+      "role": "Role",
+      "edit": "Edit profile",
+      "readOnly": "This field cannot be modified.",
+      "updateSuccess": "Profile updated successfully.",
+      "updateError": "An error occurred while updating your profile."
+>>>>>>> 1eb6b42281bdd2dddf1193b3cf5386f73a3ed8a5
     },
     "login": {
       "submit": "Log in",
@@ -292,6 +329,7 @@
     "quickLinks": "Quick links",
     "undefined": "N/A",
     "logout": "Logout",
+    "changeLanguage": "Change language",
     "table": {
       "of": "of",
       "noData": "No available data",
@@ -366,5 +404,33 @@
         "bookNotFoundException": "Could not find book."
       }
     }
+  },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Name",
+      "content": "Content",
+      "subject": "Subject",
+      "image": "Image",
+      "imagePreview": "Image preview"
+    }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module created successfully.",
+        "errorOccured": "An error occurred while creating the module."
+      },
+      "edit": {
+        "success": "Module updated successfully.",
+        "errorOccured": "An error occurred while updating the module."
+      }
+    }
+  },
+  "common": {
+    "Ajouter": "Add",
+    "cancel": "Cancel"
+  },
+  "routes.addModule": {
+    "name": "Add a module"
   }
 }

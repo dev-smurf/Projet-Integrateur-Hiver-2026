@@ -1,183 +1,194 @@
 <template>
-  <div class="app-layout">
-    <!-- Top navbar -->
-    <header class="app-header">
-      <div class="app-header__inner">
-        <div class="app-header__left">
-          <nav class="app-header__nav" v-if="!isMobile && !userIsLoading">
-            <AdminNavbarLinks v-if="userStore.hasRole(Role.Admin)"/>
-            <MemberNavbarLinks v-if="userStore.hasRole(Role.Member)"/>
-          </nav>
-        </div>
-
-        <div class="app-header__right">
-          <LangSwitcher/>
-          <div class="app-header__user" v-if="!isMobile">
-            <UserAvatar/>
+  <div class="min-h-screen bg-gray-100">
+    <nav class="bg-brand-900 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-14">
+          <!-- Left: nav links -->
+          <div class="flex items-center gap-1">
+            <router-link
+              :to="{ name: 'dashboard' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('dashboard') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <LayoutDashboard class="w-4 h-4" />
+              {{ $t('routes.dashboard.name') }}
+            </router-link>
+            <router-link
+              v-if="userStore.hasRole(Role.Member)"
+              :to="{ name: 'books' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('books') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <BookOpen class="w-4 h-4" />
+              {{ $t('routes.books.name') }}
+            </router-link>
           </div>
-          <LogoutButton classes="app-header__logout"/>
+
+          <!-- Right: language, admin, profile, logout -->
+          <div class="flex items-center gap-3">
+            <!-- Language dropdown -->
+            <div class="relative">
+              <button
+                @click="langOpen = !langOpen"
+                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
+              >
+                <Languages class="w-4 h-4" />
+              </button>
+              <div
+                v-if="langOpen"
+                class="absolute right-0 top-full mt-2 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
+              >
+                <button
+                  v-for="loc in LOCALES"
+                  :key="loc.value"
+                  @click="switchLanguage(loc.value)"
+                  class="w-full text-left px-3 py-2 text-sm transition"
+                  :class="currentLocale === loc.value ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                >
+                  {{ loc.caption }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Admin panel -->
+            <router-link
+              v-if="userStore.hasRole(Role.Admin)"
+              :to="{ name: 'admin.children.members.index' }"
+              class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
+              :class="isActive('admin') ? 'text-white bg-white/10' : ''"
+            >
+              <Shield class="w-4 h-4" />
+            </router-link>
+
+            <!-- Profile -->
+            <router-link
+              :to="{ name: 'account' }"
+              class="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition"
+            >
+              <div class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-semibold">
+                {{ initials }}
+              </div>
+              <span class="hidden sm:inline">{{ personStore.person.firstName }} {{ personStore.person.lastName }}</span>
+            </router-link>
+
+            <!-- Logout -->
+            <button
+              @click="handleLogout"
+              class="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-400 transition cursor-pointer"
+            >
+              <LogOut class="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
+    </nav>
 
-      <!-- Mobile nav -->
-      <nav class="app-header__mobile-nav" v-if="isMobile && !userIsLoading">
-        <AdminNavbarLinks v-if="userStore.hasRole(Role.Admin)"/>
-        <MemberNavbarLinks v-if="userStore.hasRole(Role.Member)"/>
-      </nav>
-    </header>
-
-    <!-- Main content -->
-    <main class="app-main">
-      <LogoutPopup/>
-      <Notifications/>
-
-      <RouterView v-slot="{Component}">
-        <template v-if="Component">
-          <Suspense>
-            <component :is="Component"/>
-            <template #fallback>
-              <Loader/>
-            </template>
-          </Suspense>
-        </template>
-      </RouterView>
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <router-view />
     </main>
+
+    <notifications position="bottom right" :duration="4000" :speed="300" width="360">
+      <template #body="{ item, close }">
+        <div
+          class="mb-3 mr-3 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
+          :class="item.type === 'success' ? 'bg-white border border-green-200' : 'bg-white border border-red-200'"
+        >
+          <div class="flex items-start gap-3 px-4 py-3">
+            <div
+              class="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+              :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'"
+            >
+              <CheckCircle2 v-if="item.type === 'success'" class="w-3.5 h-3.5" />
+              <XCircle v-else class="w-3.5 h-3.5" />
+            </div>
+            <p class="text-sm text-gray-700 flex-1 leading-snug">{{ item.text }}</p>
+            <button @click="close" class="text-gray-300 hover:text-gray-500 transition shrink-0 mt-0.5">
+              <X class="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
+            <div
+              class="h-full toast-progress"
+              :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+            />
+          </div>
+        </div>
+      </template>
+    </notifications>
   </div>
 </template>
 
-<script setup lang="ts">
-import {onMounted, ref, computed} from "vue";
-import {useMemberStore} from "@/stores/memberStore";
-import {useAdministratorService, useMemberService} from "@/inversify.config";
-import LogoutPopup from "@/components/layouts/items/LogoutPopup.vue";
-import Notifications from "@/components/layouts/items/Notifications.vue";
-import Loader from "@/components/layouts/items/Loader.vue";
-import {useWindowSize} from "vue-window-size";
-import UserAvatar from "@/components/account/UserAvatar.vue";
-import LangSwitcher from "@/components/layouts/items/LangSwitcher.vue";
-import LogoutButton from "@/components/navigation/LogoutButton.vue";
-import AdminNavbarLinks from "@/components/navigation/AdminNavbarLinks.vue";
-import MemberNavbarLinks from "@/components/navigation/MemberNavbarLinks.vue";
-import {Administrator, Member} from "@/types";
-import {Role} from "@/types/enums";
-import {useAdministratorStore} from "@/stores/administratorStore";
-import {usePersonStore} from "@/stores/personStore";
+<script lang="ts" setup>
+import {computed, ref, onMounted, onUnmounted} from "vue";
+import {useRouter} from "vue-router";
+import {useI18n} from "vue3-i18n";
+import Cookies from "universal-cookie";
+import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X} from "lucide-vue-next";
 import {useUserStore} from "@/stores/userStore";
+import {usePersonStore} from "@/stores/personStore";
+import {useMemberService, useAdministratorService, useAuthenticationService} from "@/inversify.config";
+import {Role} from "@/types/enums";
+import {LOCALES} from "@/locales";
 
-const userStore = useUserStore()
-const personStore = usePersonStore()
-const memberStore = useMemberStore()
-const administratorStore = useAdministratorStore()
-
+const router = useRouter();
+const i18nInstance = useI18n();
+const userStore = useUserStore();
+const personStore = usePersonStore();
 const memberService = useMemberService();
-const administratorService = useAdministratorService();
+const adminService = useAdministratorService();
+const authService = useAuthenticationService();
 
-const userIsLoading = ref(true)
+const langOpen = ref(false);
+const currentLocale = ref(i18nInstance.getLocale());
 
-const {width} = useWindowSize();
-const isMobile = computed(() => width.value < 768);
+const initials = computed(() => {
+  const first = personStore.person.firstName || "";
+  const last = personStore.person.lastName || "";
+  return ((first[0] || "") + (last[0] || "")).toUpperCase();
+});
+
+function isActive(routePrefix: string): boolean {
+  const name = router.currentRoute.value.name as string || "";
+  return name === routePrefix || name.startsWith(routePrefix + ".");
+}
+
+function switchLanguage(lang: string) {
+  i18nInstance.setLocale(lang);
+  currentLocale.value = lang;
+  const cookies = new Cookies();
+  cookies.set("lang", lang, {path: "/"});
+  langOpen.value = false;
+}
+
+function handleClickOutside(e: MouseEvent) {
+  if (langOpen.value && !(e.target as HTMLElement).closest(".relative")) {
+    langOpen.value = false;
+  }
+}
+
+async function handleLogout() {
+  await authService.logout();
+  userStore.reset();
+  personStore.reset();
+  await router.push({name: "login"});
+}
 
 onMounted(async () => {
-  userIsLoading.value = true
-  if (userStore.hasRole(Role.Member)) {
-    let member = await memberService.getAuthenticated() as Member;
-    personStore.setPerson(member)
-    memberStore.setMember(member)
-  } else {
-    let administrator = await administratorService.getAuthenticated() as Administrator;
-    personStore.setPerson(administrator)
-    administratorStore.setAdministrator(administrator)
+  document.addEventListener("click", handleClickOutside);
+  try {
+    if (userStore.hasRole(Role.Admin)) {
+      const admin = await adminService.getAuthenticated();
+      if (admin) personStore.setPerson(admin);
+    } else if (userStore.hasRole(Role.Member)) {
+      const member = await memberService.getAuthenticated();
+      if (member) personStore.setPerson(member);
+    }
+  } catch {
+    // API failed — personStore already has persisted data from login
   }
-  userIsLoading.value = false
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>
-
-<style scoped lang="scss">
-@use "../../sass/tools" as *;
-
-.app-layout {
-  min-height: 100vh;
-  background: $color-grey-lighter;
-}
-
-.app-header {
-  background: $color-black !important;
-  border-bottom: 1px solid $color-grey-dark !important;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  &__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    height: 60px;
-    max-width: 1200px;
-    margin: 0 auto;
-
-    @media (min-width: 768px) {
-      padding: 0 40px;
-    }
-  }
-
-  &__left {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-  }
-
-  &__logo {
-    font-family: $font-montserrat;
-    font-weight: 800;
-    font-size: 20px;
-    color: $color-green !important;
-    letter-spacing: -0.03em;
-  }
-
-  &__nav {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  &__right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  &__user {
-    color: $color-grey;
-  }
-
-  &__logout {
-    font-size: 13px;
-    font-weight: 600;
-    color: $color-grey-medium !important;
-    transition: color 0.15s;
-    cursor: pointer;
-
-    &:hover {
-      color: $color-white !important;
-    }
-  }
-
-  &__mobile-nav {
-    display: flex;
-    gap: 4px;
-    padding: 8px 24px 12px;
-    overflow-x: auto;
-  }
-}
-
-.app-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
-
-  @media (min-width: 768px) {
-    padding: 40px 40px 60px;
-  }
-}
-</style>

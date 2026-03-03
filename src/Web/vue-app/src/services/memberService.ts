@@ -26,9 +26,10 @@ export class MemberService extends ApiService implements IMemberService {
         ._httpClient
         .get<any, AxiosResponse<PaginatedResponse<Member>>>(
             `${import.meta.env.VITE_API_BASE_URL}/members?pageIndex=${pageIndex}&pageSize=${pageSize}&searchValue=${searchValue}`)
-        .catch(function (error: AxiosError): AxiosResponse<PaginatedResponse<Member>> {
-          return error.response as AxiosResponse<PaginatedResponse<Member>>
+        .catch(function (error: AxiosError): AxiosResponse<PaginatedResponse<Member>> | undefined {
+          return error.response
         })
+    if (!response) return { items: [], totalCount: 0 } as unknown as PaginatedResponse<Member>
     return response.data as PaginatedResponse<Member>
   }
 
@@ -66,6 +67,24 @@ export class MemberService extends ApiService implements IMemberService {
         .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
           return error.response as AxiosResponse<SucceededOrNotResponse>
         })
+    const succeededOrNotResponse = response.data as SucceededOrNotResponse
+    return new SucceededOrNotResponse(succeededOrNotResponse.succeeded, succeededOrNotResponse.errors)
+  }
+
+  public async updateMyProfile(data: {
+    firstName: string; lastName: string;
+    phoneNumber?: string; phoneExtension?: number;
+    apartment?: number; street?: string; city?: string; zipCode?: string;
+  }): Promise<SucceededOrNotResponse> {
+    const response = await this
+      ._httpClient
+      .put<any, AxiosResponse<SucceededOrNotResponse>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me`,
+        data,
+        this.headersWithJsonContentType())
+      .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
+        return error.response as AxiosResponse<SucceededOrNotResponse>
+      })
     const succeededOrNotResponse = response.data as SucceededOrNotResponse
     return new SucceededOrNotResponse(succeededOrNotResponse.succeeded, succeededOrNotResponse.errors)
   }

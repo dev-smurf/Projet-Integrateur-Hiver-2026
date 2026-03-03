@@ -30,7 +30,7 @@ public class SearchMembersEndpoint : Endpoint<PaginateRequest, PaginatedList<Mem
 
     public override async Task HandleAsync(PaginateRequest req, CancellationToken ct)
     {
-        var paginatedList = _memberRepository.GetAllPaginated(req.PageIndex, req.PageSize);
+        var paginatedList = _memberRepository.GetAllPaginated(req.PageIndex, req.PageSize, req.SearchValue);
         var membersDto = _mapper.Map<List<MemberDto>>(paginatedList.Items);
         await Send.OkAsync(new PaginatedList<MemberDto>(membersDto, paginatedList.TotalItems), cancellation: ct);
     }

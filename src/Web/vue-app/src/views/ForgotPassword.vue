@@ -1,81 +1,74 @@
 <template>
-  <BackLink :path="{name: 'login'}"/>
+  <div>
+    <h1 class="text-2xl font-bold text-brand-900 mb-1">{{ $t('routes.forgotPassword.name') }}</h1>
+    <p class="text-gray-500 text-sm mb-6">{{ $t('pages.forgotPassword.tooltip') }}</p>
 
-  <Card :title="t('routes.forgotPassword.name')" 
-        class="form" 
-        :is-authentication="true">
-    <Loader v-if="preventMultipleSubmit" />
-    <FormTooltip>
-      <p v-html="t('pages.forgotPassword.tooltip')"></p>
-    </FormTooltip>
-    <FormInput :ref="addFormInputRef"
-               v-model="username"
-               :label="t('global.username')"
-               :rules="[required]"
-               name="code"
-               type="text"
-               @validated="handleValidation"/>
-    <button class="btn btn--full btn--purple btn--big" @click="sendForgotPasswordRequest" :disabled="preventMultipleSubmit">
-      {{ t('global.submit') }}
-    </button>
-  </Card>
+    <div v-if="successMessage" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+      <p class="text-sm text-green-700">{{ successMessage }}</p>
+    </div>
+
+    <div v-if="errors.length" class="mb-4 p-3 bg-brand-50 border border-brand-200 rounded-lg">
+      <p v-for="error in errors" :key="error" class="text-sm text-brand-600">{{ error }}</p>
+    </div>
+
+    <form @submit.prevent="handleForgotPassword" class="space-y-4">
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.username') }}</label>
+        <input
+          id="username"
+          v-model="username"
+          type="email"
+          autocomplete="username"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        :disabled="loading"
+        class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span v-if="loading"><Loader2 class="w-4 h-4 animate-spin mx-auto" /></span>
+        <span v-else>{{ $t('global.submit') }}</span>
+      </button>
+    </form>
+
+    <router-link :to="{ name: 'login' }" class="block text-center text-sm text-brand-600 hover:text-brand-700 mt-4">
+      {{ $t('global.back') }}
+    </router-link>
+  </div>
 </template>
+
 <script lang="ts" setup>
-import {ref} from "vue"
-import {useI18n} from "vue3-i18n"
-import {required} from "@/validation/rules"
+import {ref} from "vue";
+import {useI18n} from "vue3-i18n";
 import {useAuthenticationService} from "@/inversify.config";
-import {notifyError, notifySuccess} from "@/notify";
-import {Status} from "@/validation";
-import {IForgotPasswordRequest} from "@/types/requests";
-import Card from "@/components/layouts/items/Card.vue";
-import FormInput from "@/components/forms/FormInput.vue";
-import FormTooltip from "@/components/layouts/items/Tooltip.vue";
-import BackLink from "@/components/layouts/items/BackLink.vue";
-import Loader from "@/components/layouts/items/Loader.vue";
+import {Loader2} from "lucide-vue-next";
 
-const {t} = useI18n()
-const authenticationService = useAuthenticationService()
+const {t} = useI18n();
+const authService = useAuthenticationService();
 
-const username = ref<string>('')
+const username = ref("");
+const loading = ref(false);
+const errors = ref<string[]>([]);
+const successMessage = ref("");
 
-const formInputs = ref<(typeof FormInput)[]>([])
-const inputValidationStatuses: any = {}
+async function handleForgotPassword() {
+  loading.value = true;
+  errors.value = [];
+  successMessage.value = "";
 
-const preventMultipleSubmit = ref<boolean>(false);
-
-function addFormInputRef(ref: typeof FormInput) {
-  if (!formInputs.value.includes(ref))
-    formInputs.value.push(ref)
-}
-
-async function handleValidation(name: string, validationStatus: Status) {
-  inputValidationStatuses[name] = validationStatus.valid
-}
-
-async function sendForgotPasswordRequest() {
-  if(preventMultipleSubmit.value) return;
-
-  preventMultipleSubmit.value = true;
-  
-  formInputs.value.forEach((x: typeof FormInput) => x.validateInput())
-  if (Object.values(inputValidationStatuses).some(x => x === false)) {
-    notifyError(t('validation.errorsInForm'))
-    preventMultipleSubmit.value = false;
-    return
-  }
-
-  let request = {
+  const response = await authService.forgotPassword({
     username: username.value,
-    resetPasswordRelativeUrl: t('routes.resetPassword.path')
-  } as IForgotPasswordRequest
-  let forgotPasswordResponse = await authenticationService.forgotPassword(request)
-  if (!forgotPasswordResponse.succeeded) {
-    notifyError(t('pages.forgotPassword.validation.errorOccured'))
-    preventMultipleSubmit.value = false;
-    return;
+    resetPasswordRelativeUrl: `${window.location.origin}${t('routes.resetPassword.fullPath')}`
+  });
+
+  if (response.succeeded) {
+    successMessage.value = t("pages.forgotPassword.validation.success");
+  } else {
+    errors.value = response.getErrorMessages("pages.forgotPassword.validation");
   }
-  notifySuccess(t('pages.forgotPassword.validation.success'))
-  preventMultipleSubmit.value = false;
+
+  loading.value = false;
 }
 </script>
