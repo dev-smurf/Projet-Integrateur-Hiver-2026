@@ -2,14 +2,22 @@
 .user-avatar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  @include text--body-big;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
   color: $color-grey-medium;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: $color-white;
+  }
 
   &__img-container {
     overflow: hidden;
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     border-radius: 100%;
     background-color: $color-grey-light;
     display: flex;
@@ -17,8 +25,8 @@
     justify-content: center;
 
     .icon {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
     }
   }
 }
