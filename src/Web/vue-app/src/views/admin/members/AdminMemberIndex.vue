@@ -16,7 +16,7 @@
         <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input
           v-model="searchValue"
-          @input="debouncedSearch"
+          @input="onSearch"
           type="text"
           :placeholder="$t('global.search')"
           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from "vue";
+import {ref, computed, onMounted} from "vue";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
 import {Plus, Search, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight} from "lucide-vue-next";
@@ -128,35 +128,45 @@ const {t} = useI18n();
 const {notify} = useNotification();
 const memberService = useMemberService();
 
-const members = ref<Member[]>([]);
+const allMembers = ref<Member[]>([]);
 const loading = ref(true);
 const searchValue = ref("");
 const pageIndex = ref(1);
 const pageSize = 10;
-const totalItems = ref(0);
 const memberToDelete = ref<Member | null>(null);
 
-let debounceTimer: ReturnType<typeof setTimeout>;
+const filtered = computed(() => {
+  const q = searchValue.value.toLowerCase().trim();
+  if (!q) return allMembers.value;
+  return allMembers.value.filter(m =>
+    (m.firstName || "").toLowerCase().includes(q) ||
+    (m.lastName || "").toLowerCase().includes(q) ||
+    (m.email || "").toLowerCase().includes(q) ||
+    (m.city || "").toLowerCase().includes(q)
+  );
+});
+
+const totalItems = computed(() => filtered.value.length);
+
+const members = computed(() => {
+  const start = (pageIndex.value - 1) * pageSize;
+  return filtered.value.slice(start, start + pageSize);
+});
+
+// Reset to page 1 when search changes
+function onSearch() {
+  pageIndex.value = 1;
+}
 
 async function fetchMembers() {
   loading.value = true;
-  const result = await memberService.search(pageIndex.value, pageSize, searchValue.value);
-  members.value = result.items || [];
-  totalItems.value = result.totalItems || 0;
+  const result = await memberService.search(1, 9999, "");
+  allMembers.value = result.items || [];
   loading.value = false;
-}
-
-function debouncedSearch() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    pageIndex.value = 1;
-    fetchMembers();
-  }, 300);
 }
 
 function changePage(page: number) {
   pageIndex.value = page;
-  fetchMembers();
 }
 
 function confirmDelete(member: Member) {
