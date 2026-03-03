@@ -70,6 +70,24 @@ export class MemberService extends ApiService implements IMemberService {
     return new SucceededOrNotResponse(succeededOrNotResponse.succeeded, succeededOrNotResponse.errors)
   }
 
+  public async updateMyProfile(data: {
+    firstName: string; lastName: string;
+    phoneNumber?: string; phoneExtension?: number;
+    apartment?: number; street?: string; city?: string; zipCode?: string;
+  }): Promise<SucceededOrNotResponse> {
+    const response = await this
+      ._httpClient
+      .put<any, AxiosResponse<SucceededOrNotResponse>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me`,
+        data,
+        this.headersWithJsonContentType())
+      .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
+        return error.response as AxiosResponse<SucceededOrNotResponse>
+      })
+    const succeededOrNotResponse = response.data as SucceededOrNotResponse
+    return new SucceededOrNotResponse(succeededOrNotResponse.succeeded, succeededOrNotResponse.errors)
+  }
+
   public async deleteMember(id: Guid): Promise<SucceededOrNotResponse> {
     const response = await this
         ._httpClient

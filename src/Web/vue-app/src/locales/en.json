@@ -20,6 +20,11 @@
       "fullPath": "/reset-password",
       "name": "Reset password"
     },
+    "dashboard": {
+      "path": "/dashboard",
+      "fullPath": "/dashboard",
+      "name": "Dashboard"
+    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",
@@ -66,6 +71,22 @@
     }
   },
   "pages": {
+    "dashboard": {
+      "welcome": "Welcome",
+      "accountDesc": "Manage your profile and settings.",
+      "membersDesc": "View and manage members.",
+      "booksDesc": "Browse and manage books."
+    },
+    "account": {
+      "personalInfo": "Personal information",
+      "contactInfo": "Contact information",
+      "address": "Address",
+      "role": "Role",
+      "edit": "Edit profile",
+      "readOnly": "This field cannot be modified.",
+      "updateSuccess": "Profile updated successfully.",
+      "updateError": "An error occurred while updating your profile."
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",
@@ -254,6 +275,7 @@
     "quickLinks": "Quick links",
     "undefined": "N/A",
     "logout": "Logout",
+    "changeLanguage": "Change language",
     "table": {
       "of": "of",
       "noData": "No available data",

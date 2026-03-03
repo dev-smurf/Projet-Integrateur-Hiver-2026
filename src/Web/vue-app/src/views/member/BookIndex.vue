@@ -1,137 +1,127 @@
 <template>
-  <div class="content-grid content-grid--subpage content-grid--subpage-table">
-    <div class="content-grid__header">
-      <h1 class="back-link-title">{{ t(`routes.books.name`) }}</h1>
-      <div class="content-grid__filters">
-        <SearchInput v-model="searchValue"/>
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.books.name') }}</h1>
+      <router-link
+        :to="{ name: 'books.children.add' }"
+        class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
+      >
+        <Plus class="w-4 h-4" />
+        {{ $t('global.add') }}
+      </router-link>
+    </div>
+
+    <div v-if="loading" class="flex justify-center py-12">
+      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    </div>
+
+    <div v-else-if="!books.length" class="text-center py-12 text-gray-500">
+      {{ $t('global.table.noData') }}
+    </div>
+
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-for="book in books"
+        :key="book.id"
+        class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-sm transition group"
+      >
+        <div v-if="book.savedCardImage" class="aspect-[2/1] overflow-hidden bg-gray-100">
+          <img :src="book.savedCardImage" :alt="getBookName(book)" class="w-full h-full object-cover" />
+        </div>
+        <div v-else class="aspect-[2/1] bg-gray-100 flex items-center justify-center">
+          <BookOpenIcon class="w-10 h-10 text-gray-300" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-900 mb-1">{{ getBookName(book) }}</h3>
+          <p class="text-sm text-gray-500">{{ book.author }}</p>
+          <div class="flex items-center justify-between mt-3">
+            <span class="text-sm font-medium text-brand-600">
+              {{ book.price ? `$${book.price.toFixed(2)}` : $t('global.free') }}
+            </span>
+            <div class="flex items-center gap-1">
+              <router-link
+                :to="{ name: 'books.children.edit', params: { id: book.id } }"
+                class="p-1.5 text-gray-400 hover:text-brand-600 transition"
+              >
+                <Pencil class="w-4 h-4" />
+              </router-link>
+              <button
+                @click="confirmDelete(book)"
+                class="p-1.5 text-gray-400 hover:text-brand-600 transition"
+              >
+                <Trash2 class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <Card :title="t('global.quickLinks')" class="card--row-content">
-      <BtnLink
-          :name="t('routes.books.children.add.name')"
-          :path="{ name: 'books.children.add' }"
-      />
-    </Card>
-    <Card>
-      <DataTable
-          :headers="bookHeader"
-          :is-loading="booksAreLoading"
-          :items="tableBooks"
-          :search-value="searchValue"
-          @delete="deleteBook"
-      />
-    </Card>
+
+    <!-- Delete confirmation modal -->
+    <div v-if="bookToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $t('global.delete') }}</h3>
+        <p class="text-sm text-gray-600 mb-6">{{ $t('validation.book.delete.confirmation') }}</p>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="bookToDelete = null"
+            class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+          >
+            {{ $t('global.cancel') }}
+          </button>
+          <button
+            @click="deleteBook"
+            class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition"
+          >
+            {{ $t('global.delete') }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import i18n from "@/i18n";
+import {ref, onMounted} from "vue";
 import {useI18n} from "vue3-i18n";
-import {computed, onMounted, ref} from "vue";
+import {useNotification} from "@kyvg/vue3-notification";
+import {Plus, Pencil, Trash2, Loader2, BookOpen as BookOpenIcon} from "lucide-vue-next";
 import {useBookService} from "@/inversify.config";
-import {notifyError, notifySuccess} from "@/notify";
-import Card from "@/components/layouts/items/Card.vue";
-import SearchInput from "@/components/layouts/items/SearchInput.vue";
-import DataTable from "@/components/layouts/items/DataTable.vue";
-import BtnLink from "@/components/layouts/items/BtnLink.vue";
-import {Book} from "@/types/entities";
-import {Guid} from "@/types";
+import type {Book} from "@/types/entities";
 
-const {t} = useI18n()
-const bookService = useBookService()
+const {locale, t} = useI18n();
+const {notify} = useNotification();
+const bookService = useBookService();
 
-const allBooks = ref<Book[]>([]);
-const searchValue = ref("");
-const booksAreLoading = ref(false);
+const books = ref<Book[]>([]);
+const loading = ref(true);
+const bookToDelete = ref<Book | null>(null);
 
-const tableBooks = computed(() => {
-  let lang = i18n.getLocale()
-  return allBooks.value.map((x: Book) => {
-    return {
-      id: x.id,
-      name: (lang == 'fr' ? x.nameFr : x.nameEn) ?? '',
-      isbn: x.isbn,
-      author: x.author,
-      editor: x.editor,
-      actions: {
-        update: {name: `books.children.edit`, params: {id: x.id}},
-        delete: true
-      }
-    }
-  }).sort((a: any, b: any) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  }) as Book[];
-})
-
-onMounted(async () => {
-  await loadAllBooks();
-});
-
-async function loadAllBooks() {
-  booksAreLoading.value = true;
-
-  let books = await bookService.getAllBooks();
-  if (books && books.length > 0) {
-    allBooks.value = books;
-  }
-  booksAreLoading.value = false;
+function getBookName(book: Book): string {
+  return locale === "fr" ? (book.nameFr || book.nameEn || "") : (book.nameEn || book.nameFr || "");
 }
 
-async function deleteBook(book: any) {
-  if (book?.id == null || !Guid.isValid(book.id ?? ""))
-    return
+async function fetchBooks() {
+  loading.value = true;
+  books.value = await bookService.getAllBooks();
+  loading.value = false;
+}
 
-  let confirmDelete = confirm(t("validation.book.delete.confirmation"));
-  if (!confirmDelete)
-    return;
+function confirmDelete(book: Book) {
+  bookToDelete.value = book;
+}
 
-  let response = await bookService.deleteBook(book.id)
+async function deleteBook() {
+  if (!bookToDelete.value?.id) return;
+  const response = await bookService.deleteBook(bookToDelete.value.id);
   if (response.succeeded) {
-    allBooks.value = allBooks.value.filter(x => x.id !== book.id)
-    notifySuccess(t('validation.book.delete.success'))
+    notify({type: "success", text: t("validation.book.delete.success")});
+    bookToDelete.value = null;
+    await fetchBooks();
   } else {
-    let errorMessages = response.getErrorMessages('validation.book.delete',
-        'validation.book.delete.errorOccured')
-    notifyError(errorMessages[0])
+    notify({type: "error", text: t("validation.book.delete.errorOccured")});
   }
 }
 
-const bookHeader = [
-  {
-    text: t("book.title"),
-    value: 'name',
-    sortable: true,
-    width: 300,
-  },
-  {
-    text: t("book.isbn"),
-    value: "isbn",
-    sortable: true,
-    width: 150,
-  },
-  {
-    text: t("book.author"),
-    value: "author",
-    sortable: true,
-    width: 125,
-  },
-  {
-    text: t("book.editor"),
-    value: "editor",
-    sortable: true,
-    width: 125,
-  },
-  {
-    text: t("global.table.actions"),
-    value: "actions",
-    width: 75
-  },
-];
-
+onMounted(fetchBooks);
 </script>
