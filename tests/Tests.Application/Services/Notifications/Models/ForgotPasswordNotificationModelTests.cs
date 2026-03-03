@@ -8,8 +8,8 @@ public class ForgotPasswordNotificationModelTests
     private const string AnyLink = "www.google.com";
     private const string AnyEmail = "garneau@spektrummedia.com";
     private const string AnyLocale = "fr";
-    private const string EnTemplateId = "d-6bceb5f892064a7b95cc03fe16b45943";
-    private const string FrTemplateId = "d-ccea0bf1594048259d41fb52c2c23614";
+    private const string EnTemplateId = "d-b6252ba68bc44a1bb5bf8ae759c3f8d5";
+    private const string FrTemplateId = "d-e0eb0eb2bd2d40e1a167fa08c71b3e1d";
 
     [Fact]
     public void GivenAnyEmail_WhenNewForgotPasswordNotificationModel_ThenDestinationEmailShouldBeSameAsGivenEmail()
