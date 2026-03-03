@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl">
+  <div class="max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.members.add.name') }}</h1>
 
     <div v-if="apiErrors.length" class="mb-4 p-3 bg-brand-50 border border-brand-200 rounded-lg">
@@ -9,26 +9,51 @@
     <form @submit.prevent="handleSubmit" class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.firstName') }} *</label>
-          <input v-model="member.firstName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          <p v-if="fieldErrors.firstName" class="text-sm text-brand-500 mt-1">{{ fieldErrors.firstName }}</p>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.firstName') }} <span class="text-red-500">*</span></label>
+          <input
+            v-model="member.firstName"
+            type="text"
+            @blur="validateField('firstName', member.firstName || '', [required])"
+            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            :class="fieldErrors.firstName ? 'border-red-400' : 'border-gray-300'"
+          />
+          <p v-if="fieldErrors.firstName" class="text-sm text-red-500 mt-1">{{ fieldErrors.firstName }}</p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.lastName') }} *</label>
-          <input v-model="member.lastName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          <p v-if="fieldErrors.lastName" class="text-sm text-brand-500 mt-1">{{ fieldErrors.lastName }}</p>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.lastName') }} <span class="text-red-500">*</span></label>
+          <input
+            v-model="member.lastName"
+            type="text"
+            @blur="validateField('lastName', member.lastName || '', [required])"
+            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            :class="fieldErrors.lastName ? 'border-red-400' : 'border-gray-300'"
+          />
+          <p v-if="fieldErrors.lastName" class="text-sm text-red-500 mt-1">{{ fieldErrors.lastName }}</p>
         </div>
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.email') }} *</label>
-        <input v-model="member.email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-        <p v-if="fieldErrors.email" class="text-sm text-brand-500 mt-1">{{ fieldErrors.email }}</p>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.email') }} <span class="text-red-500">*</span></label>
+        <input
+          v-model="member.email"
+          type="email"
+          @blur="validateField('email', member.email || '', [required, mustMatchEmailFormat])"
+          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+          :class="fieldErrors.email ? 'border-red-400' : 'border-gray-300'"
+        />
+        <p v-if="fieldErrors.email" class="text-sm text-red-500 mt-1">{{ fieldErrors.email }}</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }}</label>
-          <input v-model="member.phoneNumber" type="tel" placeholder="555-555-5555" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          <p v-if="fieldErrors.phoneNumber" class="text-sm text-brand-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
+          <input
+            v-model="member.phoneNumber"
+            type="tel"
+            placeholder="555-555-5555"
+            @blur="if (member.phoneNumber) validateField('phoneNumber', member.phoneNumber, [mustMatchPhoneNumberFormat]); else fieldErrors.phoneNumber = undefined;"
+            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            :class="fieldErrors.phoneNumber ? 'border-red-400' : 'border-gray-300'"
+          />
+          <p v-if="fieldErrors.phoneNumber" class="text-sm text-red-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneExtension') }}</label>
@@ -52,8 +77,15 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }}</label>
-          <input v-model="member.zipCode" type="text" placeholder="A1A 1A1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          <p v-if="fieldErrors.zipCode" class="text-sm text-brand-500 mt-1">{{ fieldErrors.zipCode }}</p>
+          <input
+            v-model="member.zipCode"
+            type="text"
+            placeholder="A1A 1A1"
+            @blur="if (member.zipCode) validateField('zipCode', member.zipCode, [mustMatchZipCodeFormat]); else fieldErrors.zipCode = undefined;"
+            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            :class="fieldErrors.zipCode ? 'border-red-400' : 'border-gray-300'"
+          />
+          <p v-if="fieldErrors.zipCode" class="text-sm text-red-500 mt-1">{{ fieldErrors.zipCode }}</p>
         </div>
       </div>
 
@@ -86,6 +118,7 @@ import {Loader2} from "lucide-vue-next";
 import {useMemberService} from "@/inversify.config";
 import {Member} from "@/types/entities";
 import {validate} from "@/validation";
+import type {Rule} from "@/validation/rules";
 import {required, mustMatchEmailFormat, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
 const router = useRouter();
@@ -97,6 +130,11 @@ const member = reactive(new Member());
 const submitting = ref(false);
 const apiErrors = ref<string[]>([]);
 const fieldErrors = reactive<Record<string, string | undefined>>({});
+
+function validateField(field: string, value: string, rules: Rule[]) {
+  const result = validate(value, rules);
+  fieldErrors[field] = result.valid ? undefined : result.message;
+}
 
 function validateForm(): boolean {
   let valid = true;
