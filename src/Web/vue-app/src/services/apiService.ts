@@ -14,14 +14,10 @@ export class ApiService implements IApiService {
 
   constructor(@inject(TYPES.AxiosInstance) httpClient: AxiosInstance) {
     this._httpClient = httpClient;
-    /*
-        Attaching the accessToken to the request header. The access token is stored in cookies by LoginEndpoint or TwoFactorEndpoint
-        AccessToken and RefreshToken rotation is handled in by RefreshTokenEndpoint
-    */
+ 
     this._httpClient.interceptors.request.use(
         async (config) => {
-          // Checking if the AccessToken has expired. If it is expired, we call the backend to get the current valid token
-          // otherwise we do nothing since the bearer is already set with the valid token.
+
           if (!this.getAccessToken() && this.getRefreshToken()) {
             await this.refreshToken(config, false);
           } else if (this.getAccessToken()) {
@@ -75,14 +71,14 @@ export class ApiService implements IApiService {
     try {
       return await axios
           .get(
-              `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`
+              `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`,
+              { withCredentials: true }
           )
           .then((response: AxiosResponse<SucceededOrNotResponse>) => {
             if (!response.data) return;
 
             const succeededOrNotResponse = response.data;
             if (!succeededOrNotResponse.succeeded) {
-              // refresh token is expired
               this.logoutUserAndRedirectToHomePage();
               return;
             }
@@ -104,7 +100,7 @@ export class ApiService implements IApiService {
   private logoutUserAndRedirectToHomePage() {
     const apiStore = useApiStore();
     apiStore.setNeedToLogout(true);
-    // A watcher is set up in the component LogoutPopup, it will handle the rest.
+
   }
 
   public headersWithJsonContentType() {
@@ -118,7 +114,7 @@ export class ApiService implements IApiService {
   public headersWithFormDataContentType() {
     return {
       headers: {
-        "Content-Type": '"multipart/form-data"',
+        "Content-Type": 'multipart/form-data',
       },
     };
   }

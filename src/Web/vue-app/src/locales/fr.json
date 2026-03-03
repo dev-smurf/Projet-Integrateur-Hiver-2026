@@ -20,6 +20,11 @@
       "fullPath": "/reinitialiser-mot-de-passe",
       "name": "Réinitialiser mot de passe"
     },
+    "dashboard": {
+      "path": "/tableau-de-bord",
+      "fullPath": "/tableau-de-bord",
+      "name": "Tableau de bord"
+    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",
@@ -44,6 +49,21 @@
             "fullPath": "/administration/membres/:id/modifier",
             "name": "Modifier un membre"
           }
+        },
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules",
+          "add": {
+            "path": "ajouter",
+            "fullPath": "/administration/modules/ajouter",
+            "name": "Ajouter un module"
+          },
+          "edit": {
+            "path": ":id/modifier",
+            "fullPath": "/administration/modules/:id/modifier",
+            "name": "Modifier un module"
+          }
         }
       }
     },
@@ -66,6 +86,22 @@
     }
   },
   "pages": {
+    "dashboard": {
+      "welcome": "Bienvenue",
+      "accountDesc": "Gérer votre profil et vos paramètres.",
+      "membersDesc": "Voir et gérer les membres.",
+      "booksDesc": "Parcourir et gérer les livres."
+    },
+    "account": {
+      "personalInfo": "Informations personnelles",
+      "contactInfo": "Coordonnées",
+      "address": "Adresse",
+      "role": "Rôle",
+      "edit": "Modifier le profil",
+      "readOnly": "Ce champ ne peut pas être modifié.",
+      "updateSuccess": "Profil mis à jour avec succès.",
+      "updateError": "Une erreur est survenue lors de la mise à jour du profil."
+    },
     "login": {
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",
@@ -257,6 +293,7 @@
     "quickLinks": "Liens rapides",
     "undefined": "ND",
     "logout": "Déconnexion",
+    "changeLanguage": "Changer de langue",
     "table": {
       "of": "de",
       "noData": "Aucune données disponibles",
@@ -331,5 +368,33 @@
         "bookNotFoundException": "Le livre n'a pu être trouvé."
       }
     }
+  },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Nom",
+      "content": "Contenu",
+      "subject": "Sujet",
+      "image": "Image",
+      "imagePreview": "Aperçu de l'image"
+    }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module créé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création du module."
+      },
+      "edit": {
+        "success": "Module modifié avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification du module."
+      }
+    }
+  },
+  "common": {
+    "Ajouter": "Ajouter",
+    "cancel": "Annuler"
+  },
+  "routes.addModule": {
+    "name": "Ajouter un module"
   }
 }
