@@ -16,7 +16,7 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
     public override void Configure()
     {
         AllowFileUploads();
-        Post("module");
+        Post("modules");
         Roles(Domain.Constants.User.Roles.ADMINISTRATOR);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
         DontCatchExceptions();
@@ -27,19 +27,19 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
         req.Sanitize();
 
         string? cardImageUrl = null;
-        if (!string.IsNullOrEmpty(req.CardImageBase64))
+        if (req.CardImage is not null)
         {
-            cardImageUrl = await SaveFileFromBase64(req.CardImageBase64);
+            cardImageUrl = await SaveFile(req.CardImage);
         }
 
         var newModule = new Module
         {
             NameFr = req.NameFr,
-            NameEn = string.IsNullOrWhiteSpace(req.NameEn) ? req.NameFr : req.NameEn,           // 👈
+            NameEn = string.IsNullOrWhiteSpace(req.NameEn) ? req.NameFr : req.NameEn,
             ContenueFr = req.ContenueFr,
-            ContenueEn = string.IsNullOrWhiteSpace(req.ContenueEn) ? req.ContenueFr : req.ContenueEn, // 👈
+            ContenueEn = string.IsNullOrWhiteSpace(req.ContenueEn) ? req.ContenueFr : req.ContenueEn,
             SujetFr = req.SujetFr,
-            SujetEn = string.IsNullOrWhiteSpace(req.SujetEn) ? req.SujetFr : req.SujetEn,       // 👈
+            SujetEn = string.IsNullOrWhiteSpace(req.SujetEn) ? req.SujetFr : req.SujetEn,
             CardImageUrl = cardImageUrl
         };
 
@@ -47,17 +47,19 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 
-    private static async Task<string> SaveFileFromBase64(string base64, string folder = "uploads")
+    private static async Task<string> SaveFile(IFormFile file, string folder = "uploads")
     {
-        var bytes = Convert.FromBase64String(base64);
         var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
 
         if (!Directory.Exists(savePath))
             Directory.CreateDirectory(savePath);
 
-        var fileName = $"{Guid.NewGuid()}.png";
+        var fileExtension = Path.GetExtension(file.FileName);
+        var fileName = $"{Guid.NewGuid()}{fileExtension}";
         var fullPath = Path.Combine(savePath, fileName);
-        await File.WriteAllBytesAsync(fullPath, bytes);
+
+        await using var stream = new FileStream(fullPath, FileMode.Create);
+        await file.CopyToAsync(stream);
 
         return $"/{folder}/{fileName}";
     }

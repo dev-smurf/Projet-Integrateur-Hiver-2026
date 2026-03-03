@@ -50,8 +50,10 @@ export interface IBookService {
 export interface IModulesService {
     createModule(request: ICreateModuleRequest): Promise<SucceededOrNotResponse>
     updateModule(id: string, request: IEditModuleRequest): Promise<SucceededOrNotResponse>
-    getAllModules(): Promise<any[]>;
-    getModule(id: string): Promise<any>;
+    getAllModules(): Promise<import("@/types/entities").ModuleDto[]>;
+    getModule(id: string): Promise<import("@/types/entities").ModuleDto>;
+    getModuleFlexible(id: string): Promise<import("@/types/entities").ModuleDto | null>;
+    deleteModule(id: string): Promise<import("@/types/responses").SucceededOrNotResponse>;
 }
 
 export interface IUserService {

@@ -16,4 +16,6 @@ public interface IModuleRepository
     Task UpdateAsync(Module module);
 
     Task<Module> AddAsync(Module module);
+
+    Task DeleteAsync(Module module);
 }

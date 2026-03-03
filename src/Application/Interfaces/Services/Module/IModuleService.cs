@@ -9,7 +9,7 @@ namespace Application.Interfaces.Services.Module
 
         Task<List<ModuleDto>> getAllModules();
 
-
+        Task<bool> UpdateModule(string id, ModuleDto request);
         Task<ModuleDto> getModule(string id);
         Task<ModuleDto> CreateModule(CreateModuleDto request);
     }

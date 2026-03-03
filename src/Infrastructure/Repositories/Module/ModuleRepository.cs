@@ -22,7 +22,8 @@ public class ModuleRepository : IModuleRepository
 
     public async Task<Domain.Entities.Module?> GetByIdAsync(Guid id)
     {
-        return await _context.Modules.FindAsync(id);
+        return await _context.Modules
+            .FirstOrDefaultAsync(m => m.Id == id);
     }
 
     public async Task Create(Domain.Entities.Module module)
@@ -42,5 +43,11 @@ public class ModuleRepository : IModuleRepository
         _context.Modules.Add(module);
         await _context.SaveChangesAsync();
         return module;
+    }
+
+    public async Task DeleteAsync(Domain.Entities.Module module)
+    {
+        _context.Modules.Remove(module);
+        await _context.SaveChangesAsync();
     }
 }

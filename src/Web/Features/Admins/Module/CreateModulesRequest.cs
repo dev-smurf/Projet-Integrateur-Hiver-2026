@@ -9,8 +9,9 @@ public class CreateModulesRequest : ISanitizable
     public string? ContenueEn { get; set; }
     public string? SujetFr { get; set; }
     public string? SujetEn { get; set; }
-    
-    public string? CardImageBase64 { get; set; } 
+
+    public IFormFile? CardImage { get; set; }
+
     public void Sanitize()
     {
         NameFr = NameFr?.Trim();

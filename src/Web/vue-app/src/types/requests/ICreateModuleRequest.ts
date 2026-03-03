@@ -1,9 +1,6 @@
 export interface ICreateModuleRequest {
     nameFr?: string
-    nameEn?: string
     contenueFr?: string
-    contenueEn?: string
+    sujetFr?: string
     cardImage?: File
-    sujetFr?:string
-    sujetEn?:string
 }

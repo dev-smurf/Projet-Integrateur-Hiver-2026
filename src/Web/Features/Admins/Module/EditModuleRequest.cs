@@ -1,17 +1,14 @@
-namespace Application.Interfaces.Services.Module.Dto;
+using Microsoft.AspNetCore.Http;
 
-public class ModuleDto
+namespace Web.Features.Admins.Module;
+
+public class EditModuleRequest : IEditModuleRequest
 {
-    public string Id { get; set; } = null!;
-
     public string? NameFr { get; set; }
     public string? NameEn { get; set; }
-
     public string? SujetFr { get; set; }
     public string? SujetEn { get; set; }
-
     public string? ContenueFr { get; set; }
     public string? ContenueEn { get; set; }
-
-    public string? CardImageUrl { get; set; }
+    public IFormFile? CardImage { get; set; }
 }

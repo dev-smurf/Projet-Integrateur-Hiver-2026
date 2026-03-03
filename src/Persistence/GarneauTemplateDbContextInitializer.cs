@@ -49,6 +49,7 @@ public class GarneauTemplateDbContextInitializer
             await SeedRoles();
             await SeedAdmins();
             await SeedMembers();
+            await SeedModules();
         }
         catch (Exception ex)
         {
@@ -133,5 +134,49 @@ public class GarneauTemplateDbContextInitializer
             PhoneNumberConfirmed = true,
             TwoFactorEnabled = false
         };
+    }
+
+    private async Task SeedModules()
+    {
+        if (_context.Modules.Any())
+            return;
+
+        var modules = new[]
+        {
+            new Module
+            {
+                NameFr = "Introduction à la programmation",
+                NameEn = "Introduction to Programming",
+                SujetFr = "Bases de la programmation",
+                SujetEn = "Programming Basics",
+                ContenueFr = "Ce module couvre les concepts fondamentaux de la programmation, incluant les variables, les boucles et les conditions.",
+                ContenueEn = "This module covers fundamental programming concepts, including variables, loops, and conditions.",
+                CardImageUrl = null
+            },
+            new Module
+            {
+                NameFr = "Développement Web",
+                NameEn = "Web Development",
+                SujetFr = "HTML, CSS et JavaScript",
+                SujetEn = "HTML, CSS and JavaScript",
+                ContenueFr = "Apprenez à créer des sites web modernes avec HTML5, CSS3 et JavaScript.",
+                ContenueEn = "Learn to create modern websites with HTML5, CSS3 and JavaScript.",
+                CardImageUrl = null
+            },
+            new Module
+            {
+                NameFr = "Bases de données",
+                NameEn = "Databases",
+                SujetFr = "SQL et NoSQL",
+                SujetEn = "SQL and NoSQL",
+                ContenueFr = "Découvrez les systèmes de gestion de bases de données relationnelles et non-relationnelles.",
+                ContenueEn = "Discover relational and non-relational database management systems.",
+                CardImageUrl = null
+            }
+        };
+
+        _context.Modules.AddRange(modules);
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Seeded {Count} modules", modules.Length);
     }
 }

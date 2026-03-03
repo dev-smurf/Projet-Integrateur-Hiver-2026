@@ -14,8 +14,8 @@ import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
-import addModule from "@/views/admin/members/AdminAddModule.vue";
-import EditModuleForm from "@/views/admin/members/EditModuleForm.vue";
+import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
+import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
 
 // Livres
 import Books from "../views/member/Books.vue";
@@ -38,12 +38,6 @@ const router = createRouter({
             meta: { title: "routes.login.name" }
         },
         {
-            path: "/ajouter-module",
-            name: "addModule",
-            component: addModule,
-            meta: { title: "routes.addModule.name" }
-        },
-        {
             path: "/authentification-a-deux-facteurs",
             name: "twoFactor",
             component: TwoFactor,
@@ -64,7 +58,6 @@ const router = createRouter({
                 noLinkInBreadcrumbs: true,
             },
             children: [
-                // SECTION MEMBRES
                 {
                     path: "membres",
                     name: "admin.children.members",
@@ -87,20 +80,24 @@ const router = createRouter({
                         }
                     ],
                 },
-                // SECTION MODULES
                 {
                     path: "modules",
                     name: "admin.children.modules",
                     children: [
                         {
                             path: "",
-                            name: "admin.children.modules.index", // Match avec routes.admin.children.modules.index.name
+                            name: "admin.children.modules.index",
                             component: AdminModuleList,
                         },
                         {
+                            path: "ajouter",
+                            name: "admin.children.modules.add",
+                            component: AdminAddModule,
+                        },
+                        {
                             path: "modifier/:id",
-                            name: "admin.children.modules.edit", // Match avec routes.admin.children.modules.edit.name
-                            component: EditModuleForm,
+                            name: "admin.children.modules.edit",
+                            component: AdminModuleEdit,
                             props: true
                         }
                     ]
@@ -134,7 +131,7 @@ const router = createRouter({
                 }
             ]
         },
-        // Redirection par défaut vers l'accueil/login
+
         {
             path: "/:pathMatch(.*)*",
             redirect: "/connexion"
@@ -145,12 +142,12 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
     const userStore = useUserStore();
 
-    // Redirection de la racine
+
     if (to.path === "/") {
         return userStore.user?.email ? { name: "account" } : { name: "login" };
     }
 
-    // Protection des routes par rôle
+
     if (!to.meta.requiredRole) return;
 
     const hasRole = userStore.hasRole(to.meta.requiredRole as Role);

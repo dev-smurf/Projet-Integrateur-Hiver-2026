@@ -1,13 +1,13 @@
-﻿namespace Web.Features.Admins.Module;
+﻿using Microsoft.AspNetCore.Http;
 
-public class IEditModuleRequest
+public interface IEditModuleRequest
 {
-    public string Id { get; set; }
+    string? NameFr { get; set; }
+    string? NameEn { get; set; }
+    string? SujetFr { get; set; }
+    string? SujetEn { get; set; }
+    string? ContenueFr { get; set; }
+    string? ContenueEn { get; set; }
 
-    public string? NameFr { get; set; }
-    public string? ContenueFr { get; set; }
-    public string? SujetFr { get; set; }
-    public IFormFile? CardImage { get; set; }
+    IFormFile? CardImage { get; set; }
 }
-
-
