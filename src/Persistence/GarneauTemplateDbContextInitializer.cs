@@ -11,7 +11,9 @@ public class GarneauTemplateDbContextInitializer
 {
     private const string MemberEmail = "member@gmail.com";
     private const string AdminEmail = "admin@gmail.com";
+    private const string TestEmail = "test@test.com";
     private const string Password = "Qwerty123!";
+    private const string TestPassword = "Test12345!";
 
     private readonly ILogger<GarneauTemplateDbContextInitializer> _logger;
     private readonly GarneauTemplateDbContext _context;
@@ -76,6 +78,7 @@ public class GarneauTemplateDbContextInitializer
             await SeedRoles();
             await SeedAdmins();
             await SeedMembers();
+            await SeedTestMember();
             await SeedModules();
         }
         catch (Exception ex)
@@ -146,6 +149,52 @@ public class GarneauTemplateDbContextInitializer
             _context.Members.Update(existingMember);
             await _context.SaveChangesAsync();
         }
+    }
+
+    private async Task SeedTestMember()
+    {
+        var existingUser = await _userManager.FindByEmailAsync(TestEmail);
+        if (existingUser != null)
+        {
+            // Ensure user is not soft-deleted
+            if (!existingUser.IsActive())
+            {
+                existingUser.Restore();
+                await _userManager.UpdateAsync(existingUser);
+                _logger.LogInformation("Reactivated soft-deleted test user: {Email}", TestEmail);
+            }
+
+            // Ensure member record exists
+            var existingMember = _context.Members.IgnoreQueryFilters().FirstOrDefault(m => m.User.Id == existingUser.Id);
+            if (existingMember == null)
+            {
+                var member = new Member("Test", "User", null, "123 Test St", "Test City", "A1A 1A1");
+                member.SetUser(existingUser);
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
+            }
+            else if (!existingMember.Active)
+            {
+                existingMember.Activate();
+                _context.Members.Update(existingMember);
+                await _context.SaveChangesAsync();
+            }
+            return;
+        }
+
+        var user = BuildUser(TestEmail);
+        var result = await _userManager.CreateAsync(user, TestPassword);
+
+        if (!result.Succeeded)
+            throw new Exception($"Could not create test user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+
+        await _userManager.AddToRoleAsync(user, Roles.MEMBER);
+
+        var newMember = new Member("Test", "User", null, "123 Test St", "Test City", "A1A 1A1");
+        newMember.SetUser(user);
+        _context.Members.Add(newMember);
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Seeded test member user: {Email}", TestEmail);
     }
 
     private User BuildUser(string email)

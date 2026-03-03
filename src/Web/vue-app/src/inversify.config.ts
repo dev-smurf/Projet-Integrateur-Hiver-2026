@@ -23,7 +23,7 @@ import {
 import {AdministratorService} from "@/services/administratorService";
 
 const dependencyInjection = new Container();
-dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axios.create())
+dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axios.create({ withCredentials: true }))
 dependencyInjection.bind<IApiService>(TYPES.IApiService).to(ApiService).inSingletonScope()
 dependencyInjection.bind<IAdministratorService>(TYPES.IAdministratorService).to(AdministratorService).inSingletonScope()
 dependencyInjection.bind<IAuthenticationService>(TYPES.IAuthenticationService).to(AuthenticationService).inSingletonScope()
