@@ -131,7 +131,7 @@ const router = createRouter({
                 }
             ]
         },
-
+        // Redirection par d�faut vers l'accueil/login
         {
             path: "/:pathMatch(.*)*",
             redirect: "/connexion"
@@ -147,7 +147,7 @@ router.beforeEach(async (to, from) => {
         return userStore.user?.email ? { name: "account" } : { name: "login" };
     }
 
-
+    // Protection des routes par rôle
     if (!to.meta.requiredRole) return;
 
     const hasRole = userStore.hasRole(to.meta.requiredRole as Role);

@@ -1,4 +1,5 @@
 export interface IModules {
+    Id:string
  nameFr?: string
     nameEn?: string
     contenueFr?: string
@@ -9,7 +10,8 @@ export interface IModules {
 }
 
 export class Module implements IModules {
- nameFr?: string
+    Id: string
+    nameFr?: string
     nameEn?: string
     contenueFr?: string
     contenueEn?: string
