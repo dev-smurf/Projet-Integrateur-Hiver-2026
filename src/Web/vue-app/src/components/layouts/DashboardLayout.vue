@@ -15,7 +15,7 @@
           <div class="app-header__user" v-if="!isMobile">
             <UserAvatar/>
           </div>
-          <LogoutButton classes="app-header__logout"/>
+          <LogoutButton/>
         </div>
       </div>
 
@@ -149,18 +149,6 @@ onMounted(async () => {
 
   &__user {
     color: $color-grey;
-  }
-
-  &__logout {
-    font-size: 13px;
-    font-weight: 600;
-    color: $color-grey-medium !important;
-    transition: color 0.15s;
-    cursor: pointer;
-
-    &:hover {
-      color: $color-white !important;
-    }
   }
 
   &__mobile-nav {

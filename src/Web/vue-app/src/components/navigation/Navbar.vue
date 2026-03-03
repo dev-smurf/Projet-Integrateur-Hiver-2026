@@ -25,7 +25,7 @@
     </Transition>
 
     <div class="navbar__footer">
-      <LogoutButton classes="navbar__logout"/>
+      <LogoutButton/>
     </div>
   </div>
 </template>
