@@ -36,7 +36,8 @@ const router = createRouter({
       name: "login",
       component: Login,
       meta: {
-        title: "routes.login.name"
+        title: "routes.login.name",
+        guest: true
       }
     },
     {
@@ -45,7 +46,8 @@ const router = createRouter({
       name: "forgotPassword",
       component: ForgotPassword,
       meta: {
-        title: "routes.forgotPassword.name"
+        title: "routes.forgotPassword.name",
+        guest: true
       }
     },
     {
@@ -55,7 +57,8 @@ const router = createRouter({
       component: ResetPassword,
       props: (route) => ({userId: route.query.userId, token: route.query.token}),
       meta: {
-        title: "routes.resetPassword.name"
+        title: "routes.resetPassword.name",
+        guest: true
       }
     },
     {
@@ -156,14 +159,24 @@ const router = createRouter({
 // eslint-disable-next-line
 router.beforeEach(async (to, from) => {
   const userStore = useUserStore()
+  const isAuthenticated = !!userStore.user.email;
 
   // Handle root path redirect
   if (to.path === "/") {
-    if (userStore.user.email)
-      return { name: "dashboard" };
+    return isAuthenticated ? { name: "dashboard" } : { name: "login" };
+  }
+
+  // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
+  if (to.meta.guest && isAuthenticated) {
+    return { name: "dashboard" };
+  }
+
+  // Non-authenticated users cannot access protected pages
+  if (!to.meta.guest && !isAuthenticated) {
     return { name: "login" };
   }
 
+  // Role-based access control
   if (!to.meta.requiredRole)
     return;
 
