@@ -46,10 +46,10 @@ public class SendGridSender : IEmailSender
 
         try
         {
-            var sendGridErrors = JsonSerializer.Deserialize<List<SendGridError>>(body,
+            var wrapper = JsonSerializer.Deserialize<SendGridErrorResponse>(body,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return sendGridErrors?.Select(x => new Error("SendGridError", x.Message)).ToList()
+            return wrapper?.Errors?.Select(x => new Error("SendGridError", x.Message)).ToList()
                 ?? new List<Error>();
         }
         catch (Exception ex)

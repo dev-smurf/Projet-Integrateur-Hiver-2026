@@ -1,5 +1,10 @@
 ﻿namespace Infrastructure.Mailing;
 
+public class SendGridErrorResponse
+{
+    public List<SendGridError> Errors { get; set; } = new();
+}
+
 public class SendGridError
 {
     public string Message { get; set; } = null!;
