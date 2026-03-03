@@ -71,6 +71,15 @@ export interface IBookService {
   editBook(request: IEditBookRequest): Promise<SucceededOrNotResponse>
 }
 
+export interface IModulesService {
+  getAllModules(): Promise<any[]>
+  getModule(id: string): Promise<any>
+  getModuleFlexible(id: string): Promise<any | null>
+  createModule(request: any): Promise<SucceededOrNotResponse>
+  updateModule(id: string, request: any): Promise<SucceededOrNotResponse>
+  deleteModule(id: string): Promise<SucceededOrNotResponse>
+}
+
 export interface IUserService {
   getCurrentUser(): Promise<User>
 }

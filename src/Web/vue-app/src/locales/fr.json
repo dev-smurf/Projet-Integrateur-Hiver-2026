@@ -49,6 +49,21 @@
             "fullPath": "/administration/membres/:id/modifier",
             "name": "Modifier un membre"
           }
+        },
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules",
+          "add": {
+            "path": "ajouter",
+            "fullPath": "/administration/modules/ajouter",
+            "name": "Ajouter un module"
+          },
+          "edit": {
+            "path": ":id/modifier",
+            "fullPath": "/administration/modules/:id/modifier",
+            "name": "Modifier un module"
+          }
         }
       }
     },
@@ -353,5 +368,33 @@
         "bookNotFoundException": "Le livre n'a pu être trouvé."
       }
     }
+  },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Nom",
+      "content": "Contenu",
+      "subject": "Sujet",
+      "image": "Image",
+      "imagePreview": "Aperçu de l'image"
+    }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module créé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création du module."
+      },
+      "edit": {
+        "success": "Module modifié avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification du module."
+      }
+    }
+  },
+  "common": {
+    "Ajouter": "Ajouter",
+    "cancel": "Annuler"
+  },
+  "routes.addModule": {
+    "name": "Ajouter un module"
   }
 }

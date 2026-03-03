@@ -26,9 +26,10 @@ export class MemberService extends ApiService implements IMemberService {
         ._httpClient
         .get<any, AxiosResponse<PaginatedResponse<Member>>>(
             `${import.meta.env.VITE_API_BASE_URL}/members?pageIndex=${pageIndex}&pageSize=${pageSize}&searchValue=${searchValue}`)
-        .catch(function (error: AxiosError): AxiosResponse<PaginatedResponse<Member>> {
-          return error.response as AxiosResponse<PaginatedResponse<Member>>
+        .catch(function (error: AxiosError): AxiosResponse<PaginatedResponse<Member>> | undefined {
+          return error.response
         })
+    if (!response) return { items: [], totalCount: 0 } as unknown as PaginatedResponse<Member>
     return response.data as PaginatedResponse<Member>
   }
 

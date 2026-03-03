@@ -54,7 +54,7 @@
             <router-link
               v-if="userStore.hasRole(Role.Admin)"
               :to="{ name: 'admin.children.members.index' }"
-              class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+              class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
               :class="isActive('admin') ? 'text-white bg-white/10' : ''"
             >
               <Shield class="w-4 h-4" />
