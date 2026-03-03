@@ -4,11 +4,21 @@ import svgLoader from 'vite-svg-loader'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 
+function removeCrossorigin() {
+  return {
+    name: 'remove-crossorigin',
+    transformIndexHtml(html: string) {
+      return html.replace(/ crossorigin/g, '')
+    }
+  }
+}
+
 export default defineConfig({
   plugins: [
     vue(),
     svgLoader(),
-    tailwindcss()
+    tailwindcss(),
+    removeCrossorigin()
   ],
   base: '/vue/',
   build: {

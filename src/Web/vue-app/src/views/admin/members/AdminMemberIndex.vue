@@ -36,11 +36,15 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          <tr v-if="loading">
-            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-              <Loader2 class="w-5 h-5 animate-spin mx-auto" />
-            </td>
-          </tr>
+          <template v-if="loading">
+            <tr v-for="n in 5" :key="n" class="animate-pulse">
+              <td class="px-4 py-3"><div class="h-4 bg-gray-200 rounded w-20" /></td>
+              <td class="px-4 py-3"><div class="h-4 bg-gray-200 rounded w-20" /></td>
+              <td class="px-4 py-3 hidden md:table-cell"><div class="h-4 bg-gray-200 rounded w-36" /></td>
+              <td class="px-4 py-3 hidden lg:table-cell"><div class="h-4 bg-gray-200 rounded w-24" /></td>
+              <td class="px-4 py-3 text-right"><div class="h-4 bg-gray-200 rounded w-14 ml-auto" /></td>
+            </tr>
+          </template>
           <tr v-else-if="!members.length">
             <td colspan="5" class="px-4 py-8 text-center text-gray-500">{{ $t('global.table.noData') }}</td>
           </tr>
@@ -120,7 +124,7 @@
 import {ref, computed, onMounted} from "vue";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight} from "lucide-vue-next";
+import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight} from "lucide-vue-next";
 import {useMemberService} from "@/inversify.config";
 import type {Member} from "@/types/entities";
 

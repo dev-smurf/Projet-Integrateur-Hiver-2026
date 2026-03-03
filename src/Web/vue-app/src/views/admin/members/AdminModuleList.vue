@@ -2,73 +2,94 @@
   <div>
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.modules.name') }}</h1>
-      <router-link
-        :to="{ name: 'admin.children.modules.add' }"
-        class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
-      >
-        <Plus class="w-4 h-4" />
-        {{ $t('global.add') }}
-      </router-link>
-    </div>
-
-    <div class="mb-4">
-      <div class="relative">
-        <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <input
-          v-model="searchValue"
-          @input="onSearch"
-          type="text"
-          :placeholder="$t('global.search')"
-          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
-        />
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            v-model="searchValue"
+            @input="onSearch"
+            type="text"
+            :placeholder="$t('global.search')"
+            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm"
+          />
+        </div>
+        <router-link
+          :to="{ name: 'admin.children.modules.add' }"
+          class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
+        >
+          <Plus class="w-4 h-4" />
+          {{ $t('global.add') }}
+        </router-link>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <table class="w-full">
-        <thead>
-          <tr class="border-b border-gray-200 bg-gray-50">
-            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('Form_Add_Module.fields.name') }}</th>
-            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden md:table-cell">{{ $t('Form_Add_Module.fields.subject') }}</th>
-            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">{{ $t('Form_Add_Module.fields.content') }}</th>
-            <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('global.table.actions') }}</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          <tr v-if="loading">
-            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-              <Loader2 class="w-5 h-5 animate-spin mx-auto" />
-            </td>
-          </tr>
-          <tr v-else-if="!paginatedModules.length">
-            <td colspan="4" class="px-4 py-8 text-center text-gray-500">{{ $t('global.table.noData') }}</td>
-          </tr>
-          <tr v-for="mod in paginatedModules" :key="mod.id" class="hover:bg-gray-50 transition">
-            <td class="px-4 py-3 text-sm text-gray-900">{{ mod.nameFr || '—' }}</td>
-            <td class="px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{{ mod.sujetFr || '—' }}</td>
-            <td class="px-4 py-3 text-sm text-gray-600 hidden lg:table-cell max-w-xs truncate">{{ mod.contenueFr || '—' }}</td>
-            <td class="px-4 py-3 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <router-link
-                  :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
-                  class="p-1.5 text-gray-400 hover:text-brand-600 transition cursor-pointer"
-                >
-                  <Pencil class="w-4 h-4" />
-                </router-link>
-                <button
-                  @click="confirmDelete(mod)"
-                  class="p-1.5 text-gray-400 hover:text-brand-600 transition cursor-pointer"
-                >
-                  <Trash2 class="w-4 h-4" />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Skeleton loading -->
+    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-for="n in 6" :key="n" class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+        <div class="h-44 bg-gray-200" />
+        <div class="p-4 space-y-3">
+          <div class="h-5 bg-gray-200 rounded w-3/4" />
+          <div class="h-3 bg-gray-200 rounded w-full" />
+          <div class="h-3 bg-gray-200 rounded w-2/3" />
+        </div>
+        <div class="border-t border-gray-100 px-4 py-3 flex justify-around">
+          <div class="h-4 bg-gray-200 rounded w-16" />
+          <div class="h-4 bg-gray-200 rounded w-20" />
+        </div>
+      </div>
     </div>
 
-    <div v-if="totalItems > pageSize" class="flex items-center justify-between mt-4">
+    <!-- Empty state -->
+    <div v-else-if="!filtered.length" class="text-center py-12 text-gray-500">
+      {{ $t('global.table.noData') }}
+    </div>
+
+    <!-- Card grid -->
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        v-for="mod in paginatedModules"
+        :key="mod.id"
+        class="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+      >
+        <!-- Image / Fallback -->
+        <div class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
+          <img
+            v-if="mod.cardImageUrl"
+            :src="imageUrl(mod.cardImageUrl)"
+            :alt="mod.nameFr"
+            class="w-full h-full object-cover"
+          />
+          <BookOpen v-else class="w-12 h-12 text-brand-400" />
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 flex flex-col flex-1">
+          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.nameFr || '—' }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.contenueFr || mod.sujetFr || '—' }}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-around">
+          <router-link
+            :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
+            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
+          >
+            <Pencil class="w-4 h-4" />
+            {{ $t('global.edit') }}
+          </router-link>
+          <button
+            @click="confirmDelete(mod)"
+            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition cursor-pointer"
+          >
+            <Trash2 class="w-4 h-4" />
+            {{ $t('global.delete') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div v-if="totalItems > pageSize" class="flex items-center justify-between mt-6">
       <span class="text-sm text-gray-500">
         {{ (pageIndex - 1) * pageSize + 1 }}–{{ Math.min(pageIndex * pageSize, totalItems) }} {{ $t('global.table.of') }} {{ totalItems }}
       </span>
@@ -117,9 +138,11 @@
 <script lang="ts" setup>
 import {ref, computed, onMounted} from "vue";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight} from "lucide-vue-next";
+import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen} from "lucide-vue-next";
 import {useModulesService} from "@/inversify.config";
 import type {ModuleDto} from "@/types/entities";
+
+const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 
 const {notify} = useNotification();
 const modulesService = useModulesService();
@@ -128,8 +151,14 @@ const allModules = ref<ModuleDto[]>([]);
 const loading = ref(true);
 const searchValue = ref("");
 const pageIndex = ref(1);
-const pageSize = 10;
+const pageSize = 9;
 const moduleToDelete = ref<ModuleDto | null>(null);
+
+function imageUrl(path: string | undefined): string {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return backendUrl + path;
+}
 
 const filtered = computed(() => {
   const q = searchValue.value.toLowerCase().trim();

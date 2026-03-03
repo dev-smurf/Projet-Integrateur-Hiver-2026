@@ -2,8 +2,20 @@
   <div class="max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.modules.edit.name') }}</h1>
 
-    <div v-if="loading" class="flex justify-center py-12">
-      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    <!-- Skeleton loading -->
+    <div v-if="loading" class="bg-white rounded-xl border border-gray-200 p-6 space-y-4 animate-pulse">
+      <div class="h-4 bg-gray-200 rounded w-20" />
+      <div class="h-10 bg-gray-200 rounded" />
+      <div class="h-4 bg-gray-200 rounded w-16" />
+      <div class="h-10 bg-gray-200 rounded" />
+      <div class="h-4 bg-gray-200 rounded w-16" />
+      <div class="h-24 bg-gray-200 rounded" />
+      <div class="h-4 bg-gray-200 rounded w-16" />
+      <div class="h-32 bg-gray-200 rounded" />
+      <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div class="h-9 bg-gray-200 rounded w-20" />
+        <div class="h-9 bg-gray-200 rounded w-24" />
+      </div>
     </div>
 
     <div v-else-if="loadError" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
@@ -81,11 +93,12 @@
 import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Loader2, Upload} from "lucide-vue-next";
+import {Upload} from "lucide-vue-next";
 import {useModulesService} from "@/inversify.config";
 import type {IEditModuleRequest} from "@/types";
 import type {ModuleDto} from "@/types/entities";
 
+const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 const props = defineProps<{id: string}>();
 const router = useRouter();
 const {notify} = useNotification();
@@ -120,7 +133,7 @@ onMounted(async () => {
       cardImage: null,
     };
     if (mod.cardImageUrl) {
-      imagePreview.value = mod.cardImageUrl;
+      imagePreview.value = mod.cardImageUrl.startsWith('http') ? mod.cardImageUrl : backendUrl + mod.cardImageUrl;
     }
   } catch {
     loadError.value = "Failed to load module.";
