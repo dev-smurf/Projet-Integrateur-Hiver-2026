@@ -30,13 +30,13 @@
             <div class="relative">
               <button
                 @click="langOpen = !langOpen"
-                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
               >
                 <Languages class="w-4 h-4" />
               </button>
               <div
                 v-if="langOpen"
-                class="absolute right-0 mt-1 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
+                class="absolute right-0 top-full mt-2 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
               >
                 <button
                   v-for="loc in LOCALES"
@@ -74,7 +74,7 @@
             <!-- Logout -->
             <button
               @click="handleLogout"
-              class="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-400 transition"
+              class="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-400 transition cursor-pointer"
             >
               <LogOut class="w-4 h-4" />
             </button>
