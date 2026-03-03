@@ -7,7 +7,6 @@
     <template v-else>
       <!-- ====== VIEW ====== -->
       <div v-if="!editing" class="bg-white rounded-xl border border-gray-200">
-        <!-- Avatar + name header -->
         <div class="flex flex-col items-center pt-8 pb-5">
           <div class="w-16 h-16 rounded-full bg-brand-600 text-white flex items-center justify-center text-2xl font-bold">
             {{ initials }}
@@ -16,7 +15,6 @@
           <span class="text-sm text-gray-500">{{ userStore.user.email }}</span>
         </div>
 
-        <!-- Fields -->
         <div class="border-t border-gray-100 px-6 py-4 space-y-3">
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">{{ $t('global.firstName') }}</span>
@@ -58,7 +56,6 @@
           </template>
         </div>
 
-        <!-- Edit button -->
         <div class="border-t border-gray-100 px-6 py-4">
           <button
             @click="startEditing"
@@ -87,17 +84,28 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.firstName') }} *</label>
-              <input v-model="form.firstName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
+              <input
+                v-model="form.firstName"
+                @blur="validateField('firstName')"
+                type="text"
+                class="w-full px-3 py-2 border rounded-lg outline-none transition"
+                :class="fieldErrors.firstName ? 'border-brand-500 focus:ring-2 focus:ring-brand-500' : 'border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500'"
+              />
               <p v-if="fieldErrors.firstName" class="text-sm text-brand-500 mt-1">{{ fieldErrors.firstName }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.lastName') }} *</label>
-              <input v-model="form.lastName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
+              <input
+                v-model="form.lastName"
+                @blur="validateField('lastName')"
+                type="text"
+                class="w-full px-3 py-2 border rounded-lg outline-none transition"
+                :class="fieldErrors.lastName ? 'border-brand-500 focus:ring-2 focus:ring-brand-500' : 'border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500'"
+              />
               <p v-if="fieldErrors.lastName" class="text-sm text-brand-500 mt-1">{{ fieldErrors.lastName }}</p>
             </div>
           </div>
 
-          <!-- Email disabled -->
           <div>
             <div class="flex items-center gap-1.5 mb-1">
               <label class="text-sm font-medium text-gray-400">{{ $t('global.email') }}</label>
@@ -112,7 +120,14 @@
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }}</label>
-                <input v-model="form.phoneNumber" type="tel" placeholder="555-555-5555" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
+                <input
+                  v-model="form.phoneNumber"
+                  @blur="validateField('phoneNumber')"
+                  type="tel"
+                  placeholder="555-555-5555"
+                  class="w-full px-3 py-2 border rounded-lg outline-none transition"
+                  :class="fieldErrors.phoneNumber ? 'border-brand-500 focus:ring-2 focus:ring-brand-500' : 'border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500'"
+                />
                 <p v-if="fieldErrors.phoneNumber" class="text-sm text-brand-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
               </div>
               <div>
@@ -137,7 +152,14 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }}</label>
-                <input v-model="form.zipCode" type="text" placeholder="A1A 1A1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
+                <input
+                  v-model="form.zipCode"
+                  @blur="validateField('zipCode')"
+                  type="text"
+                  placeholder="A1A 1A1"
+                  class="w-full px-3 py-2 border rounded-lg outline-none transition"
+                  :class="fieldErrors.zipCode ? 'border-brand-500 focus:ring-2 focus:ring-brand-500' : 'border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500'"
+                />
                 <p v-if="fieldErrors.zipCode" class="text-sm text-brand-500 mt-1">{{ fieldErrors.zipCode }}</p>
               </div>
             </div>
@@ -205,10 +227,10 @@ const initials = computed(() => {
 
 function startEditing() {
   Object.assign(form, {
-    id: person.value.id,
+    id: person.value.id || userStore.user.id,
     firstName: person.value.firstName,
     lastName: person.value.lastName,
-    email: (person.value as Member).email,
+    email: (person.value as Member).email || userStore.user.email,
     phoneNumber: (person.value as Member).phoneNumber,
     phoneExtension: (person.value as Member).phoneExtension,
     apartment: (person.value as Member).apartment,
@@ -225,29 +247,42 @@ function cancelEditing() {
   apiErrors.value = [];
 }
 
-function validateForm(): boolean {
+function validateField(field: string) {
+  fieldErrors[field] = undefined;
+
+  if (field === "firstName") {
+    const r = validate(form.firstName || "", [required]);
+    if (!r.valid) fieldErrors[field] = r.message;
+  } else if (field === "lastName") {
+    const r = validate(form.lastName || "", [required]);
+    if (!r.valid) fieldErrors[field] = r.message;
+  } else if (field === "phoneNumber" && form.phoneNumber) {
+    const r = validate(form.phoneNumber, [mustMatchPhoneNumberFormat]);
+    if (!r.valid) fieldErrors[field] = r.message;
+  } else if (field === "zipCode" && form.zipCode) {
+    const r = validate(form.zipCode, [mustMatchZipCodeFormat]);
+    if (!r.valid) fieldErrors[field] = r.message;
+  }
+}
+
+function validateAll(): boolean {
   let valid = true;
   Object.keys(fieldErrors).forEach(k => fieldErrors[k] = undefined);
 
-  const checks: [string, ReturnType<typeof validate>][] = [
-    ["firstName", validate(form.firstName || "", [required])],
-    ["lastName", validate(form.lastName || "", [required])],
-  ];
+  const fields = ["firstName", "lastName"];
+  if (isMember.value) {
+    fields.push("phoneNumber", "zipCode");
+  }
 
-  if (form.phoneNumber) checks.push(["phoneNumber", validate(form.phoneNumber, [mustMatchPhoneNumberFormat])]);
-  if (form.zipCode) checks.push(["zipCode", validate(form.zipCode, [mustMatchZipCodeFormat])]);
-
-  for (const [field, result] of checks) {
-    if (!result.valid) {
-      fieldErrors[field] = result.message;
-      valid = false;
-    }
+  for (const field of fields) {
+    validateField(field);
+    if (fieldErrors[field]) valid = false;
   }
   return valid;
 }
 
 async function handleSave() {
-  if (!validateForm()) {
+  if (!validateAll()) {
     notify({type: "error", text: t("global.formErrorNotification")});
     return;
   }
@@ -255,22 +290,28 @@ async function handleSave() {
   submitting.value = true;
   apiErrors.value = [];
 
-  const response = await memberService.updateMember(form as Member);
-  if (response.succeeded) {
-    notify({type: "success", text: t("pages.account.updateSuccess")});
-    try {
-      const updated = await memberService.getAuthenticated();
-      if (updated) {
-        person.value = updated;
-        personStore.setPerson(updated);
+  try {
+    const response = await memberService.updateMember(form as Member);
+    if (response.succeeded) {
+      notify({type: "success", text: t("pages.account.updateSuccess")});
+      try {
+        const updated = isMember.value
+          ? await memberService.getAuthenticated()
+          : await adminService.getAuthenticated();
+        if (updated) {
+          person.value = updated;
+          personStore.setPerson(updated);
+        }
+      } catch {
+        Object.assign(person.value, form);
+        personStore.setPerson(person.value);
       }
-    } catch {
-      Object.assign(person.value, form);
-      personStore.setPerson(person.value);
+      editing.value = false;
+    } else {
+      apiErrors.value = response.getErrorMessages("pages.members.update.validation");
     }
-    editing.value = false;
-  } else {
-    apiErrors.value = response.getErrorMessages("pages.members.update.validation");
+  } catch {
+    notify({type: "error", text: t("pages.account.updateError")});
   }
   submitting.value = false;
 }
