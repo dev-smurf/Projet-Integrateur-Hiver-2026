@@ -30,20 +30,20 @@
             <div class="relative">
               <button
                 @click="langOpen = !langOpen"
-                class="flex items-center gap-1 px-2 py-1.5 text-sm text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
               >
                 <Languages class="w-4 h-4" />
-                <span class="uppercase text-xs font-semibold">{{ currentLocale }}</span>
               </button>
               <div
                 v-if="langOpen"
-                class="absolute right-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
+                class="absolute right-0 mt-1 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
               >
                 <button
-                  v-for="loc in LOCALES.filter(l => l.value !== currentLocale)"
+                  v-for="loc in LOCALES"
                   :key="loc.value"
                   @click="switchLanguage(loc.value)"
-                  class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                  class="w-full text-left px-3 py-2 text-sm transition"
+                  :class="currentLocale === loc.value ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
                 >
                   {{ loc.caption }}
                 </button>
@@ -148,12 +148,16 @@ async function handleLogout() {
 
 onMounted(async () => {
   document.addEventListener("click", handleClickOutside);
-  if (userStore.hasRole(Role.Admin)) {
-    const admin = await adminService.getAuthenticated();
-    if (admin) personStore.setPerson(admin);
-  } else if (userStore.hasRole(Role.Member)) {
-    const member = await memberService.getAuthenticated();
-    if (member) personStore.setPerson(member);
+  try {
+    if (userStore.hasRole(Role.Admin)) {
+      const admin = await adminService.getAuthenticated();
+      if (admin) personStore.setPerson(admin);
+    } else if (userStore.hasRole(Role.Member)) {
+      const member = await memberService.getAuthenticated();
+      if (member) personStore.setPerson(member);
+    }
+  } catch {
+    // API failed — personStore already has persisted data from login
   }
 });
 

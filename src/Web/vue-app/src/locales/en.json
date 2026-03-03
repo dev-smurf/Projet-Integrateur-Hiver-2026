@@ -77,6 +77,16 @@
       "membersDesc": "View and manage members.",
       "booksDesc": "Browse and manage books."
     },
+    "account": {
+      "personalInfo": "Personal information",
+      "contactInfo": "Contact information",
+      "address": "Address",
+      "role": "Role",
+      "edit": "Edit profile",
+      "readOnly": "This field cannot be modified.",
+      "updateSuccess": "Profile updated successfully.",
+      "updateError": "An error occurred while updating your profile."
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",

@@ -77,6 +77,16 @@
       "membersDesc": "Voir et gérer les membres.",
       "booksDesc": "Parcourir et gérer les livres."
     },
+    "account": {
+      "personalInfo": "Informations personnelles",
+      "contactInfo": "Coordonnées",
+      "address": "Adresse",
+      "role": "Rôle",
+      "edit": "Modifier le profil",
+      "readOnly": "Ce champ ne peut pas être modifié.",
+      "updateSuccess": "Profil mis à jour avec succès.",
+      "updateError": "Une erreur est survenue lors de la mise à jour du profil."
+    },
     "login": {
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",
