@@ -7,6 +7,7 @@ import TwoFactor from "@/views/TwoFactor.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
+import Dashboard from "@/views/shared/Dashboard.vue";
 
 import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
@@ -64,6 +65,15 @@ const router = createRouter({
       props: (route) => ({userId: route.query.userId, token: route.query.token}),
       meta: {
         title: "routes.resetPassword.name"
+      }
+    },
+    {
+      path: i18n.t("routes.dashboard.path"),
+      alias: getLocalizedRoutes("routes.dashboard.path"),
+      name: "dashboard",
+      component: Dashboard,
+      meta: {
+        title: "routes.dashboard.name"
       }
     },
     {
@@ -159,7 +169,7 @@ router.beforeEach(async (to, from) => {
   // Handle root path redirect
   if (to.path === "/") {
     if (userStore.user.email)
-      return { name: "account" };
+      return { name: "dashboard" };
     return { name: "login" };
   }
 
@@ -171,7 +181,7 @@ router.beforeEach(async (to, from) => {
   const hasNoRoleAmongRoleList = isRoleArray && !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
     return {
-      name: "account",
+      name: "dashboard",
     };
   }
 });

@@ -1,9 +1,8 @@
 <template>
-  <RouterLink :to="t('routes.admin.path') + '/' + t('routes.admin.children.members.path')" class="nav-link">
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+  <RouterLink :to="t('routes.admin.path') + '/' + t('routes.admin.children.members.path')" class="nav-link" :title="t('routes.admin.name')">
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
     </svg>
-    {{ t('routes.admin.name') }}
   </RouterLink>
 </template>
 
@@ -18,24 +17,19 @@ const {t} = useI18n()
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  justify-content: center;
+  padding: 6px;
   border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
   color: $color-grey !important;
   text-decoration: none !important;
-  white-space: nowrap;
   transition: color 0.15s, background-color 0.15s;
 
   &:hover {
     color: $color-white !important;
-    background: $color-grey-darker !important;
   }
 
   &.router-link-active {
     color: $color-white !important;
-    background: $color-grey-darker !important;
   }
 
   svg {

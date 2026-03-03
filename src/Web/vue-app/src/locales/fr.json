@@ -20,6 +20,11 @@
       "fullPath": "/reinitialiser-mot-de-passe",
       "name": "Réinitialiser mot de passe"
     },
+    "dashboard": {
+      "path": "/tableau-de-bord",
+      "fullPath": "/tableau-de-bord",
+      "name": "Tableau de bord"
+    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",
@@ -66,6 +71,12 @@
     }
   },
   "pages": {
+    "dashboard": {
+      "welcome": "Bienvenue",
+      "accountDesc": "Gérer votre profil et vos paramètres.",
+      "membersDesc": "Voir et gérer les membres.",
+      "booksDesc": "Parcourir et gérer les livres."
+    },
     "login": {
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",

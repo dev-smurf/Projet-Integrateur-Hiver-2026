@@ -20,6 +20,11 @@
       "fullPath": "/reset-password",
       "name": "Reset password"
     },
+    "dashboard": {
+      "path": "/dashboard",
+      "fullPath": "/dashboard",
+      "name": "Dashboard"
+    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",
@@ -66,6 +71,12 @@
     }
   },
   "pages": {
+    "dashboard": {
+      "welcome": "Welcome",
+      "accountDesc": "Manage your profile and settings.",
+      "membersDesc": "View and manage members.",
+      "booksDesc": "Browse and manage books."
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",

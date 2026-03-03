@@ -5,13 +5,16 @@
       <div class="app-header__inner">
         <div class="app-header__left">
           <nav class="app-header__nav" v-if="!isMobile && !userIsLoading">
-            <AdminNavbarLinks v-if="userStore.hasRole(Role.Admin)"/>
+            <RouterLink :to="t('routes.dashboard.path')" class="app-header__nav-link">
+              {{ t('routes.dashboard.name') }}
+            </RouterLink>
             <MemberNavbarLinks v-if="userStore.hasRole(Role.Member)"/>
           </nav>
         </div>
 
         <div class="app-header__right">
           <LangSwitcher/>
+          <AdminNavbarLinks v-if="!isMobile && userStore.hasRole(Role.Admin)"/>
           <div class="app-header__user" v-if="!isMobile">
             <UserAvatar/>
           </div>
@@ -21,7 +24,6 @@
 
       <!-- Mobile nav -->
       <nav class="app-header__mobile-nav" v-if="isMobile && !userIsLoading">
-        <AdminNavbarLinks v-if="userStore.hasRole(Role.Admin)"/>
         <MemberNavbarLinks v-if="userStore.hasRole(Role.Member)"/>
       </nav>
     </header>
@@ -62,12 +64,14 @@ import LogoutButton from "@/components/navigation/LogoutButton.vue";
 import AdminNavbarLinks from "@/components/navigation/AdminNavbarLinks.vue";
 import MemberNavbarLinks from "@/components/navigation/MemberNavbarLinks.vue";
 import ChatBubble from "@/components/chat/ChatBubble.vue";
+import {useI18n} from "vue3-i18n";
 import {Administrator, Member} from "@/types";
 import {Role} from "@/types/enums";
 import {useAdministratorStore} from "@/stores/administratorStore";
 import {usePersonStore} from "@/stores/personStore";
 import {useUserStore} from "@/stores/userStore";
 
+const {t} = useI18n()
 const userStore = useUserStore()
 const personStore = usePersonStore()
 const memberStore = useMemberStore()
@@ -143,6 +147,30 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 4px;
+  }
+
+  &__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $color-grey !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.15s, background-color 0.15s;
+
+    &:hover {
+      color: $color-white !important;
+      background: $color-grey-darker !important;
+    }
+
+    &.router-link-active {
+      color: $color-white !important;
+      background: $color-grey-darker !important;
+    }
   }
 
   &__right {
