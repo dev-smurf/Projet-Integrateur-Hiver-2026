@@ -42,6 +42,9 @@
         </template>
       </RouterView>
     </main>
+
+    <!-- Chat bubble -->
+    <ChatBubble/>
   </div>
 </template>
 
@@ -58,6 +61,7 @@ import LangSwitcher from "@/components/layouts/items/LangSwitcher.vue";
 import LogoutButton from "@/components/navigation/LogoutButton.vue";
 import AdminNavbarLinks from "@/components/navigation/AdminNavbarLinks.vue";
 import MemberNavbarLinks from "@/components/navigation/MemberNavbarLinks.vue";
+import ChatBubble from "@/components/chat/ChatBubble.vue";
 import {Administrator, Member} from "@/types";
 import {Role} from "@/types/enums";
 import {useAdministratorStore} from "@/stores/administratorStore";

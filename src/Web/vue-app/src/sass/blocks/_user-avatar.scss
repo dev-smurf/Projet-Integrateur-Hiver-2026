@@ -14,19 +14,22 @@
     color: $color-white;
   }
 
-  &__img-container {
-    overflow: hidden;
+  &__circle {
     width: 28px;
     height: 28px;
     border-radius: 100%;
-    background-color: $color-grey-light;
+    background-color: $color-green;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+  }
 
-    .icon {
-      width: 18px;
-      height: 18px;
-    }
+  &__initials {
+    color: $color-white;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
   }
 }
