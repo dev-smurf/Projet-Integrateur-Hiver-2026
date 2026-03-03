@@ -11,8 +11,22 @@
       </router-link>
     </div>
 
-    <div v-if="loading" class="flex justify-center py-12">
-      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    <!-- Skeleton loading -->
+    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div v-for="n in 6" :key="n" class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+        <div class="aspect-[2/1] bg-gray-200" />
+        <div class="p-4 space-y-3">
+          <div class="h-5 bg-gray-200 rounded w-3/4" />
+          <div class="h-4 bg-gray-200 rounded w-1/2" />
+          <div class="flex items-center justify-between mt-3">
+            <div class="h-4 bg-gray-200 rounded w-16" />
+            <div class="flex gap-1">
+              <div class="h-6 w-6 bg-gray-200 rounded" />
+              <div class="h-6 w-6 bg-gray-200 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-else-if="!books.length" class="text-center py-12 text-gray-500">
@@ -85,7 +99,7 @@
 import {ref, onMounted} from "vue";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Pencil, Trash2, Loader2, BookOpen as BookOpenIcon} from "lucide-vue-next";
+import {Plus, Pencil, Trash2, BookOpen as BookOpenIcon} from "lucide-vue-next";
 import {useBookService} from "@/inversify.config";
 import type {Book} from "@/types/entities";
 

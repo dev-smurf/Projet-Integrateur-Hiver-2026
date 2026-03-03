@@ -1,7 +1,19 @@
 <template>
   <div class="max-w-lg mx-auto">
-    <div v-if="loading" class="flex justify-center py-12">
-      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    <!-- Skeleton loading -->
+    <div v-if="loading" class="bg-white rounded-xl border border-gray-200 animate-pulse">
+      <div class="flex flex-col items-center pt-8 pb-5">
+        <div class="w-16 h-16 rounded-full bg-gray-200" />
+        <div class="mt-3 h-5 bg-gray-200 rounded w-32" />
+        <div class="mt-2 h-4 bg-gray-200 rounded w-40" />
+        <div class="mt-2 h-5 bg-gray-200 rounded-full w-16" />
+      </div>
+      <div class="border-t border-gray-100 px-6 py-4 space-y-3">
+        <div v-for="n in 5" :key="n" class="flex justify-between">
+          <div class="h-4 bg-gray-200 rounded w-20" />
+          <div class="h-4 bg-gray-200 rounded w-28" />
+        </div>
+      </div>
     </div>
 
     <div v-else class="bg-white rounded-xl border border-gray-200">
