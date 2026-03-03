@@ -2,8 +2,30 @@
   <div class="max-w-3xl">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.books.children.edit.name') }}</h1>
 
-    <div v-if="loadingBook" class="flex justify-center py-12">
-      <Loader2 class="w-6 h-6 animate-spin text-gray-400" />
+    <!-- Skeleton loading -->
+    <div v-if="loadingBook" class="bg-white rounded-xl border border-gray-200 p-6 space-y-6 animate-pulse">
+      <div>
+        <div class="h-4 bg-gray-200 rounded w-16 mb-3" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><div class="h-4 bg-gray-200 rounded w-20 mb-2" /><div class="h-10 bg-gray-200 rounded" /></div>
+          <div><div class="h-4 bg-gray-200 rounded w-20 mb-2" /><div class="h-10 bg-gray-200 rounded" /></div>
+        </div>
+      </div>
+      <div>
+        <div class="h-4 bg-gray-200 rounded w-20 mb-3" />
+        <div class="h-28 bg-gray-200 rounded mb-4" />
+        <div class="h-28 bg-gray-200 rounded" />
+      </div>
+      <div>
+        <div class="h-4 bg-gray-200 rounded w-24 mb-3" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div v-for="n in 6" :key="n"><div class="h-4 bg-gray-200 rounded w-16 mb-2" /><div class="h-10 bg-gray-200 rounded" /></div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <div class="h-9 bg-gray-200 rounded w-20" />
+        <div class="h-9 bg-gray-200 rounded w-24" />
+      </div>
     </div>
 
     <template v-else>
