@@ -71,7 +71,8 @@ export class ApiService implements IApiService {
     try {
       return await axios
           .get(
-              `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`
+              `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`,
+              { withCredentials: true }
           )
           .then((response: AxiosResponse<SucceededOrNotResponse>) => {
             if (!response.data) return;
