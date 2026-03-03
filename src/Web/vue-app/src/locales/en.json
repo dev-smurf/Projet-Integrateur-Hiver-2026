@@ -49,6 +49,21 @@
             "fullPath": "/administration/members/:id/edit",
             "name": "Edit a member"
           }
+        },
+        "modules": {
+          "path": "modules",
+          "fullPath": "/administration/modules",
+          "name": "Modules",
+          "add": {
+            "path": "add",
+            "fullPath": "/administration/modules/add",
+            "name": "Add a module"
+          },
+          "edit": {
+            "path": ":id/edit",
+            "fullPath": "/administration/modules/:id/edit",
+            "name": "Edit a module"
+          }
         }
       }
     },
@@ -350,5 +365,33 @@
         "bookNotFoundException": "Could not find book."
       }
     }
+  },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Name",
+      "content": "Content",
+      "subject": "Subject",
+      "image": "Image",
+      "imagePreview": "Image preview"
+    }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module created successfully.",
+        "errorOccured": "An error occurred while creating the module."
+      },
+      "edit": {
+        "success": "Module updated successfully.",
+        "errorOccured": "An error occurred while updating the module."
+      }
+    }
+  },
+  "common": {
+    "Ajouter": "Add",
+    "cancel": "Cancel"
+  },
+  "routes.addModule": {
+    "name": "Add a module"
   }
 }
