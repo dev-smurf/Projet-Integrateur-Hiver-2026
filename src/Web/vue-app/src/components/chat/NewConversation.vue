@@ -64,10 +64,14 @@ function getInitials(first: string, last: string): string {
 }
 
 async function startConversation(memberId: string) {
-  const result = await conversationService.createConversation(memberId)
-  const conversations = await conversationService.getConversations()
-  chatStore.setConversations(conversations)
-  chatStore.openConversation(result.id)
+  try {
+    const result = await conversationService.createConversation(memberId)
+    const conversations = await conversationService.getConversations()
+    chatStore.setConversations(conversations)
+    chatStore.openConversation(result.id)
+  } catch {
+    // Creation failed
+  }
 }
 
 onMounted(async () => {

@@ -14,4 +14,8 @@ public interface IConversationRepository
     Task MarkMessagesAsReadAsync(Guid conversationId, Guid userId);
     Task<int> GetUnreadCountAsync(Guid userId);
     Task<Dictionary<Guid, int>> GetUnreadCountsPerConversationAsync(Guid userId);
+    Task<Dictionary<Guid, string>> GetMemberNamesByUserIdsAsync(IEnumerable<Guid> userIds);
+    Task<Dictionary<Guid, string>> GetAdminNamesByUserIdsAsync(IEnumerable<Guid> userIds);
+    Task EnsureConversationsForAdminAsync(Guid adminUserId);
+    Task<Conversation?> EnsureConversationForMemberAsync(Guid memberUserId);
 }

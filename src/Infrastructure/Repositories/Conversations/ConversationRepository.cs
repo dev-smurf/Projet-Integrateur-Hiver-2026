@@ -108,4 +108,75 @@ public class ConversationRepository : IConversationRepository
             .GroupBy(m => m.ConversationId)
             .ToDictionaryAsync(g => g.Key, g => g.Count());
     }
+
+    public async Task<Dictionary<Guid, string>> GetMemberNamesByUserIdsAsync(IEnumerable<Guid> userIds)
+    {
+        var ids = userIds.ToList();
+        return await _context.Members
+            .Where(m => ids.Contains(m.User.Id))
+            .ToDictionaryAsync(m => m.User.Id, m => m.FirstName + " " + m.LastName);
+    }
+
+    public async Task<Dictionary<Guid, string>> GetAdminNamesByUserIdsAsync(IEnumerable<Guid> userIds)
+    {
+        var ids = userIds.ToList();
+        return await _context.Administrators
+            .Where(a => ids.Contains(a.User.Id))
+            .ToDictionaryAsync(a => a.User.Id, a => a.FirstName + " " + a.LastName);
+    }
+
+    public async Task EnsureConversationsForAdminAsync(Guid adminUserId)
+    {
+        var existingMemberIds = await _context.Conversations
+            .Where(c => c.AdminId == adminUserId && c.Deleted == null)
+            .Select(c => c.MemberId)
+            .ToListAsync();
+
+        var allMemberUserIds = await _context.Members
+            .Where(m => m.Active)
+            .Select(m => m.User.Id)
+            .ToListAsync();
+
+        var missingMemberIds = allMemberUserIds.Except(existingMemberIds).ToList();
+
+        if (missingMemberIds.Count == 0) return;
+
+        foreach (var memberId in missingMemberIds)
+        {
+            _context.Conversations.Add(new Conversation
+            {
+                AdminId = adminUserId,
+                MemberId = memberId,
+                LastMessageAt = DateTime.UtcNow
+            });
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Conversation?> EnsureConversationForMemberAsync(Guid memberUserId)
+    {
+        var existing = await _context.Conversations
+            .FirstOrDefaultAsync(c => c.MemberId == memberUserId && c.Deleted == null);
+
+        if (existing != null) return existing;
+
+        // Find the first admin
+        var adminUserId = await _context.Administrators
+            .Select(a => a.User.Id)
+            .FirstOrDefaultAsync();
+
+        if (adminUserId == Guid.Empty) return null;
+
+        var conversation = new Conversation
+        {
+            AdminId = adminUserId,
+            MemberId = memberUserId,
+            LastMessageAt = DateTime.UtcNow
+        };
+
+        _context.Conversations.Add(conversation);
+        await _context.SaveChangesAsync();
+        return conversation;
+    }
 }

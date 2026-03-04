@@ -12,36 +12,27 @@
         </button>
         <h3 class="text-white text-sm font-semibold">
           <template v-if="chatStore.view === 'list'">{{ $t('chat.conversations') }}</template>
-          <template v-else-if="chatStore.view === 'new'">{{ $t('chat.newConversation') }}</template>
           <template v-else-if="chatStore.currentConversation">
             {{ userStore.hasRole(Role.Admin) ? chatStore.currentConversation.memberName : chatStore.currentConversation.adminName }}
           </template>
         </h3>
       </div>
-      <button
-        v-if="chatStore.view === 'list' && userStore.hasRole(Role.Admin)"
-        @click="chatStore.goToNewConversation()"
-        class="text-gray-400 hover:text-white transition cursor-pointer"
-      >
-        <Plus class="w-4 h-4" />
-      </button>
+      <!-- Search is built into ConversationList now -->
     </div>
 
     <!-- Content -->
     <ConversationList v-if="chatStore.view === 'list' && userStore.hasRole(Role.Admin)" />
     <ChatView v-else-if="chatStore.view === 'chat' || userStore.hasRole(Role.Member)" />
-    <NewConversation v-else-if="chatStore.view === 'new'" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import {ArrowLeft, Plus} from "lucide-vue-next"
+import {ArrowLeft} from "lucide-vue-next"
 import {useChatStore} from "@/stores/chatStore"
 import {useUserStore} from "@/stores/userStore"
 import {Role} from "@/types/enums"
 import ConversationList from "./ConversationList.vue"
 import ChatView from "./ChatView.vue"
-import NewConversation from "./NewConversation.vue"
 
 const chatStore = useChatStore()
 const userStore = useUserStore()

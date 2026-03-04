@@ -7,7 +7,13 @@
         <div class="w-6 h-6 border-2 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
       </div>
 
-      <!-- Empty -->
+      <!-- No conversation selected -->
+      <div v-else-if="!chatStore.currentConversationId" class="flex flex-col items-center justify-center h-full text-gray-400">
+        <MessageSquare class="w-8 h-8 mb-2 opacity-50" />
+        <p class="text-sm text-center px-4">{{ $t('chat.noConversations') }}</p>
+      </div>
+
+      <!-- Empty conversation -->
       <div v-else-if="chatStore.currentMessages.length === 0" class="flex flex-col items-center justify-center h-full text-gray-400">
         <MessageSquare class="w-8 h-8 mb-2 opacity-50" />
         <p class="text-sm">{{ $t('chat.noMessages') }}</p>
@@ -43,11 +49,22 @@
             </div>
           </div>
         </template>
+
+        <!-- Typing indicator -->
+        <div v-if="chatStore.isCurrentTyping" class="flex justify-start">
+          <div class="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
+            <div class="flex items-center gap-1">
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full" />
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full" style="animation-delay: 0.15s" />
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full" style="animation-delay: 0.3s" />
+            </div>
+          </div>
+        </div>
       </template>
     </div>
 
     <!-- Input bar -->
-    <div class="shrink-0 border-t border-gray-200 px-3 py-2 bg-white">
+    <div v-if="chatStore.currentConversationId" class="shrink-0 border-t border-gray-200 px-3 py-2 bg-white">
       <div class="flex items-end gap-2">
         <textarea
           ref="inputEl"
@@ -70,26 +87,35 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, nextTick, watch} from "vue"
+import {ref, computed, onMounted, nextTick, watch} from "vue"
 import {MessageSquare, Send} from "lucide-vue-next"
 import {DateTime} from "luxon"
 import {useI18n} from "vue3-i18n"
 import {useChatStore} from "@/stores/chatStore"
 import {useUserStore} from "@/stores/userStore"
 import {useConversationService} from "@/inversify.config"
+import {useSignalR} from "@/composables/useSignalR"
 import {Role} from "@/types/enums"
 
 const {t} = useI18n()
 const chatStore = useChatStore()
 const userStore = useUserStore()
 const conversationService = useConversationService()
+const {sendTyping} = useSignalR()
 
 const messagesContainer = ref<HTMLElement>()
 const inputEl = ref<HTMLTextAreaElement>()
 const newMessage = ref('')
 const loading = ref(false)
+let typingTimeout: number | null = null
 
 const currentUserId = userStore.getUser.id
+
+const recipientUserId = computed(() => {
+  const conv = chatStore.currentConversation
+  if (!conv) return null
+  return conv.adminId === currentUserId ? conv.memberId : conv.adminId
+})
 
 async function loadMessages() {
   if (!chatStore.currentConversationId) return
@@ -109,10 +135,14 @@ async function loadMessages() {
 // For members: auto-load their single conversation
 onMounted(async () => {
   if (userStore.hasRole(Role.Member) && !chatStore.currentConversationId) {
-    const conversations = await conversationService.getConversations()
-    chatStore.setConversations(conversations)
-    if (conversations.length > 0) {
-      chatStore.openConversation(conversations[0].id)
+    try {
+      const conversations = await conversationService.getConversations()
+      chatStore.setConversations(conversations)
+      if (conversations.length > 0) {
+        chatStore.openConversation(conversations[0].id)
+      }
+    } catch {
+      // API failed — show empty state
     }
   }
   if (chatStore.currentConversationId) {
@@ -148,7 +178,16 @@ function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     sendMessage()
+    return
   }
+  emitTyping()
+}
+
+function emitTyping() {
+  if (!chatStore.currentConversationId || !recipientUserId.value) return
+  if (typingTimeout) return // Throttle: only emit once per second
+  sendTyping(chatStore.currentConversationId, recipientUserId.value)
+  typingTimeout = window.setTimeout(() => { typingTimeout = null }, 1000)
 }
 
 function showDateSeparator(index: number): boolean {

@@ -36,20 +36,31 @@ public class GetConversationsEndpoint : EndpointWithoutRequest<object>
         var userId = user.Id;
         var isAdmin = User.IsInRole(Domain.Constants.User.Roles.ADMINISTRATOR);
 
-        var conversations = await _conversationRepository.GetByUserIdAsync(userId, isAdmin);
+        // Auto-create conversations for all members
+        if (isAdmin)
+            await _conversationRepository.EnsureConversationsForAdminAsync(userId);
+        else
+            await _conversationRepository.EnsureConversationForMemberAsync(userId);
+
+        var conversations = (await _conversationRepository.GetByUserIdAsync(userId, isAdmin)).ToList();
         var unreadCounts = await _conversationRepository.GetUnreadCountsPerConversationAsync(userId);
+
+        var memberIds = conversations.Select(c => c.MemberId).Distinct();
+        var adminIds = conversations.Select(c => c.AdminId).Distinct();
+        var memberNames = await _conversationRepository.GetMemberNamesByUserIdsAsync(memberIds);
+        var adminNames = await _conversationRepository.GetAdminNamesByUserIdsAsync(adminIds);
 
         var result = conversations.Select(c => new
         {
             c.Id,
-            MemberName = c.Member?.UserName,
-            AdminName = c.Admin?.UserName,
+            MemberName = memberNames.TryGetValue(c.MemberId, out var mn) ? mn : "Unknown",
+            AdminName = adminNames.TryGetValue(c.AdminId, out var an) ? an : "Admin",
             c.MemberId,
             c.AdminId,
             LastMessage = c.Messages.OrderByDescending(m => m.Date).FirstOrDefault()?.Texte,
             c.LastMessageAt,
             UnreadCount = unreadCounts.TryGetValue(c.Id, out var count) ? count : 0
-        });
+        }).ToList();
 
         await Send.OkAsync(result, cancellation: ct);
     }

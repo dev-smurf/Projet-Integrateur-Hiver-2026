@@ -58,8 +58,9 @@ public class GetMessagesEndpoint : Endpoint<GetMessagesRequest, object>
             SenderId = m.ExpediteurId,
             SenderName = m.Expediteur?.UserName,
             m.Date,
-            m.ReadAt
-        });
+            m.ReadAt,
+            m.ConversationId
+        }).ToList();
 
         await Send.OkAsync(result, cancellation: ct);
     }

@@ -22,7 +22,12 @@ export function useSignalR() {
       .build()
 
     connection.on('ReceiveMessage', (message: ChatMessage) => {
+      chatStore.clearTyping(message.conversationId)
       chatStore.receiveMessage(message)
+    })
+
+    connection.on('UserTyping', (data: { conversationId: string, senderId: string }) => {
+      chatStore.setTyping(data.conversationId)
     })
 
     connection.on('MessageRead', (_data: { conversationId: string }) => {
@@ -43,5 +48,15 @@ export function useSignalR() {
     }
   }
 
-  return {connect, disconnect}
+  async function sendTyping(conversationId: string, recipientUserId: string) {
+    if (connection?.state === signalR.HubConnectionState.Connected) {
+      try {
+        await connection.invoke('SendTyping', conversationId, recipientUserId)
+      } catch {
+        // Non-blocking
+      }
+    }
+  }
+
+  return {connect, disconnect, sendTyping}
 }

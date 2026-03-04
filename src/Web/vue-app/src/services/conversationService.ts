@@ -45,7 +45,7 @@ export class ConversationService extends ApiService implements IConversationServ
 
   public async markAsRead(conversationId: string): Promise<void> {
     await this._httpClient
-      .put(`${import.meta.env.VITE_API_BASE_URL}/conversations/${conversationId}/read`)
+      .put(`${import.meta.env.VITE_API_BASE_URL}/conversations/${conversationId}/read`, {}, this.headersWithJsonContentType())
   }
 
   public async getUnreadCount(): Promise<number> {
