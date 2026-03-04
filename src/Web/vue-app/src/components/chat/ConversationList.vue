@@ -93,7 +93,7 @@ function getInitials(name: string): string {
 }
 
 function formatTime(dateStr: string): string {
-  const dt = DateTime.fromISO(dateStr)
+  const dt = DateTime.fromISO(dateStr).toLocal()
   const now = DateTime.now()
   if (dt.hasSame(now, 'day')) return dt.toFormat('HH:mm')
   if (dt.hasSame(now.minus({days: 1}), 'day')) return t('chat.yesterday')

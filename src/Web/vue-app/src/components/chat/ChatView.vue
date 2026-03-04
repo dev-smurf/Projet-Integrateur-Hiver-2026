@@ -202,13 +202,13 @@ function emitTyping() {
 function showDateSeparator(index: number): boolean {
   if (index === 0) return true
   const msgs = chatStore.currentMessages
-  const current = DateTime.fromISO(msgs[index].date)
-  const prev = DateTime.fromISO(msgs[index - 1].date)
+  const current = DateTime.fromISO(msgs[index].date).toLocal()
+  const prev = DateTime.fromISO(msgs[index - 1].date).toLocal()
   return !current.hasSame(prev, 'day')
 }
 
 function formatDate(dateStr: string): string {
-  const dt = DateTime.fromISO(dateStr)
+  const dt = DateTime.fromISO(dateStr).toLocal()
   const now = DateTime.now()
   if (dt.hasSame(now, 'day')) return t('chat.today')
   if (dt.hasSame(now.minus({days: 1}), 'day')) return t('chat.yesterday')
@@ -216,6 +216,6 @@ function formatDate(dateStr: string): string {
 }
 
 function formatMsgTime(dateStr: string): string {
-  return DateTime.fromISO(dateStr).toFormat('HH:mm')
+  return DateTime.fromISO(dateStr).toLocal().toFormat('HH:mm')
 }
 </script>
