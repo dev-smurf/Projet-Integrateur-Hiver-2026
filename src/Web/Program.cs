@@ -1,9 +1,14 @@
 using Application;
+using Application.Interfaces.Services.Module;
+using Application.Services.Module;
 using Domain.Common;
 using Domain.Extensions;
+using Domain.Repositories;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
+using Infrastructure.Repositories.Conversations;
+using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
 using Serilog;
@@ -44,6 +49,9 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(Log.Logger);
 
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -95,12 +103,18 @@ app.UseExceptionHandler(c => c.Run(async context =>
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder
+    .WithOrigins("http://localhost:8080", "https://localhost:8080")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials());
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseFastEndpoints(config => { config.Endpoints.RoutePrefix = "api"; });
 app.UseSwaggerGen();
+
+app.MapHub<Web.Hubs.ChatHub>("/api/chat-hub");
 
 // SPA fallback - serve Vue app for any non-API route
 app.MapFallbackToFile("vue/index.html");

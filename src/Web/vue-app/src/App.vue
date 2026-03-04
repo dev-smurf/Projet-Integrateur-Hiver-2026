@@ -15,7 +15,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const userService = useUserService();
 
-const authenticationRoutes = ['login', 'twoFactor', 'forgotPassword', 'resetPassword']
+const authenticationRoutes = ['login', 'forgotPassword', 'resetPassword']
 let isAuthenticationPath = computed(() => {
   return authenticationRoutes.includes(router.currentRoute.value.name as string)
 });
@@ -24,10 +24,4 @@ onMounted(async () => {
   if (!userStore.user.email)
     userStore.setUser(await userService.getCurrentUser())
 });
-
 </script>
-
-<style lang="scss">
-@use"./sass/index.scss";
-</style>
-

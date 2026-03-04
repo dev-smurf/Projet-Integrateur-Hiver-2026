@@ -16,13 +16,26 @@ public class MemberRepository : IMemberRepository
         _context = context;
     }
 
-    public PaginatedList<Member> GetAllPaginated(int pageIndex, int pageSize)
+    public PaginatedList<Member> GetAllPaginated(int pageIndex, int pageSize, string? searchValue = null)
     {
         var query = _context.Members
             .Include(x => x.User)
-            .AsNoTracking();
-        var pageItems = query.OrderByDescending(x => x.Created).Skip((pageIndex-1) * pageSize).Take(pageSize);
-        return new PaginatedList<Member>(pageItems.ToList(), query.Count());
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchValue))
+        {
+            var search = searchValue.ToLower();
+            query = query.Where(m =>
+                m.FirstName.ToLower().Contains(search) ||
+                m.LastName.ToLower().Contains(search) ||
+                m.User.Email!.ToLower().Contains(search) ||
+                (m.City != null && m.City.ToLower().Contains(search)));
+        }
+
+        var totalItems = query.Count();
+        var pageItems = query.OrderByDescending(x => x.Created).Skip((pageIndex-1) * pageSize).Take(pageSize).ToList();
+        return new PaginatedList<Member>(pageItems, totalItems);
     }
 
     public Member FindById(Guid id)

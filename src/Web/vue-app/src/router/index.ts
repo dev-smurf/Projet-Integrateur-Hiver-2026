@@ -3,15 +3,19 @@ import {Role} from "@/types/enums";
 import {createRouter, createWebHistory} from "vue-router";
 
 import Login from "@/views/Login.vue";
-import TwoFactor from "@/views/TwoFactor.vue";
+
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
+import Dashboard from "@/views/shared/Dashboard.vue";
 
 import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
+import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
+import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
+import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
 
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
@@ -35,16 +39,8 @@ const router = createRouter({
       name: "login",
       component: Login,
       meta: {
-        title: "routes.login.name"
-      }
-    },
-    {
-      path: i18n.t("routes.twoFactor.path"),
-      alias: getLocalizedRoutes("routes.twoFactor.path"),
-      name: "twoFactor",
-      component: TwoFactor,
-      meta: {
-        title: "routes.twoFactor.name"
+        title: "routes.login.name",
+        guest: true
       }
     },
     {
@@ -53,7 +49,8 @@ const router = createRouter({
       name: "forgotPassword",
       component: ForgotPassword,
       meta: {
-        title: "routes.forgotPassword.name"
+        title: "routes.forgotPassword.name",
+        guest: true
       }
     },
     {
@@ -63,7 +60,17 @@ const router = createRouter({
       component: ResetPassword,
       props: (route) => ({userId: route.query.userId, token: route.query.token}),
       meta: {
-        title: "routes.resetPassword.name"
+        title: "routes.resetPassword.name",
+        guest: true
+      }
+    },
+    {
+      path: i18n.t("routes.dashboard.path"),
+      alias: getLocalizedRoutes("routes.dashboard.path"),
+      name: "dashboard",
+      component: Dashboard,
+      meta: {
+        title: "routes.dashboard.name"
       }
     },
     {
@@ -86,28 +93,36 @@ const router = createRouter({
       children: [
         {
           path: i18n.t("routes.admin.children.members.path"),
-          name: "admin.children.members",
-          component: Admin,
-          children: [
-            {
-              path: "",
-              name: "admin.children.members.index",
-              component: AdminMemberIndex,
-            },
-            {
-              path: i18n.t("routes.admin.children.members.add.path"),
-              name: "admin.children.members.add",
-              component: AdminAddMemberForm,
-            },
-            {
-              path: i18n.t("routes.admin.children.members.edit.path"),
-              alias: i18n.t("routes.admin.children.members.edit.path"),
-              name: "admin.children.members.edit",
-              component: AdminEditMemberForm,
-              props: true
-            },
-          ],
-        }
+          name: "admin.children.members.index",
+          component: AdminMemberIndex,
+        },
+        {
+          path: i18n.t("routes.admin.children.members.path") + "/" + i18n.t("routes.admin.children.members.add.path"),
+          name: "admin.children.members.add",
+          component: AdminAddMemberForm,
+        },
+        {
+          path: i18n.t("routes.admin.children.members.path") + "/" + i18n.t("routes.admin.children.members.edit.path"),
+          name: "admin.children.members.edit",
+          component: AdminEditMemberForm,
+          props: true
+        },
+        {
+          path: i18n.t("routes.admin.children.modules.path"),
+          name: "admin.children.modules.index",
+          component: AdminModuleList,
+        },
+        {
+          path: i18n.t("routes.admin.children.modules.path") + "/" + i18n.t("routes.admin.children.modules.add.path"),
+          name: "admin.children.modules.add",
+          component: AdminAddModule,
+        },
+        {
+          path: i18n.t("routes.admin.children.modules.path") + "/" + i18n.t("routes.admin.children.modules.edit.path"),
+          name: "admin.children.modules.edit",
+          component: AdminModuleEdit,
+          props: true
+        },
       ]
     },
     {
@@ -155,14 +170,24 @@ const router = createRouter({
 // eslint-disable-next-line
 router.beforeEach(async (to, from) => {
   const userStore = useUserStore()
+  const isAuthenticated = !!userStore.user.email;
 
   // Handle root path redirect
   if (to.path === "/") {
-    if (userStore.user.email)
-      return { name: "account" };
+    return isAuthenticated ? { name: "dashboard" } : { name: "login" };
+  }
+
+  // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
+  if (to.meta.guest && isAuthenticated) {
+    return { name: "dashboard" };
+  }
+
+  // Non-authenticated users cannot access protected pages
+  if (!to.meta.guest && !isAuthenticated) {
     return { name: "login" };
   }
 
+  // Role-based access control
   if (!to.meta.requiredRole)
     return;
 
@@ -171,7 +196,7 @@ router.beforeEach(async (to, from) => {
   const hasNoRoleAmongRoleList = isRoleArray && !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
     return {
-      name: "account",
+      name: "dashboard",
     };
   }
 });

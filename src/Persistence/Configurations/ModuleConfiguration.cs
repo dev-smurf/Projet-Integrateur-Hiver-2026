@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,14 +10,28 @@ namespace Persistence.Configurations
         {
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.Nom)
-                .IsRequired();
+            builder.Property(m => m.NameFr)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            builder.Property(m => m.Contenu)
-                .IsRequired();
+            builder.Property(m => m.NameEn)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            builder.Property(m => m.Sujet)
-                .IsRequired();
+            builder.Property(m => m.ContenueFr)
+                .HasMaxLength(1000);
+
+            builder.Property(m => m.ContenueEn)
+                .HasMaxLength(1000);
+
+            builder.Property(m => m.SujetFr)
+                .HasMaxLength(200);
+
+            builder.Property(m => m.SujetEn)
+                .HasMaxLength(200);
+
+            builder.Property(m => m.CardImageUrl)
+                .HasMaxLength(1000);
         }
     }
 }
