@@ -396,5 +396,18 @@
   },
   "routes.addModule": {
     "name": "Ajouter un module"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "Nouvelle conversation",
+    "searchMember": "Rechercher un membre...",
+    "noConversations": "Aucune conversation",
+    "noMessages": "Aucun message. Dites bonjour!",
+    "typePlaceholder": "Écrire un message...",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "you": "Vous",
+    "startConversation": "Démarrer la conversation"
   }
 }
