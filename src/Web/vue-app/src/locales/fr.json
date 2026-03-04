@@ -67,6 +67,38 @@
         }
       }
     },
+    "membres": {
+      "path": "/member",
+      "fullPath": "/membres",
+      "name": "Membres",
+      "navigation": {
+        "myAccount": {
+          "path": "mon-compte",
+          "fullPath": "/my_account",
+          "name": "Mon compte"
+        },
+        "accueil": {
+          "path": "accueil",
+          "fullPath": "/accueil",
+          "name": "Accueil"
+        },
+        "progression": {
+          "path": "progression",
+          "fullPath": "/progression",
+          "name": "Progression"
+        },
+        "quiz": {
+          "path": "quiz",
+          "fullPath": "/quiz",
+          "name": "Quiz"
+        },
+        "notes": {
+          "path": "notes",
+          "fullPath": "/notes",
+          "name": "Notes"
+        }
+      }
+    },
     "books": {
       "path": "/livres",
       "fullPath": "/livres",
