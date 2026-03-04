@@ -19,6 +19,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public string? ZipCode { get; private set; }
     public User User { get; private set; } = null!;
 
+    public ICollection<MemberModule> MemberModules { get; set; } = new List<MemberModule>();
     public bool Active { get; private set; }
 
     public Member() {}
