@@ -7,6 +7,7 @@ using Domain.Repositories;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
+using Infrastructure.Repositories.Conversations;
 using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
@@ -50,6 +51,7 @@ builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
 builder.Services.AddCors(options =>
 {
