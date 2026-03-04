@@ -158,6 +158,15 @@ function scrollToBottom() {
 
 watch(() => chatStore.currentMessages.length, () => {
   nextTick(() => scrollToBottom())
+  // Auto-mark as read when a new message arrives while viewing this conversation
+  if (chatStore.currentConversationId && chatStore.isOpen) {
+    conversationService.markAsRead(chatStore.currentConversationId).catch(() => {})
+    chatStore.markConversationAsRead(chatStore.currentConversationId)
+  }
+})
+
+watch(() => chatStore.isCurrentTyping, (typing) => {
+  if (typing) nextTick(() => scrollToBottom())
 })
 
 async function sendMessage() {
