@@ -33,12 +33,17 @@ export class ConversationService extends ApiService implements IConversationServ
     return response.data
   }
 
-  public async sendMessage(conversationId: string, text: string): Promise<ChatMessage> {
+  public async sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage> {
+    const formData = new FormData()
+    formData.append('conversationId', conversationId)
+    if (text) formData.append('text', text)
+    if (attachment) formData.append('attachment', attachment)
+
     const response = await this._httpClient
       .post<ChatMessage, AxiosResponse<ChatMessage>>(
         `${import.meta.env.VITE_API_BASE_URL}/conversations/${conversationId}/messages`,
-        { conversationId, text },
-        this.headersWithJsonContentType()
+        formData,
+        this.headersWithFormDataContentType()
       )
     return response.data
   }

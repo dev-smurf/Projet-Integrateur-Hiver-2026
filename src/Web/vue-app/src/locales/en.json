@@ -405,6 +405,8 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "you": "You",
-    "startConversation": "Start conversation"
+    "startConversation": "Start conversation",
+    "fileTooLarge": "File is too large. Maximum size is 10MB.",
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
   }
 }

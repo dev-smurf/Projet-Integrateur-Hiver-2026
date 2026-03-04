@@ -40,7 +40,7 @@ export const useChatStore = defineStore('chat', {
 
       const conv = this.conversations.find(c => c.id === conversationId)
       if (conv) {
-        conv.lastMessage = message.text
+        conv.lastMessage = message.text || message.attachmentFileName || ''
         conv.lastMessageAt = message.date
       }
     },

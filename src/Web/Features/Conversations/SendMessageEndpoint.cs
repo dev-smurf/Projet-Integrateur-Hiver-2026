@@ -15,6 +15,13 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest, object>
     private readonly IAuthenticatedUserService _authenticatedUserService;
     private readonly IHubContext<ChatHub> _hubContext;
 
+    private static readonly HashSet<string> AllowedContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "application/pdf"
+    };
+
+    private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
+
     public SendMessageEndpoint(
         IConversationRepository conversationRepository,
         IAuthenticatedUserService authenticatedUserService,
@@ -27,6 +34,7 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest, object>
 
     public override void Configure()
     {
+        AllowFileUploads();
         Post("conversations/{ConversationId}/messages");
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
@@ -55,17 +63,52 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest, object>
             return;
         }
 
+        var hasText = !string.IsNullOrWhiteSpace(req.Text);
+        var hasAttachment = req.Attachment is not null;
+
+        if (!hasText && !hasAttachment)
+        {
+            HttpContext.Response.StatusCode = 400;
+            return;
+        }
+
+        string? attachmentUrl = null;
+        string? attachmentFileName = null;
+        string? attachmentContentType = null;
+
+        if (hasAttachment)
+        {
+            if (!AllowedContentTypes.Contains(req.Attachment!.ContentType))
+            {
+                HttpContext.Response.StatusCode = 400;
+                return;
+            }
+
+            if (req.Attachment.Length > MaxFileSize)
+            {
+                HttpContext.Response.StatusCode = 400;
+                return;
+            }
+
+            attachmentUrl = await SaveFile(req.Attachment);
+            attachmentFileName = req.Attachment.FileName;
+            attachmentContentType = req.Attachment.ContentType;
+        }
+
         var receiverId = conversation.AdminId == userId
             ? conversation.MemberId
             : conversation.AdminId;
 
         var message = new Message
         {
-            Texte = req.Text,
+            Texte = hasText ? req.Text!.Trim() : null,
             ExpediteurId = userId,
             ReceveurId = receiverId,
             Date = DateTime.UtcNow,
-            ConversationId = req.ConversationId
+            ConversationId = req.ConversationId,
+            AttachmentUrl = attachmentUrl,
+            AttachmentFileName = attachmentFileName,
+            AttachmentContentType = attachmentContentType
         };
 
         var saved = await _conversationRepository.AddMessageAsync(message);
@@ -77,11 +120,31 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest, object>
             Text = saved.Texte,
             SenderId = saved.ExpediteurId,
             saved.Date,
-            saved.ConversationId
+            saved.ConversationId,
+            saved.AttachmentUrl,
+            saved.AttachmentFileName,
+            saved.AttachmentContentType
         };
 
         await _hubContext.Clients.Group($"user_{receiverId}").SendAsync("ReceiveMessage", payload, ct);
 
         await Send.OkAsync(payload, cancellation: ct);
+    }
+
+    private static async Task<string> SaveFile(IFormFile file, string folder = "uploads/chat")
+    {
+        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
+
+        if (!Directory.Exists(savePath))
+            Directory.CreateDirectory(savePath);
+
+        var fileExtension = Path.GetExtension(file.FileName);
+        var fileName = $"{Guid.NewGuid()}{fileExtension}";
+        var fullPath = Path.Combine(savePath, fileName);
+
+        await using var stream = new FileStream(fullPath, FileMode.Create);
+        await file.CopyToAsync(stream);
+
+        return $"/{folder}/{fileName}";
     }
 }

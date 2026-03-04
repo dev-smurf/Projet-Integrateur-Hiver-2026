@@ -59,7 +59,10 @@ public class GetMessagesEndpoint : Endpoint<GetMessagesRequest, object>
             SenderName = m.Expediteur?.UserName,
             m.Date,
             m.ReadAt,
-            m.ConversationId
+            m.ConversationId,
+            m.AttachmentUrl,
+            m.AttachmentFileName,
+            m.AttachmentContentType
         }).ToList();
 
         await Send.OkAsync(result, cancellation: ct);

@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, computed, onMounted} from "vue"
+import {ref, computed, onMounted, onActivated} from "vue"
 import {MessageCircle, Search} from "lucide-vue-next"
 import {DateTime} from "luxon"
 import {useI18n} from "vue3-i18n"
@@ -116,6 +116,15 @@ onMounted(async () => {
     // API failed — show empty state
   } finally {
     loading.value = false
+  }
+})
+
+onActivated(async () => {
+  try {
+    const conversations = await conversationService.getConversations()
+    chatStore.setConversations(conversations)
+  } catch {
+    // silent refresh failed
   }
 })
 </script>

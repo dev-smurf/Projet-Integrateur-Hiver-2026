@@ -88,7 +88,7 @@ export interface IConversationService {
   getConversations(): Promise<Conversation[]>
   getMessages(conversationId: string, page?: number, pageSize?: number): Promise<ChatMessage[]>
   createConversation(memberId: string): Promise<{ id: string }>
-  sendMessage(conversationId: string, text: string): Promise<ChatMessage>
+  sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage>
   markAsRead(conversationId: string): Promise<void>
   getUnreadCount(): Promise<number>
 }

@@ -57,7 +57,9 @@ public class GetConversationsEndpoint : EndpointWithoutRequest<object>
             AdminName = adminNames.TryGetValue(c.AdminId, out var an) ? an : "Admin",
             c.MemberId,
             c.AdminId,
-            LastMessage = c.Messages.OrderByDescending(m => m.Date).FirstOrDefault()?.Texte,
+            LastMessage = c.Messages.OrderByDescending(m => m.Date).FirstOrDefault() is { } lastMsg
+                ? lastMsg.Texte ?? lastMsg.AttachmentFileName
+                : null,
             c.LastMessageAt,
             UnreadCount = unreadCounts.TryGetValue(c.Id, out var count) ? count : 0
         }).ToList();

@@ -408,6 +408,8 @@
     "today": "Aujourd'hui",
     "yesterday": "Hier",
     "you": "Vous",
-    "startConversation": "Démarrer la conversation"
+    "startConversation": "Démarrer la conversation",
+    "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
+    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf."
   }
 }
