@@ -50,14 +50,19 @@ public class GarneauTemplateDbContextInitializer
 
             if (tablesAlreadyExist)
             {
-                foreach (var migration in pendingMigrations)
+                // Only mark the initial migration as applied (base schema already exists)
+                var initialMigration = pendingMigrations.FirstOrDefault(m => m.EndsWith("_InitialCreate"));
+                if (initialMigration != null)
                 {
                     await _context.Database.ExecuteSqlRawAsync(
                         "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
                         "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
-                        migration, "8.0.11");
+                        initialMigration, "10.0.2");
+                    _logger.LogInformation("Marked InitialCreate migration as applied (schema already exists).");
                 }
-                _logger.LogInformation("Database schema already exists. Marked {Count} migrations as applied.", pendingMigrations.Count);
+
+                // Run any remaining new migrations
+                await _context.Database.MigrateAsync();
             }
             else
             {
