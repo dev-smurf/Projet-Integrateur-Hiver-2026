@@ -115,6 +115,8 @@
         </div>
       </template>
     </notifications>
+
+    <ChatBubble />
   </div>
 </template>
 
@@ -126,6 +128,7 @@ import Cookies from "universal-cookie";
 import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X} from "lucide-vue-next";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
+import ChatBubble from "@/components/chat/ChatBubble.vue";
 import {useMemberService, useAdministratorService, useAuthenticationService} from "@/inversify.config";
 import {Role} from "@/types/enums";
 import {LOCALES} from "@/locales";
