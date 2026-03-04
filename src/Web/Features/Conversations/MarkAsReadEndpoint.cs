@@ -2,7 +2,9 @@ using Application.Interfaces.Services.Users;
 using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Web.Features.Conversations.Requests;
+using Web.Hubs;
 
 namespace Web.Features.Conversations;
 
@@ -10,13 +12,16 @@ public class MarkAsReadEndpoint : Endpoint<MarkAsReadRequest, object>
 {
     private readonly IConversationRepository _conversationRepository;
     private readonly IAuthenticatedUserService _authenticatedUserService;
+    private readonly IHubContext<ChatHub> _hubContext;
 
     public MarkAsReadEndpoint(
         IConversationRepository conversationRepository,
-        IAuthenticatedUserService authenticatedUserService)
+        IAuthenticatedUserService authenticatedUserService,
+        IHubContext<ChatHub> hubContext)
     {
         _conversationRepository = conversationRepository;
         _authenticatedUserService = authenticatedUserService;
+        _hubContext = hubContext;
     }
 
     public override void Configure()
@@ -50,6 +55,10 @@ public class MarkAsReadEndpoint : Endpoint<MarkAsReadRequest, object>
         }
 
         await _conversationRepository.MarkMessagesAsReadAsync(req.ConversationId, userId);
+
+        var otherUserId = conversation.AdminId == userId ? conversation.MemberId : conversation.AdminId;
+        await _hubContext.Clients.Group($"user_{otherUserId}").SendAsync("MessageRead", new { req.ConversationId }, ct);
+
         await Send.OkAsync(new { success = true }, cancellation: ct);
     }
 }
