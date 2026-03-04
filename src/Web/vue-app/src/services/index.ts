@@ -4,3 +4,4 @@ export * from './bookService';
 export * from './memberService';
 export * from './userService';
 export * from './moduleService';
+export * from './conversationService';
