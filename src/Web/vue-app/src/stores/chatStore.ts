@@ -48,24 +48,19 @@ export const useChatStore = defineStore('chat', {
     receiveMessage(message: ChatMessage) {
       this.addMessage(message.conversationId, message)
 
-      const shouldIncrement = this.currentConversationId !== message.conversationId || !this.isOpen
-      console.log('[ChatStore] receiveMessage', { convMatch: this.currentConversationId === message.conversationId, isOpen: this.isOpen, shouldIncrement, before: this.totalUnreadCount })
-      if (shouldIncrement) {
+      if (this.currentConversationId !== message.conversationId || !this.isOpen) {
         this.totalUnreadCount++
         const conv = this.conversations.find(c => c.id === message.conversationId)
         if (conv) conv.unreadCount++
       }
-      console.log('[ChatStore] receiveMessage after', { totalUnreadCount: this.totalUnreadCount })
     },
 
     markConversationAsRead(conversationId: string) {
       const conv = this.conversations.find(c => c.id === conversationId)
-      console.log('[ChatStore] markConversationAsRead', { conversationId, convUnread: conv?.unreadCount, before: this.totalUnreadCount })
       if (conv) {
         this.totalUnreadCount -= conv.unreadCount
         conv.unreadCount = 0
       }
-      console.log('[ChatStore] markConversationAsRead after', { totalUnreadCount: this.totalUnreadCount })
     },
 
     openConversation(conversationId: string) {
