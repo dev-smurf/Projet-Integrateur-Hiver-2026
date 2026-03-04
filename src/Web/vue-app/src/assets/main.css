@@ -75,3 +75,13 @@
   from { width: 100%; }
   to { width: 0%; }
 }
+
+/* Chat bubble pulse when new message arrives */
+@keyframes bubble-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(192, 57, 43, 0); }
+}
+
+.bubble-pulse {
+  animation: bubble-pulse 1.5s ease-in-out 3;
+}
