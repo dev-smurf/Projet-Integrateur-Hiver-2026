@@ -10,7 +10,8 @@ import {
   IBookService,
   IMemberService,
   IModulesService,
-  IUserService
+  IUserService,
+  IConversationService
 } from "@/injection/interfaces";
 import {
   ApiService,
@@ -18,7 +19,8 @@ import {
   BookService,
   MemberService,
   ModulesApiService,
-  UserService
+  UserService,
+  ConversationService
 } from "@/services";
 import {AdministratorService} from "@/services/administratorService";
 
@@ -31,6 +33,7 @@ dependencyInjection.bind<IBookService>(TYPES.IBookService).to(BookService).inSin
 dependencyInjection.bind<IMemberService>(TYPES.IMemberService).to(MemberService).inSingletonScope()
 dependencyInjection.bind<IModulesService>(TYPES.IModulesService).to(ModulesApiService).inSingletonScope()
 dependencyInjection.bind<IUserService>(TYPES.IUserService).to(UserService).inSingletonScope()
+dependencyInjection.bind<IConversationService>(TYPES.IConversationService).to(ConversationService).inSingletonScope()
 
 function useAdministratorService() {
   return dependencyInjection.get<IAdministratorService>(TYPES.IAdministratorService);
@@ -56,6 +59,10 @@ function useUserService() {
   return dependencyInjection.get<IUserService>(TYPES.IUserService);
 }
 
+function useConversationService() {
+  return dependencyInjection.get<IConversationService>(TYPES.IConversationService);
+}
+
 
 export {
   dependencyInjection,
@@ -64,5 +71,6 @@ export {
   useBookService,
   useMemberService,
   useModulesService,
-  useUserService
+  useUserService,
+  useConversationService
 };

@@ -8,7 +8,7 @@ import {
   ITwoFactorRequest
 } from "@/types/requests"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
-import {Administrator, Book, Member, User} from "@/types/entities"
+import {Administrator, Book, ChatMessage, Conversation, Member, User} from "@/types/entities"
 import {Guid} from "@/types";
 
 export interface IApiService {
@@ -82,4 +82,13 @@ export interface IModulesService {
 
 export interface IUserService {
   getCurrentUser(): Promise<User>
+}
+
+export interface IConversationService {
+  getConversations(): Promise<Conversation[]>
+  getMessages(conversationId: string, page?: number, pageSize?: number): Promise<ChatMessage[]>
+  createConversation(memberId: string): Promise<{ id: string }>
+  sendMessage(conversationId: string, text: string): Promise<ChatMessage>
+  markAsRead(conversationId: string): Promise<void>
+  getUnreadCount(): Promise<number>
 }
