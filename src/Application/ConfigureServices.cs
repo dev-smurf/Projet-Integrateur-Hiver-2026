@@ -3,11 +3,13 @@ using Application.Interfaces.Services.Books;
 using Application.Interfaces.Services.Members;
 using Application.Interfaces.Services.Notifications;
 using Application.Interfaces.Services.Users;
+using Application.Interfaces.Services.Module;
 using Application.Services.Admins;
 using Application.Services.Books;
 using Application.Services.Members;
 using Application.Services.Notifications;
 using Application.Services.Users;
+using Application.Services.Module;
 using Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +38,7 @@ public static class ConfigureServices
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
         services.AddScoped<IAuthenticatedMemberService, AuthenticatedMemberService>();
+        services.AddScoped<IModuleService, ModuleService>();
 
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ConfigureServices).Assembly));
 

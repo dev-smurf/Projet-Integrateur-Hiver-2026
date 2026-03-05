@@ -28,12 +28,6 @@ import MemberQuiz from "@/views/member/MemberQuiz.vue";
 import MemberNotes from "@/views/member/MemberNotes.vue";
 import Modules from "@/views/Modules.vue";
 
-import MemberHome from "@/views/member/MemberHome.vue";
-import MemberProgression from "@/views/member/MemberProgression.vue";
-import MemberQuiz from "@/views/member/MemberQuiz.vue";
-import MemberNotes from "@/views/member/MemberNotes.vue";
-import Modules from "@/views/Modules.vue";
-
 import {getLocalizedRoutes} from "@/locales/helpers";
 import {useUserStore} from "@/stores/userStore";
 

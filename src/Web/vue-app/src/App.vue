@@ -1,6 +1,6 @@
 <template>
     <AuthenticationLayout v-if="!userStore.user.email || isAuthenticationPath" />
-    <DashboardLayout v-else/>
+    <MemberNavbarItems v-else/>
 
 </template>
 
