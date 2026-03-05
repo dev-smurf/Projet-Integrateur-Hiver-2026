@@ -398,5 +398,20 @@
   },
   "routes.addModule": {
     "name": "Add a module"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "New conversation",
+    "searchMember": "Search for a member...",
+    "noConversations": "No conversations yet",
+    "noMessages": "No messages yet. Say hello!",
+    "typePlaceholder": "Type a message...",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "you": "You",
+    "startConversation": "Start conversation",
+    "fileTooLarge": "File is too large. Maximum size is 10MB.",
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
   }
 }

@@ -401,5 +401,20 @@
   },
   "routes.addModule": {
     "name": "Ajouter un module"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "Nouvelle conversation",
+    "searchMember": "Rechercher un membre...",
+    "noConversations": "Aucune conversation",
+    "noMessages": "Aucun message. Dites bonjour!",
+    "typePlaceholder": "Écrire un message...",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "you": "Vous",
+    "startConversation": "Démarrer la conversation",
+    "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
+    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf."
   }
 }

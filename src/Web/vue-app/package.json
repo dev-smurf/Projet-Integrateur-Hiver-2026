@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^3.4.0",
+    "@microsoft/signalr": "^10.0.0",
     "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.7.0",
     "inversify": "^6.2.0",
