@@ -1,4 +1,4 @@
-using Domain.Entities;
+﻿﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,4 +34,8 @@ namespace Persistence.Configurations
                 .HasMaxLength(1000);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 77ee5b19d0f91c351e1680eb928be3ba5e01c14b
