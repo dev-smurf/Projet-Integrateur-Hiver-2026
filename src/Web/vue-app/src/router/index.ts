@@ -23,6 +23,12 @@ import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
 
+import MemberHome from "@/views/member/MemberHome.vue";
+import MemberProgression from "@/views/member/MemberProgression.vue";
+import MemberQuiz from "@/views/member/MemberQuiz.vue";
+import MemberNotes from "@/views/member/MemberNotes.vue";
+import Modules from "@/views/Modules.vue";
+
 import {getLocalizedRoutes} from "@/locales/helpers";
 import {useUserStore} from "@/stores/userStore";
 
@@ -194,7 +200,6 @@ router.beforeEach(async (to, from) => {
     return isAuthenticated ? { name: "dashboard" } : { name: "login" };
   }
 
-  // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
   if (to.meta.guest && isAuthenticated) {
     return { name: "dashboard" };
   }

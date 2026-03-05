@@ -1,27 +1,30 @@
 <template>
-  <AuthenticationLayout v-if="!userStore.user.email || isAuthenticationPath"/>
-  <DashboardLayout v-else/>
+    <AuthenticationLayout v-if="!userStore.user.email || isAuthenticationPath" />
+    <MemberNavbarItems v-else/>
+
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted} from "vue";
-import {useRouter} from "vue-router";
-import {useUserStore} from "@/stores/userStore";
-import AuthenticationLayout from "@/components/layouts/AuthenticationLayout.vue";
-import DashboardLayout from "@/components/layouts/DashboardLayout.vue";
-import {useUserService} from "@/inversify.config";
+    import { computed, onMounted } from "vue";
+    import { useRouter } from "vue-router";
+    import { useUserStore } from "@/stores/userStore";
+    import AuthenticationLayout from "@/components/layouts/AuthenticationLayout.vue";
+    import MemberHome from "@/views/member/MemberHome.vue";
+    import MemberNavbarItems from "@/components/navigation/MemberNavbarItems.vue";
+    import DashboardLayout from "@/components/layouts/DashboardLayout.vue";
+    import { useUserService } from "@/inversify.config";
 
-const router = useRouter();
-const userStore = useUserStore();
-const userService = useUserService();
+    const router = useRouter();
+    const userStore = useUserStore();
+    const userService = useUserService();
 
-const authenticationRoutes = ['login', 'forgotPassword', 'resetPassword']
-let isAuthenticationPath = computed(() => {
-  return authenticationRoutes.includes(router.currentRoute.value.name as string)
-});
+    const authenticationRoutes = ['login', 'forgotPassword', 'resetPassword']
+    let isAuthenticationPath = computed(() => {
+        return authenticationRoutes.includes(router.currentRoute.value.name as string)
+    });
 
-onMounted(async () => {
-  if (!userStore.user.email)
-    userStore.setUser(await userService.getCurrentUser())
-});
+    onMounted(async () => {
+        if (!userStore.user.email)
+            userStore.setUser(await userService.getCurrentUser())
+    });
 </script>

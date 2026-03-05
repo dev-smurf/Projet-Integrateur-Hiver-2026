@@ -10,8 +10,9 @@
       </div>
 <div>
     <p> line ici : </p>
-      <TextLink :path="{path: t('routes.addModule.path') }"
-                  :text="t('routes.addModule.name')" />  
+     <a :href="t('routes.addModule.path')">
+    {{ t('routes.addModule.name') }}
+</a>
 </div>
   
     </div>
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import TextLink from "@/components/layouts/items/TextLink.vue";
+// import TextLink from "@/components/layouts/items/TextLink.vue";
 import { useI18n } from "vue3-i18n";
 
 const {t} = useI18n();

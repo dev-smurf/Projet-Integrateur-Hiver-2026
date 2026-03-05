@@ -31,6 +31,7 @@ public class LoginEndpoint : EndpointWithSanitizedRequest<LoginRequest, Succeede
 
         Post("authentication/login");
         AllowAnonymous();
+        Options(b => b.RequireCors("corsDomains"));
     }
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
