@@ -20,8 +20,7 @@ export class AuthenticationService extends ApiService implements IAuthentication
             )
             .catch((error: AxiosError) => error.response as AxiosResponse);
 
-        const data = response.data;
-
+        const data = response?.data;
 
         if (data?.succeeded && (data.accessToken || data.token)) {
             localStorage.setItem('token', data.accessToken || data.token);
@@ -39,7 +38,7 @@ export class AuthenticationService extends ApiService implements IAuthentication
             )
             .catch((error: AxiosError) => error.response as AxiosResponse);
 
-        const data = response.data;
+        const data = response?.data;
 
         if (data?.succeeded && (data.accessToken || data.token)) {
             localStorage.setItem('token', data.accessToken || data.token);
@@ -57,7 +56,7 @@ export class AuthenticationService extends ApiService implements IAuthentication
             )
             .catch((error: AxiosError) => error.response as AxiosResponse);
 
-        return new SucceededOrNotResponse(response.data?.succeeded, response.data?.errors);
+        return new SucceededOrNotResponse(response?.data?.succeeded, response?.data?.errors);
     }
 
     public async resetPassword(request: IResetPasswordRequest): Promise<SucceededOrNotResponse> {
@@ -69,7 +68,7 @@ export class AuthenticationService extends ApiService implements IAuthentication
             )
             .catch((error: AxiosError) => error.response as AxiosResponse);
 
-        return new SucceededOrNotResponse(response.data?.succeeded, response.data?.errors);
+        return new SucceededOrNotResponse(response?.data?.succeeded, response?.data?.errors);
     }
 
     public async logout(): Promise<SucceededOrNotResponse> {
@@ -80,6 +79,6 @@ export class AuthenticationService extends ApiService implements IAuthentication
             .get(`${import.meta.env.VITE_API_BASE_URL}/authentication/logout`)
             .catch((error: AxiosError) => error.response as AxiosResponse);
 
-        return new SucceededOrNotResponse(response.data?.succeeded, response.data?.errors);
+        return new SucceededOrNotResponse(response?.data?.succeeded, response?.data?.errors);
     }
 }

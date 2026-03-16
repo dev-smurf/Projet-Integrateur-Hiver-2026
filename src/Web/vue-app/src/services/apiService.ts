@@ -39,19 +39,20 @@ export class ApiService implements IApiService {
         async (error) => {
           const originalRequest = error.config;
 
-          if (error.request.status === 401 && originalRequest._retry) {
+          // Skip retry if already retried or if error is not 401
+          if (error.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(error);
           }
 
-          if (error.request.status == 401) {
-            originalRequest._retry = true;
-            console.log('request status 401 so refreshing token')
-            return await this.refreshToken(
-                originalRequest,
-                true
-            );
+          originalRequest._retry = true;
+          console.log('Request returned 401, attempting to refresh token');
+
+          try {
+            await this.refreshToken(originalRequest, true);
+            return this._httpClient(originalRequest);
+          } catch (refreshError) {
+            return Promise.reject(refreshError);
           }
-          return Promise.reject(error);
         }
     );
   }
@@ -72,7 +73,12 @@ export class ApiService implements IApiService {
       return await axios
           .get(
               `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`,
-              { withCredentials: true }
+              { 
+                withCredentials: true,
+                headers: {
+                  'Accept': 'application/json'
+                }
+              }
           )
           .then((response: AxiosResponse<SucceededOrNotResponse>) => {
             if (!response.data) return;
@@ -90,6 +96,10 @@ export class ApiService implements IApiService {
             if (retryRequest) {
               return this._httpClient(config)
             }
+          })
+          .catch((error) => {
+            this.logoutUserAndRedirectToHomePage();
+            return Promise.reject(error);
           })
     } catch (error) {
       this.logoutUserAndRedirectToHomePage()
