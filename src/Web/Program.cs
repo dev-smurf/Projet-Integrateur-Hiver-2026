@@ -1,5 +1,7 @@
 using Application;
+using Application.Interfaces.Services.Equipe;
 using Application.Interfaces.Services.Module;
+using Application.Services.Equipe;
 using Application.Services.Module;
 using Domain.Common;
 using Domain.Extensions;
@@ -50,6 +52,8 @@ builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IEquipeRepository, EquipeRepository>();
+builder.Services.AddScoped<IEquipeService, EquipeService>();
 
 /*builder.Services.AddCors(options =>
 {

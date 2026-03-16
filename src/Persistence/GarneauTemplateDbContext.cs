@@ -39,13 +39,12 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
 
     public DbSet<Administrator> Administrators { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
+
+    public DbSet<Equipe> Equipes { get; set; } = null!;
     public DbSet<Domain.Entities.Module> Modules { get; set; } = null!;
     public DbSet<Book> Books { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
-
-    public GarneauTemplateDbContext()
-    {
-    }
+    //public IEnumerable<object> Equipes { get; set; }
 
     public GarneauTemplateDbContext(DbContextOptions<GarneauTemplateDbContext> options) : base(options)
     {
