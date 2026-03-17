@@ -3,6 +3,7 @@ using Application.Interfaces.Services.Notifications;
 using Application.Settings;
 using Domain.Common;
 using Domain.Repositories;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Web.Features.Common;
 
@@ -46,7 +47,32 @@ public class ForgotPasswordEndpoint : EndpointWithSanitizedRequest<ForgotPasswor
         }
 
         var token = await _userRepository.GetResetPasswordTokenForUser(user);
-        var link = $"{_baseUrl}{req.ResetPasswordRelativeUrl}?userId={user.Id}&token={token.Base64UrlEncode()}";
+        var baseUrlNormalized = (_baseUrl ?? string.Empty).TrimEnd('/');
+        var resetPath = (req.ResetPasswordRelativeUrl ?? string.Empty).Trim();
+
+        string resetBaseUrl;
+        if (Uri.TryCreate(resetPath, UriKind.Absolute, out var absoluteResetUrl))
+        {
+            resetBaseUrl = absoluteResetUrl.ToString();
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(baseUrlNormalized))
+            {
+                _logger.LogError("Application BaseUrl is missing; cannot build reset password link.");
+                await Send.OkAsync(new SucceededOrNotResponse(false, new Error("InvalidResetPasswordRelativeUrl", "Reset password relative path should not be empty.")), ct);
+                return;
+            }
+
+            var normalizedResetPath = resetPath.StartsWith("/") ? resetPath : "/" + resetPath;
+            resetBaseUrl = baseUrlNormalized + normalizedResetPath;
+        }
+
+        var link = QueryHelpers.AddQueryString(resetBaseUrl, new Dictionary<string, string>
+        {
+            { "userId", user.Id.ToString() },
+            { "token", token.Base64UrlEncode() }
+        });
 
         var response = await _notificationService.SendForgotPasswordNotification(user, link);
 

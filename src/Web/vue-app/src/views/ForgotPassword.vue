@@ -60,7 +60,7 @@ async function handleForgotPassword() {
 
   const response = await authService.forgotPassword({
     username: username.value,
-    resetPasswordRelativeUrl: `${window.location.origin}${t('routes.resetPassword.fullPath')}`
+    resetPasswordRelativeUrl: t("routes.resetPassword.fullPath")
   });
 
   if (response.succeeded) {
