@@ -52,4 +52,5 @@ public class ForgotPasswordEndpoint : EndpointWithSanitizedRequest<ForgotPasswor
 
         await Send.OkAsync(new SucceededOrNotResponse(response.Succeeded, response.Errors), ct);
     }
+
 }

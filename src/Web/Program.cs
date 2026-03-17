@@ -102,7 +102,10 @@ app.UseExceptionHandler(c => c.Run(async context =>
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(corsPolicyBuilder => corsPolicyBuilder
-    .WithOrigins("http://localhost:8080", "https://localhost:8080")
+    .WithOrigins(builder.Configuration.GetSection("CorsDomains")
+        .GetChildren()
+        .Select(c => c.Value)
+        .ToArray()!)
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
@@ -111,6 +114,7 @@ app.UseAuthorization();
 
 app.UseFastEndpoints(config => { config.Endpoints.RoutePrefix = "api"; });
 app.UseSwaggerGen();
+
 
 // SPA fallback - serve Vue app for any non-API route
 app.MapFallbackToFile("vue/index.html");
