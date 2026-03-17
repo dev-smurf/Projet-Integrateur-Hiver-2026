@@ -13,7 +13,7 @@
 
     <form @submit.prevent="handleForgotPassword" class="space-y-4">
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.username') }}</label>
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ ('global.username') }}</label>
         <input
           id="username"
           v-model="username"
