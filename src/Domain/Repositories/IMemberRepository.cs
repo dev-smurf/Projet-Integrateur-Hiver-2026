@@ -11,4 +11,7 @@ public interface IMemberRepository
     Member? FindByUserEmail(string userEmail);
     Task Create(Member member);
     Task Update(Member member);
+    Task AddModuleToMember(Guid memberId, Guid moduleId);
+    Task<List<MemberModule>> GetMemberModules(Guid memberId);
+    Task UpdateMemberModuleProgress(Guid memberId, Guid moduleId, int progressPercent);
 }

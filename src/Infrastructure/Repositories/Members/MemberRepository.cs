@@ -85,4 +85,35 @@ public class MemberRepository : IMemberRepository
         _context.Members.Update(member);
         await _context.SaveChangesAsync();
     }
+
+    public async Task AddModuleToMember(Guid memberId, Guid moduleId)
+    {
+        var exists = await _context.MemberModules
+            .AnyAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (exists)
+            return;
+
+        _context.MemberModules.Add(new MemberModule(memberId, moduleId));
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<MemberModule>> GetMemberModules(Guid memberId)
+    {
+        return await _context.MemberModules
+            .Include(x => x.Module)
+            .Where(x => x.MemberId == memberId)
+            .OrderByDescending(x => x.Created)
+            .ToListAsync();
+    }
+
+    public async Task UpdateMemberModuleProgress(Guid memberId, Guid moduleId, int progressPercent)
+    {
+        var memberModule = await _context.MemberModules
+            .FirstOrDefaultAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (memberModule == null)
+            return;
+
+        memberModule.UpdateProgress(progressPercent);
+        await _context.SaveChangesAsync();
+    }
 }

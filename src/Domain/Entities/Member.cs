@@ -20,6 +20,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public User User { get; private set; } = null!;
 
     public bool Active { get; private set; }
+    public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
 
     public Member() {}
 

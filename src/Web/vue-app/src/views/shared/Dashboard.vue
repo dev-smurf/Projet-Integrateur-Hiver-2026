@@ -142,8 +142,17 @@
               </div>
             </div>
 
-            <div class="rounded-2xl border border-dashed border-slate-200 bg-white p-4 text-sm text-slate-500">
-              Progression modules: donnees indisponibles (connecter API de progression).
+            <div class="rounded-2xl bg-white p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Progression</p>
+                <span class="text-xs font-semibold text-slate-600">{{ memberProgressLabel }}</span>
+              </div>
+              <div class="mt-3 h-2 w-full rounded-full bg-slate-200">
+                <div class="h-2 rounded-full bg-brand-500" :style="{ width: memberProgressPercent + '%' }"></div>
+              </div>
+              <p class="mt-2 text-xs text-slate-500">
+                {{ completedModulesCount }} module(s) termines sur {{ memberModules.length }}
+              </p>
             </div>
           </div>
 
@@ -158,14 +167,63 @@
       <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-semibold text-slate-900">Progression globale des membres</h2>
-            <p class="text-sm text-slate-500">Synthese generale des parcours sur les modules.</p>
+            <h2 class="text-lg font-semibold text-slate-900">Modules du membre</h2>
+            <p class="text-sm text-slate-500">Detail du parcours et progression par module.</p>
           </div>
           <TrendingUp class="h-5 w-5 text-brand-500" />
         </div>
 
-        <div class="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-          Donnees de progression non disponibles. Fournis un endpoint de progression pour activer cette section.
+        <div class="mt-6">
+          <div v-if="isLoadingModules" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
+            Chargement des modules...
+          </div>
+
+          <div v-else-if="memberModulesError" class="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
+            {{ memberModulesError }}
+          </div>
+
+          <div v-else-if="memberModules.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
+            Aucun module associe a ce membre.
+          </div>
+
+          <div v-else class="space-y-4">
+            <div v-for="module in formattedModules" :key="module.moduleId" class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-900">{{ module.title }}</p>
+                  <p class="text-xs text-slate-500">{{ module.subtitle }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="rounded-full px-3 py-1 text-xs font-semibold"
+                    :class="module.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-slate-600 shadow-sm'"
+                  >
+                    {{ module.isCompleted ? 'Termine' : module.progressPercent + '%' }}
+                  </span>
+                </div>
+              </div>
+              <div class="mt-3 h-2 w-full rounded-full bg-slate-200">
+                <div class="h-2 rounded-full bg-brand-500" :style="{ width: module.progressPercent + '%' }"></div>
+              </div>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <input
+                  v-model.number="progressEdits[module.moduleId]"
+                  type="range"
+                  min="0"
+                  max="100"
+                  class="w-48 accent-brand-500"
+                />
+                <span class="text-xs text-slate-500">{{ progressEdits[module.moduleId] }}%</span>
+                <button
+                  type="button"
+                  class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-white"
+                  @click="saveModuleProgress(module.moduleId)"
+                >
+                  Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -175,6 +233,28 @@
           <ArrowUpRight class="h-4 w-4 text-slate-400" />
         </div>
         <div class="mt-4 space-y-3">
+          <div class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Associer un module</p>
+            <div class="mt-3 flex flex-wrap items-center gap-3">
+              <select
+                v-model="selectedModuleId"
+                class="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
+              >
+                <option value="">Choisir un module</option>
+                <option v-for="module in availableModules" :key="module.id" :value="module.id">
+                  {{ module.nameFr || module.nameEn || 'Module' }}
+                </option>
+              </select>
+              <button
+                type="button"
+                class="rounded-full bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                :disabled="!selectedMemberId || !selectedModuleId"
+                @click="assignModuleToMember"
+              >
+                Ajouter
+              </button>
+            </div>
+          </div>
           <router-link
             v-for="action in quickActions"
             :key="action.label"
@@ -199,8 +279,8 @@ import {useI18n} from "vue3-i18n";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
 import {Role} from "@/types/enums";
-import {Member} from "@/types/entities";
-import {useMemberService} from "@/inversify.config";
+import {Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import {useMemberService, useModulesService} from "@/inversify.config";
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -216,16 +296,17 @@ import {
 const userStore = useUserStore();
 const personStore = usePersonStore();
 const memberService = useMemberService();
+const modulesService = useModulesService();
 const {t} = useI18n();
 
 const isAdmin = computed(() => userStore.hasRole(Role.Admin));
 const todayLabel = new Intl.DateTimeFormat("fr-CA", {dateStyle: "full"}).format(new Date());
 
 const kpis = [
-  {label: "Membres actifs", value: "5", trend: 6.2, icon: Users},
-  {label: "Nouveaux ce mois", value: "1", trend: 3.4, icon: UserPlus},
-  {label: "Modules publies", value: "7", trend: 1.1, icon: BookOpen},
-  {label: "Alertes critiques", value: "0", trend: -0.8, icon: AlertTriangle},
+  {label: "Membres actifs", value: "1 248", trend: 6.2, icon: Users},
+  {label: "Nouveaux ce mois", value: "84", trend: 3.4, icon: UserPlus},
+  {label: "Modules publies", value: "32", trend: 1.1, icon: BookOpen},
+  {label: "Alertes critiques", value: "2", trend: -0.8, icon: AlertTriangle},
 ];
 
 const quickActions = [
@@ -243,6 +324,13 @@ const totalMembers = ref(0);
 const isLoadingMembers = ref(false);
 const memberError = ref("");
 const selectedMemberId = ref<string | null>(null);
+
+const memberModules = ref<MemberModuleDto[]>([]);
+const isLoadingModules = ref(false);
+const memberModulesError = ref("");
+const progressEdits = ref<Record<string, number>>({});
+const selectedModuleId = ref("");
+const allModules = ref<ModuleDto[]>([]);
 
 const totalMembersLabel = computed(() => {
   if (totalMembers.value === 0)
@@ -329,6 +417,24 @@ const selectedMember = computed(() => {
   };
 });
 
+const memberProgressPercent = computed(() => {
+  if (memberModules.value.length === 0)
+    return 0;
+  const total = memberModules.value.reduce((sum, module) => sum + (module.progressPercent || 0), 0);
+  return Math.round(total / memberModules.value.length);
+});
+
+const completedModulesCount = computed(() =>
+  memberModules.value.filter(module => module.isCompleted || module.progressPercent >= 100).length
+);
+
+const memberProgressLabel = computed(() => `${memberProgressPercent.value}%`);
+
+const availableModules = computed(() => {
+  const assignedIds = new Set(memberModules.value.map(module => module.moduleId));
+  return allModules.value.filter(module => !assignedIds.has(module.id));
+});
+
 let searchTimer: number | undefined;
 
 watch(searchQuery, (value) => {
@@ -352,6 +458,9 @@ async function loadMembers(searchValue: string) {
     totalMembers.value = response.totalItems ?? 0;
     if (!selectedMemberId.value && members.value.length > 0)
       selectedMemberId.value = members.value[0].id ?? null;
+
+    if (selectedMemberId.value)
+      await loadMemberModules(selectedMemberId.value);
   } catch (error) {
     members.value = [];
     totalMembers.value = 0;
@@ -361,13 +470,68 @@ async function loadMembers(searchValue: string) {
   }
 }
 
+async function loadMemberModules(memberId: string) {
+  if (!memberId)
+    return;
+
+  isLoadingModules.value = true;
+  memberModulesError.value = "";
+
+  try {
+    const response = await memberService.getMemberModules(memberId);
+    memberModules.value = response;
+    progressEdits.value = response.reduce((acc, module) => {
+      acc[module.moduleId] = module.progressPercent ?? 0;
+      return acc;
+    }, {} as Record<string, number>);
+  } catch (error) {
+    memberModules.value = [];
+    memberModulesError.value = "Impossible de charger les modules du membre.";
+  } finally {
+    isLoadingModules.value = false;
+  }
+}
+
+async function loadAllModules() {
+  allModules.value = await modulesService.getAllModules();
+}
+
 function selectMember(memberId: string) {
   if (!memberId)
     return;
   selectedMemberId.value = memberId;
+  loadMemberModules(memberId);
 }
+
+async function assignModuleToMember() {
+  if (!selectedMemberId.value || !selectedModuleId.value)
+    return;
+  await memberService.addModuleToMember(selectedMemberId.value, selectedModuleId.value);
+  selectedModuleId.value = "";
+  await loadMemberModules(selectedMemberId.value);
+}
+
+async function saveModuleProgress(moduleId: string) {
+  if (!selectedMemberId.value)
+    return;
+  const progress = progressEdits.value[moduleId] ?? 0;
+  await memberService.updateMemberModuleProgress(selectedMemberId.value, moduleId, progress);
+  await loadMemberModules(selectedMemberId.value);
+}
+
+const moduleTitle = (module: MemberModuleDto) => module.nameFr || module.nameEn || "Module";
+const moduleSubtitle = (module: MemberModuleDto) => module.sujetFr || module.sujetEn || "";
+
+const formattedModules = computed(() =>
+  memberModules.value.map(module => ({
+    ...module,
+    title: moduleTitle(module),
+    subtitle: moduleSubtitle(module)
+  }))
+);
 
 onMounted(() => {
   loadMembers("");
+  loadAllModules();
 });
 </script>
