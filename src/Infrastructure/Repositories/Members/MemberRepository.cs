@@ -20,6 +20,8 @@ public class MemberRepository : IMemberRepository
     {
         var query = _context.Members
             .Include(x => x.User)
+            .ThenInclude(x => x.UserRoles)
+            .ThenInclude(x => x.Role)
             .AsNoTracking()
             .AsQueryable();
 
@@ -114,6 +116,17 @@ public class MemberRepository : IMemberRepository
             return;
 
         memberModule.UpdateProgress(progressPercent);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveModuleFromMember(Guid memberId, Guid moduleId)
+    {
+        var memberModule = await _context.MemberModules
+            .FirstOrDefaultAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (memberModule == null)
+            return;
+
+        _context.MemberModules.Remove(memberModule);
         await _context.SaveChangesAsync();
     }
 }

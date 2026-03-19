@@ -32,19 +32,13 @@
             <component :is="kpi.icon" class="h-5 w-5" />
           </div>
         </div>
-        <p class="mt-3 text-xs text-slate-500">
-          <span :class="kpi.trend >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-            {{ kpi.trend >= 0 ? '+' : '' }}{{ kpi.trend }}%
-          </span>
-          vs semaine derniere
-        </p>
       </div>
     </section>
 
     <section v-if="isAdmin" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 class="text-lg font-semibold text-slate-900">Membres</h2>
+          <h2 class="text-lg font-semibold text-slate-900">Nouveaux membres (30 jours)</h2>
           <p class="text-sm text-slate-500">Clique un membre pour afficher ses details.</p>
         </div>
         <div class="flex flex-wrap gap-3">
@@ -69,9 +63,16 @@
             v-model="sortKey"
             class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
           >
+            <option value="recent">Plus recents</option>
             <option value="name">Nom</option>
             <option value="email">Email</option>
           </select>
+          <router-link
+            :to="{ name: 'admin.children.members.index' }"
+            class="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Voir tous les membres
+          </router-link>
         </div>
       </div>
 
@@ -131,6 +132,12 @@
               <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Contact</p>
               <p class="mt-2 text-sm text-slate-800">{{ selectedMember.phoneLabel }}</p>
               <p class="text-sm text-slate-600">{{ selectedMember.addressLabel }}</p>
+            </div>
+
+            <div class="rounded-2xl bg-white p-4 shadow-sm">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Inscription</p>
+              <p class="mt-2 text-sm text-slate-800">{{ selectedMember.createdLabel }}</p>
+              <p class="text-sm text-slate-600">{{ selectedMember.activeLabel }}</p>
             </div>
 
             <div class="rounded-2xl bg-white p-4 shadow-sm">
@@ -221,6 +228,13 @@
                 >
                   Enregistrer
                 </button>
+                <button
+                  type="button"
+                  class="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50"
+                  @click="removeModule(module.moduleId)"
+                >
+                  Retirer
+                </button>
               </div>
             </div>
           </div>
@@ -279,10 +293,9 @@ import {useI18n} from "vue3-i18n";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
 import {Role} from "@/types/enums";
-import {Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import {DashboardSummaryDto, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
 import {useMemberService, useModulesService} from "@/inversify.config";
 import {
-  AlertTriangle,
   ArrowUpRight,
   BookOpen,
   Clock,
@@ -302,12 +315,7 @@ const {t} = useI18n();
 const isAdmin = computed(() => userStore.hasRole(Role.Admin));
 const todayLabel = new Intl.DateTimeFormat("fr-CA", {dateStyle: "full"}).format(new Date());
 
-const kpis = [
-  {label: "Membres actifs", value: "1 248", trend: 6.2, icon: Users},
-  {label: "Nouveaux ce mois", value: "84", trend: 3.4, icon: UserPlus},
-  {label: "Modules publies", value: "32", trend: 1.1, icon: BookOpen},
-  {label: "Alertes critiques", value: "2", trend: -0.8, icon: AlertTriangle},
-];
+const dashboardSummary = ref<DashboardSummaryDto | null>(null);
 
 const quickActions = [
   {label: "Ajouter un membre", to: {name: "admin.children.members.add"}, icon: UserPlus},
@@ -318,7 +326,7 @@ const quickActions = [
 
 const searchQuery = ref("");
 const roleFilter = ref<"all" | "admin" | "member">("all");
-const sortKey = ref<"name" | "email">("name");
+const sortKey = ref<"recent" | "name" | "email">("recent");
 const members = ref<Member[]>([]);
 const totalMembers = ref(0);
 const isLoadingMembers = ref(false);
@@ -334,8 +342,18 @@ const allModules = ref<ModuleDto[]>([]);
 
 const totalMembersLabel = computed(() => {
   if (totalMembers.value === 0)
-    return "Aucun membre";
-  return `${totalMembers.value} membre(s)`;
+    return "Aucun nouveau membre sur 30 jours";
+  return `${totalMembers.value} nouveau(x) membre(s) sur 30 jours`;
+});
+
+const kpis = computed(() => {
+  const summary = dashboardSummary.value;
+  return [
+    {label: "Membres actifs", value: formatNumber(summary?.totalMembers ?? 0), icon: Users},
+    {label: "Nouveaux (30 jours)", value: formatNumber(summary?.newMembersLast30Days ?? 0), icon: UserPlus},
+    {label: "Modules", value: formatNumber(summary?.totalModules ?? 0), icon: BookOpen},
+    {label: "Progression moyenne", value: `${summary?.averageProgressPercent ?? 0}%`, icon: TrendingUp},
+  ];
 });
 
 const filteredMembers = computed(() => {
@@ -357,6 +375,8 @@ const filteredMembers = computed(() => {
     const bName = (b.fullName || `${b.firstName ?? ""} ${b.lastName ?? ""}`).trim();
     if (sortKey.value === "email")
       return (a.email ?? "").localeCompare(b.email ?? "");
+    if (sortKey.value === "recent")
+      return new Date(b.created ?? 0).getTime() - new Date(a.created ?? 0).getTime();
     return aName.localeCompare(bName);
   });
 
@@ -413,7 +433,9 @@ const selectedMember = computed(() => {
     phoneLabel,
     roleLabel,
     roles: roleLabel ? [roleLabel] : ["Utilisateur"],
-    addressLabel: addressParts || "Adresse non renseignee"
+    addressLabel: addressParts || "Adresse non renseignee",
+    createdLabel: member.created ? formatDate(member.created) : "Date inconnue",
+    activeLabel: member.active ? "Compte actif" : "Compte inactif"
   };
 });
 
@@ -453,9 +475,8 @@ async function loadMembers(searchValue: string) {
   memberError.value = "";
 
   try {
-    const response = await memberService.search(1, 50, searchValue);
-    members.value = response.items ?? [];
-    totalMembers.value = response.totalItems ?? 0;
+    members.value = await memberService.getRecentMembers(30, 50, searchValue);
+    totalMembers.value = members.value.length;
     if (!selectedMemberId.value && members.value.length > 0)
       selectedMemberId.value = members.value[0].id ?? null;
 
@@ -496,6 +517,10 @@ async function loadAllModules() {
   allModules.value = await modulesService.getAllModules();
 }
 
+async function loadDashboardSummary() {
+  dashboardSummary.value = await memberService.getDashboardSummary();
+}
+
 function selectMember(memberId: string) {
   if (!memberId)
     return;
@@ -519,6 +544,13 @@ async function saveModuleProgress(moduleId: string) {
   await loadMemberModules(selectedMemberId.value);
 }
 
+async function removeModule(moduleId: string) {
+  if (!selectedMemberId.value)
+    return;
+  await memberService.removeModuleFromMember(selectedMemberId.value, moduleId);
+  await loadMemberModules(selectedMemberId.value);
+}
+
 const moduleTitle = (module: MemberModuleDto) => module.nameFr || module.nameEn || "Module";
 const moduleSubtitle = (module: MemberModuleDto) => module.sujetFr || module.sujetEn || "";
 
@@ -533,5 +565,17 @@ const formattedModules = computed(() =>
 onMounted(() => {
   loadMembers("");
   loadAllModules();
+  loadDashboardSummary();
 });
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("fr-CA").format(value);
+}
+
+function formatDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime()))
+    return "Date inconnue";
+  return new Intl.DateTimeFormat("fr-CA", {dateStyle: "medium"}).format(date);
+}
 </script>

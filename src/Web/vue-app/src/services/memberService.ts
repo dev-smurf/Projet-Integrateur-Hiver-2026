@@ -5,7 +5,7 @@ import "@/extensions/date.extensions"
 import {ApiService} from "@/services/apiService"
 import {IMemberService} from "@/injection/interfaces"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses";
-import {Member, MemberModuleDto} from "@/types/entities";
+import {DashboardSummaryDto, Member, MemberModuleDto} from "@/types/entities";
 import {Guid} from "@/types";
 
 @injectable()
@@ -55,6 +55,30 @@ export class MemberService extends ApiService implements IMemberService {
     return response?.data ?? []
   }
 
+  public async getDashboardSummary(): Promise<DashboardSummaryDto | null> {
+    const response = await this
+      ._httpClient
+      .get<DashboardSummaryDto, AxiosResponse<DashboardSummaryDto>>(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/dashboard/summary`)
+      .catch(function (error: AxiosError): AxiosResponse<DashboardSummaryDto> {
+        return error.response as AxiosResponse<DashboardSummaryDto>
+      })
+
+    return response?.data ?? null
+  }
+
+  public async getRecentMembers(days = 30, pageSize = 50, searchValue = ""): Promise<Member[]> {
+    const response = await this
+      ._httpClient
+      .get<Member[], AxiosResponse<Member[]>>(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/members/recent?days=${days}&pageSize=${pageSize}&searchValue=${encodeURIComponent(searchValue)}`)
+      .catch(function (error: AxiosError): AxiosResponse<Member[]> {
+        return error.response as AxiosResponse<Member[]>
+      })
+
+    return response?.data ?? []
+  }
+
   public async addModuleToMember(memberId: string, moduleId: string): Promise<SucceededOrNotResponse> {
     const response = await this
       ._httpClient
@@ -77,6 +101,19 @@ export class MemberService extends ApiService implements IMemberService {
         `${import.meta.env.VITE_API_BASE_URL}/members/${memberId}/modules/${moduleId}/progress`,
         { progressPercent },
         this.headersWithJsonContentType())
+      .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
+        return error.response as AxiosResponse<SucceededOrNotResponse>
+      })
+
+    const succeededOrNotResponse = response.data as SucceededOrNotResponse
+    return new SucceededOrNotResponse(succeededOrNotResponse?.succeeded ?? true, succeededOrNotResponse?.errors)
+  }
+
+  public async removeModuleFromMember(memberId: string, moduleId: string): Promise<SucceededOrNotResponse> {
+    const response = await this
+      ._httpClient
+      .delete<any, AxiosResponse<SucceededOrNotResponse>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/${memberId}/modules/${moduleId}`)
       .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
         return error.response as AxiosResponse<SucceededOrNotResponse>
       })

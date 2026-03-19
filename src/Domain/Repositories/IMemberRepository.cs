@@ -14,4 +14,5 @@ public interface IMemberRepository
     Task AddModuleToMember(Guid memberId, Guid moduleId);
     Task<List<MemberModule>> GetMemberModules(Guid memberId);
     Task UpdateMemberModuleProgress(Guid memberId, Guid moduleId, int progressPercent);
+    Task RemoveModuleFromMember(Guid memberId, Guid moduleId);
 }

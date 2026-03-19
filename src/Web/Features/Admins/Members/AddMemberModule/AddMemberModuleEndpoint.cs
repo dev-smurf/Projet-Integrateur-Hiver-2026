@@ -28,12 +28,6 @@ public class AddMemberModuleEndpoint : Endpoint<AddMemberModuleRequest, Succeede
     public override async Task HandleAsync(AddMemberModuleRequest req, CancellationToken ct)
     {
         var member = _memberRepository.FindById(req.MemberId);
-        if (member == null)
-        {
-            await Send.OkAsync(new SucceededOrNotResponse(false,
-                new Error("MemberNotFound", "Member not found.")), ct);
-            return;
-        }
 
         var module = await _moduleRepository.GetByIdAsync(req.ModuleId);
         if (module == null)
