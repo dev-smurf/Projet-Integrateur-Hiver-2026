@@ -484,6 +484,56 @@ namespace Persistence.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MemberModule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ProgressPercent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("MemberId", "ModuleId")
+                        .IsUnique();
+
+                    b.ToTable("MemberModules");
+                });
+
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -892,6 +942,25 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MemberModule", b =>
+                {
+                    b.HasOne("Domain.Entities.Member", "Member")
+                        .WithMany("MemberModules")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Module", "Module")
+                        .WithMany("MemberModules")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Module");
+                });
+
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.HasOne("Domain.Entities.Conversation", "Conversation")
@@ -1005,6 +1074,16 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Identity.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Member", b =>
+                {
+                    b.Navigation("MemberModules");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Module", b =>
+                {
+                    b.Navigation("MemberModules");
                 });
 #pragma warning restore 612, 618
         }

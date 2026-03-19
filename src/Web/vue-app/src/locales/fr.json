@@ -48,6 +48,11 @@
             "path": ":id/modifier",
             "fullPath": "/administration/membres/:id/modifier",
             "name": "Modifier un membre"
+          },
+          "details": {
+            "path": ":id/details",
+            "fullPath": "/administration/membres/:id/details",
+            "name": "Details membre"
           }
         },
         "modules": {

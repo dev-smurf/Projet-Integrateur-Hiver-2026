@@ -37,6 +37,9 @@ public static class ConfigureServices
         services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
         services.AddScoped<IAuthenticatedMemberService, AuthenticatedMemberService>();
 
+        
+        services.AddScoped<AuthenticatedMemberService>();
+
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ConfigureServices).Assembly));
 
         return services;
