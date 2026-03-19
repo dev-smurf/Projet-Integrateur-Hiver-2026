@@ -50,6 +50,16 @@
             "name": "Edit a member"
           }
         },
+        "Quiz":{
+          "path":"quiz",
+          "fullPath":"/administration/quiz",
+          "name": "Quiz"
+        },
+        "AddQuiz":{
+          "path":"quiz/add",
+          "fullPath":"/administration/quiz/add",
+          "name": "Add a new quiz"
+        },
         "modules": {
           "path": "modules",
           "fullPath": "/administration/modules",

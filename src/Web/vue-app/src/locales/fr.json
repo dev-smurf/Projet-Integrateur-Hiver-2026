@@ -44,6 +44,16 @@
             "fullPath": "/administration/membres/ajouter",
             "name": "Ajouter un membre"
           },
+          "Quiz":{
+            "path": "quiz",
+            "fullPath": "/administration/quiz",
+            "name": "Quiz"
+          },
+          "ajoutQuiz":{
+            "path": "quiz/ajouter",
+            "fullPath": "/administration/quiz/ajouter",
+            "name": "Ajouter un nouveau quiz"
+          },
           "edit": {
             "path": ":id/modifier",
             "fullPath": "/administration/membres/:id/modifier",

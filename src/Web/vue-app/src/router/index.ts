@@ -54,6 +54,15 @@ const router = createRouter({
       }
     },
     {
+      path: i18n.t("routes.admin.children.AddQuiz.path"),
+      name: "admin.children.quiz.index",
+      component: () => import("@/views/admin/members/AdminQuizIndex.vue"),
+      meta: {
+        requiredRole: Role.Admin,
+        title: "routes.admin.children.AddQuiz.name"
+      }
+    },
+    {
       path: i18n.t("routes.resetPassword.path"),
       alias: getLocalizedRoutes("routes.resetPassword.path"),
       name: "resetPassword",
