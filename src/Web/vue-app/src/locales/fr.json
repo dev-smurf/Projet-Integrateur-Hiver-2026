@@ -25,6 +25,42 @@
       "fullPath": "/tableau-de-bord",
       "name": "Tableau de bord"
     },
+    "memberDashboard": {
+      "welcomeLabel": "Bienvenue",
+      "defaultName": "Membre",
+      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
+      "viewBooks": "Mes livres",
+      "updateProfile": "Mon profil",
+      "modulesTitle": "Modules ajoutes",
+      "modulesCount": "modules",
+      "emptyModules": "Aucun module pour le moment.",
+      "progressTitle": "Progression globale",
+      "progressHint": "La progression est calculee selon vos modules.",
+      "progressLabel": "Progression",
+      "lastUpdate": "Derniere mise a jour",
+      "continue": "Continuer",
+      "manageProfile": "Gerer mon profil",
+      "profileTitle": "Profil du membre",
+      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
+      "unnamedModule": "Module sans titre",
+      "noSubject": "Aucun sujet disponible",
+      "stats": {
+        "modules": "Modules",
+        "modulesHint": "Modules assignes",
+        "completed": "Termines",
+        "completedHint": "Modules termines",
+        "average": "Moyenne",
+        "averageHint": "Progression moyenne",
+        "next": "Prochain module",
+        "nextHint": "Etape suivante suggeree",
+        "nextEmpty": "Aucun module disponible"
+      },
+      "status": {
+        "notStarted": "Non commence",
+        "inProgress": "En cours",
+        "completed": "Termine"
+      }
+    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",

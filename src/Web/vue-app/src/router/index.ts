@@ -7,7 +7,7 @@ import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
-import Dashboard from "@/views/shared/Dashboard.vue";
+import MemberDashboard from "@/views/member/MemberDashboard.vue";
 
 import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
@@ -68,9 +68,10 @@ const router = createRouter({
       path: i18n.t("routes.dashboard.path"),
       alias: getLocalizedRoutes("routes.dashboard.path"),
       name: "dashboard",
-      component: Dashboard,
+      component: MemberDashboard,
       meta: {
-        title: "routes.dashboard.name"
+        title: "routes.dashboard.name",
+        requiredRole: Role.Member
       }
     },
     {
@@ -174,12 +175,17 @@ router.beforeEach(async (to, from) => {
 
   // Handle root path redirect
   if (to.path === "/") {
-    return isAuthenticated ? { name: "dashboard" } : { name: "login" };
+    if (!isAuthenticated) return { name: "login" };
+    return userStore.hasRole(Role.Admin)
+      ? { name: "admin.children.members.index" }
+      : { name: "dashboard" };
   }
 
   // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
   if (to.meta.guest && isAuthenticated) {
-    return { name: "dashboard" };
+    return userStore.hasRole(Role.Admin)
+      ? { name: "admin.children.members.index" }
+      : { name: "dashboard" };
   }
 
   // Non-authenticated users cannot access protected pages
@@ -195,9 +201,10 @@ router.beforeEach(async (to, from) => {
   const doesNotHaveGivenRole = !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
   const hasNoRoleAmongRoleList = isRoleArray && !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
-    return {
-      name: "dashboard",
-    };
+    if (userStore.hasRole(Role.Admin)) {
+      return { name: "admin.children.members.index" };
+    }
+    return { name: "dashboard" };
   }
 });
 

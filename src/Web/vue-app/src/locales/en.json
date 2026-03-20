@@ -92,6 +92,42 @@
       "membersDesc": "View and manage members.",
       "booksDesc": "Browse and manage books."
     },
+    "memberDashboard": {
+      "welcomeLabel": "Welcome",
+      "defaultName": "Member",
+      "tagline": "Track your modules, your progress, and the next steps.",
+      "viewBooks": "My books",
+      "updateProfile": "My profile",
+      "modulesTitle": "Added modules",
+      "modulesCount": "modules",
+      "emptyModules": "No modules yet.",
+      "progressTitle": "Overall progress",
+      "progressHint": "Progress is calculated from your modules.",
+      "progressLabel": "Progress",
+      "lastUpdate": "Last update",
+      "continue": "Continue",
+      "manageProfile": "Manage my profile",
+      "profileTitle": "Member profile",
+      "profileHint": "Update your information to keep your profile complete.",
+      "unnamedModule": "Untitled module",
+      "noSubject": "No subject available",
+      "stats": {
+        "modules": "Modules",
+        "modulesHint": "All assigned modules",
+        "completed": "Completed",
+        "completedHint": "Modules finished",
+        "average": "Average",
+        "averageHint": "Average progress",
+        "next": "Next module",
+        "nextHint": "Suggested next step",
+        "nextEmpty": "No module available"
+      },
+      "status": {
+        "notStarted": "Not started",
+        "inProgress": "In progress",
+        "completed": "Completed"
+      }
+    },
     "account": {
       "personalInfo": "Personal information",
       "contactInfo": "Contact information",

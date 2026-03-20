@@ -54,6 +54,7 @@ import {useRouter} from "vue-router";
 import {useAuthenticationService, useUserService} from "@/inversify.config";
 import {useUserStore} from "@/stores/userStore";
 import {Loader2} from "lucide-vue-next";
+import {Role} from "@/types/enums";
 
 const router = useRouter();
 const authService = useAuthenticationService();
@@ -74,7 +75,7 @@ async function handleLogin() {
   if (response.succeeded) {
     userStore.setUsername(username.value);
     userStore.setUser(await userService.getCurrentUser());
-    await router.push({name: "dashboard"});
+    await router.push(userStore.hasRole(Role.Admin) ? {name: "admin.children.members.index"} : {name: "dashboard"});
   } else {
     errors.value = response.getErrorMessages("pages.login.validation");
   }
