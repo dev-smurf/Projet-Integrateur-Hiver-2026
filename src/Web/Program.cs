@@ -102,10 +102,7 @@ app.UseExceptionHandler(c => c.Run(async context =>
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(corsPolicyBuilder => corsPolicyBuilder
-    .WithOrigins(builder.Configuration.GetSection("CorsDomains")
-        .GetChildren()
-        .Select(c => c.Value)
-        .ToArray()!)
+    .WithOrigins("http://localhost:8080", "https://localhost:8080")
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());

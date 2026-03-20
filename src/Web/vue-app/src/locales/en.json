@@ -48,6 +48,11 @@
             "path": ":id/edit",
             "fullPath": "/administration/members/:id/edit",
             "name": "Edit a member"
+          },
+          "details": {
+            "path": ":id/details",
+            "fullPath": "/administration/members/:id/details",
+            "name": "Member details"
           }
         },
         "modules": {
@@ -429,5 +434,20 @@
   },
   "routes.addModule": {
     "name": "Add a module"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "New conversation",
+    "searchMember": "Search for a member...",
+    "noConversations": "No conversations yet",
+    "noMessages": "No messages yet. Say hello!",
+    "typePlaceholder": "Type a message...",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "you": "You",
+    "startConversation": "Start conversation",
+    "fileTooLarge": "File is too large. Maximum size is 10MB.",
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
   }
 }

@@ -48,7 +48,7 @@
           <tr v-else-if="!members.length">
             <td colspan="5" class="px-4 py-8 text-center text-gray-500">{{ $t('global.table.noData') }}</td>
           </tr>
-          <tr v-for="member in members" :key="member.id" class="hover:bg-gray-50 transition">
+          <tr v-for="member in members" :key="member.id" class="hover:bg-gray-50 transition cursor-pointer" @click="goToMember(member)">
             <td class="px-4 py-3 text-sm text-gray-900">{{ member.firstName }}</td>
             <td class="px-4 py-3 text-sm text-gray-900">{{ member.lastName }}</td>
             <td class="px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{{ member.email }}</td>
@@ -56,13 +56,21 @@
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
                 <router-link
+                  @click.stop
+                  :to="{ name: 'admin.children.members.details', params: { id: member.id } }"
+                  class="p-1.5 text-gray-400 hover:text-brand-600 transition"
+                >
+                  <Eye class="w-4 h-4" />
+                </router-link>
+                <router-link
+                  @click.stop
                   :to="{ name: 'admin.children.members.edit', params: { id: member.id } }"
                   class="p-1.5 text-gray-400 hover:text-brand-600 transition"
                 >
                   <Pencil class="w-4 h-4" />
                 </router-link>
                 <button
-                  @click="confirmDelete(member)"
+                  @click.stop="confirmDelete(member)"
                   class="p-1.5 text-gray-400 hover:text-brand-600 transition"
                 >
                   <Trash2 class="w-4 h-4" />
@@ -122,15 +130,17 @@
 
 <script lang="ts" setup>
 import {ref, computed, onMounted} from "vue";
+import {useRouter} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight} from "lucide-vue-next";
+import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, Eye} from "lucide-vue-next";
 import {useMemberService} from "@/inversify.config";
 import type {Member} from "@/types/entities";
 
 const {t} = useI18n();
 const {notify} = useNotification();
 const memberService = useMemberService();
+const router = useRouter();
 
 const allMembers = ref<Member[]>([]);
 const loading = ref(true);
@@ -175,6 +185,11 @@ function changePage(page: number) {
 
 function confirmDelete(member: Member) {
   memberToDelete.value = member;
+}
+
+function goToMember(member: Member) {
+  if (!member.id) return;
+  router.push({name: "admin.children.members.details", params: {id: member.id}});
 }
 
 async function deleteMember() {
