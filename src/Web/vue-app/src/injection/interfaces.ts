@@ -83,3 +83,14 @@ export interface IModulesService {
 export interface IUserService {
   getCurrentUser(): Promise<User>
 }
+
+export interface IQuizService {
+  getAll(): Promise<any[]>
+  getById(id: string): Promise<any>
+  create(quiz: any): Promise<void>
+  update(quiz: any): Promise<void>
+  delete(id: string): Promise<void>
+  getAssignedQuizzes(): Promise<any[]>
+  submitResponse(response: any): Promise<any>
+  assignQuiz(quizId: string, userIds: string[], dueDate?: Date): Promise<void>
+}

@@ -7,6 +7,8 @@ using Domain.Entities.Identity;
 using Web.Dtos;
 using Web.Features.Admins.Members.CreateMember;
 using Web.Features.Admins.Members.UpdateMember;
+using Web.Features.Admins.Quiz.CreateQuiz;
+using Web.Features.Admins.Quiz.UpdateQuiz;
 using Web.Features.Members.Books.CreateBook;
 using Web.Features.Members.Books.EditBook;
 
@@ -31,5 +33,17 @@ public class RequestMappingProfile : Profile
             .ForMember(user => user.NormalizedEmail, opt => opt.MapFrom(request => request.Email.ToUpper()))
             .ForMember(user => user.NormalizedUserName, opt => opt.MapFrom(request => request.Email.ToUpper()));
         CreateMap<UpdateMemberRequest, Member>();
+
+        CreateMap<CreateQuizRequest, Quiz>()
+            .ForMember(quiz => quiz.Questions, opt => opt.MapFrom(request => request.Questions));
+
+        CreateMap<CreateQuizQuestionRequest, QuizQuestion>()
+            .ForMember(question => question.Responses, opt => opt.MapFrom(request => request.Responses));
+
+        CreateMap<CreateQuizResponseRequest, QuizQuestionResponse>();
+
+        CreateMap<UpdateQuizRequest, Quiz>()
+            .ForMember(quiz => quiz.Id, opt => opt.Ignore());
+
     }
 }

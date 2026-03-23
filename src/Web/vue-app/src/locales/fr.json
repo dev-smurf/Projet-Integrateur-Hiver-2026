@@ -406,5 +406,56 @@
   },
   "routes.addModule": {
     "name": "Ajouter un module"
+  },
+  "quiz": {
+    "info": "Informations du quiz",
+    "title": "Titre du quiz",
+    "description": "Description",
+    "imageUrl": "URL de l'image",
+    "questions": "Questions",
+    "addQuestion": "+ Ajouter une question",
+    "questionText": "Texte de la question",
+    "questionType": "Type de question",
+    "placeholder": "Espace réservé",
+    "responses": "Réponses",
+    "addResponse": "+ Ajouter une réponse",
+    "responseText": "Texte de la réponse",
+    "order": "Ordre",
+    "remove": "Supprimer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "assign": "Assigner",
+    "assign_button": "Assigner aux utilisateurs",
+    "assigning": "Attribution en cours...",
+    "assignToUsers": "Assigner à {count} utilisateur(s)",
+    "searchUsers": "Rechercher les utilisateurs par nom ou courriel...",
+    "selected": "{count} sélectionné(s)",
+    "noUsers": "Aucun utilisateur trouvé.",
+    "noUsersMatch": "Aucun utilisateur ne correspond à votre recherche.",
+    "create": {
+      "validation": {
+        "successMessage": "Le quiz a été créé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la création du quiz."
+      }
+    },
+    "update": {
+      "validation": {
+        "successMessage": "Le quiz a été modifié avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la modification du quiz."
+      }
+    },
+    "delete": {
+      "confirmation": "Êtes-vous sûr de vouloir supprimer ce quiz ?",
+      "validation": {
+        "successMessage": "Le quiz a été supprimé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la suppression du quiz."
+      }
+    },
+    "assign_quiz": {
+      "validation": {
+        "successMessage": "Le quiz a été assigné avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de l'assignation du quiz."
+      }
+    }
   }
 }

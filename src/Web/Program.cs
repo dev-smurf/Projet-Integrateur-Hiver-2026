@@ -50,6 +50,9 @@ builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IQuizRepository, Infrastructure.Repositories.Quiz.QuizRepository>();
+builder.Services.AddScoped<IQuizAssignmentRepository, Infrastructure.Repositories.Quiz.QuizAssignmentRepository>();
+builder.Services.AddScoped<IUserQuizResponseRepository, Infrastructure.Repositories.Quiz.UserQuizResponseRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -99,7 +102,16 @@ app.UseExceptionHandler(c => c.Run(async context =>
     await context.Response.WriteAsJsonAsync(responseBody);
 }));
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        if (context.File.Name.EndsWith(".js") || context.File.Name.EndsWith(".css"))
+        {
+            context.Context.Response.Headers.CacheControl = "public, max-age=3600";
+        }
+    }
+});
 app.UseRouting();
 app.UseCors(corsPolicyBuilder => corsPolicyBuilder
     .WithOrigins(builder.Configuration.GetSection("CorsDomains")

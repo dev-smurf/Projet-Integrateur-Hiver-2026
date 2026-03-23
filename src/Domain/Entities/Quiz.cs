@@ -2,16 +2,20 @@
 
 namespace Domain.Entities
 {
-    public class Quiz: AuditableAndSoftDeletableEntity
+    public class Quiz : AuditableAndSoftDeletableEntity
     {
-        public string Question { get; private set; } = null!;
-        public string Reponse { get; private set; } = null!;
-        public string Titre { get; private set; } = null!;
+        public string Titre { get; set; } = null!;
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+
+        // Navigation property
+        public ICollection<QuizQuestion> Questions { get; set; } = new List<QuizQuestion>();
+
         public void SanitazeForSaving()
         {
-                Question = Question.Trim();
-                Reponse = Reponse.Trim();
-                Titre = Titre.Trim();
+            Titre = Titre?.Trim() ?? string.Empty;
+            Description = Description?.Trim();
+            ImageUrl = ImageUrl?.Trim();
         }
     }
 }

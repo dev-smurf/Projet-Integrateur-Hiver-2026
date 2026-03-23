@@ -403,5 +403,56 @@
   },
   "routes.addModule": {
     "name": "Add a module"
+  },
+  "quiz": {
+    "info": "Quiz Information",
+    "title": "Quiz Title",
+    "description": "Description",
+    "imageUrl": "Image URL",
+    "questions": "Questions",
+    "addQuestion": "+ Add Question",
+    "questionText": "Question Text",
+    "questionType": "Question Type",
+    "placeholder": "Placeholder",
+    "responses": "Responses",
+    "addResponse": "+ Add Response",
+    "responseText": "Response Text",
+    "order": "Order",
+    "remove": "Remove",
+    "save": "Save",
+    "cancel": "Cancel",
+    "assign": "Assign",
+    "assign_button": "Assign to Users",
+    "assigning": "Assigning...",
+    "assignToUsers": "Assign to {count} User(s)",
+    "searchUsers": "Search users by name or email...",
+    "selected": "{count} selected",
+    "noUsers": "No users found.",
+    "noUsersMatch": "No users match your search.",
+    "create": {
+      "validation": {
+        "successMessage": "Quiz was created successfully.",
+        "failedMessage": "An error occurred while creating the quiz."
+      }
+    },
+    "update": {
+      "validation": {
+        "successMessage": "Quiz was updated successfully.",
+        "failedMessage": "An error occurred while updating the quiz."
+      }
+    },
+    "delete": {
+      "confirmation": "Are you sure you want to delete this quiz?",
+      "validation": {
+        "successMessage": "Quiz was deleted successfully.",
+        "failedMessage": "An error occurred while deleting the quiz."
+      }
+    },
+    "assign_quiz": {
+      "validation": {
+        "successMessage": "Quiz was assigned successfully.",
+        "failedMessage": "An error occurred while assigning the quiz."
+      }
+    }
   }
 }
