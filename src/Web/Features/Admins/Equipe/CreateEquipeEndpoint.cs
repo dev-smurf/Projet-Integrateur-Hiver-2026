@@ -15,7 +15,6 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
 
     public override void Configure()
     {
-        AllowFileUploads();
         Post("equipes");
         Roles(Domain.Constants.User.Roles.ADMINISTRATOR);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
@@ -29,7 +28,7 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
         var newEquipe = new Equipe
         {
             NameFr = req.NameFr,
-            NameEn = req.NameEn
+            NameEn = req.NameEn ?? string.Empty
         };
 
         newEquipe.SanitazeForSaving();

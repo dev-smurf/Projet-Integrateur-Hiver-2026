@@ -16,7 +16,7 @@ public class DeleteEquipeEndpoint : EndpointWithoutRequest<SucceededOrNotRespons
 
     public override void Configure()
     {
-        Delete("/equipes/{id}");
+        Delete("/equipe/{id}");
         Roles(Domain.Constants.User.Roles.ADMINISTRATOR);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
         DontCatchExceptions();
