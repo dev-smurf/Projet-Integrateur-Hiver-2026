@@ -51,7 +51,10 @@ public class CreateQuizEndpoint : Endpoint<CreateQuizRequest, EmptyResponse>
                     QuestionText = questionReq.QuestionText,
                     Order = questionReq.Order,
                     QuestionType = questionReq.QuestionType,
-                    Placeholder = questionReq.Placeholder
+                    Placeholder = questionReq.Placeholder,
+                    ScaleMinLabel = questionReq.ScaleMinLabel ?? "Jamais",
+                    ScaleMidLabel = questionReq.ScaleMidLabel ?? "Parfois",
+                    ScaleMaxLabel = questionReq.ScaleMaxLabel ?? "Toujours"
                 };
 
                 foreach (var responseReq in questionReq.Responses)

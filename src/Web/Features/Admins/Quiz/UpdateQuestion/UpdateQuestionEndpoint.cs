@@ -40,16 +40,39 @@ public class UpdateQuestionEndpoint : EndpointWithSanitizedRequest<UpdateQuestio
         question.Order = req.Order;
         question.QuestionType = req.QuestionType;
         question.Placeholder = req.Placeholder;
+        question.ScaleMinLabel = req.ScaleMinLabel;
+        question.ScaleMidLabel = req.ScaleMidLabel;
+        question.ScaleMaxLabel = req.ScaleMaxLabel;
         question.SanitazeForSaving();
 
-        question.Responses.Clear();
+        var existingResponseIds = new HashSet<Guid>(req.Responses.Where(r => r.Id.HasValue).Select(r => r.Id.Value));
+
+        var responsesToRemove = question.Responses.Where(r => !existingResponseIds.Contains(r.Id)).ToList();
+        foreach (var response in responsesToRemove)
+        {
+            question.Responses.Remove(response);
+        }
+
         foreach (var responseReq in req.Responses)
         {
-            question.Responses.Add(new QuizQuestionResponse
+            if (responseReq.Id.HasValue)
             {
-                ResponseText = responseReq.ResponseText,
-                Order = responseReq.Order
-            });
+                var existingResponse = question.Responses.FirstOrDefault(r => r.Id == responseReq.Id.Value);
+                if (existingResponse != null)
+                {
+                    existingResponse.ResponseText = responseReq.ResponseText;
+                    existingResponse.Order = responseReq.Order;
+                    existingResponse.SanitazeForSaving();
+                }
+            }
+            else
+            {
+                question.Responses.Add(new QuizQuestionResponse
+                {
+                    ResponseText = responseReq.ResponseText,
+                    Order = responseReq.Order
+                });
+            }
         }
 
         await _quizRepository.Update(quiz);

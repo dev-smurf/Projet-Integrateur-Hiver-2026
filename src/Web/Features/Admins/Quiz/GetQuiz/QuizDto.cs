@@ -21,6 +21,9 @@ public class QuizQuestionDto
     public QuizQuestionType QuestionType { get; set; }
     public TranslatableString QuestionTypeDisplay { get; set; } = null!;
     public string? Placeholder { get; set; }
+    public string ScaleMinLabel { get; set; } = "Jamais";
+    public string ScaleMidLabel { get; set; } = "Parfois";
+    public string ScaleMaxLabel { get; set; } = "Toujours";
     public List<QuizResponseColumnDto> Responses { get; set; } = new();
 }
 

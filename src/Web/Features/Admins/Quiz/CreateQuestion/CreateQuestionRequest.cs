@@ -9,6 +9,9 @@ public class CreateQuestionRequest : Web.Features.Common.ISanitizable
     public int Order { get; set; }
     public QuizQuestionType QuestionType { get; set; }
     public string? Placeholder { get; set; }
+    public string ScaleMinLabel { get; set; } = "Jamais";
+    public string ScaleMidLabel { get; set; } = "Parfois";
+    public string ScaleMaxLabel { get; set; } = "Toujours";
     public List<CreateResponseRequest> Responses { get; set; } = new();
 
     public void Sanitize()
@@ -16,6 +19,9 @@ public class CreateQuestionRequest : Web.Features.Common.ISanitizable
         QuestionText = QuestionText?.Trim() ?? string.Empty;
         if (!string.IsNullOrWhiteSpace(Placeholder))
             Placeholder = Placeholder.Trim();
+        ScaleMinLabel = ScaleMinLabel?.Trim() ?? "Jamais";
+        ScaleMidLabel = ScaleMidLabel?.Trim() ?? "Parfois";
+        ScaleMaxLabel = ScaleMaxLabel?.Trim() ?? "Toujours";
 
         foreach (var response in Responses)
         {

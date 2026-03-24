@@ -104,19 +104,22 @@
 
     <!-- Delete Confirmation Modal -->
     <div v-if="quizToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div class="bg-white rounded-lg p-6 max-w-sm">
-        <h2 class="text-lg font-bold text-gray-900 mb-4">{{ $t('global.confirmation') }}</h2>
-        <p class="text-gray-600 mb-6">{{ $t('global.confirmDelete') }}</p>
+      <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">{{ $t('global.confirmation') }} - {{ $t('quiz.delete.label') }}</h2>
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded">
+          <p class="text-sm text-gray-700 mb-3">{{ $t('quiz.delete.confirmation') }}</p>
+          <p class="text-base font-semibold text-gray-900">{{ quizToDelete.titre }}</p>
+        </div>
         <div class="flex gap-3 justify-end">
           <button
             @click="quizToDelete = null"
-            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
           >
             {{ $t('global.cancel') }}
           </button>
           <button
             @click="deleteQuiz"
-            class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium"
           >
             {{ $t('global.delete') }}
           </button>

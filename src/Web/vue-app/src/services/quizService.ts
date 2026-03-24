@@ -75,6 +75,9 @@ export interface CreateQuizQuestionRequest {
   order: number
   questionType: QuizQuestionType
   placeholder?: string
+  scaleMinLabel?: string
+  scaleMidLabel?: string
+  scaleMaxLabel?: string
   responses: CreateQuizResponseRequest[]
 }
 
@@ -99,6 +102,17 @@ export interface CreateQuestionRequest {
   responses: CreateResponseRequest[]
 }
 
+export interface CreateQuizQuestionRequest {
+  questionText: string
+  order: number
+  questionType: QuizQuestionType
+  placeholder?: string
+  scaleMinLabel?: string
+  scaleMidLabel?: string
+  scaleMaxLabel?: string
+  responses: CreateResponseRequest[]
+}
+
 export interface CreateResponseRequest {
   responseText: string
   order: number
@@ -110,6 +124,9 @@ export interface UpdateQuestionRequest {
   order: number
   questionType: QuizQuestionType
   placeholder?: string
+  scaleMinLabel?: string
+  scaleMidLabel?: string
+  scaleMaxLabel?: string
   responses: UpdateResponseRequest[]
 }
 

@@ -16,6 +16,9 @@ public class CreateQuizQuestionRequest
     public int Order { get; set; }
     public QuizQuestionType QuestionType { get; set; } = QuizQuestionType.Scale1To10;
     public string? Placeholder { get; set; } // For TextInput questions
+    public string ScaleMinLabel { get; set; } = "Jamais";
+    public string ScaleMidLabel { get; set; } = "Parfois";
+    public string ScaleMaxLabel { get; set; } = "Toujours";
     public List<CreateQuizResponseRequest> Responses { get; set; } = new();
 }
 

@@ -44,15 +44,20 @@
             "fullPath": "/administration/membres/ajouter",
             "name": "Ajouter un membre"
           },
-          "Quiz":{
+          "quiz":{
             "path": "quiz",
             "fullPath": "/administration/quiz",
-            "name": "Quiz"
-          },
-          "ajoutQuiz":{
-            "path": "quiz/ajouter",
-            "fullPath": "/administration/quiz/ajouter",
-            "name": "Ajouter un nouveau quiz"
+            "name": "Quiz",
+            "add": {
+              "path": "ajouter",
+              "fullPath": "/administration/quiz/ajouter",
+              "name": "Ajouter un nouveau quiz"
+            },
+            "edit": {
+              "path": ":id/modifier",
+              "fullPath": "/administration/quiz/:id/modifier",
+              "name": "Modifier un quiz"
+            }
           },
           "edit": {
             "path": ":id/modifier",
@@ -432,6 +437,23 @@
     "selected": "{count} sélectionné(s)",
     "noUsers": "Aucun utilisateur trouvé.",
     "noUsersMatch": "Aucun utilisateur ne correspond à votre recherche.",
+    "noQuestions": "Aucune question ajoutée. Cliquez sur \"+ Ajouter une question\" pour commencer.",
+    "noResponses": "Aucune réponse ajoutée. Cliquez sur \"+ Ajouter une réponse\" pour commencer.",
+    "typeScale": "Échelle 1-10 (Jamais/Parfois/Toujours)",
+    "typeMultipleChoice": "Choix unique (Sélection simple)",
+    "typeTextInput": "Texte libre (Texte libre)",
+    "scaleLabels": "L'échelle utilisera ces étiquettes guides :",
+    "dragToReorder": "Faites glisser pour réorganiser",
+    "draggable": "Faites glisser pour réorganiser",
+    "question": "Question",
+    "scaleMinLabel": "Étiquette Min",
+    "scaleMidLabel": "Étiquette Mid",
+    "scaleMaxLabel": "Étiquette Max",
+    "scalePreview": "Aperçu:",
+    "possibleResponses": "Réponses Possibles",
+    "scaleLabels_title": "Étiquettes de l'Échelle",
+    "creating": "Création...",
+    "saving": "Enregistrement...",
     "create": {
       "validation": {
         "successMessage": "Le quiz a été créé avec succès.",
@@ -445,6 +467,7 @@
       }
     },
     "delete": {
+      "label": "Quiz",
       "confirmation": "Êtes-vous sûr de vouloir supprimer ce quiz ?",
       "validation": {
         "successMessage": "Le quiz a été supprimé avec succès.",

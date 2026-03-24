@@ -53,7 +53,12 @@
         "Quiz":{
           "path":"quiz",
           "fullPath":"/administration/quiz",
-          "name": "Quiz"
+          "name": "Quiz",
+          "edit": {
+            "path": ":id/edit",
+            "fullPath": "/administration/quiz/:id/edit",
+            "name": "Edit Quiz"
+          }
         },
         "AddQuiz":{
           "path":"quiz/add",
@@ -397,6 +402,11 @@
       }
     }
   },
+  "global": {
+    "confirmation": "Confirmation",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
   "common": {
     "Ajouter": "Add",
     "cancel": "Cancel"
@@ -429,6 +439,23 @@
     "selected": "{count} selected",
     "noUsers": "No users found.",
     "noUsersMatch": "No users match your search.",
+    "noQuestions": "No questions added. Click \"+ Add Question\" to get started.",
+    "noResponses": "No responses added. Click \"+ Add Response\" to get started.",
+    "typeScale": "Scale 1-10 (Never/Sometimes/Always)",
+    "typeMultipleChoice": "Multiple Choice (Single Selection)",
+    "typeTextInput": "Text Input (Free Text)",
+    "scaleLabels": "The scale will use these guide labels:",
+    "dragToReorder": "Drag to reorder",
+    "draggable": "Drag to reorder",
+    "question": "Question",
+    "scaleMinLabel": "Min Label",
+    "scaleMidLabel": "Mid Label",
+    "scaleMaxLabel": "Max Label",
+    "scalePreview": "Preview:",
+    "possibleResponses": "Possible Responses",
+    "scaleLabels_title": "Scale Labels",
+    "creating": "Creating...",
+    "saving": "Saving...",
     "create": {
       "validation": {
         "successMessage": "Quiz was created successfully.",
@@ -442,6 +469,7 @@
       }
     },
     "delete": {
+      "label": "Quiz",
       "confirmation": "Are you sure you want to delete this quiz?",
       "validation": {
         "successMessage": "Quiz was deleted successfully.",

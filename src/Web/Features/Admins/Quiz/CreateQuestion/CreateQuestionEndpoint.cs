@@ -44,7 +44,10 @@ public class CreateQuestionEndpoint : EndpointWithSanitizedRequest<CreateQuestio
             QuestionText = req.QuestionText,
             Order = req.Order,
             QuestionType = req.QuestionType,
-            Placeholder = req.Placeholder
+            Placeholder = req.Placeholder,
+            ScaleMinLabel = req.ScaleMinLabel,
+            ScaleMidLabel = req.ScaleMidLabel,
+            ScaleMaxLabel = req.ScaleMaxLabel
         };
 
         // Add responses
