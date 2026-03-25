@@ -32,6 +32,20 @@ public class MemberModuleRepository : IMemberModuleRepository
 
     public async Task<MemberModule> AssignAsync(MemberModule memberModule)
     {
+        // Restore soft-deleted assignment if it exists
+        var existing = await _context.MemberModules
+            .FirstOrDefaultAsync(mm => mm.MemberId == memberModule.MemberId
+                && mm.ModuleId == memberModule.ModuleId
+                && mm.Deleted != null);
+
+        if (existing != null)
+        {
+            existing.Deleted = null;
+            _context.MemberModules.Update(existing);
+            await _context.SaveChangesAsync();
+            return existing;
+        }
+
         _context.MemberModules.Add(memberModule);
         await _context.SaveChangesAsync();
         return memberModule;

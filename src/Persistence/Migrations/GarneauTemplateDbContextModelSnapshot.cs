@@ -669,7 +669,8 @@ namespace Persistence.Migrations
                     b.HasIndex("ModuleId");
 
                     b.HasIndex("MemberId", "ModuleId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("Deleted IS NULL");
 
                     b.ToTable("MemberModules");
                 });

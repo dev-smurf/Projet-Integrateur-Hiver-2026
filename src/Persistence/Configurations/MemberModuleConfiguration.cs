@@ -21,6 +21,7 @@ public class MemberModuleConfiguration : IEntityTypeConfiguration<MemberModule>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(mm => new { mm.MemberId, mm.ModuleId })
-            .IsUnique();
+            .IsUnique()
+            .HasFilter("Deleted IS NULL");
     }
 }
