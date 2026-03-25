@@ -64,6 +64,7 @@ public class ConversationRepository : IConversationRepository
     {
         return await _context.Messages
             .Include(m => m.Expediteur)
+            .Include(m => m.Appointment)
             .Where(m => m.ConversationId == conversationId && m.Deleted == null)
             .OrderByDescending(m => m.Date)
             .Skip(page * pageSize)
