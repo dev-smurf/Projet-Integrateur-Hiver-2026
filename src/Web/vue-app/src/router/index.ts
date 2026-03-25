@@ -16,6 +16,7 @@ import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
 import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
 import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
+import AdminModulePreview from "@/views/admin/members/AdminModulePreview.vue";
 
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
@@ -124,6 +125,12 @@ const router = createRouter({
           path: i18n.t("routes.admin.children.modules.path") + "/" + i18n.t("routes.admin.children.modules.edit.path"),
           name: "admin.children.modules.edit",
           component: AdminModuleEdit,
+          props: true
+        },
+        {
+          path: i18n.t("routes.admin.children.modules.path") + "/" + i18n.t("routes.admin.children.modules.preview.path"),
+          name: "admin.children.modules.preview",
+          component: AdminModulePreview,
           props: true
         },
       ]

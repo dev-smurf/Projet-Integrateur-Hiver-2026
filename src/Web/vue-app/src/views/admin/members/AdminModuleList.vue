@@ -71,6 +71,13 @@
         <!-- Actions -->
         <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-around">
           <router-link
+            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
+            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
+          >
+            <Eye class="w-4 h-4" />
+            Aperçu
+          </router-link>
+          <router-link
             :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
           >
@@ -138,7 +145,7 @@
 <script lang="ts" setup>
 import {ref, computed, onMounted} from "vue";
 import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen} from "lucide-vue-next";
+import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye} from "lucide-vue-next";
 import {useModulesService} from "@/inversify.config";
 import type {ModuleDto} from "@/types/entities";
 

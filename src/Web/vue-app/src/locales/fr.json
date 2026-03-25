@@ -63,6 +63,11 @@
             "path": ":id/modifier",
             "fullPath": "/administration/modules/:id/modifier",
             "name": "Modifier un module"
+          },
+          "preview": {
+            "path": ":id/apercu",
+            "fullPath": "/administration/modules/:id/apercu",
+            "name": "Aperçu du module"
           }
         }
       }

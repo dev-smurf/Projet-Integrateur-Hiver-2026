@@ -86,6 +86,13 @@
         >
           {{ $t('global.cancel') }}
         </router-link>
+        <router-link
+          :to="{ name: 'admin.children.modules.preview', params: { id: props.id } }"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+        >
+          <Eye class="w-4 h-4" />
+          Aperçu
+        </router-link>
         <button
           type="submit"
           :disabled="submitting"
@@ -106,7 +113,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
-import { Loader2, Upload, Check } from "lucide-vue-next";
+import { Loader2, Upload, Check, Eye } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { IEditModuleRequest } from "@/types";
 import type { ModuleDto } from "@/types/entities";

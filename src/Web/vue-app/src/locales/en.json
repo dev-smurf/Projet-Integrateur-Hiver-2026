@@ -63,6 +63,11 @@
             "path": ":id/edit",
             "fullPath": "/administration/modules/:id/edit",
             "name": "Edit a module"
+          },
+          "preview": {
+            "path": ":id/preview",
+            "fullPath": "/administration/modules/:id/preview",
+            "name": "Module preview"
           }
         }
       }
