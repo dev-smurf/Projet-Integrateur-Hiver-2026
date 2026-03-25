@@ -34,12 +34,9 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
 
         var newModule = new Module
         {
-            NameFr = req.NameFr,
-            NameEn = string.IsNullOrWhiteSpace(req.NameEn) ? req.NameFr : req.NameEn,
-            ContenueFr = req.ContenueFr,
-            ContenueEn = string.IsNullOrWhiteSpace(req.ContenueEn) ? req.ContenueFr : req.ContenueEn,
-            SujetFr = req.SujetFr,
-            SujetEn = string.IsNullOrWhiteSpace(req.SujetEn) ? req.SujetFr : req.SujetEn,
+            Name = req.Name,
+            Content = req.Content,
+            Subject = req.Subject,
             CardImageUrl = cardImageUrl
         };
 

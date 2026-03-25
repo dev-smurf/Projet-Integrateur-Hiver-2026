@@ -68,6 +68,11 @@
             "path": ":id/edit",
             "fullPath": "/administration/modules/:id/edit",
             "name": "Edit a module"
+          },
+          "preview": {
+            "path": ":id/preview",
+            "fullPath": "/administration/modules/:id/preview",
+            "name": "Module preview"
           }
         },
         "equipes": {
@@ -399,7 +404,11 @@
       "content": "Content",
       "subject": "Subject",
       "image": "Image",
-      "imagePreview": "Image preview"
+      "imagePreview": "Image preview",
+      "sections": "Sections",
+      "sectionTitle": "Section title",
+      "addSection": "Add a section",
+      "assignments": "Assignments"
     }
   },
   "Form_Add_Equipe": {
@@ -419,6 +428,13 @@
       "edit": {
         "success": "Module updated successfully.",
         "errorOccured": "An error occurred while updating the module."
+      },
+      "sections": {
+        "saveError": "Error saving sections."
+      },
+      "assignment": {
+        "assignError": "Error assigning module.",
+        "unassignError": "Error unassigning module."
       }
     },
     "equipe": {
@@ -430,6 +446,15 @@
         "success": "Team updated successfully.",
         "errorOccured": "An error occurred while updating the team."
       }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "My modules",
+      "noModules": "No modules assigned.",
+      "backToList": "Back to modules",
+      "noAccess": "You don't have access to this module.",
+      "loadError": "Could not load module."
     }
   },
   "common": {
@@ -459,5 +484,57 @@
     "startConversation": "Start conversation",
     "fileTooLarge": "File is too large. Maximum size is 10MB.",
     "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
+  },
+  "appointment": {
+    "requestBtn": "Book Appointment",
+    "modalTitle": "Request an Appointment",
+    "selectDate": "Select a date",
+    "selectTime": "Select a time slot",
+    "motif": "Reason (optional)",
+    "motifPlaceholder": "Briefly describe the reason for the appointment...",
+    "submit": "Send Request",
+    "cancel": "Cancel",
+    "noSlots": "No available slots for this date.",
+    "noSlotsWeek": "No available slots this week.",
+    "requestSent": "Appointment request sent!",
+    "requestError": "Error sending the request.",
+    "conflict": "This slot is no longer available.",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "refused": "Refused",
+    "requestMsg": "Appointment Request",
+    "responseMsg": "Appointment Response",
+    "dateLabel": "Date",
+    "motifLabel": "Reason",
+    "statusLabel": "Status",
+    "accept": "Accept",
+    "refuse": "Refuse",
+    "refuseReason": "Reason for refusal (optional)",
+    "refusePlaceholder": "Explain why you are refusing...",
+    "confirmRefuse": "Confirm Refusal",
+    "acceptSuccess": "Appointment accepted.",
+    "refuseSuccess": "Appointment refused.",
+    "respondError": "Error responding.",
+    "availability": "Availability",
+    "recurring": "Recurring Schedule",
+    "overrides": "Exceptions",
+    "addSlot": "Add a slot",
+    "removeSlot": "Remove",
+    "saveAvailability": "Save",
+    "saveSuccess": "Availability saved.",
+    "saveError": "Error saving availability.",
+    "blockDate": "Block this date",
+    "customHours": "Custom hours",
+    "addOverride": "Add an exception",
+    "deleteOverride": "Delete",
+    "days": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    }
   }
 }

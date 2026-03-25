@@ -17,11 +17,16 @@ import AdminMemberDetails from "@/views/admin/members/AdminMemberDetails.vue";
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
 import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
 import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
+import AdminModulePreview from "@/views/admin/members/AdminModulePreview.vue";
 
 import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
+
+import MemberModuleList from "@/views/member/MemberModuleList.vue";
+import MemberModuleView from "@/views/member/MemberModuleView.vue";
+import AdminAvailability from "@/views/admin/AdminAvailability.vue";
 
 import AdminEquipeList from "@/views/admin/equipe/EquipesListe.vue";
 import AdminAddEquipeForm from "@/views/admin/equipe/AdminAddEquipeForm.vue";
@@ -150,6 +155,17 @@ const router = createRouter({
           props: true,
         },
         {
+          path: i18n.t("routes.admin.children.modules.path") + "/" + i18n.t("routes.admin.children.modules.preview.path"),
+          name: "admin.children.modules.preview",
+          component: AdminModulePreview,
+          props: true
+        },
+        {
+          path: "disponibilites",
+          name: "admin.children.availability",
+          component: AdminAvailability,
+        },
+        {
           path: i18n.t("routes.admin.children.equipes.path"),
           name: "admin.children.equipes.index",
           component: AdminEquipeList,
@@ -211,6 +227,26 @@ const router = createRouter({
           },
         },
       ],
+    },
+    {
+      path: "/mes-modules",
+      component: Books,
+      meta: {
+        requiredRole: Role.Member,
+        title: "Mes modules"
+      },
+      children: [
+        {
+          path: "",
+          name: "member.modules.index",
+          component: MemberModuleList,
+        },
+        {
+          path: ":moduleId",
+          component: MemberModuleView,
+          props: true,
+        }
+      ]
     },
   ],
 });

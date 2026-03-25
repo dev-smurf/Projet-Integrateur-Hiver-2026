@@ -29,8 +29,12 @@
             <div class="flex-1 h-px bg-gray-200" />
           </div>
 
-          <!-- Message bubble -->
+          <!-- Appointment message -->
+          <AppointmentMessage v-if="msg.type === MessageType.AppointmentRequest || msg.type === MessageType.AppointmentResponse" :msg="msg" />
+
+          <!-- Regular message bubble -->
           <div
+            v-else
             :class="msg.senderId === currentUserId ? 'flex justify-end' : 'flex justify-start'"
           >
             <div
@@ -100,6 +104,15 @@
       </div>
 
       <div class="flex items-end gap-2">
+        <!-- RDV button (member only) -->
+        <button
+          v-if="userStore.hasRole(Role.Member)"
+          @click="showAppointmentModal = true"
+          class="w-9 h-9 rounded-full text-brand-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center transition shrink-0 cursor-pointer"
+          :title="$t('appointment.requestBtn')"
+        >
+          <CalendarPlus class="w-4 h-4" />
+        </button>
         <button
           @click="fileInput?.click()"
           class="w-9 h-9 rounded-full text-gray-400 hover:text-gray-600 flex items-center justify-center transition shrink-0 cursor-pointer"
@@ -131,12 +144,19 @@
         </button>
       </div>
     </div>
+
+    <!-- Appointment Request Modal -->
+    <AppointmentRequestModal
+      v-if="showAppointmentModal"
+      @close="showAppointmentModal = false"
+      @sent="scrollToBottom()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import {ref, computed, onMounted, onActivated, nextTick, watch} from "vue"
-import {MessageSquare, Send, Paperclip, FileText, X} from "lucide-vue-next"
+import {MessageSquare, Send, Paperclip, FileText, X, CalendarPlus} from "lucide-vue-next"
 import {DateTime} from "luxon"
 import {useI18n} from "vue3-i18n"
 import {useChatStore} from "@/stores/chatStore"
@@ -144,6 +164,9 @@ import {useUserStore} from "@/stores/userStore"
 import {useConversationService} from "@/inversify.config"
 import {useSignalR} from "@/composables/useSignalR"
 import {Role} from "@/types/enums"
+import {MessageType} from "@/types/entities"
+import AppointmentMessage from "./AppointmentMessage.vue"
+import AppointmentRequestModal from "./AppointmentRequestModal.vue"
 
 const {t} = useI18n()
 const chatStore = useChatStore()
@@ -157,6 +180,7 @@ const fileInput = ref<HTMLInputElement>()
 const newMessage = ref('')
 const selectedFile = ref<File | null>(null)
 const loading = ref(false)
+const showAppointmentModal = ref(false)
 let typingTimeout: number | null = null
 
 const currentUserId = userStore.getUser.id

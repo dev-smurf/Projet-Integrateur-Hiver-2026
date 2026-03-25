@@ -27,6 +27,7 @@ public class MemberModuleConfiguration : IEntityTypeConfiguration<MemberModule>
             .HasDefaultValue(false);
 
         builder.HasIndex(mm => new { mm.MemberId, mm.ModuleId })
-            .IsUnique();
+            .IsUnique()
+            .HasFilter("Deleted IS NULL");
     }
 }

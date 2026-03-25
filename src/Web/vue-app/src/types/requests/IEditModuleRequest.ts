@@ -1,7 +1,7 @@
 export interface IEditModuleRequest {
     id?: string;
-    nameFr?: string;
-    sujetFr?: string;
-    contenueFr?: string;
+    name?: string;
+    subject?: string;
+    content?: string;
     cardImage?: File | null;
 }
