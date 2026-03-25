@@ -36,4 +36,5 @@ public class AuthenticatedMemberService : IAuthenticatedMemberService
 
         return member;
     }
+
 }

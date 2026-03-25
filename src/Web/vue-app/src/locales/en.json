@@ -48,6 +48,11 @@
             "path": ":id/edit",
             "fullPath": "/administration/members/:id/edit",
             "name": "Edit a member"
+          },
+          "details": {
+            "path": ":id/details",
+            "fullPath": "/administration/members/:id/details",
+            "name": "Member details"
           }
         },
         "modules": {
@@ -63,6 +68,21 @@
             "path": ":id/edit",
             "fullPath": "/administration/modules/:id/edit",
             "name": "Edit a module"
+          }
+        },
+        "equipes": {
+          "path": "equipes",
+          "fullPath": "/administration/equipes",
+          "name": "Equipes",
+          "add": {
+            "path": "add",
+            "fullPath": "/administration/equipes/add",
+            "name": "Add an equipe"
+          },
+          "edit": {
+            "path": ":id/edit",
+            "fullPath": "/administration/equipes/:id/edit",
+            "name": "Edit an equipe"
           }
         }
       }
@@ -204,6 +224,12 @@
           "memberNotFoundException": "Could not find member."
         }
       }
+    },
+    "equipes": {
+      "create": {
+        "successMessage": "Équipe créée avec succès.",
+        "failedMessage": "Erreur lors de la création de l'équipe."
+      }
     }
   },
   "products": {
@@ -258,6 +284,7 @@
     "firstName": "First name",
     "lastName": "Last name",
     "fullName": "Full name",
+    "equipeName": "Team name",
     "email": "Email",
     "phoneNumber": "Phone number",
     "phoneExtension": "Extension",
@@ -375,6 +402,14 @@
       "imagePreview": "Image preview"
     }
   },
+  "Form_Add_Equipe": {
+    "fields": {
+      "name": "Team name"
+    },
+    "validation": {
+      "nameRequired": "The name is required."
+    }
+  },
   "errors": {
     "module": {
       "add": {
@@ -385,6 +420,16 @@
         "success": "Module updated successfully.",
         "errorOccured": "An error occurred while updating the module."
       }
+    },
+    "equipe": {
+      "add": {
+        "success": "Team created successfully.",
+        "errorOccured": "An error occurred while creating the team."
+      },
+      "edit": {
+        "success": "Team updated successfully.",
+        "errorOccured": "An error occurred while updating the team."
+      }
     }
   },
   "common": {
@@ -393,5 +438,26 @@
   },
   "routes.addModule": {
     "name": "Add a module"
+  },
+  "addEquipe": {
+    "name": "Add a team "
+  },
+  "editEquipe": {
+    "name": "Edit a team"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "New conversation",
+    "searchMember": "Search for a member...",
+    "noConversations": "No conversations yet",
+    "noMessages": "No messages yet. Say hello!",
+    "typePlaceholder": "Type a message...",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "you": "You",
+    "startConversation": "Start conversation",
+    "fileTooLarge": "File is too large. Maximum size is 10MB.",
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
   }
 }

@@ -64,6 +64,7 @@ public static class ConfigureServices
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IEquipeRepository, EquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
@@ -120,6 +121,21 @@ public static class ConfigureServices
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSigningKey)),
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(10)
+                };
+
+                // Allow SignalR to receive the JWT token from the query string
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/api/chat-hub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
     }
