@@ -16,27 +16,33 @@ public class MemberRepository : IMemberRepository
         _context = context;
     }
 
-    public PaginatedList<Member> GetAllPaginated(int pageIndex, int pageSize, string? searchValue = null)
+   public PaginatedList<Member> GetAllPaginated(int pageIndex, int pageSize, string? searchValue = null)
+{
+    var query = _context.Members
+        .Include(x => x.User)
+        .AsNoTracking()
+        .AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(searchValue))
     {
-        var query = _context.Members
-            .Include(x => x.User)
-            .AsNoTracking()
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(searchValue))
-        {
-            var search = searchValue.ToLower();
-            query = query.Where(m =>
-                m.FirstName.ToLower().Contains(search) ||
-                m.LastName.ToLower().Contains(search) ||
-                m.User.Email!.ToLower().Contains(search) ||
-                (m.City != null && m.City.ToLower().Contains(search)));
-        }
-
-        var totalItems = query.Count();
-        var pageItems = query.OrderByDescending(x => x.Created).Skip((pageIndex-1) * pageSize).Take(pageSize).ToList();
-        return new PaginatedList<Member>(pageItems, totalItems);
+        Console.WriteLine("serach value: " + searchValue);
+        var search = searchValue.ToLower();
+        query = query.Where(m =>
+            m.FirstName.ToLower().Contains(search) ||
+            m.LastName.ToLower().Contains(search) ||
+            m.User.Email!.ToLower().Contains(search) ||
+            (m.City != null && m.City.ToLower().Contains(search)));
     }
+
+    var totalItems = query.Count();
+    var pageItems = query
+        .OrderByDescending(x => x.Created)
+        .Skip((Math.Max(1, pageIndex) - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    return new PaginatedList<Member>(pageItems, totalItems);
+}
 
     public Member FindById(Guid id)
     {

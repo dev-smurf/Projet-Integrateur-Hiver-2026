@@ -109,7 +109,7 @@ const assigning = ref(false)
 const loading = ref(false)
 
 const filteredUsers = computed(() => {
-  if (!searchQuery.value) return users.value
+  if (!searchQuery.value|| searchQuery.value.trim() === '') return users.value  
   const query = searchQuery.value.toLowerCase()
   return users.value.filter(u => {
     const fullName = `${u.firstName} ${u.lastName}`.toLowerCase()
@@ -121,7 +121,7 @@ async function loadUsers() {
   loading.value = true
   try {
     // Load first page with high page size to get most users
-    const response = await memberService.search(0, 1000, '')
+    const response = await memberService.search(1, 1000,'')
     users.value = response.items || []
   } catch (err) {
     console.error('Failed to load users:', err)
