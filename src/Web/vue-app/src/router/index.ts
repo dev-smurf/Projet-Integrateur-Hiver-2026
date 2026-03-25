@@ -195,7 +195,6 @@ const router = createRouter({
         },
         {
           path: ":moduleId",
-          name: "member.modules.view",
           component: MemberModuleView,
           props: true,
         }

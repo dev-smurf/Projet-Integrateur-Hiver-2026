@@ -29,7 +29,7 @@ public class GetMyModuleDetailEndpoint : EndpointWithoutRequest<ModuleDto>
 
     public override void Configure()
     {
-        Get("/api/member/modules/{moduleId}");
+        Get("member/modules/{moduleId}");
         Roles(Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }

@@ -182,7 +182,7 @@ export class ModulesApiService extends ApiService implements IModulesService {
             const response = await this._httpClient.get<ModuleDto[]>(
                 `${import.meta.env.VITE_API_BASE_URL}/member/modules`
             );
-            return response.data ?? [];
+            return Array.isArray(response.data) ? response.data : [];
         } catch {
             return [];
         }

@@ -24,7 +24,7 @@ public class GetMyModulesEndpoint : EndpointWithoutRequest<List<ModuleDto>>
 
     public override void Configure()
     {
-        Get("/api/member/modules");
+        Get("member/modules");
         Roles(Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
