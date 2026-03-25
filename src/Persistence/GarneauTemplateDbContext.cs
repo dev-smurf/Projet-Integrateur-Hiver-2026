@@ -39,14 +39,26 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     }
 
     // ✅ DbSets
-    public DbSet<Administrator> Administrators => Set<Administrator>();
-    public DbSet<Member> Members => Set<Member>();
+    //public DbSet<Administrator> Administrators => Set<Administrator>();
+    //public DbSet<Member> Members => Set<Member>();
     public DbSet<Equipe> Equipes => Set<Equipe>();
-    public DbSet<Domain.Entities.Module> Modules => Set<Domain.Entities.Module>();
-    public DbSet<Book> Books => Set<Book>();
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    //public DbSet<Domain.Entities.Module> Modules => Set<Domain.Entities.Module>();
     public DbSet<Archive> Archives => Set<Archive>();
-    public DbSet<Message> Messages => Set<Message>();
+    public DbSet<Administrator> Administrators { get; set; } = null!;
+    public DbSet<Member> Members { get; set; } = null!;
+    public DbSet<MemberModule> MemberModules { get; set; } = null!;
+    public DbSet<Domain.Entities.Module> Modules { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+    public DbSet<Conversation> Conversations { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
+
+    public GarneauTemplateDbContext()
+    {
+    }
+
+    public GarneauTemplateDbContext(DbContextOptions<GarneauTemplateDbContext> options) : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

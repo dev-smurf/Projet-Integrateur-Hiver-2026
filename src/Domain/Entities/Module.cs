@@ -11,5 +11,6 @@ namespace Domain.Entities
         public string? SujetFr { get; set; }
         public string? SujetEn { get; set; }
         public string? CardImageUrl { get; set; }
+        public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
     }
 }

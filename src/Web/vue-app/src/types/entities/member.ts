@@ -2,6 +2,8 @@ import {IPerson} from "@/types/entities/person";
 
 export class Member implements IPerson {
   id?: string
+  created?: string
+  active?: boolean
   firstName?: string
   lastName?: string
   fullName?: string

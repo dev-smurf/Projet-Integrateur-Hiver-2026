@@ -122,6 +122,21 @@ public static class ConfigureServices
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(10)
                 };
+
+                // Allow SignalR to receive the JWT token from the query string
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/api/chat-hub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
     }
 }

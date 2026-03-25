@@ -115,6 +115,8 @@
         </div>
       </template>
     </notifications>
+
+    <ChatBubble />
   </div>
 </template>
 
@@ -126,7 +128,10 @@ import Cookies from "universal-cookie";
 import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X} from "lucide-vue-next";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
-import {useMemberService, useAdministratorService, useAuthenticationService} from "@/inversify.config";
+import ChatBubble from "@/components/chat/ChatBubble.vue";
+import {useMemberService, useAdministratorService, useAuthenticationService, useConversationService} from "@/inversify.config";
+import {useChatStore} from "@/stores/chatStore";
+import {useSignalR} from "@/composables/useSignalR";
 import {Role} from "@/types/enums";
 import {LOCALES} from "@/locales";
 
@@ -137,6 +142,9 @@ const personStore = usePersonStore();
 const memberService = useMemberService();
 const adminService = useAdministratorService();
 const authService = useAuthenticationService();
+const conversationService = useConversationService();
+const chatStore = useChatStore();
+const {connect: connectSignalR, disconnect: disconnectSignalR} = useSignalR();
 
 const langOpen = ref(false);
 const currentLocale = ref(i18nInstance.getLocale());
@@ -167,6 +175,8 @@ function handleClickOutside(e: MouseEvent) {
 }
 
 async function handleLogout() {
+  chatStore.reset();
+  await disconnectSignalR();
   await authService.logout();
   userStore.reset();
   personStore.reset();
@@ -186,9 +196,19 @@ onMounted(async () => {
   } catch {
     // API failed — personStore already has persisted data from login
   }
+
+  // Initialize chat
+  await connectSignalR();
+  try {
+    const unreadCount = await conversationService.getUnreadCount();
+    chatStore.setUnreadCount(unreadCount);
+  } catch {
+    // Chat unavailable — non-blocking
+  }
 });
 
-onUnmounted(() => {
+onUnmounted(async () => {
   document.removeEventListener("click", handleClickOutside);
+  await disconnectSignalR();
 });
 </script>

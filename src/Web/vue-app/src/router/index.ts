@@ -13,6 +13,7 @@ import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminAddMemberForm from "@/views/admin/members/AdminAddMemberForm.vue";
 import AdminEditMemberForm from "@/views/admin/members/AdminEditMemberForm.vue";
+import AdminMemberDetails from "@/views/admin/members/AdminMemberDetails.vue";
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
 import AdminAddModule from "@/views/admin/members/AdminAddModule.vue";
 import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
@@ -119,6 +120,12 @@ const router = createRouter({
           name: "admin.children.members.edit",
           component: AdminEditMemberForm,
           props: true,
+        },
+        {
+          path: i18n.t("routes.admin.children.members.path") + "/" + i18n.t("routes.admin.children.members.details.path"),
+          name: "admin.children.members.details",
+          component: AdminMemberDetails,
+          props: true
         },
         {
           path: i18n.t("routes.admin.children.modules.path"),

@@ -12,6 +12,7 @@ import {
   IMemberService,
   IModulesService,
   IUserService,
+  IConversationService
 } from "@/injection/interfaces";
 import {
   ApiService,
@@ -20,45 +21,24 @@ import {
   MemberService,
   ModulesApiService,
   UserService,
+  ConversationService
 } from "@/services";
 import { AdministratorService } from "@/services/administratorService";
 import { EquipeService } from "./services/equipeService";
 
 const dependencyInjection = new Container();
-dependencyInjection
-  .bind<AxiosInstance>(TYPES.AxiosInstance)
-  .toConstantValue(axios.create({ withCredentials: true }));
-dependencyInjection
-  .bind<IApiService>(TYPES.IApiService)
-  .to(ApiService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IAdministratorService>(TYPES.IAdministratorService)
-  .to(AdministratorService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IAuthenticationService>(TYPES.IAuthenticationService)
-  .to(AuthenticationService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IBookService>(TYPES.IBookService)
-  .to(BookService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IMemberService>(TYPES.IMemberService)
-  .to(MemberService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IModulesService>(TYPES.IModulesService)
-  .to(ModulesApiService)
-  .inSingletonScope();
+dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axios.create({ withCredentials: true }))
+dependencyInjection.bind<IApiService>(TYPES.IApiService).to(ApiService).inSingletonScope()
+dependencyInjection.bind<IAdministratorService>(TYPES.IAdministratorService).to(AdministratorService).inSingletonScope()
+dependencyInjection.bind<IAuthenticationService>(TYPES.IAuthenticationService).to(AuthenticationService).inSingletonScope()
+dependencyInjection.bind<IBookService>(TYPES.IBookService).to(BookService).inSingletonScope()
+dependencyInjection.bind<IMemberService>(TYPES.IMemberService).to(MemberService).inSingletonScope()
+dependencyInjection.bind<IModulesService>(TYPES.IModulesService).to(ModulesApiService).inSingletonScope()
+dependencyInjection.bind<IUserService>(TYPES.IUserService).to(UserService).inSingletonScope()
+dependencyInjection.bind<IConversationService>(TYPES.IConversationService).to(ConversationService).inSingletonScope()
 dependencyInjection
   .bind<IEquipesService>(TYPES.IEquipesService)
   .to(EquipeService)
-  .inSingletonScope();
-dependencyInjection
-  .bind<IUserService>(TYPES.IUserService)
-  .to(UserService)
   .inSingletonScope();
 
 function useAdministratorService() {
@@ -93,6 +73,11 @@ function useUserService() {
   return dependencyInjection.get<IUserService>(TYPES.IUserService);
 }
 
+function useConversationService() {
+  return dependencyInjection.get<IConversationService>(TYPES.IConversationService);
+}
+
+
 export {
   dependencyInjection,
   useAdministratorService,
@@ -102,4 +87,5 @@ export {
   useModulesService,
   useUserService,
   useEquipesService,
+  useConversationService
 };

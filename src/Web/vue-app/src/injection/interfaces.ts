@@ -5,11 +5,11 @@ import {
   IForgotPasswordRequest,
   ILoginRequest,
   IResetPasswordRequest,
-  ITwoFactorRequest,
-} from "@/types/requests";
-import { PaginatedResponse, SucceededOrNotResponse } from "@/types/responses";
-import { Administrator, Book, Member, User, Equipe } from "@/types/entities";
-import { Guid } from "@/types";
+  ITwoFactorRequest
+} from "@/types/requests"
+import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
+import {Administrator, Book, ChatMessage, Conversation, Member, User,Equipe} from "@/types/entities"
+import {Guid} from "@/types";
 
 export interface IApiService {
   headersWithJsonContentType(): any;
@@ -105,4 +105,13 @@ export interface IEquipesService {
 
 export interface IUserService {
   getCurrentUser(): Promise<User>;
+}
+
+export interface IConversationService {
+  getConversations(): Promise<Conversation[]>
+  getMessages(conversationId: string, page?: number, pageSize?: number): Promise<ChatMessage[]>
+  createConversation(memberId: string): Promise<{ id: string }>
+  sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage>
+  markAsRead(conversationId: string): Promise<void>
+  getUnreadCount(): Promise<number>
 }

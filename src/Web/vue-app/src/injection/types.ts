@@ -8,4 +8,5 @@ export const TYPES = {
   IModulesService: Symbol.for("IModulesService"),
   IEquipesService: Symbol.for("IEquipeService"),
   IUserService: Symbol.for("IUserService"),
+  IConversationService: Symbol.for("IConversationService"),
 };
