@@ -4,13 +4,12 @@ import { SucceededOrNotResponse } from "@/types/responses";
 import { ApiService } from "@/services";
 import { ICreateModuleRequest, IEditModuleRequest } from "@/types";
 import { ModuleDto } from "@/types/entities";
+import type { ISaveModuleFullRequest } from "@/types/requests/ISaveModuleFullRequest";
+import type { ModuleSectionDto } from "@/types/entities/moduleSection";
 
 @injectable()
 export class ModulesApiService extends ApiService implements IModulesService {
 
-    /**
-     * Récupère tous les modules
-     */
     public async getAllModules(): Promise<ModuleDto[]> {
         try {
             const response = await this._httpClient.get<ModuleDto[]>(
@@ -23,9 +22,6 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
-    /**
-     * Récupère un module spécifique par son ID
-     */
     public async getModule(id: string): Promise<ModuleDto> {
         try {
             const response = await this._httpClient.get<ModuleDto>(
@@ -38,7 +34,6 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
- 
     public async getModuleFlexible(id: string): Promise<ModuleDto | null> {
         try {
             return await this.getModule(id);
@@ -46,18 +41,10 @@ export class ModulesApiService extends ApiService implements IModulesService {
             try {
                 const list = await this.getAllModules();
                 const found = list.find((m: ModuleDto) => {
-                    const ids = [m.id, (m as any).Id, (m as any).IdString, ((m as any).Id && (m as any).Id.toString && (m as any).Id.toString())];
+                    const ids = [m.id, (m as any).Id];
                     return ids.some((x: any) => x === id);
                 });
                 if (found) return found;
-
-                const num = Number(id);
-                if (!isNaN(num)) {
-
-                    if (num > 0 && num <= list.length) return list[num - 1];
-
-                    if (num >= 0 && num < list.length) return list[num];
-                }
                 return null;
             } catch (e) {
                 console.error('Erreur lors du fallback getAllModules:', e);
@@ -66,9 +53,6 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
-    /**
-     * Création d'un module
-     */
     public async createModule(request: ICreateModuleRequest): Promise<SucceededOrNotResponse> {
         const formData = this.prepareFormData(request);
 
@@ -88,9 +72,6 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
-    /**
-     * Mise à jour d'un module existant
-     */
     public async updateModule(id: string, request: IEditModuleRequest): Promise<SucceededOrNotResponse> {
         const formData = this.prepareFormData(request);
 
@@ -110,9 +91,6 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
-    /**
-     * Suppression (soft delete) d'un module
-     */
     public async deleteModule(id: string): Promise<SucceededOrNotResponse> {
         try {
             const response = await this._httpClient.delete<any>(
@@ -131,19 +109,99 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
-    /**
-     * Prépare le FormData pour POST et PUT
-     */
+    public async saveModuleFull(id: string, request: ISaveModuleFullRequest): Promise<SucceededOrNotResponse> {
+        try {
+            const response = await this._httpClient.put<any>(
+                `${import.meta.env.VITE_API_BASE_URL}/module/${id}/full`,
+                request,
+                this.headersWithJsonContentType()
+            );
+            const errors = Array.isArray(response.data?.errors) ? response.data.errors : [];
+            return new SucceededOrNotResponse(response.data?.succeeded ?? true, errors);
+        } catch (error: any) {
+            const message = error.response?.data?.errors || ["Impossible de sauvegarder le module."];
+            return new SucceededOrNotResponse(false, Array.isArray(message) ? message : [message]);
+        }
+    }
+
+    public async uploadMedia(file: File): Promise<{ url: string }> {
+        const formData = new FormData();
+        formData.append('File', file);
+        const response = await this._httpClient.post<{ url: string }>(
+            `${import.meta.env.VITE_API_BASE_URL}/module/media`,
+            formData,
+            this.headersWithFormDataContentType()
+        );
+        return response.data;
+    }
+
+    public async getModuleSections(moduleId: string): Promise<ModuleSectionDto[]> {
+        const response = await this._httpClient.get<ModuleSectionDto[]>(
+            `${import.meta.env.VITE_API_BASE_URL}/module/${moduleId}/sections`
+        );
+        return response.data ?? [];
+    }
+
+    public async assignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse> {
+        try {
+            const response = await this._httpClient.post<any>(
+                `${import.meta.env.VITE_API_BASE_URL}/module/${moduleId}/assign`,
+                { memberId },
+                this.headersWithJsonContentType()
+            );
+            return new SucceededOrNotResponse(response.data?.succeeded ?? true, response.data?.errors ?? []);
+        } catch (error: any) {
+            return new SucceededOrNotResponse(false, [error.response?.data?.errors?.[0] || "Erreur d'assignation."]);
+        }
+    }
+
+    public async unassignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse> {
+        try {
+            const response = await this._httpClient.delete<any>(
+                `${import.meta.env.VITE_API_BASE_URL}/module/${moduleId}/assign/${memberId}`
+            );
+            return new SucceededOrNotResponse(response.data?.succeeded ?? true, response.data?.errors ?? []);
+        } catch (error: any) {
+            return new SucceededOrNotResponse(false, [error.response?.data?.errors?.[0] || "Erreur de désassignation."]);
+        }
+    }
+
+    public async getModuleAssignments(moduleId: string): Promise<any[]> {
+        try {
+            const response = await this._httpClient.get<any[]>(
+                `${import.meta.env.VITE_API_BASE_URL}/module/${moduleId}/assignments`
+            );
+            return response.data ?? [];
+        } catch {
+            return [];
+        }
+    }
+
+    public async getMyModules(): Promise<ModuleDto[]> {
+        try {
+            const response = await this._httpClient.get<ModuleDto[]>(
+                `${import.meta.env.VITE_API_BASE_URL}/member/modules`
+            );
+            return response.data ?? [];
+        } catch {
+            return [];
+        }
+    }
+
+    public async getMyModuleDetail(moduleId: string): Promise<ModuleDto> {
+        const response = await this._httpClient.get<ModuleDto>(
+            `${import.meta.env.VITE_API_BASE_URL}/member/modules/${moduleId}`
+        );
+        return response.data;
+    }
+
     private prepareFormData(request: ICreateModuleRequest | IEditModuleRequest): FormData {
         const formData = new FormData();
 
-        // Champs FR
-        if (request.nameFr) formData.append("NameFr", request.nameFr);
-        if (request.sujetFr) formData.append("SujetFr", request.sujetFr);
-        if (request.contenueFr) formData.append("ContenueFr", request.contenueFr);
+        if (request.name) formData.append("Name", request.name);
+        if (request.subject) formData.append("Subject", request.subject);
+        if (request.content) formData.append("Content", request.content);
 
-
-        // Image
         if (request.cardImage) formData.append("CardImage", request.cardImage);
 
         return formData;

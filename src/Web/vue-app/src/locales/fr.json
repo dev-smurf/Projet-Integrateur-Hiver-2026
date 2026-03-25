@@ -375,7 +375,11 @@
       "content": "Contenu",
       "subject": "Sujet",
       "image": "Image",
-      "imagePreview": "Aperçu de l'image"
+      "imagePreview": "Aperçu de l'image",
+      "sections": "Sections",
+      "sectionTitle": "Titre de la section",
+      "addSection": "Ajouter une section",
+      "assignments": "Assignations"
     }
   },
   "errors": {
@@ -387,7 +391,23 @@
       "edit": {
         "success": "Module modifié avec succès.",
         "errorOccured": "Une erreur est survenue lors de la modification du module."
+      },
+      "sections": {
+        "saveError": "Erreur lors de la sauvegarde des sections."
+      },
+      "assignment": {
+        "assignError": "Erreur lors de l'assignation du module.",
+        "unassignError": "Erreur lors de la désassignation du module."
       }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "Mes modules",
+      "noModules": "Aucun module assigné.",
+      "backToList": "Retour aux modules",
+      "noAccess": "Vous n'avez pas accès à ce module.",
+      "loadError": "Impossible de charger le module."
     }
   },
   "common": {

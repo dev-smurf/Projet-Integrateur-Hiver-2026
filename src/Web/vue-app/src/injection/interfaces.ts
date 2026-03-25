@@ -78,6 +78,14 @@ export interface IModulesService {
   createModule(request: any): Promise<SucceededOrNotResponse>
   updateModule(id: string, request: any): Promise<SucceededOrNotResponse>
   deleteModule(id: string): Promise<SucceededOrNotResponse>
+  saveModuleFull(id: string, request: any): Promise<SucceededOrNotResponse>
+  uploadMedia(file: File): Promise<{ url: string }>
+  getModuleSections(moduleId: string): Promise<any[]>
+  assignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse>
+  unassignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse>
+  getModuleAssignments(moduleId: string): Promise<any[]>
+  getMyModules(): Promise<any[]>
+  getMyModuleDetail(moduleId: string): Promise<any>
 }
 
 export interface IUserService {

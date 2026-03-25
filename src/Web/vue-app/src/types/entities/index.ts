@@ -8,3 +8,4 @@ export * from "./user"
 export * from "./moduleDto"
 export * from "./conversation"
 export * from "./chatMessage"
+export type { ModuleSectionDto } from "./moduleSection";

@@ -22,6 +22,9 @@ import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
 
+import MemberModuleList from "@/views/member/MemberModuleList.vue";
+import MemberModuleView from "@/views/member/MemberModuleView.vue";
+
 import {getLocalizedRoutes} from "@/locales/helpers";
 import {useUserStore} from "@/stores/userStore";
 
@@ -160,6 +163,33 @@ const router = createRouter({
           props: true,
           meta: {
             title: "routes.books.children.edit.name"
+          }
+        }
+      ]
+    },
+    {
+      path: "/mes-modules",
+      name: "member.modules",
+      meta: {
+        requiredRole: Role.Member,
+        title: "Mes modules"
+      },
+      children: [
+        {
+          path: "",
+          name: "member.modules.index",
+          component: MemberModuleList,
+          meta: {
+            title: "Mes modules"
+          }
+        },
+        {
+          path: ":moduleId",
+          name: "member.modules.view",
+          component: MemberModuleView,
+          props: true,
+          meta: {
+            title: "Module"
           }
         }
       ]

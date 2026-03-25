@@ -56,7 +56,7 @@
           <img
             v-if="mod.cardImageUrl"
             :src="imageUrl(mod.cardImageUrl)"
-            :alt="mod.nameFr"
+            :alt="mod.name"
             class="w-full h-full object-cover"
           />
           <BookOpen v-else class="w-12 h-12 text-brand-400" />
@@ -64,8 +64,8 @@
 
         <!-- Content -->
         <div class="p-4 flex flex-col flex-1">
-          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.nameFr || '—' }}</h3>
-          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.contenueFr || mod.sujetFr || '—' }}</p>
+          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '—' }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '—' }}</p>
         </div>
 
         <!-- Actions -->
@@ -115,7 +115,7 @@
     <div v-if="moduleToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
         <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $t('global.delete') }}</h3>
-        <p class="text-sm text-gray-600 mb-6">{{ moduleToDelete.nameFr }}</p>
+        <p class="text-sm text-gray-600 mb-6">{{ moduleToDelete.name }}</p>
         <div class="flex justify-end gap-3">
           <button
             @click="moduleToDelete = null"
@@ -164,9 +164,9 @@ const filtered = computed(() => {
   const q = searchValue.value.toLowerCase().trim();
   if (!q) return allModules.value;
   return allModules.value.filter(m =>
-    (m.nameFr || "").toLowerCase().includes(q) ||
-    (m.sujetFr || "").toLowerCase().includes(q) ||
-    (m.contenueFr || "").toLowerCase().includes(q)
+    (m.name || "").toLowerCase().includes(q) ||
+    (m.subject || "").toLowerCase().includes(q) ||
+    (m.content || "").toLowerCase().includes(q)
   );
 });
 

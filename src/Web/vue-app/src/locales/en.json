@@ -372,7 +372,11 @@
       "content": "Content",
       "subject": "Subject",
       "image": "Image",
-      "imagePreview": "Image preview"
+      "imagePreview": "Image preview",
+      "sections": "Sections",
+      "sectionTitle": "Section title",
+      "addSection": "Add a section",
+      "assignments": "Assignments"
     }
   },
   "errors": {
@@ -384,7 +388,23 @@
       "edit": {
         "success": "Module updated successfully.",
         "errorOccured": "An error occurred while updating the module."
+      },
+      "sections": {
+        "saveError": "Error saving sections."
+      },
+      "assignment": {
+        "assignError": "Error assigning module.",
+        "unassignError": "Error unassigning module."
       }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "My modules",
+      "noModules": "No modules assigned.",
+      "backToList": "Back to modules",
+      "noAccess": "You don't have access to this module.",
+      "loadError": "Could not load module."
     }
   },
   "common": {
