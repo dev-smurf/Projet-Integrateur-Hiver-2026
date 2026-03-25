@@ -4,13 +4,8 @@
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 class="text-sm font-semibold text-gray-800">{{ $t('appointment.recurring') }}</h2>
-        <button
-          @click="saveRecurring"
-          :disabled="savingRecurring"
-          class="px-4 py-1.5 rounded-lg text-xs font-medium text-white bg-brand-600 hover:bg-brand-500 disabled:opacity-40 transition cursor-pointer"
-        >
-          {{ $t('appointment.saveAvailability') }}
-        </button>
+        <span v-if="savingRecurring" class="w-3 h-3 border-2 border-gray-300 border-t-brand-500 rounded-full animate-spin" />
+        <Check v-else-if="savedFeedback" class="w-3.5 h-3.5 text-green-500" />
       </div>
       <div class="p-5 space-y-4">
         <div v-for="day in 7" :key="day" class="space-y-2">
@@ -27,14 +22,14 @@
             <input
               type="time"
               :value="slot.startTime"
-              @input="updateSlotStart(day % 7, idx, ($event.target as HTMLInputElement).value)"
+              @change="updateSlotStart(day % 7, idx, ($event.target as HTMLInputElement).value)"
               class="px-2 py-1 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-brand-300"
             />
             <span class="text-gray-400 text-sm">-</span>
             <input
               type="time"
               :value="slot.endTime"
-              @input="updateSlotEnd(day % 7, idx, ($event.target as HTMLInputElement).value)"
+              @change="updateSlotEnd(day % 7, idx, ($event.target as HTMLInputElement).value)"
               class="px-2 py-1 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-brand-300"
             />
             <button
@@ -115,8 +110,8 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, computed, onMounted} from "vue"
-import {Trash2} from "lucide-vue-next"
+import {ref, computed, onMounted, onUnmounted} from "vue"
+import {Trash2, Check} from "lucide-vue-next"
 import {DateTime} from "luxon"
 import {useI18n} from "vue3-i18n"
 import {useAppointmentService} from "@/inversify.config"
@@ -128,11 +123,15 @@ const appointmentService = useAppointmentService()
 const recurringSlots = ref<AvailabilitySlot[]>([])
 const overrides = ref<AvailabilityOverride[]>([])
 const savingRecurring = ref(false)
+const savedFeedback = ref(false)
 
 const newOverrideDate = ref('')
 const newOverrideBlocked = ref(false)
 const newOverrideStart = ref('09:00')
 const newOverrideEnd = ref('17:00')
+
+let debounceTimer: number | null = null
+let feedbackTimer: number | null = null
 
 const minDate = computed(() => DateTime.now().toFormat('yyyy-MM-dd'))
 
@@ -146,12 +145,23 @@ onMounted(async () => {
   }
 })
 
+onUnmounted(() => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  if (feedbackTimer) clearTimeout(feedbackTimer)
+})
+
+function scheduleAutoSave() {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = window.setTimeout(() => saveRecurring(), 600)
+}
+
 function getSlotsForDay(day: number): AvailabilitySlot[] {
   return recurringSlots.value.filter(s => s.dayOfWeek === day)
 }
 
 function addSlot(day: number) {
   recurringSlots.value.push({dayOfWeek: day, startTime: '09:00', endTime: '17:00'})
+  scheduleAutoSave()
 }
 
 function removeSlot(day: number, idx: number) {
@@ -159,26 +169,31 @@ function removeSlot(day: number, idx: number) {
   const slotToRemove = daySlots[idx]
   const globalIdx = recurringSlots.value.indexOf(slotToRemove)
   if (globalIdx !== -1) recurringSlots.value.splice(globalIdx, 1)
+  scheduleAutoSave()
 }
 
 function updateSlotStart(day: number, idx: number, value: string) {
   const daySlots = recurringSlots.value.filter(s => s.dayOfWeek === day)
   daySlots[idx].startTime = value
+  scheduleAutoSave()
 }
 
 function updateSlotEnd(day: number, idx: number, value: string) {
   const daySlots = recurringSlots.value.filter(s => s.dayOfWeek === day)
   daySlots[idx].endTime = value
+  scheduleAutoSave()
 }
 
 async function saveRecurring() {
   savingRecurring.value = true
+  savedFeedback.value = false
   try {
     await appointmentService.saveAvailability(recurringSlots.value)
-    alert(t('appointment.saveSuccess'))
+    savingRecurring.value = false
+    savedFeedback.value = true
+    if (feedbackTimer) clearTimeout(feedbackTimer)
+    feedbackTimer = window.setTimeout(() => { savedFeedback.value = false }, 2000)
   } catch {
-    alert(t('appointment.saveError'))
-  } finally {
     savingRecurring.value = false
   }
 }
@@ -196,7 +211,7 @@ async function addOverride() {
     newOverrideDate.value = ''
     newOverrideBlocked.value = false
   } catch {
-    alert(t('appointment.saveError'))
+    // Silently fail
   }
 }
 
@@ -205,7 +220,7 @@ async function removeOverride(id: string) {
     await appointmentService.deleteOverride(id)
     overrides.value = overrides.value.filter(o => o.id !== id)
   } catch {
-    alert(t('appointment.saveError'))
+    // Silently fail
   }
 }
 
