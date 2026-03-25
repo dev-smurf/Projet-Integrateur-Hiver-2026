@@ -1,6 +1,18 @@
 <template>
   <div class="max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.modules.edit.name') }}</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.modules.edit.name') }}</h1>
+      <div v-if="!loading && !loadError" class="flex items-center gap-2 text-sm text-gray-500">
+        <span v-if="autoSaving" class="flex items-center gap-1">
+          <Loader2 class="w-3.5 h-3.5 animate-spin" />
+          Sauvegarde...
+        </span>
+        <span v-else-if="lastSaved" class="flex items-center gap-1 text-green-600">
+          <Check class="w-3.5 h-3.5" />
+          Sauvegardé
+        </span>
+      </div>
+    </div>
 
     <!-- Skeleton loading -->
     <div v-if="loading" class="bg-white rounded-xl border border-gray-200 p-6 space-y-4 animate-pulse">
@@ -28,6 +40,7 @@
             v-model="formData.name"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            @input="triggerAutoSave"
           />
         </div>
         <div>
@@ -36,6 +49,7 @@
             v-model="formData.subject"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+            @input="triggerAutoSave"
           />
         </div>
         <div>
@@ -61,7 +75,7 @@
       <!-- Sections -->
       <ModuleSectionList
         :sections="sections"
-        @update:sections="val => sections = val"
+        @update:sections="onSectionsUpdate"
       />
 
       <!-- Actions -->
@@ -89,10 +103,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
-import { Loader2, Upload } from "lucide-vue-next";
+import { Loader2, Upload, Check } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { IEditModuleRequest } from "@/types";
 import type { ModuleDto } from "@/types/entities";
@@ -120,6 +134,42 @@ const loadError = ref<string | null>(null);
 const imagePreview = ref<string | null>(null);
 const submitting = ref(false);
 
+// Auto-save state
+const autoSaving = ref(false);
+const lastSaved = ref(false);
+let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+let initialLoad = true;
+
+function triggerAutoSave() {
+  if (initialLoad) return;
+  lastSaved.value = false;
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => performAutoSave(), 2000);
+}
+
+function onSectionsUpdate(val: ISectionPayload[]) {
+  sections.value = val;
+  triggerAutoSave();
+}
+
+async function performAutoSave() {
+  if (!formData.value.name?.trim() || autoSaving.value) return;
+
+  autoSaving.value = true;
+  try {
+    await modulesService.saveModuleFull(formData.value.id || props.id, {
+      name: formData.value.name!,
+      subject: formData.value.subject,
+      content: formData.value.content,
+      sections: sections.value,
+    });
+    lastSaved.value = true;
+  } catch {
+    // Silent fail for auto-save — manual save still works
+  }
+  autoSaving.value = false;
+}
+
 onMounted(async () => {
   try {
     const mod: ModuleDto | null = await modulesService.getModuleFlexible(props.id);
@@ -138,7 +188,6 @@ onMounted(async () => {
     if (mod.cardImageUrl) {
       imagePreview.value = mod.cardImageUrl.startsWith('http') ? mod.cardImageUrl : backendUrl + mod.cardImageUrl;
     }
-    // Load sections
     if (mod.sections && mod.sections.length > 0) {
       sections.value = mod.sections.map(s => ({
         id: s.id,
@@ -152,6 +201,16 @@ onMounted(async () => {
     loadError.value = "Impossible de charger le module.";
   }
   loading.value = false;
+  // Allow auto-save after initial data is loaded
+  setTimeout(() => { initialLoad = false; }, 500);
+});
+
+onBeforeUnmount(() => {
+  // Save any pending changes before leaving
+  if (autoSaveTimer) {
+    clearTimeout(autoSaveTimer);
+    performAutoSave();
+  }
 });
 
 function handleImageChange(event: Event) {
@@ -168,9 +227,11 @@ async function handleSubmit() {
     return;
   }
 
+  // Cancel any pending auto-save
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+
   submitting.value = true;
   try {
-    // Update module metadata (with card image if changed)
     const updateResult = await modulesService.updateModule(formData.value.id || props.id, formData.value);
     if (!updateResult.succeeded) {
       notify({ type: "error", text: "Erreur lors de la modification du module." });
@@ -178,7 +239,6 @@ async function handleSubmit() {
       return;
     }
 
-    // Save sections via bulk endpoint
     const saveResult = await modulesService.saveModuleFull(formData.value.id || props.id, {
       name: formData.value.name!,
       subject: formData.value.subject,
