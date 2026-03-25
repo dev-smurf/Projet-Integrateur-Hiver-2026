@@ -45,11 +45,7 @@ public class AssignModuleEndpoint : Endpoint<AssignModuleRequest, SucceededOrNot
             return;
         }
 
-        var memberModule = new MemberModule
-        {
-            MemberId = req.MemberId,
-            ModuleId = moduleId
-        };
+        var memberModule = new MemberModule(req.MemberId, moduleId);
 
         await _repository.AssignAsync(memberModule);
         Response = new SucceededOrNotResponse(true);

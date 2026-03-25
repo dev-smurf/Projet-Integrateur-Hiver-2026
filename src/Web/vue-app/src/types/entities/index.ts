@@ -6,7 +6,10 @@ export * from "./link"
 export * from "./product"
 export * from "./user"
 export * from "./moduleDto"
+export * from "./memberModuleDto"
+export * from "./dashboardSummaryDto"
 export * from "./conversation"
 export * from "./chatMessage"
 export * from "./appointment"
 export type { ModuleSectionDto } from "./moduleSection";
+export * from "./equipe";

@@ -10,7 +10,11 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
     {
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Nom)
+        builder.Property(e => e.NameFr)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(e => e.NameEn)
             .IsRequired()
             .HasMaxLength(200);
 

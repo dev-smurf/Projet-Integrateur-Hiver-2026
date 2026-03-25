@@ -53,7 +53,7 @@
           :to="{ name: 'admin.children.modules.index' }"
           class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          {{ $t('global.cancel') }}
+          {{ $t("global.cancel") }}
         </router-link>
         <button
           type="submit"
@@ -61,7 +61,7 @@
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
-          {{ $t('global.save') }}
+          {{ $t("global.save") }}
         </button>
       </div>
     </form>
@@ -111,7 +111,7 @@ async function handleSubmit() {
   try {
     const response = await moduleService.createModule(formData.value);
     if (!response?.succeeded) {
-      notify({ type: "error", text: "Erreur lors de la création du module." });
+      notify({ type: "error", text: "Erreur lors de la creation du module." });
       submitting.value = false;
       return;
     }
@@ -131,10 +131,10 @@ async function handleSubmit() {
       }
     }
 
-    notify({ type: "success", text: "Module créé avec succès." });
+    notify({ type: "success", text: "Module cree avec succes." });
     await router.push({ name: "admin.children.modules.index" });
   } catch {
-    notify({ type: "error", text: "Erreur lors de la création du module." });
+    notify({ type: "error", text: "Erreur lors de la creation du module." });
   }
   submitting.value = false;
 }

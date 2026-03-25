@@ -255,7 +255,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("RdvId");
 
-                    b.ToTable("Archive");
+                    b.ToTable("Archives");
                 });
 
             modelBuilder.Entity("Domain.Entities.Authentication.RefreshToken", b =>
@@ -353,7 +353,6 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Slug")
@@ -434,14 +433,19 @@ namespace Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NameFr")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipe");
+                    b.ToTable("Equipes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
@@ -652,6 +656,12 @@ namespace Persistence.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -663,6 +673,12 @@ namespace Persistence.Migrations
 
                     b.Property<Guid>("ModuleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ProgressPercent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
 
                     b.HasKey("Id");
 
@@ -991,12 +1007,10 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -1017,12 +1031,10 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -1150,7 +1162,8 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.Identity.Role", "Role")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.Identity.User", "User")
                         .WithMany("UserRoles")
@@ -1179,13 +1192,13 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Member", "Member")
                         .WithMany("MemberModules")
                         .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Module", "Module")
                         .WithMany("MemberModules")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Member");

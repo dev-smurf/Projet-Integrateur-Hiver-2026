@@ -40,7 +40,7 @@ public class MemberModuleRepository : IMemberModuleRepository
 
         if (existing != null)
         {
-            existing.Deleted = null;
+            existing.Restore();
             _context.MemberModules.Update(existing);
             await _context.SaveChangesAsync();
             return existing;

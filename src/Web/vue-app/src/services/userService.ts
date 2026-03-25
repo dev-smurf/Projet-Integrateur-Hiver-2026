@@ -15,6 +15,6 @@ export class UserService extends ApiService implements IUserService {
     .catch(function (error: AxiosError): AxiosResponse<User> {
       return error.response as AxiosResponse<User>
     })
-    return response.data as User
+    return response?.data as User
   }
 }

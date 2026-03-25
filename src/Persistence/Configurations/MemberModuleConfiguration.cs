@@ -13,12 +13,18 @@ public class MemberModuleConfiguration : IEntityTypeConfiguration<MemberModule>
         builder.HasOne(mm => mm.Member)
             .WithMany(m => m.MemberModules)
             .HasForeignKey(mm => mm.MemberId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(mm => mm.Module)
             .WithMany(m => m.MemberModules)
             .HasForeignKey(mm => mm.ModuleId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(mm => mm.ProgressPercent)
+            .HasDefaultValue(0);
+
+        builder.Property(mm => mm.IsCompleted)
+            .HasDefaultValue(false);
 
         builder.HasIndex(mm => new { mm.MemberId, mm.ModuleId })
             .IsUnique()

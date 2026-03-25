@@ -1,10 +1,14 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.modules.name') }}</h1>
+      <h1 class="text-2xl font-bold text-gray-900">
+        {{ $t("routes.admin.children.modules.name") }}
+      </h1>
       <div class="flex items-center gap-4">
         <div class="relative">
-          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+          />
           <input
             v-model="searchValue"
             @input="onSearch"
@@ -18,14 +22,21 @@
           class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
         >
           <Plus class="w-4 h-4" />
-          {{ $t('global.add') }}
+          {{ $t("global.add") }}
         </router-link>
       </div>
     </div>
 
     <!-- Skeleton loading -->
-    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="n in 6" :key="n" class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+    <div
+      v-if="loading"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      <div
+        v-for="n in 6"
+        :key="n"
+        class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse"
+      >
         <div class="h-44 bg-gray-200" />
         <div class="p-4 space-y-3">
           <div class="h-5 bg-gray-200 rounded w-3/4" />
@@ -41,7 +52,7 @@
 
     <!-- Empty state -->
     <div v-else-if="!filtered.length" class="text-center py-12 text-gray-500">
-      {{ $t('global.table.noData') }}
+      {{ $t("global.table.noData") }}
     </div>
 
     <!-- Card grid -->
@@ -52,7 +63,9 @@
         class="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
       >
         <!-- Image / Fallback -->
-        <div class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
+        <div
+          class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden"
+        >
           <img
             v-if="mod.cardImageUrl"
             :src="imageUrl(mod.cardImageUrl)"
@@ -64,41 +77,49 @@
 
         <!-- Content -->
         <div class="p-4 flex flex-col flex-1">
-          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '—' }}</h3>
-          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '—' }}</p>
+          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '---' }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '---' }}</p>
         </div>
 
         <!-- Actions -->
-        <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-around">
+        <div
+          class="border-t border-gray-100 px-4 py-3 flex items-center justify-around"
+        >
           <router-link
             :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
           >
             <Eye class="w-4 h-4" />
-            Aperçu
+            Apercu
           </router-link>
           <router-link
             :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
           >
             <Pencil class="w-4 h-4" />
-            {{ $t('global.edit') }}
+            {{ $t("global.edit") }}
           </router-link>
           <button
             @click="confirmDelete(mod)"
             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition cursor-pointer"
           >
             <Trash2 class="w-4 h-4" />
-            {{ $t('global.delete') }}
+            {{ $t("global.delete") }}
           </button>
         </div>
       </div>
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalItems > pageSize" class="flex items-center justify-between mt-6">
+    <div
+      v-if="totalItems > pageSize"
+      class="flex items-center justify-between mt-6"
+    >
       <span class="text-sm text-gray-500">
-        {{ (pageIndex - 1) * pageSize + 1 }}–{{ Math.min(pageIndex * pageSize, totalItems) }} {{ $t('global.table.of') }} {{ totalItems }}
+        {{ (pageIndex - 1) * pageSize + 1 }}–{{
+          Math.min(pageIndex * pageSize, totalItems)
+        }}
+        {{ $t("global.table.of") }} {{ totalItems }}
       </span>
       <div class="flex gap-2">
         <button
@@ -109,7 +130,9 @@
           <ChevronLeft class="w-4 h-4" />
         </button>
         <button
-          @click="pageIndex * pageSize < totalItems && changePage(pageIndex + 1)"
+          @click="
+            pageIndex * pageSize < totalItems && changePage(pageIndex + 1)
+          "
           :disabled="pageIndex * pageSize >= totalItems"
           class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -119,7 +142,10 @@
     </div>
 
     <!-- Delete confirmation modal -->
-    <div v-if="moduleToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div
+      v-if="moduleToDelete"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    >
       <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
         <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $t('global.delete') }}</h3>
         <p class="text-sm text-gray-600 mb-6">{{ moduleToDelete.name }}</p>
@@ -128,13 +154,13 @@
             @click="moduleToDelete = null"
             class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
           >
-            {{ $t('global.cancel') }}
+            {{ $t("global.cancel") }}
           </button>
           <button
             @click="handleDelete"
             class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition"
           >
-            {{ $t('global.delete') }}
+            {{ $t("global.delete") }}
           </button>
         </div>
       </div>
@@ -143,15 +169,18 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, computed, onMounted} from "vue";
-import {useNotification} from "@kyvg/vue3-notification";
-import {Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye} from "lucide-vue-next";
-import {useModulesService} from "@/inversify.config";
-import type {ModuleDto} from "@/types/entities";
+import { ref, computed, onMounted } from "vue";
+import { useNotification } from "@kyvg/vue3-notification";
+import { Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye } from "lucide-vue-next";
+import { useModulesService } from "@/inversify.config";
+import type { ModuleDto } from "@/types/entities";
 
-const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
+const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(
+  /\/api$/,
+  "",
+);
 
-const {notify} = useNotification();
+const { notify } = useNotification();
 const modulesService = useModulesService();
 
 const allModules = ref<ModuleDto[]>([]);
@@ -162,8 +191,8 @@ const pageSize = 9;
 const moduleToDelete = ref<ModuleDto | null>(null);
 
 function imageUrl(path: string | undefined): string {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
   return backendUrl + path;
 }
 
@@ -211,14 +240,14 @@ async function handleDelete() {
   try {
     const result = await modulesService.deleteModule(moduleToDelete.value.id);
     if (result.succeeded) {
-      notify({type: "success", text: "Module deleted."});
+      notify({ type: "success", text: "Module deleted." });
       moduleToDelete.value = null;
       await fetchModules();
     } else {
-      notify({type: "error", text: "Error deleting module."});
+      notify({ type: "error", text: "Error deleting module." });
     }
   } catch {
-    notify({type: "error", text: "Error deleting module."});
+    notify({ type: "error", text: "Error deleting module." });
   }
 }
 
