@@ -28,7 +28,7 @@ public static class CookieHelper
         {
             Domain = domain,
             Path = "/",
-            Secure = secure,
+            Secure = true,
             HttpOnly = httpOnly,
             IsEssential = true,
             SameSite = SameSiteMode.None

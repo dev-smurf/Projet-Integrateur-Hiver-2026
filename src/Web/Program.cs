@@ -1,5 +1,7 @@
 using Application;
+using Application.Interfaces.Services.Equipe;
 using Application.Interfaces.Services.Module;
+using Application.Services.Equipe;
 using Application.Services.Module;
 using Domain.Common;
 using Domain.Extensions;
@@ -51,9 +53,11 @@ builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IEquipeRepository, EquipeRepository>();
+builder.Services.AddScoped<IEquipeService, EquipeService>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "corsDomains",
         policy =>
@@ -65,6 +69,21 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
+});*/
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("corsDomains", policy =>
+    {
+        policy.WithOrigins(
+                "https://localhost:7101",
+                "http://localhost:8080",
+                "https://localhost:8080"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 
@@ -103,11 +122,12 @@ app.UseExceptionHandler(c => c.Run(async context =>
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder
+`wrapp.UseCors(corsPolicyBuilder => corsPolicyBuilder
     .WithOrigins("http://localhost:8080", "https://localhost:8080", "https://localhost:7101")
     .AllowAnyHeader()
     .AllowAnyMethod()
-    .AllowCredentials());
+    .AllowCredentials());*/
+app.UseCors("corsDomains");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -69,6 +69,22 @@
             "fullPath": "/administration/modules/:id/modifier",
             "name": "Modifier un module"
           }
+        },
+        "equipes": {
+          "path": "equipes",
+          "fullPath": "/administration/equipes",
+          "name": "Equipes",
+
+          "add": {
+            "path": "ajouter",
+            "fullPath": "/administration/equipes/ajouter",
+            "name": "Ajouter une equipe"
+          },
+          "edit": {
+            "path": ":id/modifier",
+            "fullPath": "/administration/equipes/:id/modifier",
+            "name": "Modifier une equipe"
+          }
         }
       }
     },
@@ -266,6 +282,7 @@
     "firstName": "Prénom",
     "lastName": "Nom",
     "fullName": "Nom complet",
+    "equipeName": "Nom de l'équipe",
     "email": "Courriel",
     "phoneNumber": "Numéro de téléphone",
     "phoneExtension": "Poste",
@@ -383,6 +400,14 @@
       "imagePreview": "Aperçu de l'image"
     }
   },
+  "Form_Add_Equipe": {
+    "fields": {
+      "name": "Nom de l'équipe"
+    },
+    "validation": {
+      "nameRequired": "Le nom est obligatoire."
+    }
+  },
   "errors": {
     "module": {
       "add": {
@@ -393,6 +418,16 @@
         "success": "Module modifié avec succès.",
         "errorOccured": "Une erreur est survenue lors de la modification du module."
       }
+    },
+    "equipe": {
+      "add": {
+        "success": "Équipe créée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création de l'équipe."
+      },
+      "edit": {
+        "success": "Équipe modifiée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification de l'équipe."
+      }
     }
   },
   "common": {
@@ -402,6 +437,11 @@
   "routes.addModule": {
     "name": "Ajouter un module"
   },
+  "addEquipe": {
+    "name": "Ajouter une équipe"
+  },
+  "editEquipe": {
+    "name": "Modifier une équipe"
   "chat": {
     "title": "Messages",
     "conversations": "Conversations",

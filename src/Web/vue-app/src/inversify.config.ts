@@ -1,13 +1,14 @@
-import {Container} from "inversify";
-import axios, {AxiosInstance} from 'axios';
+import { Container } from "inversify";
+import axios, { AxiosInstance } from "axios";
 import "reflect-metadata";
 
-import {TYPES} from "@/injection/types";
+import { TYPES } from "@/injection/types";
 import {
   IAdministratorService,
   IApiService,
   IAuthenticationService,
   IBookService,
+  IEquipesService,
   IMemberService,
   IModulesService,
   IUserService,
@@ -22,7 +23,8 @@ import {
   UserService,
   ConversationService
 } from "@/services";
-import {AdministratorService} from "@/services/administratorService";
+import { AdministratorService } from "@/services/administratorService";
+import { EquipeService } from "./services/equipeService";
 
 const dependencyInjection = new Container();
 dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axios.create({ withCredentials: true }))
@@ -34,13 +36,21 @@ dependencyInjection.bind<IMemberService>(TYPES.IMemberService).to(MemberService)
 dependencyInjection.bind<IModulesService>(TYPES.IModulesService).to(ModulesApiService).inSingletonScope()
 dependencyInjection.bind<IUserService>(TYPES.IUserService).to(UserService).inSingletonScope()
 dependencyInjection.bind<IConversationService>(TYPES.IConversationService).to(ConversationService).inSingletonScope()
+dependencyInjection
+  .bind<IEquipesService>(TYPES.IEquipesService)
+  .to(EquipeService)
+  .inSingletonScope();
 
 function useAdministratorService() {
-  return dependencyInjection.get<IAdministratorService>(TYPES.IAdministratorService);
+  return dependencyInjection.get<IAdministratorService>(
+    TYPES.IAdministratorService,
+  );
 }
 
 function useAuthenticationService() {
-  return dependencyInjection.get<IAuthenticationService>(TYPES.IAuthenticationService);
+  return dependencyInjection.get<IAuthenticationService>(
+    TYPES.IAuthenticationService,
+  );
 }
 
 function useMemberService() {
@@ -53,6 +63,10 @@ function useBookService() {
 
 function useModulesService() {
   return dependencyInjection.get<IModulesService>(TYPES.IModulesService);
+}
+
+function useEquipesService() {
+  return dependencyInjection.get<IEquipesService>(TYPES.IEquipesService);
 }
 
 function useUserService() {
@@ -72,5 +86,6 @@ export {
   useMemberService,
   useModulesService,
   useUserService,
+  useEquipesService,
   useConversationService
 };

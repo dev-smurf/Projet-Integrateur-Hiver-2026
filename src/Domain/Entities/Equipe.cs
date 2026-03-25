@@ -1,24 +1,28 @@
 ﻿using Domain.Common;
 using Domain.Entities.Identity;
+using Domain.Extensions;
 
 namespace Domain.Entities
 {
     public class Equipe : AuditableAndSoftDeletableEntity
     {
-        public string Nom { get; private set; } = null!;
+        public string NameFr { get; set; } = null!;
+        public string NameEn { get; set; } = null!;
 
         public ICollection<User> Membres { get; private set; } = new List<User>();
 
         public void SanitazeForSaving()
         {
-            Nom = Nom.Trim();
+            NameFr = NameFr.Trim().CapitalizeFirstLetterOfEachWord()!;
+            NameEn = NameEn.Trim().CapitalizeFirstLetterOfEachWord()!;
         }
 
-        private Equipe() { }
+        public Equipe() { }
 
-        public Equipe(string nom)
+        public Equipe(string nameFr, string nameEn)
         {
-            Nom = nom;
+            NameFr = nameFr;
+            NameEn = nameEn;
         }
     }
 }
