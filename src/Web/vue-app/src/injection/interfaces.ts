@@ -10,6 +10,7 @@ import {
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
 import {Administrator, Book, ChatMessage, Conversation, Member, User} from "@/types/entities"
 import {Guid} from "@/types";
+import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
 
 export interface IApiService {
   headersWithJsonContentType(): any
@@ -99,4 +100,14 @@ export interface IConversationService {
   sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage>
   markAsRead(conversationId: string): Promise<void>
   getUnreadCount(): Promise<number>
+}
+
+export interface IAppointmentService {
+  getAvailableSlots(startDate: string, endDate: string): Promise<AvailableSlot[]>
+  requestAppointment(date: string, motif?: string): Promise<any>
+  respondAppointment(appointmentId: string, accept: boolean, reason?: string): Promise<any>
+  getAvailability(): Promise<AvailabilityData>
+  saveAvailability(slots: AvailabilitySlot[]): Promise<void>
+  createOverride(data: { date: string, startTime?: string, endTime?: string, isBlocked: boolean }): Promise<AvailabilityOverride>
+  deleteOverride(id: string): Promise<void>
 }

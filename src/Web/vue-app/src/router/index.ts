@@ -25,6 +25,7 @@ import EditBookForm from "@/views/member/EditBookForm.vue";
 
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
 import MemberModuleView from "@/views/member/MemberModuleView.vue";
+import AdminAvailability from "@/views/admin/AdminAvailability.vue";
 
 import {getLocalizedRoutes} from "@/locales/helpers";
 import {useUserStore} from "@/stores/userStore";
@@ -132,6 +133,11 @@ const router = createRouter({
           name: "admin.children.modules.preview",
           component: AdminModulePreview,
           props: true
+        },
+        {
+          path: "disponibilites",
+          name: "admin.children.availability",
+          component: AdminAvailability,
         },
       ]
     },
