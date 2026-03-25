@@ -444,6 +444,7 @@
   },
   "editEquipe": {
     "name": "Edit a team"
+  },
   "chat": {
     "title": "Messages",
     "conversations": "Conversations",

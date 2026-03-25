@@ -122,11 +122,11 @@ app.UseExceptionHandler(c => c.Run(async context =>
 
 app.UseStaticFiles();
 app.UseRouting();
-`wrapp.UseCors(corsPolicyBuilder => corsPolicyBuilder
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder
     .WithOrigins("http://localhost:8080", "https://localhost:8080", "https://localhost:7101")
     .AllowAnyHeader()
     .AllowAnyMethod()
-    .AllowCredentials());*/
+    .AllowCredentials());
 app.UseCors("corsDomains");
 app.UseAuthentication();
 app.UseAuthorization();

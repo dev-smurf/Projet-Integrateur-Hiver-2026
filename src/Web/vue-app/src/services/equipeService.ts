@@ -75,16 +75,14 @@ export class EquipeService extends ApiService implements IEquipesService {
   public async createEquipe(
     request: ICreateEquipeRequest,
   ): Promise<SucceededOrNotResponse> {
-    const formData = this.prepareFormData(request);
-
     try {
       const response = await this._httpClient.post<
         ICreateEquipeRequest,
         import("axios").AxiosResponse<any>
       >(
         `${import.meta.env.VITE_API_BASE_URL}/equipes`,
-        formData,
-        this.headersWithFormDataContentType(),
+        request,
+        { headers: { "Content-Type": "application/json" } },
       );
 
       const errors = Array.isArray(response.data?.errors)
@@ -164,18 +162,5 @@ export class EquipeService extends ApiService implements IEquipesService {
         Array.isArray(message) ? message : [message],
       );
     }
-  }
-
-  /**
-   * Prépare le FormData pour POST et PUT
-   */
-  private prepareFormData(
-    request: ICreateEquipeRequest | IEditEquipeRequest,
-  ): FormData {
-    const formData = new FormData();
-
-    if (request.nameFr) formData.append("NameFr", request.nameFr);
-
-    return formData;
   }
 }
