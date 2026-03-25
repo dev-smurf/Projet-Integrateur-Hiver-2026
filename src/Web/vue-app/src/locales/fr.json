@@ -296,6 +296,7 @@
     "removeFile": "Retirer ce document",
     "uploadZippedFolder-tooltip": "Si vous désirez transmettre plusieurs documents, veuillez uploader <strong>un dossier compressé.</strong>",
     "update": "Modifier",
+    "edit": "Modifier",
     "delete": "Supprimer",
     "deleted": "Supprimé(e)",
     "save": "Sauvegarder",
@@ -309,6 +310,10 @@
     "undefined": "ND",
     "logout": "Déconnexion",
     "changeLanguage": "Changer de langue",
+    "test": "Tester",
+    "questions": "Questions",
+    "noQuizzesYet": "Aucun quiz pour le moment.",
+    "createFirst": "Créer le premier quiz",
     "table": {
       "of": "de",
       "noData": "Aucune données disponibles",

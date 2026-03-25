@@ -44,26 +44,26 @@
             "fullPath": "/administration/members/add",
             "name": "Add a member"
           },
+          "quiz": {
+            "path": "quiz",
+            "fullPath": "/administration/quiz",
+            "name": "Quizzes",
+            "add": {
+              "path": "add",
+              "fullPath": "/administration/quiz/add",
+              "name": "Add a new quiz"
+            },
+            "edit": {
+              "path": ":id/edit",
+              "fullPath": "/administration/quiz/:id/edit",
+              "name": "Edit Quiz"
+            }
+          },
           "edit": {
             "path": ":id/edit",
             "fullPath": "/administration/members/:id/edit",
             "name": "Edit a member"
           }
-        },
-        "Quiz":{
-          "path":"quiz",
-          "fullPath":"/administration/quiz",
-          "name": "Quiz",
-          "edit": {
-            "path": ":id/edit",
-            "fullPath": "/administration/quiz/:id/edit",
-            "name": "Edit Quiz"
-          }
-        },
-        "AddQuiz":{
-          "path":"quiz/add",
-          "fullPath":"/administration/quiz/add",
-          "name": "Add a new quiz"
         },
         "modules": {
           "path": "modules",
@@ -293,6 +293,7 @@
     "removeFile": "Remove this file",
     "uploadZippedFolder-tooltip": "If you want to transmit multiple documents, please upload <strong>a compressed folder.</strong>",
     "update": "Update",
+    "edit": "Edit",
     "delete": "Delete",
     "deleted": "Deleted",
     "save": "Save",
@@ -306,6 +307,10 @@
     "undefined": "N/A",
     "logout": "Logout",
     "changeLanguage": "Change language",
+    "test": "Test",
+    "questions": "Questions",
+    "noQuizzesYet": "No quizzes yet.",
+    "createFirst": "Create the first quiz",
     "table": {
       "of": "of",
       "noData": "No available data",
