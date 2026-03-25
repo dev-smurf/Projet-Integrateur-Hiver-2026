@@ -182,7 +182,7 @@ const router = createRouter({
     },
     {
       path: "/mes-modules",
-      name: "member.modules",
+      component: Books,
       meta: {
         requiredRole: Role.Member,
         title: "Mes modules"
@@ -192,18 +192,12 @@ const router = createRouter({
           path: "",
           name: "member.modules.index",
           component: MemberModuleList,
-          meta: {
-            title: "Mes modules"
-          }
         },
         {
           path: ":moduleId",
           name: "member.modules.view",
           component: MemberModuleView,
           props: true,
-          meta: {
-            title: "Module"
-          }
         }
       ]
     },
