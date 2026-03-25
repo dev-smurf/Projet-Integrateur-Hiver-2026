@@ -661,7 +661,6 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -678,7 +677,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
 
                     b.HasKey("Id");
 
