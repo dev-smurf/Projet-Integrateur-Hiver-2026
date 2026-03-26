@@ -25,9 +25,8 @@
             </router-link>
           </div>
 
-          <!-- Right: language, admin, profile, logout -->
+          <!-- Right: language -->
           <div class="flex items-center gap-3">
-            <!-- Language dropdown -->
             <div class="relative">
               <button
                 @click="langOpen = !langOpen"
@@ -50,8 +49,14 @@
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </nav>
 
-            <!-- Navigation -->
+    <div class="flex min-h-[calc(100vh-3.5rem)]">
+        <aside class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-60 lg:bg-brand-900">
+            <div class="h-14"></div>
             <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
                 <div v-if="userStore.hasRole(Role.Member)">
                     <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
@@ -189,6 +194,7 @@
                 <router-view />
             </main>
         </div>
+    </div>
 
         <!-- Notifications -->
         <notifications position="bottom right" :duration="4000" :speed="300" width="360">
