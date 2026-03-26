@@ -336,6 +336,9 @@ export function getRouter(): Router {
     }
     return { name: "dashboard" };
   }
-});
+  });
+
+  return routerInstance;
+}
 
 export type { Router };
