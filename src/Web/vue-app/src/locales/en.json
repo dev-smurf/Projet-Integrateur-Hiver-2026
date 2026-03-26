@@ -64,6 +64,21 @@
             "fullPath": "/administration/members/add",
             "name": "Add a member"
           },
+          "quiz": {
+            "path": "quiz",
+            "fullPath": "/administration/quiz",
+            "name": "Quizzes",
+            "add": {
+              "path": "add",
+              "fullPath": "/administration/quiz/add",
+              "name": "Add a new quiz"
+            },
+            "edit": {
+              "path": ":id/edit",
+              "fullPath": "/administration/quiz/:id/edit",
+              "name": "Edit Quiz"
+            }
+          },
           "edit": {
             "path": ":id/edit",
             "fullPath": "/administration/members/:id/edit",
@@ -88,6 +103,11 @@
             "path": ":id/edit",
             "fullPath": "/administration/modules/:id/edit",
             "name": "Edit a module"
+          },
+          "preview": {
+            "path": ":id/preview",
+            "fullPath": "/administration/modules/:id/preview",
+            "name": "Module preview"
           }
         },
         "equipes": {
@@ -121,6 +141,23 @@
           "path": ":id/edit",
           "fullPath": "/books/:id/edit",
           "name": "Edit a book"
+        }
+      }
+    },
+    "quiz": {
+      "path": "/quiz",
+      "fullPath": "/quiz",
+      "name": "My quizzes",
+      "children": {
+        "take": {
+          "path": ":quizId/take",
+          "fullPath": "/quiz/:quizId/take",
+          "name": "Take quiz"
+        },
+        "results": {
+          "path": ":quizId/results",
+          "fullPath": "/quiz/:quizId/results",
+          "name": "Quiz results"
         }
       }
     }
@@ -398,6 +435,7 @@
     "removeFile": "Remove this file",
     "uploadZippedFolder-tooltip": "If you want to transmit multiple documents, please upload <strong>a compressed folder.</strong>",
     "update": "Update",
+    "edit": "Edit",
     "delete": "Delete",
     "deleted": "Deleted",
     "save": "Save",
@@ -411,6 +449,10 @@
     "undefined": "N/A",
     "logout": "Logout",
     "changeLanguage": "Change language",
+    "test": "Test",
+    "questions": "Questions",
+    "noQuizzesYet": "No quizzes yet.",
+    "createFirst": "Create the first quiz",
     "table": {
       "of": "of",
       "noData": "No available data",
@@ -492,7 +534,11 @@
       "content": "Content",
       "subject": "Subject",
       "image": "Image",
-      "imagePreview": "Image preview"
+      "imagePreview": "Image preview",
+      "sections": "Sections",
+      "sectionTitle": "Section title",
+      "addSection": "Add a section",
+      "assignments": "Assignments"
     }
   },
   "Form_Add_Equipe": {
@@ -502,6 +548,62 @@
     "validation": {
       "nameRequired": "The name is required."
     }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module created successfully.",
+        "errorOccured": "An error occurred while creating the module."
+      },
+      "edit": {
+        "success": "Module updated successfully.",
+        "errorOccured": "An error occurred while updating the module."
+      },
+      "sections": {
+        "saveError": "Error saving sections."
+      },
+      "assignment": {
+        "assignError": "Error assigning module.",
+        "unassignError": "Error unassigning module."
+      }
+    },
+    "equipe": {
+      "add": {
+        "success": "Team created successfully.",
+        "errorOccured": "An error occurred while creating the team."
+      },
+      "edit": {
+        "success": "Team updated successfully.",
+        "errorOccured": "An error occurred while updating the team."
+      }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "My modules",
+      "noModules": "No modules assigned.",
+      "backToList": "Back to modules",
+      "noAccess": "You don't have access to this module.",
+      "loadError": "Could not load module."
+    }
+  },
+  "global": {
+    "confirmation": "Confirmation",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "common": {
+    "Ajouter": "Add",
+    "cancel": "Cancel"
+  },
+  "routes.addModule": {
+    "name": "Add a module"
+  },
+  "addEquipe": {
+    "name": "Add a team "
+  },
+  "editEquipe": {
+    "name": "Edit a team"
   },
   "chat": {
     "title": "Messages",
@@ -517,5 +619,152 @@
     "startConversation": "Start conversation",
     "fileTooLarge": "File is too large. Maximum size is 10MB.",
     "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
+  },
+  "appointment": {
+    "requestBtn": "Book Appointment",
+    "modalTitle": "Request an Appointment",
+    "selectDate": "Select a date",
+    "selectTime": "Select a time slot",
+    "motif": "Reason (optional)",
+    "motifPlaceholder": "Briefly describe the reason for the appointment...",
+    "submit": "Send Request",
+    "cancel": "Cancel",
+    "noSlots": "No available slots for this date.",
+    "noSlotsWeek": "No available slots this week.",
+    "requestSent": "Appointment request sent!",
+    "requestError": "Error sending the request.",
+    "conflict": "This slot is no longer available.",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "refused": "Refused",
+    "requestMsg": "Appointment Request",
+    "responseMsg": "Appointment Response",
+    "dateLabel": "Date",
+    "motifLabel": "Reason",
+    "statusLabel": "Status",
+    "accept": "Accept",
+    "refuse": "Refuse",
+    "refuseReason": "Reason for refusal (optional)",
+    "refusePlaceholder": "Explain why you are refusing...",
+    "confirmRefuse": "Confirm Refusal",
+    "acceptSuccess": "Appointment accepted.",
+    "refuseSuccess": "Appointment refused.",
+    "respondError": "Error responding.",
+    "availability": "Availability",
+    "recurring": "Recurring Schedule",
+    "overrides": "Exceptions",
+    "addSlot": "Add a slot",
+    "removeSlot": "Remove",
+    "saveAvailability": "Save",
+    "saveSuccess": "Availability saved.",
+    "saveError": "Error saving availability.",
+    "blockDate": "Block this date",
+    "customHours": "Custom hours",
+    "addOverride": "Add an exception",
+    "deleteOverride": "Delete",
+    "days": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    }
+  },
+  "quiz": {
+    "info": "Quiz Information",
+    "title": "Quiz Title",
+    "description": "Description",
+    "imageUrl": "Image URL",
+    "questions": "Questions",
+    "addQuestion": "+ Add Question",
+    "questionText": "Question Text",
+    "questionType": "Question Type",
+    "placeholder": "Placeholder",
+    "responses": "Responses",
+    "addResponse": "+ Add Response",
+    "responseText": "Response Text",
+    "order": "Order",
+    "remove": "Remove",
+    "save": "Save",
+    "cancel": "Cancel",
+    "assign": "Assign",
+    "assign_button": "Assign to Users",
+    "assigning": "Assigning...",
+    "assignToUsers": "Assign to {count} User(s)",
+    "searchUsers": "Search users by name or email...",
+    "selected": "{count} selected",
+    "noUsers": "No users found.",
+    "noUsersMatch": "No users match your search.",
+    "noQuestions": "No questions added. Click \"+ Add Question\" to get started.",
+    "noResponses": "No responses added. Click \"+ Add Response\" to get started.",
+    "typeScale": "Scale 1-10 (Never/Sometimes/Always)",
+    "typeMultipleChoice": "Multiple Choice (Single Selection)",
+    "typeTextInput": "Text Input (Free Text)",
+    "scaleLabels": "The scale will use these guide labels:",
+    "dragToReorder": "Drag to reorder",
+    "draggable": "Drag to reorder",
+    "question": "Question",
+    "scaleMinLabel": "Min Label",
+    "scaleMidLabel": "Mid Label",
+    "scaleMaxLabel": "Max Label",
+    "scalePreview": "Preview:",
+    "possibleResponses": "Possible Responses",
+    "scaleLabels_title": "Scale Labels",
+    "creating": "Creating...",
+    "saving": "Saving...",
+    "create": {
+      "validation": {
+        "successMessage": "Quiz was created successfully.",
+        "failedMessage": "An error occurred while creating the quiz."
+      }
+    },
+    "update": {
+      "validation": {
+        "successMessage": "Quiz was updated successfully.",
+        "failedMessage": "An error occurred while updating the quiz."
+      }
+    },
+    "delete": {
+      "label": "Quiz",
+      "confirmation": "Are you sure you want to delete this quiz?",
+      "validation": {
+        "successMessage": "Quiz was deleted successfully.",
+        "failedMessage": "An error occurred while deleting the quiz."
+      }
+    },
+    "assign_quiz": {
+      "validation": {
+        "successMessage": "Quiz was assigned successfully.",
+        "failedMessage": "An error occurred while assigning the quiz."
+      }
+    },
+    "myQuizzes": "My quizzes",
+    "noAssignedQuizzes": "No assigned quizzes.",
+    "completed": "Completed",
+    "pending": "Pending",
+    "assignedOn": "Assigned on",
+    "dueDate": "Due date",
+    "completedOn": "Completed on",
+    "startQuiz": "Start quiz",
+    "viewResults": "View results",
+    "quizNotFound": "Quiz not found.",
+    "question": "Question",
+    "of": "of",
+    "rate": "Rate",
+    "never": "Never",
+    "sometimes": "Sometimes",
+    "always": "Always",
+    "enterYourAnswer": "Enter your answer",
+    "previous": "Previous",
+    "answered": "answered",
+    "next": "Next",
+    "submit": "Submit",
+    "results": "Results",
+    "completionMessage": "Quiz completed successfully.",
+    "yourAnswers": "Your answers",
+    "yourAnswer": "Your answer",
+    "backToList": "Back to list"
   }
 }

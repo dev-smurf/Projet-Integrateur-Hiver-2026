@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 public interface IEditModuleRequest
 {
-    string? NameFr { get; set; }
-    string? NameEn { get; set; }
-    string? SujetFr { get; set; }
-    string? SujetEn { get; set; }
-    string? ContenueFr { get; set; }
-    string? ContenueEn { get; set; }
-
+    string? Name { get; set; }
+    string? Subject { get; set; }
+    string? Content { get; set; }
     IFormFile? CardImage { get; set; }
 }

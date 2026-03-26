@@ -69,7 +69,7 @@
           <img
             v-if="mod.cardImageUrl"
             :src="imageUrl(mod.cardImageUrl)"
-            :alt="mod.nameFr"
+            :alt="mod.name"
             class="w-full h-full object-cover"
           />
           <BookOpen v-else class="w-12 h-12 text-brand-400" />
@@ -77,12 +77,8 @@
 
         <!-- Content -->
         <div class="p-4 flex flex-col flex-1">
-          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">
-            {{ mod.nameFr || "—" }}
-          </h3>
-          <p class="text-sm text-gray-500 line-clamp-3 flex-1">
-            {{ mod.contenueFr || mod.sujetFr || "—" }}
-          </p>
+          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '---' }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '---' }}</p>
         </div>
 
         <!-- Actions -->
@@ -90,10 +86,14 @@
           class="border-t border-gray-100 px-4 py-3 flex items-center justify-around"
         >
           <router-link
-            :to="{
-              name: 'admin.children.modules.edit',
-              params: { id: mod.id },
-            }"
+            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
+            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
+          >
+            <Eye class="w-4 h-4" />
+            Apercu
+          </router-link>
+          <router-link
+            :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
           >
             <Pencil class="w-4 h-4" />
@@ -147,10 +147,8 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
     >
       <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">
-          {{ $t("global.delete") }}
-        </h3>
-        <p class="text-sm text-gray-600 mb-6">{{ moduleToDelete.nameFr }}</p>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $t('global.delete') }}</h3>
+        <p class="text-sm text-gray-600 mb-6">{{ moduleToDelete.name }}</p>
         <div class="flex justify-end gap-3">
           <button
             @click="moduleToDelete = null"
@@ -173,15 +171,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useNotification } from "@kyvg/vue3-notification";
-import {
-  Plus,
-  Search,
-  Pencil,
-  Trash2,
-  ChevronLeft,
-  ChevronRight,
-  BookOpen,
-} from "lucide-vue-next";
+import { Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { ModuleDto } from "@/types/entities";
 
@@ -209,11 +199,10 @@ function imageUrl(path: string | undefined): string {
 const filtered = computed(() => {
   const q = searchValue.value.toLowerCase().trim();
   if (!q) return allModules.value;
-  return allModules.value.filter(
-    (m) =>
-      (m.nameFr || "").toLowerCase().includes(q) ||
-      (m.sujetFr || "").toLowerCase().includes(q) ||
-      (m.contenueFr || "").toLowerCase().includes(q),
+  return allModules.value.filter(m =>
+    (m.name || "").toLowerCase().includes(q) ||
+    (m.subject || "").toLowerCase().includes(q) ||
+    (m.content || "").toLowerCase().includes(q)
   );
 });
 

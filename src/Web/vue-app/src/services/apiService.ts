@@ -81,7 +81,10 @@ export class ApiService implements IApiService {
               }
           )
           .then((response: AxiosResponse<SucceededOrNotResponse>) => {
-            if (!response.data) return;
+            if (!response.data) {
+              this.logoutUserAndRedirectToHomePage();
+              return;
+            }
 
             const succeededOrNotResponse = response.data;
             if (!succeededOrNotResponse.succeeded) {
@@ -98,19 +101,25 @@ export class ApiService implements IApiService {
             }
           })
           .catch((error) => {
+            console.warn('Token refresh failed:', error.response?.status || error.message);
             this.logoutUserAndRedirectToHomePage();
             return Promise.reject(error);
           })
     } catch (error) {
+      console.warn('Token refresh error:', error);
       this.logoutUserAndRedirectToHomePage()
       return Promise.reject(error);
     }
   }
 
   private logoutUserAndRedirectToHomePage() {
-    const apiStore = useApiStore();
-    apiStore.setNeedToLogout(true);
-
+    try {
+      const apiStore = useApiStore();
+      apiStore.setNeedToLogout(true);
+    } catch (error) {
+      console.warn('Failed to set logout flag:', error);
+      window.location.href = '/login';
+    }
   }
 
   public headersWithJsonContentType() {

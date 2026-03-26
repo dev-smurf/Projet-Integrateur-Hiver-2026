@@ -1,0 +1,32 @@
+.module-content img.float-left {
+    float: left;
+    margin: 0 1rem 1rem 0;
+    max-width: 50%;
+}
+.module-content img.float-right {
+    float: right;
+    margin: 0 0 1rem 1rem;
+    max-width: 50%;
+}
+.module-content img.center {
+    display: block;
+    margin: 1rem auto;
+    max-width: 100%;
+}
+@media (max-width: 640px) {
+    .module-content img.float-left,
+    .module-content img.float-right {
+        float: none;
+        display: block;
+        margin: 1rem auto;
+        max-width: 100%;
+    }
+}
+.module-content audio { width: 100%; max-width: 400px; margin: 1rem 0; }
+.module-content iframe { width: 100%; aspect-ratio: 16/9; max-width: 640px; margin: 1rem 0; }
+.module-content .pdf-attachment {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 0.5rem;
+    text-decoration: none; color: #374151;
+}
+.module-content .pdf-attachment:hover { background: #e5e7eb; }

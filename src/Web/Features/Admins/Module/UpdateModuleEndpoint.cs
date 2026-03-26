@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 using Domain.Repositories;
 using FastEndpoints;
 
@@ -24,12 +24,8 @@ public class UpdateModuleEndpoint : Endpoint<EditModuleRequest, SucceededOrNotRe
     {
         var idString = Route<string>("id");
 
-        Logger.LogInformation("[UpdateModule] Début - ID: {Id}", idString);
-        Logger.LogInformation("[UpdateModule] Request - NameFr: {NameFr}, SujetFr: {SujetFr}", req.NameFr, req.SujetFr);
-
         if (!Guid.TryParse(idString, out var guidId))
         {
-            Logger.LogWarning("[UpdateModule] GUID invalide: {Id}", idString);
             HttpContext.Response.StatusCode = 400;
             Response = new SucceededOrNotResponse(
                 false,
@@ -42,7 +38,6 @@ public class UpdateModuleEndpoint : Endpoint<EditModuleRequest, SucceededOrNotRe
 
         if (entity is null)
         {
-            Logger.LogWarning("[UpdateModule] Module introuvable: {Id}", guidId);
             HttpContext.Response.StatusCode = 404;
             Response = new SucceededOrNotResponse(
                 false,
@@ -51,36 +46,22 @@ public class UpdateModuleEndpoint : Endpoint<EditModuleRequest, SucceededOrNotRe
             return;
         }
 
-        Logger.LogInformation("[UpdateModule] Module trouvé, mise à jour...");
+        if (!string.IsNullOrWhiteSpace(req.Name))
+            entity.Name = req.Name;
 
-        if (!string.IsNullOrWhiteSpace(req.NameFr))
-            entity.NameFr = req.NameFr;
+        if (!string.IsNullOrWhiteSpace(req.Subject))
+            entity.Subject = req.Subject;
 
-        if (!string.IsNullOrWhiteSpace(req.NameEn))
-            entity.NameEn = req.NameEn;
-
-        if (!string.IsNullOrWhiteSpace(req.SujetFr))
-            entity.SujetFr = req.SujetFr;
-
-        if (!string.IsNullOrWhiteSpace(req.SujetEn))
-            entity.SujetEn = req.SujetEn;
-
-        if (!string.IsNullOrWhiteSpace(req.ContenueFr))
-            entity.ContenueFr = req.ContenueFr;
-
-        if (!string.IsNullOrWhiteSpace(req.ContenueEn))
-            entity.ContenueEn = req.ContenueEn;
+        if (!string.IsNullOrWhiteSpace(req.Content))
+            entity.Content = req.Content;
 
         if (req.CardImage is not null)
         {
-            Logger.LogInformation("[UpdateModule] Sauvegarde de l'image...");
             entity.CardImageUrl = await SaveFile(req.CardImage);
         }
 
-        Logger.LogInformation("[UpdateModule] Mise à jour en base de données...");
         await _repository.UpdateAsync(entity);
 
-        Logger.LogInformation("[UpdateModule] Succès!");
         Response = new SucceededOrNotResponse(true);
     }
 

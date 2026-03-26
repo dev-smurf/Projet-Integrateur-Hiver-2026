@@ -62,7 +62,12 @@ public class GetMessagesEndpoint : Endpoint<GetMessagesRequest, object>
             m.ConversationId,
             m.AttachmentUrl,
             m.AttachmentFileName,
-            m.AttachmentContentType
+            m.AttachmentContentType,
+            Type = (int)m.Type,
+            m.AppointmentId,
+            AppointmentDate = m.Appointment?.Date,
+            AppointmentStatus = m.Appointment != null ? (int?)m.Appointment.Status : null,
+            AppointmentMotif = m.Appointment?.Motif
         }).ToList();
 
         await Send.OkAsync(result, cancellation: ct);

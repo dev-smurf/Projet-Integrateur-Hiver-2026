@@ -10,24 +10,14 @@ namespace Persistence.Configurations
         {
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.NameFr)
+            builder.Property(m => m.Name)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(m => m.NameEn)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(m => m.ContenueFr)
+            builder.Property(m => m.Content)
                 .HasMaxLength(1000);
 
-            builder.Property(m => m.ContenueEn)
-                .HasMaxLength(1000);
-
-            builder.Property(m => m.SujetFr)
-                .HasMaxLength(200);
-
-            builder.Property(m => m.SujetEn)
+            builder.Property(m => m.Subject)
                 .HasMaxLength(200);
 
             builder.Property(m => m.CardImageUrl)
