@@ -8,9 +8,12 @@ using Infrastructure.ExternalApis.Azure.Consumers;
 using Infrastructure.ExternalApis.Azure.Http;
 using Infrastructure.Mailing;
 using Infrastructure.Repositories.Admins;
+using Infrastructure.Repositories.Appointments;
 using Infrastructure.Repositories.Authentication;
+using Infrastructure.Repositories.Availability;
 using Infrastructure.Repositories.Books;
 using Infrastructure.Repositories.Members;
+using Infrastructure.Repositories.Module;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,9 +67,15 @@ public static class ConfigureServices
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IEquipeRepository, EquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IModuleRepository, ModuleRepository>();
+        services.AddScoped<IModuleSectionRepository, ModuleSectionRepository>();
+        services.AddScoped<IMemberModuleRepository, MemberModuleRepository>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IAdminAvailabilityRepository, AdminAvailabilityRepository>();
 
         services.AddScoped<IFileStorageApiConsumer, AzureBlobApiConsumer>();
         services.AddScoped<IAzureApiHttpClient, AzureApiHttpClient>();
@@ -120,6 +129,21 @@ public static class ConfigureServices
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSigningKey)),
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(10)
+                };
+
+                // Allow SignalR to receive the JWT token from the query string
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/api/chat-hub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
     }

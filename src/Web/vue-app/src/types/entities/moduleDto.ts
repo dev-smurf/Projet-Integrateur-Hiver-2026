@@ -1,10 +1,10 @@
+import type { ModuleSectionDto } from './moduleSection';
+
 export interface ModuleDto {
     id: string;
-    nameFr?: string;
-    nameEn?: string;
-    sujetFr?: string;
-    sujetEn?: string;
-    contenueFr?: string;
-    contenueEn?: string;
+    name?: string;
+    subject?: string;
+    content?: string;
     cardImageUrl?: string;
+    sections?: ModuleSectionDto[];
 }
