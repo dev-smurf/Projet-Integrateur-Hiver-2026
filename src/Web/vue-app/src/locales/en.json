@@ -25,6 +25,26 @@
       "fullPath": "/dashboard",
       "name": "Dashboard"
     },
+    "adminDashboard": {
+      "path": "/admin-dashboard",
+      "fullPath": "/admin-dashboard",
+      "name": "Admin dashboard"
+    },
+    "equipe": {
+      "path": "/teams",
+      "fullPath": "/teams",
+      "name": "Teams"
+    },
+    "progression": {
+      "path": "/progression",
+      "fullPath": "/progression",
+      "name": "Progression"
+    },
+    "quiz": {
+      "path": "/quiz",
+      "fullPath": "/quiz",
+      "name": "Quiz"
+    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",

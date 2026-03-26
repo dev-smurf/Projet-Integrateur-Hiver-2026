@@ -55,6 +55,18 @@ export class MemberService extends ApiService implements IMemberService {
     return response?.data ?? []
   }
 
+  public async getMyModules(): Promise<MemberModuleDto[]> {
+    const response = await this
+      ._httpClient
+      .get<MemberModuleDto[], AxiosResponse<MemberModuleDto[]>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/modules`)
+      .catch(function (error: AxiosError): AxiosResponse<MemberModuleDto[]> {
+        return error.response as AxiosResponse<MemberModuleDto[]>
+      })
+
+    return response?.data ?? []
+  }
+
   public async getDashboardSummary(): Promise<DashboardSummaryDto | null> {
     const response = await this
       ._httpClient

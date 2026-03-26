@@ -25,6 +25,26 @@
       "fullPath": "/tableau-de-bord",
       "name": "Tableau de bord"
     },
+    "adminDashboard": {
+      "path": "/tableau-de-bord-admin",
+      "fullPath": "/tableau-de-bord-admin",
+      "name": "Tableau de bord admin"
+    },
+    "equipe": {
+      "path": "/equipe",
+      "fullPath": "/equipe",
+      "name": "Équipe"
+    },
+    "progression": {
+      "path": "/progression",
+      "fullPath": "/progression",
+      "name": "Progression"
+    },
+    "quiz": {
+      "path": "/quiz",
+      "fullPath": "/quiz",
+      "name": "Quiz"
+    },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
       "defaultName": "Membre",

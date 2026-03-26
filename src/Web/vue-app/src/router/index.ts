@@ -7,6 +7,7 @@ import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
+import Dashboard from "@/views/shared/Dashboard.vue";
 import MemberDashboard from "@/views/member/MemberDashboard.vue";
 
 import Admin from "../views/admin/Admin.vue";
@@ -74,7 +75,27 @@ const router = createRouter({
         title: "routes.dashboard.name",
         requiredRole: Role.Member
       }
-    },
+      },
+    {
+      path: i18n.t("routes.adminDashboard.path"),
+      alias: getLocalizedRoutes("routes.adminDashboard.path"),
+      name: "adminDashboard",
+      component: Dashboard,
+      meta: {
+        title: "routes.adminDashboard.name",
+        requiredRole: Role.Admin
+      }
+      },
+      {
+          path: i18n.t("routes.equipe.path"),
+          alias: getLocalizedRoutes("routes.equipe.path"),
+          name: "equipe",
+          component: Dashboard,
+          meta: {
+              title: "routes.equipe.name",
+              requiredRole: Role.Member
+          }
+      },
     {
       path: i18n.t("routes.account.path"),
       alias: getLocalizedRoutes("routes.account.path"),
@@ -83,7 +104,16 @@ const router = createRouter({
       meta: {
         title: "routes.account.name"
       }
-    },
+      },
+      {
+          path: i18n.t("routes.quiz.path"),
+          alias: getLocalizedRoutes("routes.quiz.path"),
+          name: "quiz",
+          component: Account,
+          meta: {
+              title: "routes.quiz.name"
+          }
+      },
     {
       path: i18n.t("routes.admin.path"),
       name: "admin",
@@ -184,14 +214,14 @@ router.beforeEach(async (to, from) => {
   if (to.path === "/") {
     if (!isAuthenticated) return { name: "login" };
     return userStore.hasRole(Role.Admin)
-      ? { name: "admin.children.members.index" }
+      ? { name: "adminDashboard" }
       : { name: "dashboard" };
   }
 
   // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
   if (to.meta.guest && isAuthenticated) {
     return userStore.hasRole(Role.Admin)
-      ? { name: "admin.children.members.index" }
+      ? { name: "adminDashboard" }
       : { name: "dashboard" };
   }
 
@@ -209,7 +239,7 @@ router.beforeEach(async (to, from) => {
   const hasNoRoleAmongRoleList = isRoleArray && !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
     if (userStore.hasRole(Role.Admin)) {
-      return { name: "admin.children.members.index" };
+      return { name: "adminDashboard" };
     }
     return { name: "dashboard" };
   }
