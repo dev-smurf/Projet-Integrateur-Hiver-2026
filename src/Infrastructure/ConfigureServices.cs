@@ -12,6 +12,7 @@ using Infrastructure.Repositories.Appointments;
 using Infrastructure.Repositories.Authentication;
 using Infrastructure.Repositories.Availability;
 using Infrastructure.Repositories.Books;
+using Infrastructure.Repositories.Conversations;
 using Infrastructure.Repositories.Members;
 using Infrastructure.Repositories.Module;
 using Infrastructure.Repositories.Users;
@@ -66,6 +67,7 @@ public static class ConfigureServices
 
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();

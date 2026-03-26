@@ -9,6 +9,7 @@ import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
+import MemberDashboard from "@/views/member/MemberDashboard.vue";
 
 import Admin from "@/views/admin/Admin.vue";
 import AdminAvailability from "@/views/admin/AdminAvailability.vue";
@@ -300,13 +301,20 @@ export function getRouter(): Router {
     const userStore = useUserStore();
     const isAuthenticated = !!userStore.user.email;
 
-    if (to.path === "/") {
-      return isAuthenticated ? { name: "dashboard" } : { name: "login" };
-    }
+  // Handle root path redirect
+  if (to.path === "/") {
+    if (!isAuthenticated) return { name: "login" };
+    return userStore.hasRole(Role.Admin)
+      ? { name: "adminDashboard" }
+      : { name: "dashboard" };
+  }
 
-    if (to.meta.guest && isAuthenticated) {
-      return { name: "dashboard" };
-    }
+  // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
+  if (to.meta.guest && isAuthenticated) {
+    return userStore.hasRole(Role.Admin)
+      ? { name: "adminDashboard" }
+      : { name: "dashboard" };
+  }
 
     if (!to.meta.guest && !isAuthenticated) {
       return { name: "login" };
@@ -316,19 +324,18 @@ export function getRouter(): Router {
       return;
     }
 
-    const isRoleArray = Array.isArray(to.meta.requiredRole);
-    const lacksSingleRole =
-      !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
-    const lacksAnyRole =
-      isRoleArray &&
-      !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
-
-    if (lacksSingleRole || lacksAnyRole) {
-      return { name: "dashboard" };
+  const isRoleArray = Array.isArray(to.meta.requiredRole);
+  const doesNotHaveGivenRole =
+    !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
+  const hasNoRoleAmongRoleList =
+    isRoleArray &&
+    !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
+  if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
+    if (userStore.hasRole(Role.Admin)) {
+      return { name: "adminDashboard" };
     }
-  });
-
-  return routerInstance;
-}
+    return { name: "dashboard" };
+  }
+});
 
 export type { Router };
