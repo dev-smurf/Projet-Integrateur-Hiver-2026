@@ -17,6 +17,8 @@ public class ForgotPasswordValidator : Validator<ForgotPasswordRequest>
         RuleFor(x => x.ResetPasswordRelativeUrl)
             .NotNull()
             .NotEmpty()
+            .Must(value => Uri.IsWellFormedUriString(value, UriKind.Relative) ||
+                           Uri.IsWellFormedUriString(value, UriKind.Absolute))
             .WithErrorCode("InvalidResetPasswordRelativeUrl")
             .WithMessage("Reset password relative path should not be empty.");
     }

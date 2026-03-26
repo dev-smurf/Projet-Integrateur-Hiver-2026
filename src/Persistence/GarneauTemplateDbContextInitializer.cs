@@ -226,32 +226,23 @@ public class GarneauTemplateDbContextInitializer
         {
             new Module
             {
-                NameFr = "Introduction à la programmation",
-                NameEn = "Introduction to Programming",
-                SujetFr = "Bases de la programmation",
-                SujetEn = "Programming Basics",
-                ContenueFr = "Ce module couvre les concepts fondamentaux de la programmation, incluant les variables, les boucles et les conditions.",
-                ContenueEn = "This module covers fundamental programming concepts, including variables, loops, and conditions.",
+                Name = "Introduction à la programmation",
+                Subject = "Bases de la programmation",
+                Content = "Ce module couvre les concepts fondamentaux de la programmation, incluant les variables, les boucles et les conditions.",
                 CardImageUrl = null
             },
             new Module
             {
-                NameFr = "Développement Web",
-                NameEn = "Web Development",
-                SujetFr = "HTML, CSS et JavaScript",
-                SujetEn = "HTML, CSS and JavaScript",
-                ContenueFr = "Apprenez à créer des sites web modernes avec HTML5, CSS3 et JavaScript.",
-                ContenueEn = "Learn to create modern websites with HTML5, CSS3 and JavaScript.",
+                Name = "Développement Web",
+                Subject = "HTML, CSS et JavaScript",
+                Content = "Apprenez à créer des sites web modernes avec HTML5, CSS3 et JavaScript.",
                 CardImageUrl = null
             },
             new Module
             {
-                NameFr = "Bases de données",
-                NameEn = "Databases",
-                SujetFr = "SQL et NoSQL",
-                SujetEn = "SQL and NoSQL",
-                ContenueFr = "Découvrez les systèmes de gestion de bases de données relationnelles et non-relationnelles.",
-                ContenueEn = "Discover relational and non-relational database management systems.",
+                Name = "Bases de données",
+                Subject = "SQL et NoSQL",
+                Content = "Découvrez les systèmes de gestion de bases de données relationnelles et non-relationnelles.",
                 CardImageUrl = null
             }
         };

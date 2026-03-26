@@ -20,6 +20,8 @@ public class MemberRepository : IMemberRepository
     {
         var query = _context.Members
             .Include(x => x.User)
+            .ThenInclude(x => x.UserRoles)
+            .ThenInclude(x => x.Role)
             .AsNoTracking()
             .AsQueryable();
 
@@ -83,6 +85,48 @@ public class MemberRepository : IMemberRepository
             throw new MemberNotFoundException($"Could not find member with id {member.Id}.");
 
         _context.Members.Update(member);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AddModuleToMember(Guid memberId, Guid moduleId)
+    {
+        var exists = await _context.MemberModules
+            .AnyAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (exists)
+            return;
+
+        _context.MemberModules.Add(new MemberModule(memberId, moduleId));
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<MemberModule>> GetMemberModules(Guid memberId)
+    {
+        return await _context.MemberModules
+            .Include(x => x.Module)
+            .Where(x => x.MemberId == memberId)
+            .OrderByDescending(x => x.Created)
+            .ToListAsync();
+    }
+
+    public async Task UpdateMemberModuleProgress(Guid memberId, Guid moduleId, int progressPercent)
+    {
+        var memberModule = await _context.MemberModules
+            .FirstOrDefaultAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (memberModule == null)
+            return;
+
+        memberModule.UpdateProgress(progressPercent);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveModuleFromMember(Guid memberId, Guid moduleId)
+    {
+        var memberModule = await _context.MemberModules
+            .FirstOrDefaultAsync(x => x.MemberId == memberId && x.ModuleId == moduleId);
+        if (memberModule == null)
+            return;
+
+        _context.MemberModules.Remove(memberModule);
         await _context.SaveChangesAsync();
     }
 }
