@@ -23,6 +23,7 @@ import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
+import Equipe from "@/views/member/Equipe.vue";
 
 import AdminEquipeList from "@/views/admin/equipe/EquipesListe.vue";
 import AdminAddEquipeForm from "@/views/admin/equipe/AdminAddEquipeForm.vue";
@@ -97,7 +98,7 @@ const router = createRouter({
           path: i18n.t("routes.equipe.path"),
           alias: getLocalizedRoutes("routes.equipe.path"),
           name: "equipe",
-          component: Dashboard,
+          component: Equipe,
           meta: {
               title: "routes.equipe.name",
               requiredRole: Role.Member
@@ -222,15 +223,7 @@ const router = createRouter({
             title: "routes.books.name",
           },
         },
-        {
-          path: i18n.t("routes.books.children.add.path"),
-          alias: getLocalizedRoutes("routes.books.children.add.path"),
-          name: "books.children.add",
-          component: AddBookForm,
-          meta: {
-            title: "routes.books.children.add.name",
-          },
-        },
+
         {
           path: i18n.t("routes.books.children.edit.path"),
           alias: getLocalizedRoutes("routes.books.children.edit.path"),
