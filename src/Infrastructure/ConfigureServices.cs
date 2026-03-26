@@ -66,6 +66,7 @@ public static class ConfigureServices
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IEquipeRepository, EquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

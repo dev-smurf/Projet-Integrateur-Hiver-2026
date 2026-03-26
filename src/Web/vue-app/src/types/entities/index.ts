@@ -10,3 +10,4 @@ export * from "./memberModuleDto"
 export * from "./dashboardSummaryDto"
 export * from "./conversation"
 export * from "./chatMessage"
+export * from "./equipe";

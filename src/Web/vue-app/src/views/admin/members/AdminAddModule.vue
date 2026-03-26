@@ -1,10 +1,18 @@
 <template>
   <div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.addModule.name') }}</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">
+      {{ $t("routes.addModule.name") }}
+    </h1>
 
-    <form @submit.prevent="handleSubmit" class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+    <form
+      @submit.prevent="handleSubmit"
+      class="bg-white rounded-xl border border-gray-200 p-6 space-y-4"
+    >
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('Form_Add_Module.fields.name') }} <span class="text-red-500">*</span></label>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >{{ $t("Form_Add_Module.fields.name") }}
+          <span class="text-red-500">*</span></label
+        >
         <input
           v-model="_module.nameFr"
           type="text"
@@ -12,7 +20,9 @@
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('Form_Add_Module.fields.subject') }}</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+          $t("Form_Add_Module.fields.subject")
+        }}</label>
         <input
           v-model="_module.sujetFr"
           type="text"
@@ -20,7 +30,9 @@
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('Form_Add_Module.fields.content') }}</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+          $t("Form_Add_Module.fields.content")
+        }}</label>
         <textarea
           v-model="_module.contenueFr"
           rows="4"
@@ -28,7 +40,9 @@
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('Form_Add_Module.fields.image') }}</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+          $t("Form_Add_Module.fields.image")
+        }}</label>
         <div
           class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-brand-400 transition cursor-pointer"
           @click="($refs.fileInput as HTMLInputElement).click()"
@@ -40,9 +54,19 @@
             class="hidden"
             @change="handleImageChange"
           />
-          <Upload v-if="!imagePreview" class="w-8 h-8 text-gray-400 mx-auto mb-2" />
-          <img v-if="imagePreview" :src="imagePreview" :alt="$t('Form_Add_Module.fields.imagePreview')" class="max-w-xs max-h-48 mx-auto rounded-lg" />
-          <p v-if="!imagePreview" class="text-sm text-gray-500">{{ $t('Form_Add_Module.fields.image') }}</p>
+          <Upload
+            v-if="!imagePreview"
+            class="w-8 h-8 text-gray-400 mx-auto mb-2"
+          />
+          <img
+            v-if="imagePreview"
+            :src="imagePreview"
+            :alt="$t('Form_Add_Module.fields.imagePreview')"
+            class="max-w-xs max-h-48 mx-auto rounded-lg"
+          />
+          <p v-if="!imagePreview" class="text-sm text-gray-500">
+            {{ $t("Form_Add_Module.fields.image") }}
+          </p>
         </div>
       </div>
 
@@ -51,7 +75,7 @@
           :to="{ name: 'admin.children.modules.index' }"
           class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          {{ $t('global.cancel') }}
+          {{ $t("global.cancel") }}
         </router-link>
         <button
           type="submit"
@@ -59,7 +83,7 @@
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
-          {{ $t('global.save') }}
+          {{ $t("global.save") }}
         </button>
       </div>
     </form>
@@ -67,15 +91,15 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
-import {useRouter} from "vue-router";
-import {useNotification} from "@kyvg/vue3-notification";
-import {Loader2, Upload} from "lucide-vue-next";
-import {useModulesService} from "@/inversify.config";
-import type {ICreateModuleRequest} from "@/types/requests/ICreateModuleRequest";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useNotification } from "@kyvg/vue3-notification";
+import { Loader2, Upload } from "lucide-vue-next";
+import { useModulesService } from "@/inversify.config";
+import type { ICreateModuleRequest } from "@/types/requests/ICreateModuleRequest";
 
 const router = useRouter();
-const {notify} = useNotification();
+const { notify } = useNotification();
 const moduleService = useModulesService();
 
 const _module = ref<ICreateModuleRequest>({
@@ -98,7 +122,7 @@ function handleImageChange(event: Event) {
 
 async function handleSubmit() {
   if (!_module.value.nameFr?.trim()) {
-    notify({type: "error", text: "Name is required."});
+    notify({ type: "error", text: "Name is required." });
     return;
   }
 
@@ -106,13 +130,13 @@ async function handleSubmit() {
   try {
     const response = await moduleService.createModule(_module.value);
     if (response?.succeeded) {
-      notify({type: "success", text: "Module created."});
-      await router.push({name: "admin.children.modules.index"});
+      notify({ type: "success", text: "Module created." });
+      await router.push({ name: "admin.children.modules.index" });
     } else {
-      notify({type: "error", text: "Error creating module."});
+      notify({ type: "error", text: "Error creating module." });
     }
   } catch {
-    notify({type: "error", text: "Error creating module."});
+    notify({ type: "error", text: "Error creating module." });
   }
   submitting.value = false;
 }
