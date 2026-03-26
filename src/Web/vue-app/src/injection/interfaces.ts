@@ -8,7 +8,7 @@ import {
   ITwoFactorRequest
 } from "@/types/requests"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
-import {Administrator, Book, ChatMessage, Conversation, Member, User} from "@/types/entities"
+import {Administrator, Book, ChatMessage, Conversation, Member, MemberModuleDto, User} from "@/types/entities"
 import {Guid} from "@/types";
 
 export interface IApiService {
@@ -55,6 +55,8 @@ export interface IMemberService {
     phoneNumber?: string; phoneExtension?: number;
     apartment?: number; street?: string; city?: string; zipCode?: string;
   }): Promise<SucceededOrNotResponse>
+
+  getMyModules(): Promise<MemberModuleDto[]>
 
   deleteMember(id: Guid): Promise<SucceededOrNotResponse>
 }

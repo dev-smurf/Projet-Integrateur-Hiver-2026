@@ -186,20 +186,20 @@
 import {computed, onMounted, ref} from "vue";
 import {useI18n} from "vue3-i18n";
 import {Activity, ArrowRight, BookOpen, CheckCircle, Gauge, Layers, Sparkles, User} from "lucide-vue-next";
-import {useModulesService} from "@/inversify.config";
+import {useMemberService} from "@/inversify.config";
 import {usePersonStore} from "@/stores/personStore";
 import {useUserStore} from "@/stores/userStore";
-import type {ModuleDto} from "@/types/entities";
+import type {MemberModuleDto} from "@/types/entities";
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
 
 const {locale, t} = useI18n();
-const modulesService = useModulesService();
+const memberService = useMemberService();
 const personStore = usePersonStore();
 const userStore = useUserStore();
 
 const loading = ref(true);
-const modules = ref<ModuleDto[]>([]);
+const modules = ref<MemberModuleDto[]>([]);
 
 const displayName = computed(() => {
   return personStore.person.fullName || userStore.user.fullName || t("pages.memberDashboard.defaultName");
@@ -226,8 +226,8 @@ const moduleCards = computed(() => {
     const subject = isFrench
       ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
       : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject"));
-    const progressPercent = 0;
-    const isCompleted = progressPercent >= 100;
+    const progressPercent = mod.progressPercent ?? 0;
+    const isCompleted = mod.isCompleted || progressPercent >= 100;
     const statusLabel = isCompleted
       ? t("pages.memberDashboard.status.completed")
       : progressPercent > 0
@@ -235,7 +235,7 @@ const moduleCards = computed(() => {
         : t("pages.memberDashboard.status.notStarted");
 
     return {
-      id: mod.id,
+      id: mod.moduleId,
       name,
       subject,
       imageUrl: imageUrl(mod.cardImageUrl),
@@ -261,7 +261,7 @@ const nextModuleName = computed(() => {
 async function fetchModules() {
   loading.value = true;
   try {
-    modules.value = await modulesService.getAllModules();
+    modules.value = await memberService.getMyModules();
   } catch {
     modules.value = [];
   } finally {

@@ -25,6 +25,11 @@
       "fullPath": "/dashboard",
       "name": "Dashboard"
     },
+    "adminDashboard": {
+      "path": "/admin-dashboard",
+      "fullPath": "/admin-dashboard",
+      "name": "Admin dashboard"
+    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",

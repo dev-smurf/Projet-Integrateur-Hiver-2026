@@ -15,6 +15,33 @@
               {{ $t('routes.dashboard.name') }}
             </router-link>
             <router-link
+              v-if="userStore.hasRole(Role.Admin)"
+              :to="{ name: 'adminDashboard' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('adminDashboard') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <Shield class="w-4 h-4" />
+              {{ $t('routes.adminDashboard.name') }}
+            </router-link>
+            <router-link
+              v-if="userStore.hasRole(Role.Admin)"
+              :to="{ name: 'admin.children.members.index' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('admin.children.members') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <Users class="w-4 h-4" />
+              {{ $t('routes.admin.children.members.name') }}
+            </router-link>
+            <router-link
+              v-if="userStore.hasRole(Role.Admin)"
+              :to="{ name: 'admin.children.modules.index' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('admin.children.modules') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <Layers class="w-4 h-4" />
+              {{ $t('routes.admin.children.modules.name') }}
+            </router-link>
+            <router-link
               v-if="userStore.hasRole(Role.Member)"
               :to="{ name: 'books' }"
               class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
@@ -126,7 +153,7 @@ import {computed, ref, onMounted, onUnmounted} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import Cookies from "universal-cookie";
-import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X} from "lucide-vue-next";
+import {LayoutDashboard, BookOpen, Shield, LogOut, Languages, CheckCircle2, XCircle, X, Users, Layers} from "lucide-vue-next";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
 import ChatBubble from "@/components/chat/ChatBubble.vue";

@@ -25,6 +25,11 @@
       "fullPath": "/tableau-de-bord",
       "name": "Tableau de bord"
     },
+    "adminDashboard": {
+      "path": "/tableau-de-bord-admin",
+      "fullPath": "/tableau-de-bord-admin",
+      "name": "Tableau de bord admin"
+    },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
       "defaultName": "Membre",

@@ -75,7 +75,7 @@ async function handleLogin() {
   if (response.succeeded) {
     userStore.setUsername(username.value);
     userStore.setUser(await userService.getCurrentUser());
-    await router.push(userStore.hasRole(Role.Admin) ? {name: "admin.children.members.index"} : {name: "dashboard"});
+    await router.push(userStore.hasRole(Role.Admin) ? {name: "adminDashboard"} : {name: "dashboard"});
   } else {
     errors.value = response.getErrorMessages("pages.login.validation");
   }
