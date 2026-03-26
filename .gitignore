@@ -691,3 +691,5 @@ src/Web/wwwroot/js/*
 src/Web/wwwroot/vue
 src/Web/wwwroot/vue/*
 src/Web/appsettings.Development.json
+
+*.yml

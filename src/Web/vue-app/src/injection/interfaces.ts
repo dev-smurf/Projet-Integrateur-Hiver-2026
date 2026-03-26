@@ -8,80 +8,112 @@ import {
   ITwoFactorRequest
 } from "@/types/requests"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
-import {Administrator, Book, ChatMessage, Conversation, Member, User} from "@/types/entities"
+import {Administrator, Book, ChatMessage, Conversation, Member, User,Equipe} from "@/types/entities"
 import {Guid} from "@/types";
+import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
 
 export interface IApiService {
-  headersWithJsonContentType(): any
+  headersWithJsonContentType(): any;
 
-  headersWithFormDataContentType(): any
+  headersWithFormDataContentType(): any;
 
-  buildEmptyBody(): string
+  buildEmptyBody(): string;
 }
 
 export interface IAdministratorService {
-  getAuthenticated(): Promise<Administrator | undefined>
+  getAuthenticated(): Promise<Administrator | undefined>;
 
-  updateMyProfile(data: { firstName: string; lastName: string }): Promise<SucceededOrNotResponse>
+  updateMyProfile(data: {
+    firstName: string;
+    lastName: string;
+  }): Promise<SucceededOrNotResponse>;
 }
 
-
 export interface IAuthenticationService {
-  login(request: ILoginRequest): Promise<SucceededOrNotResponse>
+  login(request: ILoginRequest): Promise<SucceededOrNotResponse>;
 
-  twoFactor(request: ITwoFactorRequest): Promise<SucceededOrNotResponse>
+  twoFactor(request: ITwoFactorRequest): Promise<SucceededOrNotResponse>;
 
-  forgotPassword(request: IForgotPasswordRequest): Promise<SucceededOrNotResponse>
+  forgotPassword(
+    request: IForgotPasswordRequest,
+  ): Promise<SucceededOrNotResponse>;
 
-  resetPassword(request: IResetPasswordRequest): Promise<SucceededOrNotResponse>
+  resetPassword(
+    request: IResetPasswordRequest,
+  ): Promise<SucceededOrNotResponse>;
 
-  logout(): Promise<SucceededOrNotResponse>
+  logout(): Promise<SucceededOrNotResponse>;
 }
 
 export interface IMemberService {
+  getAuthenticated(): Promise<Member | undefined>;
 
-  getAuthenticated(): Promise<Member | undefined>
+  search(
+    pageIndex: number,
+    pageSize: number,
+    searchValue: string,
+  ): Promise<PaginatedResponse<Member>>;
 
-  search(pageIndex: number, pageSize: number, searchValue: string): Promise<PaginatedResponse<Member>>
+  getMember(id: string): Promise<Member>;
 
-  getMember(id: string): Promise<Member>
+  createMember(member: Member): Promise<SucceededOrNotResponse>;
 
-  createMember(member: Member): Promise<SucceededOrNotResponse>
-
-  updateMember(member: Member): Promise<SucceededOrNotResponse>
+  updateMember(member: Member): Promise<SucceededOrNotResponse>;
 
   updateMyProfile(data: {
-    firstName: string; lastName: string;
-    phoneNumber?: string; phoneExtension?: number;
-    apartment?: number; street?: string; city?: string; zipCode?: string;
-  }): Promise<SucceededOrNotResponse>
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    phoneExtension?: number;
+    apartment?: number;
+    street?: string;
+    city?: string;
+    zipCode?: string;
+  }): Promise<SucceededOrNotResponse>;
 
-  deleteMember(id: Guid): Promise<SucceededOrNotResponse>
+  deleteMember(id: Guid): Promise<SucceededOrNotResponse>;
 }
 
 export interface IBookService {
-  getAllBooks(): Promise<Book[]>
+  getAllBooks(): Promise<Book[]>;
 
-  getBook(bookId: string): Promise<Book>
+  getBook(bookId: string): Promise<Book>;
 
-  deleteBook(bookId: string): Promise<SucceededOrNotResponse>
+  deleteBook(bookId: string): Promise<SucceededOrNotResponse>;
 
-  createBook(request: ICreateBookRequest): Promise<SucceededOrNotResponse>
+  createBook(request: ICreateBookRequest): Promise<SucceededOrNotResponse>;
 
-  editBook(request: IEditBookRequest): Promise<SucceededOrNotResponse>
+  editBook(request: IEditBookRequest): Promise<SucceededOrNotResponse>;
 }
 
 export interface IModulesService {
-  getAllModules(): Promise<any[]>
-  getModule(id: string): Promise<any>
-  getModuleFlexible(id: string): Promise<any | null>
-  createModule(request: any): Promise<SucceededOrNotResponse>
-  updateModule(id: string, request: any): Promise<SucceededOrNotResponse>
-  deleteModule(id: string): Promise<SucceededOrNotResponse>
+  getAllModules(): Promise<any[]>;
+  getModule(id: string): Promise<any>;
+  getModuleFlexible(id: string): Promise<any | null>;
+  createModule(request: any): Promise<SucceededOrNotResponse>;
+  updateModule(id: string, request: any): Promise<SucceededOrNotResponse>;
+  deleteModule(id: string): Promise<SucceededOrNotResponse>;
+  saveModuleFull(id: string, request: any): Promise<SucceededOrNotResponse>;
+  uploadMedia(file: File): Promise<{ url: string }>;
+  getModuleSections(moduleId: string): Promise<any[]>;
+  assignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse>;
+  unassignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse>;
+  getModuleAssignments(moduleId: string): Promise<any[]>;
+  getMyModules(): Promise<any[]>;
+  getMyModuleDetail(moduleId: string): Promise<any>;
+}
+
+export interface IEquipesService {
+  getAllEquipes(): Promise<Equipe[]>;
+  getEquipe(id: string): Promise<Equipe>;
+  getEquipeFlexible(id: string): Promise<Equipe | null>;
+  createEquipe(request: any): Promise<SucceededOrNotResponse>;
+  updateEquipe(id: string, request: any): Promise<SucceededOrNotResponse>;
+  deleteEquipe(id: string): Promise<SucceededOrNotResponse>;
 }
 
 export interface IUserService {
-  getCurrentUser(): Promise<User>
+  getCurrentUser(): Promise<User>;
 }
 
 export interface IConversationService {
@@ -91,4 +123,25 @@ export interface IConversationService {
   sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage>
   markAsRead(conversationId: string): Promise<void>
   getUnreadCount(): Promise<number>
+}
+
+export interface IAppointmentService {
+  getAvailableSlots(startDate: string, endDate: string): Promise<AvailableSlot[]>
+  requestAppointment(date: string, motif?: string): Promise<any>
+  respondAppointment(appointmentId: string, accept: boolean, reason?: string): Promise<any>
+  getAvailability(): Promise<AvailabilityData>
+  saveAvailability(slots: AvailabilitySlot[]): Promise<void>
+  createOverride(data: { date: string, startTime?: string, endTime?: string, isBlocked: boolean }): Promise<AvailabilityOverride>
+  deleteOverride(id: string): Promise<void>
+}
+
+export interface IQuizService {
+  getAll(): Promise<any[]>
+  getById(id: string): Promise<any>
+  create(quiz: any): Promise<void>
+  update(quiz: any): Promise<void>
+  delete(id: string): Promise<void>
+  getAssignedQuizzes(): Promise<any[]>
+  submitResponse(response: any): Promise<any>
+  assignQuiz(quizId: string, userIds: string[], dueDate?: Date): Promise<void>
 }

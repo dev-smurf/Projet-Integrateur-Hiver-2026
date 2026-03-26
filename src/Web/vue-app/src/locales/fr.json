@@ -25,6 +25,62 @@
       "fullPath": "/tableau-de-bord",
       "name": "Tableau de bord"
     },
+    "adminDashboard": {
+      "path": "/tableau-de-bord-admin",
+      "fullPath": "/tableau-de-bord-admin",
+      "name": "Tableau de bord admin"
+    },
+    "equipe": {
+      "path": "/equipe",
+      "fullPath": "/equipe",
+      "name": "Équipe"
+    },
+    "progression": {
+      "path": "/progression",
+      "fullPath": "/progression",
+      "name": "Progression"
+    },
+    "quiz": {
+      "path": "/quiz",
+      "fullPath": "/quiz",
+      "name": "Quiz"
+    },
+    "memberDashboard": {
+      "welcomeLabel": "Bienvenue",
+      "defaultName": "Membre",
+      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
+      "viewBooks": "Mes livres",
+      "updateProfile": "Mon profil",
+      "modulesTitle": "Modules ajoutes",
+      "modulesCount": "modules",
+      "emptyModules": "Aucun module pour le moment.",
+      "progressTitle": "Progression globale",
+      "progressHint": "La progression est calculee selon vos modules.",
+      "progressLabel": "Progression",
+      "lastUpdate": "Derniere mise a jour",
+      "continue": "Continuer",
+      "manageProfile": "Gerer mon profil",
+      "profileTitle": "Profil du membre",
+      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
+      "unnamedModule": "Module sans titre",
+      "noSubject": "Aucun sujet disponible",
+      "stats": {
+        "modules": "Modules",
+        "modulesHint": "Modules assignes",
+        "completed": "Termines",
+        "completedHint": "Modules termines",
+        "average": "Moyenne",
+        "averageHint": "Progression moyenne",
+        "next": "Prochain module",
+        "nextHint": "Etape suivante suggeree",
+        "nextEmpty": "Aucun module disponible"
+      },
+      "status": {
+        "notStarted": "Non commence",
+        "inProgress": "En cours",
+        "completed": "Termine"
+      }
+    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",
@@ -43,6 +99,21 @@
             "path": "ajouter",
             "fullPath": "/administration/membres/ajouter",
             "name": "Ajouter un membre"
+          },
+          "quiz":{
+            "path": "quiz",
+            "fullPath": "/administration/quiz",
+            "name": "Quiz",
+            "add": {
+              "path": "ajouter",
+              "fullPath": "/administration/quiz/ajouter",
+              "name": "Ajouter un nouveau quiz"
+            },
+            "edit": {
+              "path": ":id/modifier",
+              "fullPath": "/administration/quiz/:id/modifier",
+              "name": "Modifier un quiz"
+            }
           },
           "edit": {
             "path": ":id/modifier",
@@ -68,6 +139,27 @@
             "path": ":id/modifier",
             "fullPath": "/administration/modules/:id/modifier",
             "name": "Modifier un module"
+          },
+          "preview": {
+            "path": ":id/apercu",
+            "fullPath": "/administration/modules/:id/apercu",
+            "name": "Aperçu du module"
+          }
+        },
+        "equipes": {
+          "path": "equipes",
+          "fullPath": "/administration/equipes",
+          "name": "Equipes",
+
+          "add": {
+            "path": "ajouter",
+            "fullPath": "/administration/equipes/ajouter",
+            "name": "Ajouter une equipe"
+          },
+          "edit": {
+            "path": ":id/modifier",
+            "fullPath": "/administration/equipes/:id/modifier",
+            "name": "Modifier une equipe"
           }
         }
       }
@@ -86,6 +178,23 @@
           "path": ":id/modifier",
           "fullPath": "/livres/:id/modifier",
           "name": "Modifier un livre"
+        }
+      }
+    },
+    "quiz": {
+      "path": "/quiz",
+      "fullPath": "/quiz",
+      "name": "Mes quiz",
+      "children": {
+        "take": {
+          "path": ":quizId/faire",
+          "fullPath": "/quiz/:quizId/faire",
+          "name": "Faire le quiz"
+        },
+        "results": {
+          "path": ":quizId/resultats",
+          "fullPath": "/quiz/:quizId/resultats",
+          "name": "Resultats du quiz"
         }
       }
     }
@@ -316,6 +425,7 @@
     "firstName": "Prénom",
     "lastName": "Nom",
     "fullName": "Nom complet",
+    "equipeName": "Nom de l'équipe",
     "email": "Courriel",
     "phoneNumber": "Numéro de téléphone",
     "phoneExtension": "Poste",
@@ -336,6 +446,7 @@
     "removeFile": "Retirer ce document",
     "uploadZippedFolder-tooltip": "Si vous désirez transmettre plusieurs documents, veuillez uploader <strong>un dossier compressé.</strong>",
     "update": "Modifier",
+    "edit": "Modifier",
     "delete": "Supprimer",
     "deleted": "Supprimé(e)",
     "save": "Sauvegarder",
@@ -349,6 +460,10 @@
     "undefined": "ND",
     "logout": "Déconnexion",
     "changeLanguage": "Changer de langue",
+    "test": "Tester",
+    "questions": "Questions",
+    "noQuizzesYet": "Aucun quiz pour le moment.",
+    "createFirst": "Créer le premier quiz",
     "table": {
       "of": "de",
       "noData": "Aucune données disponibles",
@@ -430,7 +545,19 @@
       "content": "Contenu",
       "subject": "Sujet",
       "image": "Image",
-      "imagePreview": "Aperçu de l'image"
+      "imagePreview": "Aperçu de l'image",
+      "sections": "Sections",
+      "sectionTitle": "Titre de la section",
+      "addSection": "Ajouter une section",
+      "assignments": "Assignations"
+    }
+  },
+  "Form_Add_Equipe": {
+    "fields": {
+      "name": "Nom de l'équipe"
+    },
+    "validation": {
+      "nameRequired": "Le nom est obligatoire."
     }
   },
   "errors": {
@@ -442,7 +569,33 @@
       "edit": {
         "success": "Module modifié avec succès.",
         "errorOccured": "Une erreur est survenue lors de la modification du module."
+      },
+      "sections": {
+        "saveError": "Erreur lors de la sauvegarde des sections."
+      },
+      "assignment": {
+        "assignError": "Erreur lors de l'assignation du module.",
+        "unassignError": "Erreur lors de la désassignation du module."
       }
+    },
+    "equipe": {
+      "add": {
+        "success": "Équipe créée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création de l'équipe."
+      },
+      "edit": {
+        "success": "Équipe modifiée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification de l'équipe."
+      }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "Mes modules",
+      "noModules": "Aucun module assigné.",
+      "backToList": "Retour aux modules",
+      "noAccess": "Vous n'avez pas accès à ce module.",
+      "loadError": "Impossible de charger le module."
     }
   },
   "common": {
@@ -451,6 +604,12 @@
   },
   "routes.addModule": {
     "name": "Ajouter un module"
+  },
+  "addEquipe": {
+    "name": "Ajouter une équipe"
+  },
+  "editEquipe": {
+    "name": "Modifier une équipe"
   },
   "chat": {
     "title": "Messages",
@@ -466,5 +625,152 @@
     "startConversation": "Démarrer la conversation",
     "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
     "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf."
+  },
+  "appointment": {
+    "requestBtn": "Prendre un RDV",
+    "modalTitle": "Demander un rendez-vous",
+    "selectDate": "Sélectionner une date",
+    "selectTime": "Sélectionner un créneau",
+    "motif": "Motif (optionnel)",
+    "motifPlaceholder": "Décrivez brièvement la raison du rendez-vous...",
+    "submit": "Envoyer la demande",
+    "cancel": "Annuler",
+    "noSlots": "Aucun créneau disponible pour cette date.",
+    "noSlotsWeek": "Aucun créneau disponible cette semaine.",
+    "requestSent": "Demande de RDV envoyée!",
+    "requestError": "Erreur lors de l'envoi de la demande.",
+    "conflict": "Ce créneau n'est plus disponible.",
+    "pending": "En attente",
+    "accepted": "Accepté",
+    "refused": "Refusé",
+    "requestMsg": "Demande de rendez-vous",
+    "responseMsg": "Réponse au rendez-vous",
+    "dateLabel": "Date",
+    "motifLabel": "Motif",
+    "statusLabel": "Statut",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "refuseReason": "Raison du refus (optionnel)",
+    "refusePlaceholder": "Expliquez pourquoi vous refusez...",
+    "confirmRefuse": "Confirmer le refus",
+    "acceptSuccess": "Rendez-vous accepté.",
+    "refuseSuccess": "Rendez-vous refusé.",
+    "respondError": "Erreur lors de la réponse.",
+    "availability": "Disponibilités",
+    "recurring": "Horaire récurrent",
+    "overrides": "Exceptions",
+    "addSlot": "Ajouter un créneau",
+    "removeSlot": "Retirer",
+    "saveAvailability": "Sauvegarder",
+    "saveSuccess": "Disponibilités sauvegardées.",
+    "saveError": "Erreur lors de la sauvegarde.",
+    "blockDate": "Bloquer cette date",
+    "customHours": "Heures personnalisées",
+    "addOverride": "Ajouter une exception",
+    "deleteOverride": "Supprimer",
+    "days": {
+      "0": "Dimanche",
+      "1": "Lundi",
+      "2": "Mardi",
+      "3": "Mercredi",
+      "4": "Jeudi",
+      "5": "Vendredi",
+      "6": "Samedi"
+    }
+  },
+  "quiz": {
+    "info": "Informations du quiz",
+    "title": "Titre du quiz",
+    "description": "Description",
+    "imageUrl": "URL de l'image",
+    "questions": "Questions",
+    "addQuestion": "+ Ajouter une question",
+    "questionText": "Texte de la question",
+    "questionType": "Type de question",
+    "placeholder": "Espace réservé",
+    "responses": "Réponses",
+    "addResponse": "+ Ajouter une réponse",
+    "responseText": "Texte de la réponse",
+    "order": "Ordre",
+    "remove": "Supprimer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "assign": "Assigner",
+    "assign_button": "Assigner aux utilisateurs",
+    "assigning": "Attribution en cours...",
+    "assignToUsers": "Assigner à {count} utilisateur(s)",
+    "searchUsers": "Rechercher les utilisateurs par nom ou courriel...",
+    "selected": "{count} sélectionné(s)",
+    "noUsers": "Aucun utilisateur trouvé.",
+    "noUsersMatch": "Aucun utilisateur ne correspond à votre recherche.",
+    "noQuestions": "Aucune question ajoutée. Cliquez sur \"+ Ajouter une question\" pour commencer.",
+    "noResponses": "Aucune réponse ajoutée. Cliquez sur \"+ Ajouter une réponse\" pour commencer.",
+    "typeScale": "Échelle 1-10 (Jamais/Parfois/Toujours)",
+    "typeMultipleChoice": "Choix unique (Sélection simple)",
+    "typeTextInput": "Texte libre (Texte libre)",
+    "scaleLabels": "L'échelle utilisera ces étiquettes guides :",
+    "dragToReorder": "Faites glisser pour réorganiser",
+    "draggable": "Faites glisser pour réorganiser",
+    "question": "Question",
+    "scaleMinLabel": "Étiquette Min",
+    "scaleMidLabel": "Étiquette Mid",
+    "scaleMaxLabel": "Étiquette Max",
+    "scalePreview": "Aperçu:",
+    "possibleResponses": "Réponses Possibles",
+    "scaleLabels_title": "Étiquettes de l'Échelle",
+    "creating": "Création...",
+    "saving": "Enregistrement...",
+    "create": {
+      "validation": {
+        "successMessage": "Le quiz a été créé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la création du quiz."
+      }
+    },
+    "update": {
+      "validation": {
+        "successMessage": "Le quiz a été modifié avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la modification du quiz."
+      }
+    },
+    "delete": {
+      "label": "Quiz",
+      "confirmation": "Êtes-vous sûr de vouloir supprimer ce quiz ?",
+      "validation": {
+        "successMessage": "Le quiz a été supprimé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la suppression du quiz."
+      }
+    },
+    "assign_quiz": {
+      "validation": {
+        "successMessage": "Le quiz a été assigné avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de l'assignation du quiz."
+      }
+    },
+    "myQuizzes": "Mes quiz",
+    "noAssignedQuizzes": "Aucun quiz assigne.",
+    "completed": "Complete",
+    "pending": "En attente",
+    "assignedOn": "Assigne le",
+    "dueDate": "Date limite",
+    "completedOn": "Complete le",
+    "startQuiz": "Commencer le quiz",
+    "viewResults": "Voir les resultats",
+    "quizNotFound": "Quiz introuvable.",
+    "question": "Question",
+    "of": "sur",
+    "rate": "Noter",
+    "never": "Jamais",
+    "sometimes": "Parfois",
+    "always": "Toujours",
+    "enterYourAnswer": "Entrez votre reponse",
+    "previous": "Precedent",
+    "answered": "repondues",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "results": "Resultats",
+    "completionMessage": "Quiz complete avec succes.",
+    "yourAnswers": "Vos reponses",
+    "yourAnswer": "Votre reponse",
+    "backToList": "Retour a la liste"
   }
 }

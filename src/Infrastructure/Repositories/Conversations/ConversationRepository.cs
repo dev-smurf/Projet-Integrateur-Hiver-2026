@@ -64,6 +64,7 @@ public class ConversationRepository : IConversationRepository
     {
         return await _context.Messages
             .Include(m => m.Expediteur)
+            .Include(m => m.Appointment)
             .Where(m => m.ConversationId == conversationId && m.Deleted == null)
             .OrderByDescending(m => m.Date)
             .Skip(page * pageSize)
@@ -97,6 +98,7 @@ public class ConversationRepository : IConversationRepository
     public async Task<int> GetUnreadCountAsync(Guid userId)
     {
         return await _context.Messages
+            .AsNoTracking()
             .Where(m => m.ReceveurId == userId && m.ReadAt == null && m.Deleted == null)
             .CountAsync();
     }

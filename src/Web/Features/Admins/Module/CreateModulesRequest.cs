@@ -3,23 +3,16 @@ using Web.Features.Common;
 
 public class CreateModulesRequest : ISanitizable
 {
-    public string? NameFr { get; set; }
-    public string? NameEn { get; set; }
-    public string? ContenueFr { get; set; }
-    public string? ContenueEn { get; set; }
-    public string? SujetFr { get; set; }
-    public string? SujetEn { get; set; }
+    public string? Name { get; set; }
+    public string? Content { get; set; }
+    public string? Subject { get; set; }
 
     public IFormFile? CardImage { get; set; }
 
     public void Sanitize()
     {
-        NameFr = NameFr?.Trim();
-        NameEn = NameEn?.Trim();
-        ContenueFr = ContenueFr?.Trim();
-        ContenueEn = ContenueEn?.Trim();
-        SujetFr = SujetFr?.Trim();
-        SujetEn = SujetEn?.Trim();
+        Name = Name?.Trim();
+        Content = Content?.Trim();
+        Subject = Subject?.Trim();
     }
 }
-
