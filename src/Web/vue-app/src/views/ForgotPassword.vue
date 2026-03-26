@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-brand-900 mb-1">{{ ('routes.forgotPassword.name') }}</h1>
-    <p class="text-gray-500 text-sm mb-6">{{ ('pages.forgotPassword.tooltip') }}</p>
+    <h1 class="text-2xl font-bold text-brand-900 mb-1">{{ $t('routes.forgotPassword.name') }}</h1>
+    <p class="text-gray-500 text-sm mb-6">{{ $t('pages.forgotPassword.tooltip') }}</p>
 
     <div v-if="successMessage" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
       <p class="text-sm text-green-700">{{ successMessage }}</p>
@@ -13,7 +13,7 @@
 
     <form @submit.prevent="handleForgotPassword" class="space-y-4">
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ ('global.username') }}</label>
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.username') }}</label>
         <input
           id="username"
           v-model="username"
@@ -29,12 +29,12 @@
         class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span v-if="loading"><Loader2 class="w-4 h-4 animate-spin mx-auto" /></span>
-        <span v-else>{{ ('global.submit') }}</span>
+        <span v-else>{{ $t('global.submit') }}</span>
       </button>
     </form>
 
     <router-link :to="{ name: 'login' }" class="block text-center text-sm text-brand-600 hover:text-brand-700 mt-4">
-      {{ ('global.back') }}
+      {{ $t('global.back') }}
     </router-link>
   </div>
 </template>

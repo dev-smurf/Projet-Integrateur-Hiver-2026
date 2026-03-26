@@ -3,8 +3,10 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Entities.Books;
 using Domain.Entities.Identity;
+using Domain.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Web.Dtos;
+using Web.Features.Admins.Quiz.GetQuiz;
 using Web.Features.Members.Books;
 using GetMeMemberResponse = Web.Features.Members.Me.GetMe.GetMeResponse;
 using GetMeAdminResponse = Web.Features.Admins.Me.GetMe.GetMeResponse;
@@ -44,5 +46,10 @@ public class ResponseMappingProfile : Profile
             .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.User.RoleNames))
             .ForMember(x => x.PhoneNumber, opt => opt.MapFrom(x => x.PhoneNumber!.Number))
             .ForMember(x => x.PhoneExtension, opt => opt.MapFrom(x => x.PhoneNumber!.Extension));
+
+        CreateMap<Quiz, QuizDto>();
+        CreateMap<QuizQuestion, QuizQuestionDto>()
+            .ForMember(x => x.QuestionTypeDisplay, opt => opt.MapFrom(x => x.QuestionType.GetDisplayName()));
+        CreateMap<QuizQuestionResponse, QuizResponseColumnDto>();
     }
 }

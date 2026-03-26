@@ -36,7 +36,12 @@ public class MemberRepository : IMemberRepository
         }
 
         var totalItems = query.Count();
-        var pageItems = query.OrderByDescending(x => x.Created).Skip((pageIndex-1) * pageSize).Take(pageSize).ToList();
+        var pageItems = query
+            .OrderByDescending(x => x.Created)
+            .Skip((Math.Max(1, pageIndex) - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
         return new PaginatedList<Member>(pageItems, totalItems);
     }
 

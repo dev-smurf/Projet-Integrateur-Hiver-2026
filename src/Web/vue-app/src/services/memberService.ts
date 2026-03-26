@@ -27,7 +27,7 @@ export class MemberService extends ApiService implements IMemberService {
         .get<any, AxiosResponse<PaginatedResponse<Member>>>(
             `${import.meta.env.VITE_API_BASE_URL}/members?pageIndex=${pageIndex}&pageSize=${pageSize}&searchValue=${searchValue}`)
         .catch(function (error: AxiosError): AxiosResponse<PaginatedResponse<Member>> | undefined {
-          return error.response
+        return error.response as AxiosResponse<PaginatedResponse<Member>> | undefined
         })
     if (!response) return { items: [], totalCount: 0 } as unknown as PaginatedResponse<Member>
     return response.data as PaginatedResponse<Member>
@@ -48,6 +48,18 @@ export class MemberService extends ApiService implements IMemberService {
       ._httpClient
       .get<MemberModuleDto[], AxiosResponse<MemberModuleDto[]>>(
         `${import.meta.env.VITE_API_BASE_URL}/members/${memberId}/modules`)
+      .catch(function (error: AxiosError): AxiosResponse<MemberModuleDto[]> {
+        return error.response as AxiosResponse<MemberModuleDto[]>
+      })
+
+    return response?.data ?? []
+  }
+
+  public async getMyModules(): Promise<MemberModuleDto[]> {
+    const response = await this
+      ._httpClient
+      .get<MemberModuleDto[], AxiosResponse<MemberModuleDto[]>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/modules`)
       .catch(function (error: AxiosError): AxiosResponse<MemberModuleDto[]> {
         return error.response as AxiosResponse<MemberModuleDto[]>
       })

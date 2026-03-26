@@ -56,6 +56,9 @@ builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEquipeRepository, EquipeRepository>();
 builder.Services.AddScoped<IEquipeService, EquipeService>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IQuizRepository, Infrastructure.Repositories.Quiz.QuizRepository>();
+builder.Services.AddScoped<IQuizAssignmentRepository, Infrastructure.Repositories.Quiz.QuizAssignmentRepository>();
+builder.Services.AddScoped<IUserQuizResponseRepository, Infrastructure.Repositories.Quiz.UserQuizResponseRepository>();
 
 /*builder.Services.AddCors(options =>
 {
@@ -120,9 +123,19 @@ app.UseExceptionHandler(c => c.Run(async context =>
     await context.Response.WriteAsJsonAsync(responseBody);
 }));
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        if (context.File.Name.EndsWith(".js") || context.File.Name.EndsWith(".css"))
+        {
+            context.Context.Response.Headers.CacheControl = "public, max-age=3600";
+        }
+    }
+});
 app.UseRouting();
 app.UseCors(corsPolicyBuilder => corsPolicyBuilder
+    .WithOrigins("http://localhost:8080", "https://localhost:8080", "https://localhost:7101")
     .WithOrigins("http://localhost:8080", "https://localhost:8080", "https://localhost:7101")
     .AllowAnyHeader()
     .AllowAnyMethod()
