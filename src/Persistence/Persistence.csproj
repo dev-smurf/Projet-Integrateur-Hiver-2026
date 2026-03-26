@@ -30,9 +30,4 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Migrations\20230215155530_AddContactAndMemberTablesAndRegularIndividualRegularSyndicateAndCorporateOrganizationTables.cs" />
-      <Compile Remove="Migrations\20230215155530_AddContactAndMemberTablesAndRegularIndividualRegularSyndicateAndCorporateOrganizationTables.Designer.cs" />
-    </ItemGroup>
-
 </Project>
