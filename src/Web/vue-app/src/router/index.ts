@@ -8,6 +8,7 @@ import ForgotPassword from "@/views/ForgotPassword.vue";
 import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
+import MemberDashboard from "@/views/member/MemberDashboard.vue";
 
 import Admin from "../views/admin/Admin.vue";
 import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
@@ -22,6 +23,7 @@ import Books from "../views/member/Books.vue";
 import BookIndex from "@/views/member/BookIndex.vue";
 import AddBookForm from "@/views/member/AddBookForm.vue";
 import EditBookForm from "@/views/member/EditBookForm.vue";
+import Equipe from "@/views/member/Equipe.vue";
 
 import AdminEquipeList from "@/views/admin/equipe/EquipesListe.vue";
 import AdminAddEquipeForm from "@/views/admin/equipe/AdminAddEquipeForm.vue";
@@ -76,20 +78,50 @@ const router = createRouter({
       path: i18n.t("routes.dashboard.path"),
       alias: getLocalizedRoutes("routes.dashboard.path"),
       name: "dashboard",
-      component: Dashboard,
+      component: MemberDashboard,
       meta: {
         title: "routes.dashboard.name",
+        requiredRole: Role.Member
+      }
       },
-    },
+    {
+      path: i18n.t("routes.adminDashboard.path"),
+      alias: getLocalizedRoutes("routes.adminDashboard.path"),
+      name: "adminDashboard",
+      component: Dashboard,
+      meta: {
+        title: "routes.adminDashboard.name",
+        requiredRole: Role.Admin
+      }
+      },
+      {
+          path: i18n.t("routes.equipe.path"),
+          alias: getLocalizedRoutes("routes.equipe.path"),
+          name: "equipe",
+          component: Equipe,
+          meta: {
+              title: "routes.equipe.name",
+              requiredRole: Role.Member
+          }
+      },
     {
       path: i18n.t("routes.account.path"),
       alias: getLocalizedRoutes("routes.account.path"),
       name: "account",
       component: Account,
       meta: {
-        title: "routes.account.name",
+        title: "routes.account.name"
+      }
       },
-    },
+      {
+          path: i18n.t("routes.quiz.path"),
+          alias: getLocalizedRoutes("routes.quiz.path"),
+          name: "quiz",
+          component: Account,
+          meta: {
+              title: "routes.quiz.name"
+          }
+      },
     {
       path: i18n.t("routes.admin.path"),
       name: "admin",
@@ -191,15 +223,7 @@ const router = createRouter({
             title: "routes.books.name",
           },
         },
-        {
-          path: i18n.t("routes.books.children.add.path"),
-          alias: getLocalizedRoutes("routes.books.children.add.path"),
-          name: "books.children.add",
-          component: AddBookForm,
-          meta: {
-            title: "routes.books.children.add.name",
-          },
-        },
+
         {
           path: i18n.t("routes.books.children.edit.path"),
           alias: getLocalizedRoutes("routes.books.children.edit.path"),
@@ -222,12 +246,17 @@ router.beforeEach(async (to, from) => {
 
   // Handle root path redirect
   if (to.path === "/") {
-    return isAuthenticated ? { name: "dashboard" } : { name: "login" };
+    if (!isAuthenticated) return { name: "login" };
+    return userStore.hasRole(Role.Admin)
+      ? { name: "adminDashboard" }
+      : { name: "dashboard" };
   }
 
   // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
   if (to.meta.guest && isAuthenticated) {
-    return { name: "dashboard" };
+    return userStore.hasRole(Role.Admin)
+      ? { name: "adminDashboard" }
+      : { name: "dashboard" };
   }
 
   // Non-authenticated users cannot access protected pages
@@ -245,9 +274,10 @@ router.beforeEach(async (to, from) => {
     isRoleArray &&
     !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
-    return {
-      name: "dashboard",
-    };
+    if (userStore.hasRole(Role.Admin)) {
+      return { name: "adminDashboard" };
+    }
+    return { name: "dashboard" };
   }
 });
 

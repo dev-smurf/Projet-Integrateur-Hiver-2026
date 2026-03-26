@@ -54,6 +54,7 @@ import {useRouter} from "vue-router";
 import {useAuthenticationService, useUserService} from "@/inversify.config";
 import {useUserStore} from "@/stores/userStore";
 import {Loader2} from "lucide-vue-next";
+import {Role} from "@/types/enums";
 
 const router = useRouter();
 const authService = useAuthenticationService();

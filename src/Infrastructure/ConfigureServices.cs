@@ -10,6 +10,7 @@ using Infrastructure.Mailing;
 using Infrastructure.Repositories.Admins;
 using Infrastructure.Repositories.Authentication;
 using Infrastructure.Repositories.Books;
+using Infrastructure.Repositories.Conversations;
 using Infrastructure.Repositories.Members;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services;
@@ -63,6 +64,7 @@ public static class ConfigureServices
 
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
