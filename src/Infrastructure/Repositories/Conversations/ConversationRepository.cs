@@ -98,6 +98,7 @@ public class ConversationRepository : IConversationRepository
     public async Task<int> GetUnreadCountAsync(Guid userId)
     {
         return await _context.Messages
+            .AsNoTracking()
             .Where(m => m.ReceveurId == userId && m.ReadAt == null && m.Deleted == null)
             .CountAsync();
     }

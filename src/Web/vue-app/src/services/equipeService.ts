@@ -6,8 +6,45 @@ import { ICreateEquipeRequest } from "@/types";
 import { Equipe } from "@/types/entities";
 import { IEditEquipeRequest } from "@/types/requests/IEditEquipeRequest";
 
+export interface MyEquipeResponse {
+  id?: string;
+  nameFr?: string;
+  nameEn?: string;
+  members: MyEquipeMember[];
+  modules: MyEquipeModule[];
+}
+
+export interface MyEquipeMember {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface MyEquipeModule {
+  moduleId: string;
+  nameFr?: string;
+  nameEn?: string;
+  sujetFr?: string;
+  sujetEn?: string;
+  cardImageUrl?: string;
+  progressPercent: number;
+  isCompleted: boolean;
+}
+
 @injectable()
 export class EquipeService extends ApiService implements IEquipesService {
+  public async getMyEquipe(): Promise<MyEquipeResponse | null> {
+    try {
+      const response = await this._httpClient.get<MyEquipeResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/equipe`,
+      );
+      return response.data ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   /**
    * Récupère tous les équipes
    */
@@ -58,7 +95,6 @@ export class EquipeService extends ApiService implements IEquipesService {
         const num = Number(id);
         if (!isNaN(num)) {
           if (num > 0 && num <= list.length) return list[num - 1];
-
           if (num >= 0 && num < list.length) return list[num];
         }
         return null;
@@ -126,7 +162,7 @@ export class EquipeService extends ApiService implements IEquipesService {
       );
     } catch (error: any) {
       const message = error.response?.data?.errors || [
-        "Impossible de modifier le module.",
+        "Impossible de modifier l'équipe.",
       ];
       return new SucceededOrNotResponse(
         false,
@@ -153,7 +189,6 @@ export class EquipeService extends ApiService implements IEquipesService {
           : [];
       return new SucceededOrNotResponse(succeeded, errors);
     } catch (error: any) {
-      console.error("[ModuleService] Error during deleteModule:", error);
       const message = error.response?.data?.errors || [
         "Impossible de supprimer l'équipe.",
       ];

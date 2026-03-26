@@ -56,6 +56,11 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<Appointment> Appointments { get; set; } = null!;
     public DbSet<AdminAvailability> AdminAvailabilities { get; set; } = null!;
     public DbSet<AdminAvailabilityOverride> AdminAvailabilityOverrides { get; set; } = null!;
+    public DbSet<Quiz> Quizz { get; set; } = null!;
+    public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
+    public DbSet<QuizQuestionResponse> QuizQuestionResponses { get; set; } = null!;
+    public DbSet<UserQuizResponse> UserQuizResponses { get; set; } = null!;
+    public DbSet<QuizAssignment> QuizAssignments { get; set; } = null!;
 
     public GarneauTemplateDbContext()
     {

@@ -85,6 +85,7 @@ public class GarneauTemplateDbContextInitializer
             await SeedMembers();
             await SeedTestMember();
             await SeedModules();
+            await SeedQuizzes();
         }
         catch (Exception ex)
         {
@@ -250,5 +251,76 @@ public class GarneauTemplateDbContextInitializer
         _context.Modules.AddRange(modules);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Seeded {Count} modules", modules.Length);
+    }
+
+    private async Task SeedQuizzes()
+    {
+        if (_context.Quizz.Any())
+            return;
+
+        // Create sample quizzes with questions and responses
+        var quizzes = new[]
+        {
+            new Quiz
+            {
+                Titre = "Tester vos habitudes",
+                Description = "Un questionnaire sur les habitudes de travail et performance",
+                ImageUrl = "https://via.placeholder.com/300x200?text=Habitudes"
+            }
+        };
+
+        _context.Quizz.AddRange(quizzes);
+        await _context.SaveChangesAsync();
+
+        // Get the created quiz
+        var quiz = _context.Quizz.First();
+
+        // Create questions
+        var questions = new[]
+        {
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je me parle positivement.", Order = 1, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Une mauvaise performance ne me déprime jamais.", Order = 2, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je continue à travailler même lorsque je suis physiquement fatigué.", Order = 3, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "J'ai hâte d'aller m'entraîner tous les jours.", Order = 4, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je gère bien l'anxiété et la pression.", Order = 5, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je m'imagine performer parfaitement.", Order = 6, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je bloque les distractions pour pouvoir me concentrer.", Order = 7, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je gère bien la frustration dans la pratique.", Order = 8, QuestionType = QuizQuestionType.Scale1To10 },
+            new QuizQuestion { QuizId = quiz.Id, QuestionText = "Je travaille quotidiennement avec mes objectifs.", Order = 9, QuestionType = QuizQuestionType.Scale1To10 }
+        };
+
+        _context.QuizQuestions.AddRange(questions);
+        await _context.SaveChangesAsync();
+
+        // Create response columns (Jamais, Parfois, Toujours) for each question
+        var allQuestions = _context.QuizQuestions.Where(q => q.QuizId == quiz.Id).ToList();
+        var responses = new List<QuizQuestionResponse>();
+
+        foreach (var question in allQuestions)
+        {
+            responses.Add(new QuizQuestionResponse 
+            { 
+                QuizQuestionId = question.Id, 
+                ResponseText = "Jamais", 
+                Order = 0 
+            });
+            responses.Add(new QuizQuestionResponse 
+            { 
+                QuizQuestionId = question.Id, 
+                ResponseText = "Parfois", 
+                Order = 1 
+            });
+            responses.Add(new QuizQuestionResponse 
+            { 
+                QuizQuestionId = question.Id, 
+                ResponseText = "Toujours", 
+                Order = 2 
+            });
+        }
+
+        _context.QuizQuestionResponses.AddRange(responses);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Seeded {Count} quizzes with {QCount} questions", quizzes.Length, allQuestions.Count);
     }
 }
