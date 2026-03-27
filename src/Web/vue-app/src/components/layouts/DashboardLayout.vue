@@ -1,55 +1,4 @@
-
 <template>
-<<<<<<< HEAD
-  <div class="min-h-screen bg-gray-100">
-    <nav class="bg-brand-900 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="flex items-center justify-between h-14">
-          <!-- Left: nav links -->
-          <div class="flex items-center gap-1">
-            <router-link
-              :to="{ name: 'dashboard' }"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
-              :class="isActive('dashboard') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-            >
-              <LayoutDashboard class="w-4 h-4" />
-              {{ $t('routes.dashboard.name') }}
-            </router-link>
-            <router-link
-              v-if="userStore.hasRole(Role.Member)"
-              :to="{ name: 'member.modules.index' }"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
-              :class="isActive('member.modules') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-            >
-              <BookOpen class="w-4 h-4" />
-              Mes modules
-            </router-link>
-          </div>
-
-          <!-- Right: language -->
-          <div class="flex items-center gap-3">
-            <div class="relative">
-              <button
-                @click="langOpen = !langOpen"
-                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
-              >
-                <Languages class="w-4 h-4" />
-              </button>
-              <div
-                v-if="langOpen"
-                class="absolute right-0 top-full mt-2 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
-              >
-                <button
-                  v-for="loc in LOCALES"
-                  :key="loc.value"
-                  @click="switchLanguage(loc.value)"
-                  class="w-full text-left px-3 py-2 text-sm transition"
-                  :class="currentLocale === loc.value ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                >
-                  {{ loc.caption }}
-                </button>
-              </div>
-=======
     <div class="min-h-screen bg-gray-100">
         <Transition enter-active-class="transition-opacity duration-200"
                     enter-from-class="opacity-0"
@@ -69,18 +18,11 @@
                 </div>
                 <div class="leading-tight">
                     <span class="text-white font-semibold text-sm tracking-wide">Garneau</span>
-                    <span class="block text-gray-500 text-[11px]">Plateforme intégrée</span>
+                    <span class="block text-gray-500 text-[11px]">Plateforme intÃ©grÃ©e</span>
                 </div>
->>>>>>> cf4ccc20d0b268aa44cdbb23c0a29f02e25bd51a
             </div>
-          </div>
-        </div>
-      </div>
-    </nav>
 
-    <div class="flex min-h-[calc(100vh-3.5rem)]">
-        <aside class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-60 lg:bg-brand-900">
-            <div class="h-14"></div>
+            <!-- Navigation -->
             <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
                 <div v-if="userStore.hasRole(Role.Member)">
                     <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
@@ -238,32 +180,31 @@
         </div>
     </div>
 
-        <!-- Notifications -->
-        <notifications position="bottom right" :duration="4000" :speed="300" width="360">
-            <template #body="{ item, close }">
-                <div class="mb-3 mr-3 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
-                     :class="item.type === 'success' ? 'bg-white border border-green-200' : 'bg-white border border-red-200'">
-                    <div class="flex items-start gap-3 px-4 py-3">
-                        <div class="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                             :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
-                            <CheckCircle2 v-if="item.type === 'success'" class="w-3.5 h-3.5" />
-                            <XCircle v-else class="w-3.5 h-3.5" />
-                        </div>
-                        <p class="text-sm text-gray-700 flex-1 leading-snug">{{ item.text }}</p>
-                        <button @click="close" class="text-gray-300 hover:text-gray-500 transition shrink-0 mt-0.5">
-                            <X class="w-3.5 h-3.5" />
-                        </button>
+    <!-- Notifications -->
+    <notifications position="bottom right" :duration="4000" :speed="300" width="360">
+        <template #body="{ item, close }">
+            <div class="mb-3 mr-3 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
+                 :class="item.type === 'success' ? 'bg-white border border-green-200' : 'bg-white border border-red-200'">
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <div class="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                         :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
+                        <CheckCircle2 v-if="item.type === 'success'" class="w-3.5 h-3.5" />
+                        <XCircle v-else class="w-3.5 h-3.5" />
                     </div>
-                    <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
-                        <div class="h-full toast-progress"
-                             :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'" />
-                    </div>
+                    <p class="text-sm text-gray-700 flex-1 leading-snug">{{ item.text }}</p>
+                    <button @click="close" class="text-gray-300 hover:text-gray-500 transition shrink-0 mt-0.5">
+                        <X class="w-3.5 h-3.5" />
+                    </button>
                 </div>
-            </template>
-        </notifications>
+                <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
+                    <div class="h-full toast-progress"
+                         :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'" />
+                </div>
+            </div>
+        </template>
+    </notifications>
 
-        <ChatBubble />
-    </div>
+    <ChatBubble />
 </template>
 
 <script lang="ts" setup>
@@ -345,7 +286,7 @@
                 if (member) personStore.setPerson(member);
             }
         } catch {
-            // API failed — personStore already has persisted data from login
+            // API failed â€” personStore already has persisted data from login
         }
 
         // Initialize chat
@@ -354,7 +295,7 @@
             const unreadCount = await conversationService.getUnreadCount();
             chatStore.setUnreadCount(unreadCount);
         } catch {
-            // Chat unavailable — non-blocking
+            // Chat unavailable â€” non-blocking
         }
     });
 

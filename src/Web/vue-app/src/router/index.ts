@@ -258,7 +258,7 @@ export function getRouter(): Router {
             },
             {
                 path: "/mes-modules",
-                component: Books,
+                component: { template: "<router-view />" },
                 meta: {
                     requiredRole: Role.Member,
                     title: "Mes modules",
@@ -271,6 +271,7 @@ export function getRouter(): Router {
                     },
                     {
                         path: ":moduleId",
+                        name: "member.modules.view",
                         component: MemberModuleView,
                         props: true,
                     },
@@ -354,53 +355,4 @@ export function getRouter(): Router {
     return routerInstance;
 }
 
-    export type { Router };
-
-<<<<<<< HEAD
-  routerInstance.beforeEach(async to => {
-    const userStore = useUserStore();
-    const isAuthenticated = !!userStore.user.email;
-
-    // Handle root path redirect
-    if (to.path === "/") {
-      if (!isAuthenticated) return { name: "login" };
-      return userStore.hasRole(Role.Admin)
-        ? { name: "adminDashboard" }
-        : { name: "dashboard" };
-    }
-
-    // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
-    if (to.meta.guest && isAuthenticated) {
-      return userStore.hasRole(Role.Admin)
-        ? { name: "adminDashboard" }
-        : { name: "dashboard" };
-    }
-
-    if (!to.meta.guest && !isAuthenticated) {
-      return { name: "login" };
-    }
-
-    if (!to.meta.requiredRole) {
-      return;
-    }
-
-    const isRoleArray = Array.isArray(to.meta.requiredRole);
-    const doesNotHaveGivenRole =
-      !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
-    const hasNoRoleAmongRoleList =
-      isRoleArray &&
-      !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
-    if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
-      if (userStore.hasRole(Role.Admin)) {
-        return { name: "adminDashboard" };
-      }
-      return { name: "dashboard" };
-    }
-  });
-
-  return routerInstance;
-}
-
 export type { Router };
-=======
->>>>>>> cf4ccc20d0b268aa44cdbb23c0a29f02e25bd51a
