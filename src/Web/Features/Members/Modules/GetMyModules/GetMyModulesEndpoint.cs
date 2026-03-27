@@ -34,12 +34,15 @@ public class GetMyModulesEndpoint : EndpointWithoutRequest<List<MemberModuleDto>
         var response = memberModules.Select(mm => new MemberModuleDto
         {
             ModuleId = mm.ModuleId.ToString(),
+<<<<<<< HEAD
             Name = mm.Module.Name,
             Subject = mm.Module.Subject,
             NameFr = mm.Module.Name,
             NameEn = mm.Module.Name,
             SujetFr = mm.Module.Subject,
             SujetEn = mm.Module.Subject,
+=======
+>>>>>>> cf4ccc20d0b268aa44cdbb23c0a29f02e25bd51a
             CardImageUrl = mm.Module.CardImageUrl,
             ProgressPercent = mm.ProgressPercent,
             IsCompleted = mm.IsCompleted

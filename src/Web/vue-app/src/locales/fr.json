@@ -45,42 +45,6 @@
       "fullPath": "/quiz",
       "name": "Quiz"
     },
-    "memberDashboard": {
-      "welcomeLabel": "Bienvenue",
-      "defaultName": "Membre",
-      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
-      "viewBooks": "Mes livres",
-      "updateProfile": "Mon profil",
-      "modulesTitle": "Modules ajoutes",
-      "modulesCount": "modules",
-      "emptyModules": "Aucun module pour le moment.",
-      "progressTitle": "Progression globale",
-      "progressHint": "La progression est calculee selon vos modules.",
-      "progressLabel": "Progression",
-      "lastUpdate": "Derniere mise a jour",
-      "continue": "Continuer",
-      "manageProfile": "Gerer mon profil",
-      "profileTitle": "Profil du membre",
-      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
-      "unnamedModule": "Module sans titre",
-      "noSubject": "Aucun sujet disponible",
-      "stats": {
-        "modules": "Modules",
-        "modulesHint": "Modules assignes",
-        "completed": "Termines",
-        "completedHint": "Modules termines",
-        "average": "Moyenne",
-        "averageHint": "Progression moyenne",
-        "next": "Prochain module",
-        "nextHint": "Etape suivante suggeree",
-        "nextEmpty": "Aucun module disponible"
-      },
-      "status": {
-        "notStarted": "Non commence",
-        "inProgress": "En cours",
-        "completed": "Termine"
-      }
-    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",
@@ -123,7 +87,7 @@
           "details": {
             "path": ":id/details",
             "fullPath": "/administration/membres/:id/details",
-            "name": "Details membre"
+            "name": "Détails membre"
           }
         },
         "modules": {
@@ -149,17 +113,16 @@
         "equipes": {
           "path": "equipes",
           "fullPath": "/administration/equipes",
-          "name": "Equipes",
-
+          "name": "Équipes",
           "add": {
             "path": "ajouter",
             "fullPath": "/administration/equipes/ajouter",
-            "name": "Ajouter une equipe"
+            "name": "Ajouter une équipe"
           },
           "edit": {
             "path": ":id/modifier",
             "fullPath": "/administration/equipes/:id/modifier",
-            "name": "Modifier une equipe"
+            "name": "Modifier une équipe"
           }
         }
       }
@@ -256,6 +219,85 @@
         "moduleFallback": "Module"
       }
     },
+    "memberDashboard": {
+      "welcomeLabel": "Bienvenue",
+      "defaultName": "Membre",
+      "tagline": "Suivez vos modules, votre progression et les prochaines étapes.",
+      "viewBooks": "Mes livres",
+      "updateProfile": "Mon profil",
+      "modulesTitle": "Modules ajoutés",
+      "modulesCount": "modules",
+      "emptyModules": "Aucun module pour le moment.",
+      "progressTitle": "Progression globale",
+      "progressHint": "La progression est calculée selon vos modules.",
+      "progressLabel": "Progression",
+      "lastUpdate": "Dernière mise à jour",
+      "continue": "Continuer",
+      "manageProfile": "Gérer mon profil",
+      "profileTitle": "Profil du membre",
+      "profileHint": "Mettez à jour vos informations pour compléter votre profil.",
+      "unnamedModule": "Module sans titre",
+      "noSubject": "Aucun sujet disponible",
+      "stats": {
+        "modules": "Modules",
+        "modulesHint": "Modules assignés",
+        "completed": "Terminés",
+        "completedHint": "Modules terminés",
+        "average": "Moyenne",
+        "averageHint": "Progression moyenne",
+        "next": "Prochain module",
+        "nextHint": "Étape suivante suggérée",
+        "nextEmpty": "Aucun module disponible"
+      },
+      "status": {
+        "notStarted": "Non commencé",
+        "inProgress": "En cours",
+        "completed": "Terminé"
+      }
+    },
+    "equipe": {
+      "myEquipe": "Mon équipe",
+      "noEquipe": "Vous ne faites partie d'aucune équipe",
+      "noEquipeHint": "Contactez votre administrateur pour être assigné à une équipe.",
+      "membersCount": "{count} membre(s)",
+      "modulesCount": "{count} module(s)",
+      "stats": {
+        "members": "Membres",
+        "modules": "Modules assignés",
+        "progress": "Progression moyenne"
+      },
+      "modulesTitle": "Modules de l'équipe",
+      "membersTitle": "Membres de l'équipe",
+      "noModules": "Aucun module assigné pour le moment.",
+      "unnamedModule": "Module sans titre",
+      "progress": "Progression",
+      "status": {
+        "completed": "Terminé",
+        "inProgress": "En cours",
+        "notStarted": "Non commencé"
+      }
+    },
+    "equipes": {
+      "create": {
+        "validation": {
+          "successMessage": "L'équipe a été créée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la création de l'équipe."
+        }
+      },
+      "update": {
+        "validation": {
+          "successMessage": "L'équipe a été modifiée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la modification de l'équipe."
+        }
+      },
+      "delete": {
+        "confirmation": "Êtes-vous sûr de vouloir supprimer cette équipe ?",
+        "validation": {
+          "successMessage": "L'équipe a été supprimée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la suppression de l'équipe."
+        }
+      }
+    },
     "account": {
       "personalInfo": "Informations personnelles",
       "contactInfo": "Coordonnées",
@@ -291,7 +333,7 @@
     "forgotPassword": {
       "tooltip": "Si le nom d'utilisateur est valide, un email sera envoyé à l'adresse indiquée avec un lien pour réinitialiser votre mot de passe",
       "validation": {
-        "success": "Courriel de réinitalisation du mot de passe envoyé.",
+        "success": "Courriel de réinitialisation du mot de passe envoyé.",
         "invalidUsername": "Le nom d'utilisateur est invalide.",
         "invalidResetPasswordRelativeUrl": "L'URL de réinitialisation du mot de passe est introuvable.",
         "errorOccured": "Une erreur est survenue lors de l'envoi du courriel de réinitialisation du mot de passe."
@@ -299,9 +341,9 @@
     },
     "resetPassword": {
       "validation": {
-        "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
+        "success": "Mot de passe réinitialisé avec succès. Vous serez redirigé à la page de connexion.",
         "invalidUserId": "L'identifiant de l'utilisateur est invalide.",
-        "invalidToken": "Le token de réinitalisation du mot de passe est invalide.",
+        "invalidToken": "Le token de réinitialisation du mot de passe est invalide.",
         "invalidPassword": "Le mot de passe est invalide.",
         "invalidPasswordConfirmation": "La confirmation du mot de passe est invalide.",
         "passwordTooShort": "Doit contenir au moins 8 caractères.",
@@ -334,7 +376,7 @@
           "invalidEnterpriseNumberFormat": "Le format du numéro d'entreprise est invalide.",
           "invalidProvincialTaxNumberFormat": "Le format du numéro de TVQ est invalide.",
           "invalidFederalTaxNumberFormat": "Le format du numéro de TPS est invalide.",
-          "memberNotFound": "Aucun membre avec le code de référence spécifié existe.",
+          "memberNotFoundException": "Aucun membre avec le code de référence spécifié existe.",
           "userWithEmailAlreadyExistsException": "Un utilisateur avec ce courriel existe déjà."
         }
       },
@@ -364,7 +406,7 @@
         }
       },
       "delete": {
-        "confirmation": "Êtes-vous sûr de vouloir supprimer ce membre?",
+        "confirmation": "Êtes-vous sûr de vouloir supprimer ce membre ?",
         "validation": {
           "successMessage": "Le membre a été supprimé avec succès.",
           "failedMessage": "Une erreur s'est produite lors de la suppression du membre.",
@@ -375,8 +417,8 @@
   },
   "products": {
     "form": {
-      "image-card-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 2:1)",
-      "image-page-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 5:4).",
+      "image-card-tooltip": "Format recommandé : largeur supérieure à 700px (ratio 2:1).",
+      "image-page-tooltip": "Format recommandé : largeur supérieure à 700px (ratio 5:4).",
       "image-card": "Image - Carte",
       "image-page": "Image - Page",
       "image-text-fr": "Bandeau sur l'image - FR",
@@ -466,7 +508,7 @@
     "createFirst": "Créer le premier quiz",
     "table": {
       "of": "de",
-      "noData": "Aucune données disponibles",
+      "noData": "Aucune donnée disponible",
       "actions": "Actions"
     },
     "actions": {
@@ -485,12 +527,12 @@
   },
   "validation": {
     "empty": "Veuillez renseigner ce champ.",
-    "email": "Veuillez entrer un adresse courriel valide.",
+    "email": "Veuillez entrer une adresse courriel valide.",
     "min": "La valeur doit être d'au moins {min}.",
     "max": "La valeur doit être plus petite ou égale à {max}.",
-    "fileMin": "Un minimum de {min} fichier{s} est requis.",
-    "fileMax": "Un maximum de {max} fichier{s} est permis.",
-    "fileType": "Les types de fichier permis sont: {type}",
+    "fileMin": "Un minimum de {min} fichier(s) est requis.",
+    "fileMax": "Un maximum de {max} fichier(s) est permis.",
+    "fileType": "Les types de fichier permis sont : {type}",
     "checked": "Veuillez cocher cette case.",
     "select": "Veuillez sélectionner une option.",
     "zipCode": "Le code postal doit respecter le format X0X X0X.",
@@ -617,7 +659,7 @@
     "newConversation": "Nouvelle conversation",
     "searchMember": "Rechercher un membre...",
     "noConversations": "Aucune conversation",
-    "noMessages": "Aucun message. Dites bonjour!",
+    "noMessages": "Aucun message. Dites bonjour !",
     "typePlaceholder": "Écrire un message...",
     "today": "Aujourd'hui",
     "yesterday": "Hier",
