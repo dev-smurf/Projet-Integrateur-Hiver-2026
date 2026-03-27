@@ -258,7 +258,7 @@ export function getRouter(): Router {
             },
             {
                 path: "/mes-modules",
-                component: Books,
+                component: { template: "<router-view />" },
                 meta: {
                     requiredRole: Role.Member,
                     title: "Mes modules",
@@ -271,6 +271,7 @@ export function getRouter(): Router {
                     },
                     {
                         path: ":moduleId",
+                        name: "member.modules.view",
                         component: MemberModuleView,
                         props: true,
                     },
@@ -354,5 +355,4 @@ export function getRouter(): Router {
     return routerInstance;
 }
 
-    export type { Router };
-
+export type { Router };

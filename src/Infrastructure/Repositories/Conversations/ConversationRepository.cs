@@ -8,6 +8,7 @@ namespace Infrastructure.Repositories.Conversations;
 public class ConversationRepository : IConversationRepository
 {
     private readonly GarneauTemplateDbContext _context;
+    private bool? _messagesTableExists;
 
     public ConversationRepository(GarneauTemplateDbContext context)
     {
@@ -62,6 +63,9 @@ public class ConversationRepository : IConversationRepository
 
     public async Task<IEnumerable<Message>> GetMessagesAsync(Guid conversationId, int page, int pageSize)
     {
+        if (!await EnsureMessagesTableAsync())
+            return Enumerable.Empty<Message>();
+
         return await _context.Messages
             .Include(m => m.Expediteur)
             .Include(m => m.Appointment)
@@ -75,6 +79,9 @@ public class ConversationRepository : IConversationRepository
 
     public async Task<Message> AddMessageAsync(Message message)
     {
+        if (!await EnsureMessagesTableAsync())
+            throw new InvalidOperationException("Messages table is missing. Apply database migrations.");
+
         _context.Messages.Add(message);
         await _context.SaveChangesAsync();
         return message;
@@ -82,6 +89,9 @@ public class ConversationRepository : IConversationRepository
 
     public async Task MarkMessagesAsReadAsync(Guid conversationId, Guid userId)
     {
+        if (!await EnsureMessagesTableAsync())
+            return;
+
         var unreadMessages = await _context.Messages
             .Where(m => m.ConversationId == conversationId
                         && m.ReceveurId == userId
@@ -97,6 +107,9 @@ public class ConversationRepository : IConversationRepository
 
     public async Task<int> GetUnreadCountAsync(Guid userId)
     {
+        if (!await EnsureMessagesTableAsync())
+            return 0;
+
         return await _context.Messages
             .AsNoTracking()
             .Where(m => m.ReceveurId == userId && m.ReadAt == null && m.Deleted == null)
@@ -105,6 +118,9 @@ public class ConversationRepository : IConversationRepository
 
     public async Task<Dictionary<Guid, int>> GetUnreadCountsPerConversationAsync(Guid userId)
     {
+        if (!await EnsureMessagesTableAsync())
+            return new Dictionary<Guid, int>();
+
         return await _context.Messages
             .Where(m => m.ReceveurId == userId && m.ReadAt == null && m.Deleted == null)
             .GroupBy(m => m.ConversationId)
@@ -180,5 +196,24 @@ public class ConversationRepository : IConversationRepository
         _context.Conversations.Add(conversation);
         await _context.SaveChangesAsync();
         return conversation;
+    }
+
+    private async Task<bool> EnsureMessagesTableAsync()
+    {
+        if (_messagesTableExists.HasValue)
+            return _messagesTableExists.Value;
+
+        var connection = _context.Database.GetDbConnection();
+        var shouldClose = connection.State != System.Data.ConnectionState.Open;
+        if (shouldClose)
+            await connection.OpenAsync();
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Messages'";
+        var result = await command.ExecuteScalarAsync();
+        if (shouldClose)
+            await connection.CloseAsync();
+
+        _messagesTableExists = result != null && Convert.ToInt32(result) > 0;
+        return _messagesTableExists.Value;
     }
 }
