@@ -134,3 +134,14 @@ export interface IAppointmentService {
   createOverride(data: { date: string, startTime?: string, endTime?: string, isBlocked: boolean }): Promise<AvailabilityOverride>
   deleteOverride(id: string): Promise<void>
 }
+
+export interface IQuizService {
+  getAll(): Promise<any[]>
+  getById(id: string): Promise<any>
+  create(quiz: any): Promise<void>
+  update(quiz: any): Promise<void>
+  delete(id: string): Promise<void>
+  getAssignedQuizzes(): Promise<any[]>
+  submitResponse(response: any): Promise<any>
+  assignQuiz(quizId: string, userIds: string[], dueDate?: Date): Promise<void>
+}
