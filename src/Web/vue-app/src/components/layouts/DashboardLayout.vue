@@ -40,12 +40,12 @@
                             </router-link>
                         </li>
                         <li>
-                            <router-link :to="{ name: 'books' }"
+                            <router-link :to="{ name: 'quiz' }"
                                          class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
                                          :class="isActive('books') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
                                          @click="sidebarOpen = false">
                                 <BookOpen class="w-4 h-4" />
-                                {{ $t('routes.books.name') }}
+                                {{ $t('routes.quiz.name') }}
                             </router-link>
                         </li>
                         <li>
@@ -109,6 +109,24 @@
                                          @click="sidebarOpen = false">
                                 <UsersRound class="w-4 h-4" />
                                 {{ $t("routes.admin.children.equipes.name") }}
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{ name: 'admin.children.availability' }"
+                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                                         :class="isActive('admin.children.availability') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                         @click="sidebarOpen = false">
+                                <UsersRound class="w-4 h-4" />
+                                {{ $t('appointment.availability') }}
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{ name: 'admin.children.quiz.index' }"
+                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                                         :class="isActive('admin.children.quiz.index') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                                         @click="sidebarOpen = false">
+                                <UsersRound class="w-4 h-4" />
+                                {{ $t('routes.admin.children.members.quiz.name') }}
                             </router-link>
                         </li>
                     </ul>

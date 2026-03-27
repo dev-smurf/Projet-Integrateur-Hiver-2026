@@ -40,11 +40,6 @@
       "fullPath": "/progression",
       "name": "Progression"
     },
-    "quiz": {
-      "path": "/quiz",
-      "fullPath": "/quiz",
-      "name": "Quiz"
-    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",
