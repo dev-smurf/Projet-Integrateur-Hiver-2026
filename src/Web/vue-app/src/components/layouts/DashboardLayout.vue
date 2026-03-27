@@ -170,7 +170,10 @@
                     </button>
                 </router-link>
             </div>
-        </aside>
+          </div>
+        </div>
+      </div>
+    </nav>
 
         <!-- Main area -->
         <div class="flex-1 flex flex-col min-h-screen min-w-0 lg:ml-60">
