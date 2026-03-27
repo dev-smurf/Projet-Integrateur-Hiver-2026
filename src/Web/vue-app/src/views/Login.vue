@@ -54,6 +54,7 @@ import {useRouter} from "vue-router";
 import {useAuthenticationService, useUserService} from "@/inversify.config";
 import {useUserStore} from "@/stores/userStore";
 import {Loader2} from "lucide-vue-next";
+import {Role} from "@/types/enums";
 
 const router = useRouter();
 const authService = useAuthenticationService();
@@ -69,14 +70,27 @@ async function handleLogin() {
   loading.value = true;
   errors.value = [];
 
-  const response = await authService.login({username: username.value, password: password.value});
+  try {
+    const response = await authService.login({
+      username: username.value,
+      password: password.value
+    });
 
-  if (response.succeeded) {
-    userStore.setUsername(username.value);
-    userStore.setUser(await userService.getCurrentUser());
-    await router.push({name: "dashboard"});
-  } else {
-    errors.value = response.getErrorMessages("pages.login.validation");
+    if (response.succeeded) {
+      userStore.setUsername(username.value);
+      userStore.setUser(await userService.getCurrentUser());
+      await router.push({ name: "dashboard" });
+    } else {
+      const backendErrors = response.getErrorMessages("pages.login.validation");
+
+      if (backendErrors.length) {
+        errors.value = backendErrors;
+      } else {
+        errors.value = ["Identifiant ou mot de passe incorrect"];
+      }
+    }
+  } catch (error) {
+    errors.value = ["Impossible de se connecter au serveur. Réessaie plus tard."];
   }
 
   loading.value = false;

@@ -60,6 +60,7 @@ const equipesService = useEquipesService();
 
 const _equipe = ref<ICreateEquipeRequest>({
   nameFr: "",
+  nameEn: "",
 });
 
 const submitting = ref(false);
