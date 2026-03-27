@@ -99,10 +99,6 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<MyEquipeResponse>
             modules = memberModules.Select(mm => new EquipeModuleResponse
             {
                 ModuleId = mm.ModuleId.ToString(),
-                NameFr = mm.Module?.NameFr,
-                NameEn = mm.Module?.NameEn,
-                SujetFr = mm.Module?.SujetFr,
-                SujetEn = mm.Module?.SujetEn,
                 CardImageUrl = mm.Module?.CardImageUrl,
                 ProgressPercent = mm.ProgressPercent,
                 IsCompleted = mm.IsCompleted
