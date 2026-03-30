@@ -91,7 +91,28 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-await app.Services.InitializeAndSeedDatabase();
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+var shouldInitializeDatabase = app.Configuration.GetValue<bool?>("Database:InitializeOnStartup")
+    ?? app.Environment.IsDevelopment();
+
+if (shouldInitializeDatabase)
+{
+    try
+    {
+        await app.Services.InitializeAndSeedDatabase();
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex, "Database initialization failed during startup.");
+
+        if (app.Environment.IsDevelopment())
+            throw;
+    }
+}
+else
+{
+    startupLogger.LogInformation("Skipping database initialization during startup.");
+}
 
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
