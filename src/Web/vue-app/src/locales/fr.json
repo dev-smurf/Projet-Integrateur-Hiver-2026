@@ -40,47 +40,6 @@
       "fullPath": "/progression",
       "name": "Progression"
     },
-    "quiz": {
-      "path": "/quiz",
-      "fullPath": "/quiz",
-      "name": "Quiz"
-    },
-    "memberDashboard": {
-      "welcomeLabel": "Bienvenue",
-      "defaultName": "Membre",
-      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
-      "viewBooks": "Mes livres",
-      "updateProfile": "Mon profil",
-      "modulesTitle": "Modules ajoutes",
-      "modulesCount": "modules",
-      "emptyModules": "Aucun module pour le moment.",
-      "progressTitle": "Progression globale",
-      "progressHint": "La progression est calculee selon vos modules.",
-      "progressLabel": "Progression",
-      "lastUpdate": "Derniere mise a jour",
-      "continue": "Continuer",
-      "manageProfile": "Gerer mon profil",
-      "profileTitle": "Profil du membre",
-      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
-      "unnamedModule": "Module sans titre",
-      "noSubject": "Aucun sujet disponible",
-      "stats": {
-        "modules": "Modules",
-        "modulesHint": "Modules assignes",
-        "completed": "Termines",
-        "completedHint": "Modules termines",
-        "average": "Moyenne",
-        "averageHint": "Progression moyenne",
-        "next": "Prochain module",
-        "nextHint": "Etape suivante suggeree",
-        "nextEmpty": "Aucun module disponible"
-      },
-      "status": {
-        "notStarted": "Non commence",
-        "inProgress": "En cours",
-        "completed": "Termine"
-      }
-    },
     "account": {
       "path": "/mon-compte",
       "fullPath": "/mon-compte",
@@ -205,6 +164,85 @@
       "accountDesc": "Gérer votre profil et vos paramètres.",
       "membersDesc": "Voir et gérer les membres.",
       "booksDesc": "Parcourir et gérer les livres."
+    },
+    "memberDashboard": {
+      "welcomeLabel": "Bienvenue",
+      "defaultName": "Membre",
+      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
+      "viewBooks": "Mes livres",
+      "updateProfile": "Mon profil",
+      "modulesTitle": "Modules ajoutes",
+      "modulesCount": "modules",
+      "emptyModules": "Aucun module pour le moment.",
+      "progressTitle": "Progression globale",
+      "progressHint": "La progression est calculee selon vos modules.",
+      "progressLabel": "Progression",
+      "lastUpdate": "Derniere mise a jour",
+      "continue": "Continuer",
+      "manageProfile": "Gerer mon profil",
+      "profileTitle": "Profil du membre",
+      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
+      "unnamedModule": "Module sans titre",
+      "noSubject": "Aucun sujet disponible",
+      "stats": {
+        "modules": "Modules",
+        "modulesHint": "Modules assignes",
+        "completed": "Termines",
+        "completedHint": "Modules termines",
+        "average": "Moyenne",
+        "averageHint": "Progression moyenne",
+        "next": "Prochain module",
+        "nextHint": "Etape suivante suggeree",
+        "nextEmpty": "Aucun module disponible"
+      },
+      "status": {
+        "notStarted": "Non commence",
+        "inProgress": "En cours",
+        "completed": "Termine"
+      }
+    },
+    "equipe": {
+      "myEquipe": "Mon équipe",
+      "noEquipe": "Vous ne faites partie d'aucune équipe",
+      "noEquipeHint": "Contactez votre administrateur pour être assigné à une équipe.",
+      "membersCount": "{count} membre(s)",
+      "modulesCount": "{count} module(s)",
+      "stats": {
+        "members": "Membres",
+        "modules": "Modules assignés",
+        "progress": "Progression moyenne"
+      },
+      "modulesTitle": "Modules de l'équipe",
+      "membersTitle": "Membres de l'équipe",
+      "noModules": "Aucun module assigné pour le moment.",
+      "unnamedModule": "Module sans titre",
+      "progress": "Progression",
+      "status": {
+        "completed": "Terminé",
+        "inProgress": "En cours",
+        "notStarted": "Non commencé"
+      }
+    },
+    "equipes": {
+      "create": {
+        "validation": {
+          "successMessage": "L'équipe a été créée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la création de l'équipe."
+        }
+      },
+      "update": {
+        "validation": {
+          "successMessage": "L'équipe a été modifiée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la modification de l'équipe."
+        }
+      },
+      "delete": {
+        "confirmation": "Êtes-vous sûr de vouloir supprimer cette équipe?",
+        "validation": {
+          "successMessage": "L'équipe a été supprimée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la suppression de l'équipe."
+        }
+      }
     },
     "account": {
       "personalInfo": "Informations personnelles",
@@ -419,6 +457,7 @@
       "noData": "Aucune données disponibles",
       "actions": "Actions"
     },
+    "confirmation": "Confirmation",
     "actions": {
       "view": "Voir",
       "download": "Télécharger",

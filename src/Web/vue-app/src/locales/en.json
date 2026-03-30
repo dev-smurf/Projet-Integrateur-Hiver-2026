@@ -40,11 +40,6 @@
       "fullPath": "/progression",
       "name": "Progression"
     },
-    "quiz": {
-      "path": "/quiz",
-      "fullPath": "/quiz",
-      "name": "Quiz"
-    },
     "account": {
       "path": "/my-account",
       "fullPath": "/my-account",
@@ -458,6 +453,7 @@
       "noData": "No available data",
       "actions": "Actions"
     },
+    "confirmation": "Confirmation",
     "actions": {
       "view": "View",
       "download": "Download",
@@ -586,11 +582,6 @@
       "noAccess": "You don't have access to this module.",
       "loadError": "Could not load module."
     }
-  },
-  "global": {
-    "confirmation": "Confirmation",
-    "cancel": "Cancel",
-    "delete": "Delete"
   },
   "common": {
     "Ajouter": "Add",
