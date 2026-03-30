@@ -1,6 +1,5 @@
 <template>
     <div class="space-y-8">
-        <!-- Loading -->
         <div v-if="loading" class="space-y-6">
             <div class="h-40 bg-gray-200 rounded-2xl animate-pulse" />
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -8,16 +7,13 @@
             </div>
         </div>
 
-        <!-- No equipe -->
         <div v-else-if="!equipe?.id" class="text-center py-20">
             <UsersRound class="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h2 class="text-xl font-semibold text-gray-700 mb-2">{{ $t('pages.equipe.noEquipe') }}</h2>
             <p class="text-sm text-gray-500 max-w-md mx-auto">{{ $t('pages.equipe.noEquipeHint') }}</p>
         </div>
 
-        <!-- Equipe found -->
         <template v-else>
-            <!-- Hero banner -->
             <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700 text-white p-6 sm:p-8 shadow-lg">
                 <div class="relative z-10 max-w-3xl">
                     <p class="text-sm text-white/80">{{ $t('pages.equipe.myEquipe') }}</p>
@@ -59,7 +55,6 @@
 
             <!-- Content: Members + Modules -->
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Modules (2/3) -->
                 <div class="lg:col-span-2 space-y-4">
                     <h2 class="text-lg font-semibold text-gray-900">{{ $t('pages.equipe.modulesTitle') }}</h2>
 
@@ -104,7 +99,7 @@
                     </div>
                 </div>
 
-                <!-- Members (1/3) -->
+                <!-- Members -->
                 <div class="space-y-4">
                     <h2 class="text-lg font-semibold text-gray-900">{{ $t('pages.equipe.membersTitle') }}</h2>
 

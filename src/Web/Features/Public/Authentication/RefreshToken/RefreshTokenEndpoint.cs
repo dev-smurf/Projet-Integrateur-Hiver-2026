@@ -40,14 +40,14 @@ public class RefreshTokenEndpoint : EndpointWithoutRequest<SucceededOrNotRespons
 
         if (string.IsNullOrWhiteSpace(username))
         {
-            await Send.ForbiddenAsync(ct);
+            await Send.OkAsync(new SucceededOrNotResponse(false), ct);
             return;
         }
 
         var user = _userRepository.FindByUserName(username);
         if (user == null)
         {
-            await Send.ForbiddenAsync(ct);
+            await Send.OkAsync(new SucceededOrNotResponse(false), ct);
             return;
         }
 
@@ -55,7 +55,7 @@ public class RefreshTokenEndpoint : EndpointWithoutRequest<SucceededOrNotRespons
         if (string.IsNullOrWhiteSpace(currentRefreshToken) ||
             !await _authenticationService.ValidateRefreshToken(currentRefreshToken))
         {
-            await Send.ForbiddenAsync(ct);
+            await Send.OkAsync(new SucceededOrNotResponse(false), ct);
             return;
         }
 

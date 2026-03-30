@@ -3,6 +3,8 @@ namespace Web.Dtos;
 public class MemberModuleDto
 {
     public string ModuleId { get; set; } = null!;
+    public string? Name { get; set; }
+    public string? Subject { get; set; }
     public string? NameFr { get; set; }
     public string? NameEn { get; set; }
     public string? SujetFr { get; set; }

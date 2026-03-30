@@ -20,12 +20,9 @@ namespace Application.Services.Module
             return modules.Select(m => new ModuleDto
             {
                 Id = m.Id.ToString(),
-                NameFr = m.NameFr,
-                NameEn = m.NameEn,
-                SujetFr = m.SujetFr,
-                SujetEn = m.SujetEn,
-                ContenueFr = m.ContenueFr,
-                ContenueEn = m.ContenueEn,
+                Name = m.Name,
+                Subject = m.Subject,
+                Content = m.Content,
                 CardImageUrl = m.CardImageUrl
             }).ToList();
         }
@@ -42,12 +39,9 @@ namespace Application.Services.Module
             return new ModuleDto
             {
                 Id = module.Id.ToString(),
-                NameFr = module.NameFr,
-                NameEn = module.NameEn,
-                SujetFr = module.SujetFr,
-                SujetEn = module.SujetEn,
-                ContenueFr = module.ContenueFr,
-                ContenueEn = module.ContenueEn,
+                Name = module.Name,
+                Subject = module.Subject,
+                Content = module.Content,
                 CardImageUrl = module.CardImageUrl
             };
         }
@@ -56,12 +50,9 @@ namespace Application.Services.Module
         {
             var module = new Domain.Entities.Module
             {
-                NameFr = request.NameFr,
-                NameEn = request.NameEn,
-                SujetFr = request.SujetFr,
-                SujetEn = request.SujetEn,
-                ContenueFr = request.ContenueFr,
-                ContenueEn = request.ContenueEn,
+                Name = request.Name,
+                Subject = request.Subject,
+                Content = request.Content,
                 CardImageUrl = null
             };
 
@@ -70,12 +61,9 @@ namespace Application.Services.Module
             return new ModuleDto
             {
                 Id = module.Id.ToString(),
-                NameFr = module.NameFr,
-                NameEn = module.NameEn,
-                SujetFr = module.SujetFr,
-                SujetEn = module.SujetEn,
-                ContenueFr = module.ContenueFr,
-                ContenueEn = module.ContenueEn,
+                Name = module.Name,
+                Subject = module.Subject,
+                Content = module.Content,
                 CardImageUrl = module.CardImageUrl
             };
         }
@@ -89,12 +77,9 @@ namespace Application.Services.Module
             if (existingModule == null)
                 return false;
 
-            existingModule.NameFr = request.NameFr ?? existingModule.NameFr;
-            existingModule.NameEn = request.NameEn ?? existingModule.NameEn;
-            existingModule.SujetFr = request.SujetFr ?? existingModule.SujetFr;
-            existingModule.SujetEn = request.SujetEn ?? existingModule.SujetEn;
-            existingModule.ContenueFr = request.ContenueFr ?? existingModule.ContenueFr;
-            existingModule.ContenueEn = request.ContenueEn ?? existingModule.ContenueEn;
+            existingModule.Name = request.Name ?? existingModule.Name;
+            existingModule.Subject = request.Subject ?? existingModule.Subject;
+            existingModule.Content = request.Content ?? existingModule.Content;
 
             if (!string.IsNullOrWhiteSpace(request.CardImageUrl))
                 existingModule.CardImageUrl = request.CardImageUrl;

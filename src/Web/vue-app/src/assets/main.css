@@ -5,14 +5,45 @@
   --color-brand-950: #0f0f0f;
   --color-brand-900: #1a1a1a;
   --color-brand-800: #262626;
-  --color-brand-700: #333333;
-  --color-brand-600: #c0392b;
-  --color-brand-500: #d44637;
-  --color-brand-400: #e05c4d;
-  --color-brand-300: #e88478;
-  --color-brand-200: #f0aaa2;
-  --color-brand-100: #f8d5d1;
-  --color-brand-50: #fdf2f1;
+  --color-brand-700: #66a88f;
+  --color-brand-600: #7ab99f;
+  --color-brand-500: #90c9b0;
+  --color-brand-400: #a7d7c2;
+  --color-brand-300: #bfe4d5;
+  --color-brand-200: #d7efe5;
+  --color-brand-100: #ecf7f2;
+  --color-brand-50: #f7fcfa;
+}
+
+:root {
+  --brand-pulse-outer: rgba(122, 185, 159, 0.35);
+  --brand-pulse-inner: rgba(122, 185, 159, 0);
+}
+
+body.theme-admin {
+  --color-brand-700: #5c9f95;
+  --color-brand-600: #6fb0a6;
+  --color-brand-500: #86c1b7;
+  --color-brand-400: #9fd1c8;
+  --color-brand-300: #b9ded7;
+  --color-brand-200: #d2ebe6;
+  --color-brand-100: #e9f6f3;
+  --color-brand-50: #f6fbfa;
+  --brand-pulse-outer: rgba(111, 176, 166, 0.35);
+  --brand-pulse-inner: rgba(111, 176, 166, 0);
+}
+
+body.theme-member {
+  --color-brand-700: #66a88f;
+  --color-brand-600: #7ab99f;
+  --color-brand-500: #90c9b0;
+  --color-brand-400: #a7d7c2;
+  --color-brand-300: #bfe4d5;
+  --color-brand-200: #d7efe5;
+  --color-brand-100: #ecf7f2;
+  --color-brand-50: #f7fcfa;
+  --brand-pulse-outer: rgba(122, 185, 159, 0.35);
+  --brand-pulse-inner: rgba(122, 185, 159, 0);
 }
 
 @layer base {
@@ -78,8 +109,8 @@
 
 /* Chat bubble pulse when new message arrives */
 @keyframes bubble-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(192, 57, 43, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 var(--brand-pulse-outer); }
+  50% { box-shadow: 0 0 0 12px var(--brand-pulse-inner); }
 }
 
 .bubble-pulse {

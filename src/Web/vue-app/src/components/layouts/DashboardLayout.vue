@@ -39,7 +39,7 @@
                                 {{ $t('routes.dashboard.name') }}
                             </router-link>
                         </li>
-                        <!--li>
+                        <li>
                             <router-link :to="{ name: 'books' }"
                                          class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
                                          :class="isActive('books') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
@@ -47,7 +47,7 @@
                                 <BookOpen class="w-4 h-4" />
                                 {{ $t('routes.books.name') }}
                             </router-link>
-                        </li-->
+                        </li>
                         <li>
                             <router-link :to="{ name: 'equipe' }"
                                          class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"

@@ -123,7 +123,12 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest, object>
             saved.ConversationId,
             saved.AttachmentUrl,
             saved.AttachmentFileName,
-            saved.AttachmentContentType
+            saved.AttachmentContentType,
+            Type = (int)saved.Type,
+            AppointmentId = (Guid?)null,
+            AppointmentDate = (DateTime?)null,
+            AppointmentStatus = (int?)null,
+            AppointmentMotif = (string?)null
         };
 
         await _hubContext.Clients.Group($"user_{receiverId}").SendAsync("ReceiveMessage", payload, ct);

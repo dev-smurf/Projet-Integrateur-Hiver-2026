@@ -9,4 +9,6 @@ export const TYPES = {
   IEquipesService: Symbol.for("IEquipeService"),
   IUserService: Symbol.for("IUserService"),
   IConversationService: Symbol.for("IConversationService"),
+  IAppointmentService: Symbol.for("IAppointmentService"),
+  IQuizService: Symbol.for("IQuizService")
 };

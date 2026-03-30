@@ -8,3 +8,4 @@ export * from './resetPasswordRequest'
 export * from './twoFactorRequest'
 export * from './ICreateModuleRequest'
 export * from "./IEditModuleRequest"
+export type { ISaveModuleFullRequest, ISectionPayload } from "./ISaveModuleFullRequest";

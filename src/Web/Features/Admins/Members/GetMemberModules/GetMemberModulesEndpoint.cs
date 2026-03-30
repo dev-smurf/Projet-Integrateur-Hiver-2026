@@ -29,10 +29,12 @@ public class GetMemberModulesEndpoint : Endpoint<GetMemberModulesRequest, List<M
         var response = memberModules.Select(mm => new MemberModuleDto
         {
             ModuleId = mm.ModuleId.ToString(),
-            NameFr = mm.Module.NameFr,
-            NameEn = mm.Module.NameEn,
-            SujetFr = mm.Module.SujetFr,
-            SujetEn = mm.Module.SujetEn,
+            Name = mm.Module.Name,
+            Subject = mm.Module.Subject,
+            NameFr = mm.Module.Name,
+            NameEn = mm.Module.Name,
+            SujetFr = mm.Module.Subject,
+            SujetEn = mm.Module.Subject,
             CardImageUrl = mm.Module.CardImageUrl,
             ProgressPercent = mm.ProgressPercent,
             IsCompleted = mm.IsCompleted
