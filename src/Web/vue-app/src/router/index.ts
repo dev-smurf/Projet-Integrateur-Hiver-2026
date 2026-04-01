@@ -1,3 +1,4 @@
+import { h } from "vue";
 import i18n from "@/i18n";
 import { getLocalizedRoutes } from "@/locales/helpers";
 import { useUserStore } from "@/stores/userStore";
@@ -89,7 +90,13 @@ export function getRouter(): Router {
         path: i18n.t("routes.dashboard.path"),
         alias: getLocalizedRoutes("routes.dashboard.path"),
         name: "dashboard",
-        component: Dashboard,
+        component: {
+          setup() {
+            const userStore = useUserStore();
+            const comp = userStore.hasRole(Role.Admin) ? Dashboard : MemberDashboard;
+            return () => h(comp);
+          },
+        },
         meta: {
           title: "routes.dashboard.name",
         },
