@@ -9,7 +9,7 @@ public class DbContextFactory : IDesignTimeDbContextFactory<GarneauTemplateDbCon
     {
         var optionsBuilder = new DbContextOptionsBuilder<GarneauTemplateDbContext>();
 
-        optionsBuilder.UseSqlServer("Server=localhost;Database=GarneauTemplate;Trusted_Connection=True;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=GarneauTemplate;User Id=sa;Password=Qwerty123!;TrustServerCertificate=True;");
 
         return new GarneauTemplateDbContext(optionsBuilder.Options);
     }

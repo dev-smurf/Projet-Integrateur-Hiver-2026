@@ -3,7 +3,7 @@ import i18n from "@/i18n";
 import { getLocalizedRoutes } from "@/locales/helpers";
 import { useUserStore } from "@/stores/userStore";
 import { Role } from "@/types/enums";
-import { createRouter, createWebHistory, type Router } from "vue-router";
+import { createRouter, createWebHistory, RouterView, type Router } from "vue-router";
 
 import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
@@ -200,7 +200,7 @@ export function getRouter(): Router {
       },
       {
         path: "/mes-modules",
-        component: Books,
+        component: { render: () => h(RouterView) },
         meta: {
           requiredRole: Role.Member,
           title: "Mes modules",
@@ -222,7 +222,7 @@ export function getRouter(): Router {
         path: i18n.t("routes.quiz.path"),
         alias: getLocalizedRoutes("routes.quiz.path"),
         name: "quiz",
-        component: { template: "<router-view />" },
+        component: { render: () => h(RouterView) },
         meta: {
           requiredRole: Role.Member,
           title: "routes.quiz.name",

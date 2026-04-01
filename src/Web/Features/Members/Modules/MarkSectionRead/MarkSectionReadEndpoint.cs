@@ -5,7 +5,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Web.Features.Members.Modules.MarkSectionRead;
 
-public class MarkSectionReadEndpoint : EndpointWithoutRequest
+public class MarkSectionReadRequest
+{
+    public string ModuleId { get; set; } = null!;
+    public string SectionId { get; set; } = null!;
+}
+
+public class MarkSectionReadEndpoint : Endpoint<MarkSectionReadRequest>
 {
     private readonly IAuthenticatedUserService _authenticatedUserService;
     private readonly IMemberRepository _memberRepository;
@@ -23,17 +29,14 @@ public class MarkSectionReadEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Post("member/modules/{moduleId}/sections/{sectionId}/read");
+        Post("member/modules/{ModuleId}/sections/{SectionId}/read");
         Roles(Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(MarkSectionReadRequest req, CancellationToken ct)
     {
-        var moduleIdStr = Route<string>("moduleId");
-        var sectionIdStr = Route<string>("sectionId");
-
-        if (!Guid.TryParse(moduleIdStr, out var moduleId) || !Guid.TryParse(sectionIdStr, out var sectionId))
+        if (!Guid.TryParse(req.ModuleId, out var moduleId) || !Guid.TryParse(req.SectionId, out var sectionId))
         {
             HttpContext.Response.StatusCode = 400;
             return;

@@ -6,7 +6,12 @@ using Web.Dtos;
 
 namespace Web.Features.Members.Modules.GetSectionProgress;
 
-public class GetSectionProgressEndpoint : EndpointWithoutRequest<List<SectionProgressDto>>
+public class GetSectionProgressRequest
+{
+    public string ModuleId { get; set; } = null!;
+}
+
+public class GetSectionProgressEndpoint : Endpoint<GetSectionProgressRequest, List<SectionProgressDto>>
 {
     private readonly IAuthenticatedUserService _authenticatedUserService;
     private readonly IMemberRepository _memberRepository;
@@ -24,16 +29,14 @@ public class GetSectionProgressEndpoint : EndpointWithoutRequest<List<SectionPro
 
     public override void Configure()
     {
-        Get("member/modules/{moduleId}/sections/progress");
+        Get("member/modules/{ModuleId}/sections/progress");
         Roles(Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(GetSectionProgressRequest req, CancellationToken ct)
     {
-        var moduleIdStr = Route<string>("moduleId");
-
-        if (!Guid.TryParse(moduleIdStr, out var moduleId))
+        if (!Guid.TryParse(req.ModuleId, out var moduleId))
         {
             HttpContext.Response.StatusCode = 400;
             return;
@@ -51,7 +54,7 @@ public class GetSectionProgressEndpoint : EndpointWithoutRequest<List<SectionPro
         var memberModule = await _memberModuleRepository.GetByMemberAndModuleAsync(member.Id, moduleId);
         if (memberModule is null)
         {
-            HttpContext.Response.StatusCode = 403;
+            Response = new List<SectionProgressDto>();
             return;
         }
 
