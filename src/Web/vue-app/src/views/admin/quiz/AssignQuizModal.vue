@@ -50,7 +50,7 @@
           >
             <input
               type="checkbox"
-              :value="user.id"
+              :value="user.userId"
               v-model="selectedUserIds"
               class="w-4 h-4 text-blue-600 rounded focus:ring-2"
             />
