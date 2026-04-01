@@ -94,12 +94,17 @@ var app = builder.Build();
 var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
 var shouldInitializeDatabase = app.Configuration.GetValue<bool?>("Database:InitializeOnStartup")
     ?? app.Environment.IsDevelopment();
+var shouldSeedDatabase = app.Configuration.GetValue<bool?>("Database:SeedOnStartup")
+    ?? app.Environment.IsDevelopment();
 
 if (shouldInitializeDatabase)
 {
     try
     {
-        await app.Services.InitializeAndSeedDatabase();
+        await app.Services.InitializeDatabase();
+
+        if (shouldSeedDatabase)
+            await app.Services.SeedDatabase();
     }
     catch (Exception ex)
     {
