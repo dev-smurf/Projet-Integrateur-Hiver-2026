@@ -10,6 +10,8 @@ public class MemberModule : AuditableAndSoftDeletableEntity
     public Guid ModuleId { get; private set; }
     public Module Module { get; private set; } = null!;
 
+    public ICollection<MemberModuleSectionProgress> SectionProgress { get; private set; } = new List<MemberModuleSectionProgress>();
+
     public int ProgressPercent { get; private set; }
     public bool IsCompleted { get; private set; }
 
