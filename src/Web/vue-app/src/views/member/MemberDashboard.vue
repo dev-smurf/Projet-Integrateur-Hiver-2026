@@ -11,11 +11,11 @@
         </p>
         <div class="mt-5 flex flex-wrap gap-3">
           <router-link
-            :to="{ name: 'books' }"
+            :to="{ name: 'member.modules.index' }"
             class="inline-flex items-center gap-2 rounded-lg bg-white/15 px-4 py-2 text-sm font-medium text-white hover:bg-white/25 transition"
           >
             <BookOpen class="h-4 w-4" />
-            {{ $t("pages.memberDashboard.viewBooks") }}
+            {{ $t("pages.memberDashboard.viewModules") }}
           </router-link>
           <router-link
             :to="{ name: 'account' }"

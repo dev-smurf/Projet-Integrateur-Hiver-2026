@@ -24,15 +24,6 @@
             </router-link>
             <router-link
               v-if="userStore.hasRole(Role.Member)"
-              :to="{ name: 'books.index' }"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
-              :class="isActive('books') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-            >
-              <BookOpen class="w-4 h-4" />
-              {{ $t('routes.books.name') }}
-            </router-link>
-            <router-link
-              v-if="userStore.hasRole(Role.Member)"
               :to="{ name: 'equipe' }"
               class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
               :class="isActive('equipe') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"

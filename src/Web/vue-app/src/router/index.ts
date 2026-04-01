@@ -29,10 +29,6 @@ import AdminAddQuiz from "@/views/admin/quiz/AdminAddQuiz.vue";
 import AdminEditQuiz from "@/views/admin/quiz/AdminEditQuiz.vue";
 import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
 
-import Books from "@/views/member/Books.vue";
-import AddBookForm from "@/views/member/AddBookForm.vue";
-import BookIndex from "@/views/member/BookIndex.vue";
-import EditBookForm from "@/views/member/EditBookForm.vue";
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
 import MemberModuleView from "@/views/member/MemberModuleView.vue";
 import QuizList from "@/views/member/quiz/QuizList.vue";
@@ -199,45 +195,6 @@ export function getRouter(): Router {
             name: "admin.children.quiz.edit",
             component: AdminEditQuiz,
             props: true,
-          },
-        ],
-      },
-      {
-        path: i18n.t("routes.books.path"),
-        alias: getLocalizedRoutes("routes.books.path"),
-        name: "books",
-        component: Books,
-        meta: {
-          requiredRole: Role.Member,
-          title: "routes.books.name",
-        },
-        children: [
-          {
-            path: "",
-            name: "books.index",
-            component: BookIndex,
-            meta: {
-              title: "routes.books.name",
-            },
-          },
-          {
-            path: i18n.t("routes.books.children.add.path"),
-            alias: getLocalizedRoutes("routes.books.children.add.path"),
-            name: "books.children.add",
-            component: AddBookForm,
-            meta: {
-              title: "routes.books.children.add.name",
-            },
-          },
-          {
-            path: i18n.t("routes.books.children.edit.path"),
-            alias: getLocalizedRoutes("routes.books.children.edit.path"),
-            name: "books.children.edit",
-            component: EditBookForm,
-            props: true,
-            meta: {
-              title: "routes.books.children.edit.name",
-            },
           },
         ],
       },
