@@ -1,26 +1,54 @@
 
 <template>
-    <div class="min-h-screen bg-gray-100">
-        <Transition enter-active-class="transition-opacity duration-200"
-                    enter-from-class="opacity-0"
-                    enter-to-class="opacity-100"
-                    leave-active-class="transition-opacity duration-200"
-                    leave-from-class="opacity-100"
-                    leave-to-class="opacity-0">
-            <div v-if="sidebarOpen"
-                 class="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                 @click="sidebarOpen = false" />
-        </Transition>
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-               class="fixed inset-y-0 left-0 z-50 w-60 bg-brand-900 flex flex-col transition-transform duration-200 lg:translate-x-0">
-            <div class="px-5 py-5 flex items-center gap-3 border-b border-white/10">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center">
-                    <LayoutDashboard class="w-5 h-5 text-white" />
-                </div>
-                <div class="leading-tight">
-                    <span class="text-white font-semibold text-sm tracking-wide">Garneau</span>
-                    <span class="block text-gray-500 text-[11px]">Plateforme intégrée</span>
-                </div>
+  <div class="min-h-screen bg-gray-100">
+    <nav class="bg-brand-900 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-14">
+          <!-- Left: nav links -->
+          <div class="flex items-center gap-1">
+            <router-link
+              :to="{ name: 'dashboard' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('dashboard') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <LayoutDashboard class="w-4 h-4" />
+              {{ $t('routes.dashboard.name') }}
+            </router-link>
+            <router-link
+              v-if="userStore.hasRole(Role.Member)"
+              :to="{ name: 'member.modules.index' }"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition"
+              :class="isActive('member.modules') ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+            >
+              <BookOpen class="w-4 h-4" />
+              Mes modules
+            </router-link>
+          </div>
+
+          <!-- Right: language, admin, profile, logout -->
+          <div class="flex items-center gap-3">
+            <!-- Language dropdown -->
+            <div class="relative">
+              <button
+                @click="langOpen = !langOpen"
+                class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition cursor-pointer"
+              >
+                <Languages class="w-4 h-4" />
+              </button>
+              <div
+                v-if="langOpen"
+                class="absolute right-0 top-full mt-2 bg-brand-800 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
+              >
+                <button
+                  v-for="loc in LOCALES"
+                  :key="loc.value"
+                  @click="switchLanguage(loc.value)"
+                  class="w-full text-left px-3 py-2 text-sm transition"
+                  :class="currentLocale === loc.value ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+                >
+                  {{ loc.caption }}
+                </button>
+              </div>
             </div>
 
             <!-- Navigation -->

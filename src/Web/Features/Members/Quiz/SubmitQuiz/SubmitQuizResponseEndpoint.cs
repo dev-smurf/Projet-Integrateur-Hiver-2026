@@ -28,7 +28,7 @@ public class SubmitQuizResponseEndpoint : Endpoint<SubmitQuizRequest, SubmitQuiz
 
     public override async Task HandleAsync(SubmitQuizRequest req, CancellationToken ct)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+        var userId = Guid.Parse(User.FindFirst("userId")?.Value ?? throw new UnauthorizedAccessException());
 
         var allQuizzes = _quizRepository.FindAll();
         var question = allQuizzes
