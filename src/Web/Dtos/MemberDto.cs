@@ -17,4 +17,5 @@ public class MemberDto
     public string City { get; set; } = null!;
     public string ZipCode { get; set; } = null!;
     public List<string> Roles { get; set; } = null!;
+    public List<Guid> EquipeIds { get; set; } = [];
 }
