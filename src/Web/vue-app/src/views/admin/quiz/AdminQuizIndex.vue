@@ -126,15 +126,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Assign Quiz Modal -->
-    <AssignQuizModal
-      v-if="showAssignModal && selectedQuizForAssignment"
-      :quiz-id="selectedQuizForAssignment.id"
-      :quiz-title="selectedQuizForAssignment.titre"
-      @close="showAssignModal = false"
-      @assigned="handleAssignmentComplete"
-    />
   </div>
 </template>
 
@@ -205,19 +196,6 @@ function openAssignModal(quiz: Quiz) {
   showAssignModal.value = true
 }
 
-function handleAssignmentComplete() {
-  showAssignModal.value = false
-  selectedQuizForAssignment.value = null
-  successMessage.value = 'Quiz assigned successfully!'
-
-  // Clear success message after 3 seconds
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
-
-  // Reload quizzes to show updated assignment count
-  loadQuizzes()
-}
 
 onMounted(() => {
   loadQuizzes()

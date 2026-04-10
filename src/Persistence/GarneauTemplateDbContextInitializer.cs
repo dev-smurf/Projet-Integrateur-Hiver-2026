@@ -39,6 +39,9 @@ public class GarneauTemplateDbContextInitializer
             if (pendingMigrations.Count == 0)
                 return;
 
+            var allMigrations = _context.Database.GetMigrations().ToList();
+            var baselineMigration = allMigrations.FirstOrDefault();
+
             // If the database already has the schema (from old consolidated migrations),
             // mark the new migrations as applied instead of re-running them.
             var connection = _context.Database.GetDbConnection();
@@ -50,15 +53,17 @@ public class GarneauTemplateDbContextInitializer
 
             if (tablesAlreadyExist)
             {
-                // Only mark the initial migration as applied (base schema already exists)
-                var initialMigration = pendingMigrations.FirstOrDefault(m => m.EndsWith("_InitialCreate"));
-                if (initialMigration != null)
+                // If the schema already exists but migrations history does not, treat the
+                // first migration in the assembly as the baseline and skip re-running it.
+                if (!string.IsNullOrWhiteSpace(baselineMigration) && pendingMigrations.Contains(baselineMigration))
                 {
                     await _context.Database.ExecuteSqlRawAsync(
                         "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
                         "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
-                        initialMigration, "10.0.2");
-                    _logger.LogInformation("Marked InitialCreate migration as applied (schema already exists).");
+                        baselineMigration, "10.0.2");
+                    _logger.LogInformation(
+                        "Marked baseline migration {MigrationId} as applied because the schema already exists.",
+                        baselineMigration);
                 }
 
                 // Run any remaining new migrations

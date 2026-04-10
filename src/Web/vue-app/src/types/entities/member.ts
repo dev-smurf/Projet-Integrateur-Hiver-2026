@@ -16,4 +16,5 @@ export class Member implements IPerson {
   zipCode?: string
   userId?: string
   roles?: string[]
+  equipeIds: string[] = []
 }
