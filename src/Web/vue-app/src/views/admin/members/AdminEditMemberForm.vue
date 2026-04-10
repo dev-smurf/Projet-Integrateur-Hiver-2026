@@ -111,6 +111,18 @@
           </div>
         </div>
 
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Équipes</label>
+          <Select2Multi
+            v-model="member.equipeIds"
+            :options="equipeOptions"
+            placeholder="Sélectionner une ou plusieurs équipes"
+            search-placeholder="Rechercher une équipe"
+            empty-text="Aucune équipe trouvée"
+          />
+          <p class="mt-1 text-xs text-gray-500">Optionnel</p>
+        </div>
+
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
           <router-link
             :to="{ name: 'admin.children.members.index' }"
@@ -133,13 +145,14 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, reactive, onMounted} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {useRouter, useRoute} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
 import {Loader2} from "lucide-vue-next";
-import {useMemberService} from "@/inversify.config";
-import {Member} from "@/types/entities";
+import {useEquipesService, useMemberService} from "@/inversify.config";
+import Select2Multi from "@/components/forms/Select2Multi.vue";
+import {Equipe, Member} from "@/types/entities";
 import {validate} from "@/validation";
 import type {Rule} from "@/validation/rules";
 import {required, mustMatchEmailFormat, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
@@ -149,16 +162,27 @@ const route = useRoute();
 const {t} = useI18n();
 const {notify} = useNotification();
 const memberService = useMemberService();
+const equipeService = useEquipesService();
 
 const member = reactive(new Member());
 const loadingMember = ref(true);
 const submitting = ref(false);
 const apiErrors = ref<string[]>([]);
 const fieldErrors = reactive<Record<string, string | undefined>>({});
+const equipes = ref<Equipe[]>([]);
+
+const equipeOptions = computed(() =>
+  equipes.value.map((equipe) => ({
+    value: String((equipe as any).id ?? equipe.Id),
+    label: String((equipe as any).nameFr ?? (equipe as any).NameFr ?? (equipe as any).nameEn ?? (equipe as any).NameEn ?? ""),
+  })).filter((option) => option.value && option.label),
+);
 
 onMounted(async () => {
+  equipes.value = await equipeService.getAllEquipes();
   const data = await memberService.getMember(route.params.id as string);
   Object.assign(member, data);
+  member.equipeIds = data.equipeIds ?? [];
   loadingMember.value = false;
 });
 
@@ -198,7 +222,10 @@ async function handleSubmit() {
   submitting.value = true;
   apiErrors.value = [];
 
-  const response = await memberService.updateMember(member);
+  const response = await memberService.updateMember({
+    ...member,
+    equipeIds: member.equipeIds ?? [],
+  });
   if (response.succeeded) {
     notify({type: "success", text: t("pages.members.update.validation.successMessage")});
     await router.push({name: "admin.children.members.index"});
