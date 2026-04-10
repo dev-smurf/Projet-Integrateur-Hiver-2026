@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.Entities.Identity;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -17,6 +18,44 @@ public class EquipeRepository : IEquipeRepository
         return await _context.Equipes
             .Where(e => e.Deleted == null)
             .ToListAsync();
+    }
+
+    public async Task<List<Equipe>> GetByIds(IEnumerable<Guid> ids)
+    {
+        var distinctIds = ids
+            .Where(id => id != Guid.Empty)
+            .Distinct()
+            .ToList();
+
+        if (distinctIds.Count == 0)
+        {
+            return [];
+        }
+
+        return await _context.Equipes
+            .Include(e => e.Membres)
+            .Where(e => e.Deleted == null && distinctIds.Contains(e.Id))
+            .ToListAsync();
+    }
+
+    public async Task AssignUserToEquipes(User user, IEnumerable<Guid> ids)
+    {
+        var equipes = await GetByIds(ids);
+
+        if (equipes.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var equipe in equipes)
+        {
+            if (equipe.Membres.All(membre => membre.Id != user.Id))
+            {
+                equipe.Membres.Add(user);
+            }
+        }
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Equipe?> FindById(Guid id)
