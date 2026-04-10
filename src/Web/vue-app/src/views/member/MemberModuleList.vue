@@ -23,7 +23,7 @@
       <router-link
         v-for="mod in modules"
         :key="mod.id"
-        :to="{ name: 'member.modules.view', params: { moduleId: mod.id } }"
+        :to="'/mes-modules/' + mod.id"
         class="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
       >
         <div class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden">

@@ -212,22 +212,8 @@
               <div class="mt-3 h-2 w-full rounded-full bg-slate-200">
                 <div class="h-2 rounded-full bg-brand-500" :style="{ width: module.progressPercent + '%' }"></div>
               </div>
-              <div class="mt-4 flex flex-wrap items-center gap-3">
-                <input
-                  v-model.number="progressEdits[module.moduleId]"
-                  type="range"
-                  min="0"
-                  max="100"
-                  class="w-48 accent-brand-500"
-                />
-                <span class="text-xs text-slate-500">{{ progressEdits[module.moduleId] }}%</span>
-                <button
-                  type="button"
-                  class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-white"
-                  @click="saveModuleProgress(module.moduleId)"
-                >
-                  Enregistrer
-                </button>
+              <div class="mt-3 flex items-center gap-3">
+                <span class="text-xs text-slate-500">Progression automatique par lecture</span>
                 <button
                   type="button"
                   class="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50"
@@ -336,7 +322,6 @@ const selectedMemberId = ref<string | null>(null);
 const memberModules = ref<MemberModuleDto[]>([]);
 const isLoadingModules = ref(false);
 const memberModulesError = ref("");
-const progressEdits = ref<Record<string, number>>({});
 const selectedModuleId = ref("");
 const allModules = ref<ModuleDto[]>([]);
 
@@ -501,10 +486,6 @@ async function loadMemberModules(memberId: string) {
   try {
     const response = await memberService.getMemberModules(memberId);
     memberModules.value = response;
-    progressEdits.value = response.reduce((acc, module) => {
-      acc[module.moduleId] = module.progressPercent ?? 0;
-      return acc;
-    }, {} as Record<string, number>);
   } catch (error) {
     memberModules.value = [];
     memberModulesError.value = "Impossible de charger les modules du membre.";
@@ -533,14 +514,6 @@ async function assignModuleToMember() {
     return;
   await memberService.addModuleToMember(selectedMemberId.value, selectedModuleId.value);
   selectedModuleId.value = "";
-  await loadMemberModules(selectedMemberId.value);
-}
-
-async function saveModuleProgress(moduleId: string) {
-  if (!selectedMemberId.value)
-    return;
-  const progress = progressEdits.value[moduleId] ?? 0;
-  await memberService.updateMemberModuleProgress(selectedMemberId.value, moduleId, progress);
   await loadMemberModules(selectedMemberId.value);
 }
 

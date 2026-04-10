@@ -1,8 +1,9 @@
+import { h } from "vue";
 import i18n from "@/i18n";
 import { getLocalizedRoutes } from "@/locales/helpers";
 import { useUserStore } from "@/stores/userStore";
 import { Role } from "@/types/enums";
-import { createRouter, createWebHistory, type Router } from "vue-router";
+import { createRouter, createWebHistory, RouterView, type Router } from "vue-router";
 
 import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
@@ -28,10 +29,6 @@ import AdminAddQuiz from "@/views/admin/quiz/AdminAddQuiz.vue";
 import AdminEditQuiz from "@/views/admin/quiz/AdminEditQuiz.vue";
 import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
 
-import Books from "@/views/member/Books.vue";
-import AddBookForm from "@/views/member/AddBookForm.vue";
-import BookIndex from "@/views/member/BookIndex.vue";
-import EditBookForm from "@/views/member/EditBookForm.vue";
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
 import MemberModuleView from "@/views/member/MemberModuleView.vue";
 import QuizList from "@/views/member/quiz/QuizList.vue";
@@ -89,7 +86,13 @@ export function getRouter(): Router {
         path: i18n.t("routes.dashboard.path"),
         alias: getLocalizedRoutes("routes.dashboard.path"),
         name: "dashboard",
-        component: Dashboard,
+        component: {
+          setup() {
+            const userStore = useUserStore();
+            const comp = userStore.hasRole(Role.Admin) ? Dashboard : MemberDashboard;
+            return () => h(comp);
+          },
+        },
         meta: {
           title: "routes.dashboard.name",
         },
@@ -196,47 +199,8 @@ export function getRouter(): Router {
         ],
       },
       {
-        path: i18n.t("routes.books.path"),
-        alias: getLocalizedRoutes("routes.books.path"),
-        name: "books",
-        component: Books,
-        meta: {
-          requiredRole: Role.Member,
-          title: "routes.books.name",
-        },
-        children: [
-          {
-            path: "",
-            name: "books.index",
-            component: BookIndex,
-            meta: {
-              title: "routes.books.name",
-            },
-          },
-          {
-            path: i18n.t("routes.books.children.add.path"),
-            alias: getLocalizedRoutes("routes.books.children.add.path"),
-            name: "books.children.add",
-            component: AddBookForm,
-            meta: {
-              title: "routes.books.children.add.name",
-            },
-          },
-          {
-            path: i18n.t("routes.books.children.edit.path"),
-            alias: getLocalizedRoutes("routes.books.children.edit.path"),
-            name: "books.children.edit",
-            component: EditBookForm,
-            props: true,
-            meta: {
-              title: "routes.books.children.edit.name",
-            },
-          },
-        ],
-      },
-      {
         path: "/mes-modules",
-        component: Books,
+        component: { render: () => h(RouterView) },
         meta: {
           requiredRole: Role.Member,
           title: "Mes modules",
@@ -258,7 +222,7 @@ export function getRouter(): Router {
         path: i18n.t("routes.quiz.path"),
         alias: getLocalizedRoutes("routes.quiz.path"),
         name: "quiz",
-        component: { template: "<router-view />" },
+        component: { render: () => h(RouterView) },
         meta: {
           requiredRole: Role.Member,
           title: "routes.quiz.name",
@@ -305,14 +269,14 @@ export function getRouter(): Router {
   if (to.path === "/") {
     if (!isAuthenticated) return { name: "login" };
     return userStore.hasRole(Role.Admin)
-      ? { name: "adminDashboard" }
+      ? { name: "dashboard" }
       : { name: "dashboard" };
   }
 
   // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
   if (to.meta.guest && isAuthenticated) {
     return userStore.hasRole(Role.Admin)
-      ? { name: "adminDashboard" }
+      ? { name: "dashboard" }
       : { name: "dashboard" };
   }
 
@@ -332,10 +296,13 @@ export function getRouter(): Router {
     !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
   if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
     if (userStore.hasRole(Role.Admin)) {
-      return { name: "adminDashboard" };
+      return { name: "dashboard" };
     }
     return { name: "dashboard" };
   }
-});
+  });
+
+  return routerInstance;
+}
 
 export type { Router };

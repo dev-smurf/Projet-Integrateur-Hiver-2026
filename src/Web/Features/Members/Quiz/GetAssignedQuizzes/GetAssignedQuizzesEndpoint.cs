@@ -24,7 +24,7 @@ public class GetAssignedQuizzesEndpoint : Endpoint<EmptyRequest, List<AssignedQu
 
     public override async Task HandleAsync(EmptyRequest req, CancellationToken ct)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+        var userId = Guid.Parse(User.FindFirst("userId")?.Value ?? throw new UnauthorizedAccessException());
 
         var assignments = await _assignmentRepository.GetByUserIdAsync(userId);
 
