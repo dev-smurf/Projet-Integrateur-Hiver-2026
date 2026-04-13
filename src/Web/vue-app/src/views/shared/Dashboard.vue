@@ -376,7 +376,7 @@ const filteredMembers = computed(() => {
       .toUpperCase();
     const roles = (member.roles ?? []).map(role => role.toLowerCase());
     const roleLabel = roles.includes("admin") ? "Admin" : roles.includes("member") ? "Membre" : "Utilisateur";
-    const phoneLabel = member.phoneNumber ? `${member.phoneNumber}${member.phoneExtension ? " x" + member.phoneExtension : ""}` : "Telephone non renseigne";
+    const phoneLabel = member.phoneNumber ? member.phoneNumber : "Telephone non renseigne";
 
     return {
       id: member.id ?? member.email ?? fullName,
@@ -406,8 +406,8 @@ const selectedMember = computed(() => {
     .toUpperCase();
   const roles = (member.roles ?? []).map(role => role.toLowerCase());
   const roleLabel = roles.includes("admin") ? "Admin" : roles.includes("member") ? "Membre" : "Utilisateur";
-  const phoneLabel = member.phoneNumber ? `${member.phoneNumber}${member.phoneExtension ? " x" + member.phoneExtension : ""}` : "Telephone non renseigne";
-  const addressParts = [member.street, member.apartment ? `#${member.apartment}` : "", member.city, member.zipCode]
+  const phoneLabel = member.phoneNumber ? member.phoneNumber : "Telephone non renseigne";
+  const addressParts = [member.street, member.city, member.zipCode]
     .filter(part => part && String(part).trim().length > 0)
     .join(", ");
 
@@ -420,7 +420,7 @@ const selectedMember = computed(() => {
     roles: roleLabel ? [roleLabel] : ["Utilisateur"],
     addressLabel: addressParts || "Adresse non renseignee",
     createdLabel: member.created ? formatDate(member.created) : "Date inconnue",
-    activeLabel: member.active ? "Compte actif" : "Compte inactif"
+    activeLabel: member.accountActivated ? "Compte actif" : "En attente de validation"
   };
 });
 

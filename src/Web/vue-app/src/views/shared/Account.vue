@@ -66,17 +66,9 @@
             <span class="text-gray-500">{{ $t('global.phoneNumber') }}</span>
             <span class="text-gray-900 font-medium">{{ person.phoneNumber || '—' }}</span>
           </div>
-          <div v-if="person.phoneExtension" class="flex justify-between text-sm">
-            <span class="text-gray-500">{{ $t('global.phoneExtension') }}</span>
-            <span class="text-gray-900 font-medium">{{ person.phoneExtension }}</span>
-          </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">{{ $t('global.street') }}</span>
             <span class="text-gray-900 font-medium">{{ person.street || '—' }}</span>
-          </div>
-          <div v-if="person.apartment" class="flex justify-between text-sm">
-            <span class="text-gray-500">{{ $t('global.apartment') }}</span>
-            <span class="text-gray-900 font-medium">{{ person.apartment }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">{{ $t('global.city') }}</span>
@@ -152,32 +144,12 @@
             <p v-if="fieldError('phoneNumber')" class="text-xs text-red-500 mt-1">{{ fieldError('phoneNumber') }}</p>
           </div>
 
-          <!-- Phone extension -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-1">{{ $t('global.phoneExtension') }}</label>
-            <input
-              v-model.number="form.phoneExtension"
-              type="number"
-              class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
-            />
-          </div>
-
           <!-- Street -->
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">{{ $t('global.street') }}</label>
             <input
               v-model="form.street"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
-            />
-          </div>
-
-          <!-- Apartment -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-1">{{ $t('global.apartment') }}</label>
-            <input
-              v-model.number="form.apartment"
-              type="number"
               class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
             />
           </div>
@@ -251,8 +223,6 @@ const form = reactive({
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  phoneExtension: undefined as number | undefined,
-  apartment: undefined as number | undefined,
   street: '',
   city: '',
   zipCode: '',
@@ -308,8 +278,6 @@ function startEditing() {
   form.firstName = person.value.firstName || '';
   form.lastName = person.value.lastName || '';
   form.phoneNumber = person.value.phoneNumber || '';
-  form.phoneExtension = person.value.phoneExtension || undefined;
-  form.apartment = person.value.apartment || undefined;
   form.street = person.value.street || '';
   form.city = person.value.city || '';
   form.zipCode = person.value.zipCode || '';
@@ -344,8 +312,6 @@ async function save() {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         phoneNumber: form.phoneNumber?.trim() || undefined,
-        phoneExtension: form.phoneExtension || undefined,
-        apartment: form.apartment || undefined,
         street: form.street?.trim() || undefined,
         city: form.city?.trim() || undefined,
         zipCode: form.zipCode?.trim() || undefined,
@@ -363,8 +329,6 @@ async function save() {
       person.value.lastName = form.lastName.trim();
       if (isMember.value) {
         person.value.phoneNumber = form.phoneNumber?.trim() || undefined;
-        person.value.phoneExtension = form.phoneExtension || undefined;
-        person.value.apartment = form.apartment || undefined;
         person.value.street = form.street?.trim() || undefined;
         person.value.city = form.city?.trim() || undefined;
         person.value.zipCode = form.zipCode?.trim() || undefined;
