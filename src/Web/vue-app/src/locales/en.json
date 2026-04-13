@@ -291,7 +291,8 @@
         "lowercase": "At least one lowercase letter",
         "digit": "At least one digit",
         "special": "At least one special character",
-        "uniqueChars": "At least 6 unique characters"
+        "uniqueChars": "At least 6 unique characters",
+        "match": "Confirmation matches the password"
       },
       "validation": {
         "success": "The password was successfully reset. You'll be redirected to the login page.",
