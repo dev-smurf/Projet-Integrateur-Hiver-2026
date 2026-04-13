@@ -31,10 +31,6 @@ public class GetMemberModulesEndpoint : Endpoint<GetMemberModulesRequest, List<M
             ModuleId = mm.ModuleId.ToString(),
             Name = mm.Module.Name,
             Subject = mm.Module.Subject,
-            NameFr = mm.Module.Name,
-            NameEn = mm.Module.Name,
-            SujetFr = mm.Module.Subject,
-            SujetEn = mm.Module.Subject,
             CardImageUrl = mm.Module.CardImageUrl,
             ProgressPercent = mm.ProgressPercent,
             IsCompleted = mm.IsCompleted

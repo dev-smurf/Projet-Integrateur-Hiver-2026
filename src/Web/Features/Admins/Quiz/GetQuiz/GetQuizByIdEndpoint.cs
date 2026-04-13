@@ -23,7 +23,7 @@ public class GetQuizByIdEndpoint : Endpoint<GetQuizByIdRequest, QuizDto>
     {
         DontCatchExceptions();
         Get("quiz/{id}");
-        Roles(Domain.Constants.User.Roles.ADMINISTRATOR);
+        Roles(Domain.Constants.User.Roles.ADMINISTRATOR, Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 

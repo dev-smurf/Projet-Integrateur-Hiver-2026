@@ -9,10 +9,12 @@ namespace Web.Features.Admins.Members.GetMember;
 public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
 {
     private readonly IMemberRepository _memberRepository;
+    private readonly IEquipeRepository _equipeRepository;
 
-    public GetMemberEndpoint(IMemberRepository memberRepository)
+    public GetMemberEndpoint(IMemberRepository memberRepository, IEquipeRepository equipeRepository)
     {
         _memberRepository = memberRepository;
+        _equipeRepository = equipeRepository;
     }
 
     public override void Configure()
@@ -27,13 +29,14 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
     public override async Task HandleAsync(GetMemberRequest req, CancellationToken ct)
     {
         var member = _memberRepository.FindById(req.Id);
-        var response = MapMember(member);
+        var response = await MapMember(member);
         await Send.OkAsync(response, cancellation: ct);
     }
 
-    private static MemberDto MapMember(Member member)
+    private async Task<MemberDto> MapMember(Member member)
     {
         var roles = member.User.UserRoles.Select(r => r.Role.Name ?? string.Empty).Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
+        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
         return new MemberDto
         {
             Id = member.Id,
@@ -50,7 +53,8 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             Street = member.Street ?? string.Empty,
             City = member.City ?? string.Empty,
             ZipCode = member.ZipCode ?? string.Empty,
-            Roles = roles
+            Roles = roles,
+            EquipeIds = equipeIds
         };
     }
 }

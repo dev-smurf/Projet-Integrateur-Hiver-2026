@@ -11,11 +11,11 @@
         </p>
         <div class="mt-5 flex flex-wrap gap-3">
           <router-link
-            :to="{ name: 'books' }"
+            :to="{ name: 'member.modules.index' }"
             class="inline-flex items-center gap-2 rounded-lg bg-white/15 px-4 py-2 text-sm font-medium text-white hover:bg-white/25 transition"
           >
             <BookOpen class="h-4 w-4" />
-            {{ $t("pages.memberDashboard.viewBooks") }}
+            {{ $t("pages.memberDashboard.viewModules") }}
           </router-link>
           <router-link
             :to="{ name: 'account' }"
@@ -88,10 +88,9 @@
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <router-link
+          <div
             v-for="mod in moduleCards"
             :key="mod.id"
-            :to="{ name: 'member.modules.view', params: { moduleId: mod.id } }"
             class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition"
           >
             <div class="h-28 bg-gray-50 flex items-center justify-center overflow-hidden">
@@ -130,12 +129,12 @@
               </div>
               <div class="mt-4 flex items-center justify-between">
                 <span class="text-xs text-gray-400">{{ $t("pages.memberDashboard.lastUpdate") }}</span>
-                <span class="text-sm font-medium text-brand-600 hover:text-brand-700 transition">
+                <button class="text-sm font-medium text-brand-600 hover:text-brand-700 transition">
                   {{ $t("pages.memberDashboard.continue") }}
-                </span>
+                </button>
               </div>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
 

@@ -35,6 +35,13 @@ public class GarneauTemplateDbContextInitializer
     {
         try
         {
+            var pendingMigrations = (await _context.Database.GetPendingMigrationsAsync()).ToList();
+            if (pendingMigrations.Count == 0)
+                return;
+
+            var allMigrations = _context.Database.GetMigrations().ToList();
+            var baselineMigration = allMigrations.FirstOrDefault();
+
             // If the database already has the schema (from old consolidated migrations),
             // mark the new migrations as applied instead of re-running them.
             var connection = _context.Database.GetDbConnection();
@@ -43,46 +50,29 @@ public class GarneauTemplateDbContextInitializer
             command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AspNetRoles'";
             var result = await command.ExecuteScalarAsync();
             var tablesAlreadyExist = result != null && Convert.ToInt32(result) > 0;
-            var allMigrations = _context.Database.GetMigrations().ToList();
-            var baselineMigration = allMigrations.FirstOrDefault();
 
             if (tablesAlreadyExist)
             {
-                await _context.Database.ExecuteSqlRawAsync(
-                    "IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__EFMigrationsHistory') " +
-                    "BEGIN " +
-                    "CREATE TABLE [__EFMigrationsHistory] ([MigrationId] nvarchar(150) NOT NULL, [ProductVersion] nvarchar(32) NOT NULL, CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])); " +
-                    "END");
-
-                await using var historyCommand = connection.CreateCommand();
-                historyCommand.CommandText = "SELECT COUNT(*) FROM [__EFMigrationsHistory]";
-                var historyResult = await historyCommand.ExecuteScalarAsync();
-                var historyCount = historyResult != null ? Convert.ToInt32(historyResult) : 0;
-
-                if (historyCount == 0)
-                {
-                    if (!string.IsNullOrWhiteSpace(baselineMigration))
-                    {
-                        await _context.Database.ExecuteSqlRawAsync(
-                            "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
-                            "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
-                            baselineMigration, "10.0.2");
-                        _logger.LogInformation("Marked baseline migration {Migration} as applied (schema already exists).", baselineMigration);
-                    }
-                }
-
-                var needsRepair = await NeedsSchemaRepairAsync();
-
-                if (needsRepair && !string.IsNullOrWhiteSpace(baselineMigration))
+                // If the schema already exists but migrations history does not, treat the
+                // first migration in the assembly as the baseline and skip re-running it.
+                if (!string.IsNullOrWhiteSpace(baselineMigration) && pendingMigrations.Contains(baselineMigration))
                 {
                     await _context.Database.ExecuteSqlRawAsync(
-                        "DELETE FROM [__EFMigrationsHistory] WHERE [MigrationId] <> {0}",
+                        "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
+                        "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
+                        baselineMigration, "10.0.2");
+                    _logger.LogInformation(
+                        "Marked baseline migration {MigrationId} as applied because the schema already exists.",
                         baselineMigration);
-                    _logger.LogWarning("Migration history repaired (removed non-baseline entries) to allow schema updates.");
                 }
-            }
 
-            await _context.Database.MigrateAsync();
+                // Run any remaining new migrations
+                await _context.Database.MigrateAsync();
+            }
+            else
+            {
+                await _context.Database.MigrateAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -270,12 +260,6 @@ public class GarneauTemplateDbContextInitializer
 
     private async Task SeedQuizzes()
     {
-        if (!await TableExistsAsync("Quizz"))
-        {
-            _logger.LogWarning("Skipping quiz seeding because table 'Quizz' does not exist.");
-            return;
-        }
-
         if (_context.Quizz.Any())
             return;
 
@@ -343,70 +327,5 @@ public class GarneauTemplateDbContextInitializer
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Seeded {Count} quizzes with {QCount} questions", quizzes.Length, allQuestions.Count);
-    }
-
-    private async Task<bool> TableExistsAsync(string tableName)
-    {
-        var connection = _context.Database.GetDbConnection();
-        var shouldClose = connection.State != System.Data.ConnectionState.Open;
-        if (shouldClose)
-            await connection.OpenAsync();
-        await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @table";
-        var param = command.CreateParameter();
-        param.ParameterName = "@table";
-        param.Value = tableName;
-        command.Parameters.Add(param);
-        var result = await command.ExecuteScalarAsync();
-        if (shouldClose)
-            await connection.CloseAsync();
-        return result != null && Convert.ToInt32(result) > 0;
-    }
-
-    private async Task<bool> ColumnExistsAsync(string tableName, string columnName)
-    {
-        var connection = _context.Database.GetDbConnection();
-        var shouldClose = connection.State != System.Data.ConnectionState.Open;
-        if (shouldClose)
-            await connection.OpenAsync();
-        await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table AND COLUMN_NAME = @column";
-        var tableParam = command.CreateParameter();
-        tableParam.ParameterName = "@table";
-        tableParam.Value = tableName;
-        command.Parameters.Add(tableParam);
-        var columnParam = command.CreateParameter();
-        columnParam.ParameterName = "@column";
-        columnParam.Value = columnName;
-        command.Parameters.Add(columnParam);
-        var result = await command.ExecuteScalarAsync();
-        if (shouldClose)
-            await connection.CloseAsync();
-        return result != null && Convert.ToInt32(result) > 0;
-    }
-
-    private async Task<bool> NeedsSchemaRepairAsync()
-    {
-        // Core tables that must exist for current code paths
-        if (!await TableExistsAsync("Modules"))
-            return true;
-        if (!await TableExistsAsync("MemberModules"))
-            return true;
-        if (!await TableExistsAsync("ModuleSections"))
-            return true;
-        if (!await TableExistsAsync("Messages"))
-            return true;
-        if (!await TableExistsAsync("Quizz"))
-            return true;
-
-        // Required renamed columns from the latest module structure
-        if (!await ColumnExistsAsync("Modules", "Name"))
-            return true;
-        if (!await ColumnExistsAsync("Modules", "Subject"))
-            return true;
-        if (!await ColumnExistsAsync("Modules", "Content"))
-            return true;
-
-        return false;
     }
 }
