@@ -137,6 +137,9 @@
               v-model="form.phoneNumber"
               type="text"
               placeholder="555-555-5555"
+              inputmode="numeric"
+              maxlength="12"
+              @input="handlePhoneNumberInput"
               @blur="touchField('phoneNumber')"
               class="w-full px-3 py-2 rounded-lg border text-sm transition-colors"
               :class="fieldError('phoneNumber') ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:ring-brand-500'"
@@ -171,6 +174,8 @@
               v-model="form.zipCode"
               type="text"
               placeholder="H0H 0H0"
+              maxlength="7"
+              @input="handleZipCodeInput"
               @blur="touchField('zipCode')"
               class="w-full px-3 py-2 rounded-lg border text-sm transition-colors"
               :class="fieldError('zipCode') ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:ring-brand-500'"
@@ -204,6 +209,7 @@ import {useMemberService, useAdministratorService} from "@/inversify.config";
 import {Role} from "@/types/enums";
 import type {IPerson} from "@/types/entities/person";
 import {validate} from "@/validation";
+import {formatPhoneNumberInput, formatPostalCodeInput} from "@/validation/formatters";
 import {required, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
 const {t} = useI18n();
@@ -238,6 +244,20 @@ const initials = computed(() => {
 
 function touchField(field: string) {
   touched[field] = true;
+}
+
+function handlePhoneNumberInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPhoneNumberInput(input.value);
+  form.phoneNumber = formattedValue;
+  input.value = formattedValue;
+}
+
+function handleZipCodeInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPostalCodeInput(input.value);
+  form.zipCode = formattedValue;
+  input.value = formattedValue;
 }
 
 function fieldError(field: string): string | undefined {

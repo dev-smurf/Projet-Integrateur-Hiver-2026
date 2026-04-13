@@ -71,6 +71,9 @@
               v-model="member.phoneNumber"
               type="tel"
               placeholder="555-555-5555"
+              inputmode="numeric"
+              maxlength="12"
+              @input="handlePhoneNumberInput"
               @blur="if (member.phoneNumber) validateField('phoneNumber', member.phoneNumber, [mustMatchPhoneNumberFormat]); else fieldErrors.phoneNumber = undefined;"
               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
               :class="fieldErrors.phoneNumber ? 'border-red-400' : 'border-gray-300'"
@@ -93,6 +96,8 @@
               v-model="member.zipCode"
               type="text"
               placeholder="A1A 1A1"
+              maxlength="7"
+              @input="handleZipCodeInput"
               @blur="if (member.zipCode) validateField('zipCode', member.zipCode, [mustMatchZipCodeFormat]); else fieldErrors.zipCode = undefined;"
               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
               :class="fieldErrors.zipCode ? 'border-red-400' : 'border-gray-300'"
@@ -144,6 +149,7 @@ import {useEquipesService, useMemberService} from "@/inversify.config";
 import Select2Multi from "@/components/forms/Select2Multi.vue";
 import {Equipe, Member} from "@/types/entities";
 import {validate} from "@/validation";
+import {formatPhoneNumberInput, formatPostalCodeInput} from "@/validation/formatters";
 import type {Rule} from "@/validation/rules";
 import {required, mustMatchEmailFormat, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
@@ -179,6 +185,20 @@ onMounted(async () => {
 function validateField(field: string, value: string, rules: Rule[]) {
   const result = validate(value, rules);
   fieldErrors[field] = result.valid ? undefined : result.message;
+}
+
+function handlePhoneNumberInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPhoneNumberInput(input.value);
+  member.phoneNumber = formattedValue;
+  input.value = formattedValue;
+}
+
+function handleZipCodeInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPostalCodeInput(input.value);
+  member.zipCode = formattedValue;
+  input.value = formattedValue;
 }
 
 function validateForm(): boolean {
