@@ -288,6 +288,15 @@
       }
     },
     "resetPassword": {
+      "passwordRequirements": {
+        "title": "Votre mot de passe doit respecter les criteres suivants :",
+        "minLength": "Au moins 10 caracteres",
+        "uppercase": "Au moins une lettre majuscule",
+        "lowercase": "Au moins une lettre minuscule",
+        "digit": "Au moins un chiffre",
+        "special": "Au moins un caractere special",
+        "uniqueChars": "Au moins 6 caracteres differents"
+      },
       "validation": {
         "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
         "invalidUserId": "L'identifiant de l'utilisateur est invalide.",

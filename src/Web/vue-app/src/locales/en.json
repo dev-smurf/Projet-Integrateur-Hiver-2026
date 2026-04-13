@@ -284,6 +284,15 @@
       }
     },
     "resetPassword": {
+      "passwordRequirements": {
+        "title": "Your password must meet the following requirements:",
+        "minLength": "At least 10 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "digit": "At least one digit",
+        "special": "At least one special character",
+        "uniqueChars": "At least 6 unique characters"
+      },
       "validation": {
         "success": "The password was successfully reset. You'll be redirected to the login page.",
         "invalidUserId": "The user id is not valid.",
