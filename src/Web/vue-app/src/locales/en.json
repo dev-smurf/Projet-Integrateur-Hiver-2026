@@ -277,6 +277,7 @@
       "tooltip": "If username is valid, an email will be sent to the address specified with a link to reset your password.",
       "validation": {
         "success": "Reset password email sent.",
+        "userNotFound": "No account is associated with this email address.",
         "invalidUsername": "The username is not valid.",
         "invalidResetPasswordRelativeUrl": "The reset password URL could not be found.",
         "errorOccured": "An error occurred while sending reset password email."
