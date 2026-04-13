@@ -43,6 +43,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             UserId = member.User.Id,
             Created = member.Created.ToDateTimeUtc(),
             Active = member.Active,
+            AccountActivated = !string.IsNullOrWhiteSpace(member.User.PasswordHash),
             FirstName = member.FirstName,
             LastName = member.LastName,
             FullName = member.FullName,

@@ -90,9 +90,9 @@
                 <dd>
                   <span
                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                    :class="member?.active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600'"
+                    :class="member?.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                   >
-                    {{ member?.active ? "Actif" : "Inactif" }}
+                    {{ member?.accountActivated ? "Compte actif" : "En attente de validation" }}
                   </span>
                 </dd>
               </div>
@@ -318,9 +318,8 @@ const createdAt = computed(() => {
 
 const addressLine = computed(() => {
   const street = member.value?.street || "";
-  const apartment = member.value?.apartment ? `#${member.value.apartment}` : "";
   const zip = member.value?.zipCode || "";
-  const joined = [street, apartment, zip].filter(Boolean).join(" ");
+  const joined = [street, zip].filter(Boolean).join(" ");
   return joined || "N/A";
 });
 
