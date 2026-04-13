@@ -11,6 +11,20 @@
     </div>
 
     <form v-if="!successMessage" @submit.prevent="handleResetPassword" class="space-y-4 mt-6">
+      <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+        <p class="text-sm font-semibold text-amber-900 mb-2">
+          {{ $t('pages.resetPassword.passwordRequirements.title') }}
+        </p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.minLength') }}</li>
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.uppercase') }}</li>
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.lowercase') }}</li>
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.digit') }}</li>
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.special') }}</li>
+          <li class="text-sm text-amber-800">{{ $t('pages.resetPassword.passwordRequirements.uniqueChars') }}</li>
+        </ul>
+      </div>
+
       <div>
         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.password') }}</label>
         <input
