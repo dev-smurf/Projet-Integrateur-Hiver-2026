@@ -295,7 +295,8 @@
         "lowercase": "Au moins une lettre minuscule",
         "digit": "Au moins un chiffre",
         "special": "Au moins un caractere special",
-        "uniqueChars": "Au moins 6 caracteres differents"
+        "uniqueChars": "Au moins 6 caracteres differents",
+        "match": "La confirmation correspond au mot de passe"
       },
       "validation": {
         "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
