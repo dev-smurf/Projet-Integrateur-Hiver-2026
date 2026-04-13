@@ -78,16 +78,6 @@
             <p v-if="fieldErrors.phoneNumber" class="text-sm text-red-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneExtension') }}</label>
-            <input v-model.number="member.phoneExtension" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.apartment') }}</label>
-            <input v-model.number="member.apartment" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-          </div>
-          <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.street') }}</label>
             <input v-model="member.street" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
           </div>
