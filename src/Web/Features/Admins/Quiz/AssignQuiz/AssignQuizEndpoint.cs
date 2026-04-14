@@ -32,7 +32,23 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
         if (quiz == null)
             throw new KeyNotFoundException($"Quiz with ID {req.QuizId} not found");
 
-        var assignments = req.UserIds
+        var existingAssignments = await _assignmentRepository.GetByQuizIdAsync(req.QuizId);
+        var existingUserIds = existingAssignments
+            .Where(a => !a.Deleted.HasValue)
+            .Select(a => a.UserId)
+            .ToHashSet();
+
+        var newUserIds = req.UserIds
+            .Where(userId => !existingUserIds.Contains(userId))
+            .ToList();
+
+        if (newUserIds.Count == 0)
+        {
+            await Send.NoContentAsync(ct);
+            return;
+        }
+
+        var assignments = newUserIds
             .Select(userId => new QuizAssignment
             {
                 QuizId = req.QuizId,

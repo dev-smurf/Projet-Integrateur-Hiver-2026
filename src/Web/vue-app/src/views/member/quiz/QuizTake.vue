@@ -47,11 +47,13 @@
             <label class="text-sm text-gray-600">{{ $t('quiz.rate') }} 1-10</label>
           </div>
           <div class="space-y-2 mb-4">
-            <div class="flex justify-between text-xs text-gray-500">
-              <span>{{ $t('quiz.never') }}</span>
-              <span>{{ $t('quiz.sometimes') }}</span>
-              <span>{{ $t('quiz.always') }}</span>
+            <!-- Display all scale labels if available -->
+            <div class="flex gap-2 text-xs text-gray-500 font-semibold">
+              <div v-for="score in 10" :key="`label-${score}`" class="flex-1 text-center">
+                {{ currentQuestion.scaleLabels && currentQuestion.scaleLabels[score - 1] ? currentQuestion.scaleLabels[score - 1] : '' }}
+              </div>
             </div>
+            <!-- Score buttons -->
             <div class="flex gap-2">
               <button
                 v-for="score in 10"
@@ -158,7 +160,6 @@ const quiz = ref<Quiz | null>(null)
 const loading = ref(true)
 const currentQuestionIndex = ref(0)
 const responses = ref<Record<string, any>>({})
-
 onMounted(async () => {
   try {
     const quizId = route.params.quizId as string
@@ -172,7 +173,7 @@ onMounted(async () => {
         selectedTextResponse: ''
       }
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to load quiz:', error)
   } finally {
     loading.value = false

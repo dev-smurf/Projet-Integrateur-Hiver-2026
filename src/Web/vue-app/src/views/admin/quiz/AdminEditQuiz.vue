@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.quiz.edit.name') }}</h1>
 
     <!-- Loading State -->
@@ -98,14 +98,7 @@
             @dragover.prevent="dragOver($event, qIdx)"
             @drop.prevent="dragDrop($event, qIdx)"
             @dragend="dragEnd"
-            :class="[
-              'border-2 rounded-lg p-4 transition cursor-move',
-              draggedIndex === qIdx
-                ? 'opacity-50 bg-blue-50 border-blue-400'
-                : dragOverIndex === qIdx
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-            ]"
+            class="border-2 border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
           >
             <!-- Drag Handle -->
             <div class="flex items-start gap-2 mb-3">
@@ -120,13 +113,21 @@
                     <h4 class="text-sm font-bold text-gray-900">{{ $t('quiz.question') }} {{ qIdx + 1 }}</h4>
                     <p class="text-xs text-gray-500">{{ $t('quiz.dragToReorder') }}</p>
                   </div>
-                  <button
-                    type="button"
-                    @click="removeQuestion(qIdx)"
-                    class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
-                  >
-                    {{ $t('quiz.remove') }}
-                  </button>
+                  <div class="flex items-center gap-2">
+                    <div class="flex gap-1">
+                      <button type="button" @click="moveQuestionToTop(qIdx)" class="px-2 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">⤒</button>
+                      <button type="button" @click="moveQuestionUp(qIdx)" class="px-2 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">▲</button>
+                      <button type="button" @click="moveQuestionDown(qIdx)" class="px-2 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">▼</button>
+                      <button type="button" @click="moveQuestionToBottom(qIdx)" class="px-2 py-1 text-xs bg-gray-100 rounded hover:bg-gray-200">⤓</button>
+                    </div>
+                    <button
+                      type="button"
+                      @click="removeQuestion(qIdx)"
+                      class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
+                    >
+                      {{ $t('quiz.remove') }}
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Question Text -->
@@ -171,18 +172,28 @@
                   <label class="block text-xs font-medium text-gray-600 mb-2">{{ $t('quiz.scaleLabels_title') }}</label>
                   <div class="space-y-2">
                     <!-- Input Fields -->
-                    <div class="grid grid-cols-3 gap-2">
-                      <input v-model="question.scaleMinLabel" type="text" :placeholder="$t('quiz.scaleMinLabel')" class="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
-                      <input v-model="question.scaleMidLabel" type="text" :placeholder="$t('quiz.scaleMidLabel')" class="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
-                      <input v-model="question.scaleMaxLabel" type="text" :placeholder="$t('quiz.scaleMaxLabel')" class="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+                    <!-- Per-step label inputs (1..10) -->
+                    <!-- Per-step label inputs (1..10) - responsive grid (wraps to multiple rows) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                      <div v-for="(lbl, idx) in question.scaleLabels" :key="idx" class="flex flex-col">
+                        <div class="text-xs text-gray-500 mb-1">{{ idx + 1 }}</div>
+                        <input v-model="question.scaleLabels[idx]" :placeholder="(idx===0? $t('quiz.scaleMinLabel') : (idx===4? $t('quiz.scaleMidLabel') : (idx===9? $t('quiz.scaleMaxLabel') : '')) )" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+                      </div>
                     </div>
-                    <!-- Preview -->
-                    <div class="text-xs text-gray-500 mb-1">{{ $t('quiz.scalePreview') }}</div>
-                    <div class="grid grid-cols-3 gap-2">
-                      <div class="px-2 py-1 bg-blue-50 border border-blue-200 rounded text-center text-xs font-medium text-blue-900">{{ question.scaleMinLabel || 'Jamais' }}</div>
-                      <div class="px-2 py-1 bg-blue-50 border border-blue-200 rounded text-center text-xs font-medium text-blue-900">{{ question.scaleMidLabel || 'Parfois' }}</div>
-                      <div class="px-2 py-1 bg-blue-50 border border-blue-200 rounded text-center text-xs font-medium text-blue-900">{{ question.scaleMaxLabel || 'Toujours' }}</div>
+                    <!-- Preview: match player view (labels + 1..10 buttons) -->
+                    <div class="text-xs text-gray-500 mb-1 mt-2">{{ $t('quiz.scalePreview') }}</div>
+                    <div class="mb-2">
+                      <div class="overflow-x-auto">
+                        <div class="flex gap-3 px-2 items-start">
+                          <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="min-w-[64px] flex flex-col items-center">
+                            <div v-if="lbl" class="text-xs text-gray-600 mb-1 text-center break-words w-full">{{ lbl }}</div>
+                            <div v-else class="h-3 mb-1" />
+                            <div class="py-2 px-3 rounded font-bold text-center bg-gray-200 text-gray-800 w-full">{{ idx + 1 }}</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                <!-- secondary preview removed; single player-style preview remains above -->
                   </div>
                 </div>
 
@@ -284,7 +295,7 @@ onMounted(async () => {
     const quiz = await quizService.getById(quizId)
 
     if (quiz) {
-      const questions = quiz.questions.map((q: any) => ({
+        const questions = quiz.questions.map((q: any) => ({
         id: q.id,
         questionText: q.questionText,
         questionType: q.questionType,
@@ -293,6 +304,15 @@ onMounted(async () => {
         scaleMinLabel: q.scaleMinLabel || 'Jamais',
         scaleMidLabel: q.scaleMidLabel || 'Parfois',
         scaleMaxLabel: q.scaleMaxLabel || 'Toujours',
+        // local-only per-step labels (1..10) - prefer ScaleLabels from server if present
+        scaleLabels: (q.scaleLabels && q.scaleLabels.length === 10)
+          ? q.scaleLabels
+          : Array.from({ length: 10 }, (_, i) => {
+              if (i === 0) return q.scaleMinLabel || 'Jamais'
+              if (i === 4) return q.scaleMidLabel || 'Parfois'
+              if (i === 9) return q.scaleMaxLabel || 'Toujours'
+              return ''
+            }),
         responses: q.responses.map((r: any) => ({
           id: r.id,
           responseText: r.responseText,
@@ -378,6 +398,15 @@ async function handleSubmit() {
   apiErrors.value = []
 
   try {
+    // sync scaleLabels -> scaleMin/Mid/Max so admin edits persist
+    form.value.questions.forEach((q: any) => {
+      if (q.scaleLabels && q.scaleLabels.length === 10) {
+        q.scaleMinLabel = q.scaleLabels[0] || q.scaleMinLabel
+        q.scaleMidLabel = q.scaleLabels[4] || q.scaleMidLabel
+        q.scaleMaxLabel = q.scaleLabels[9] || q.scaleMaxLabel
+      }
+    })
+
     await quizService.update({
       id: form.value.id,
       titre: form.value.titre,
@@ -408,6 +437,7 @@ async function handleSubmit() {
           scaleMinLabel: question.scaleMinLabel || 'Jamais',
           scaleMidLabel: question.scaleMidLabel || 'Parfois',
           scaleMaxLabel: question.scaleMaxLabel || 'Toujours',
+          scaleLabels: question.scaleLabels || undefined,
           responses: question.responses.map((r: any) => ({
             id: r.id && r.id.trim() !== '' ? r.id : undefined,
             responseText: r.responseText,
@@ -424,6 +454,7 @@ async function handleSubmit() {
           scaleMinLabel: question.scaleMinLabel || 'Jamais',
           scaleMidLabel: question.scaleMidLabel || 'Parfois',
           scaleMaxLabel: question.scaleMaxLabel || 'Toujours',
+          scaleLabels: question.scaleLabels || undefined,
           responses: question.responses.map((r: any) => ({
             responseText: r.responseText,
             order: r.order
@@ -462,6 +493,34 @@ function addQuestion() {
 
 function removeQuestion(index: number) {
   form.value.questions.splice(index, 1)
+}
+
+function moveQuestionUp(index: number) {
+  if (index <= 0) return
+  const q = form.value.questions.splice(index, 1)[0]
+  form.value.questions.splice(index - 1, 0, q)
+  form.value.questions.forEach((q, idx) => q.order = idx)
+}
+
+function moveQuestionDown(index: number) {
+  if (index >= form.value.questions.length - 1) return
+  const q = form.value.questions.splice(index, 1)[0]
+  form.value.questions.splice(index + 1, 0, q)
+  form.value.questions.forEach((q, idx) => q.order = idx)
+}
+
+function moveQuestionToTop(index: number) {
+  if (index <= 0) return
+  const q = form.value.questions.splice(index, 1)[0]
+  form.value.questions.unshift(q)
+  form.value.questions.forEach((q, idx) => q.order = idx)
+}
+
+function moveQuestionToBottom(index: number) {
+  if (index >= form.value.questions.length - 1) return
+  const q = form.value.questions.splice(index, 1)[0]
+  form.value.questions.push(q)
+  form.value.questions.forEach((q, idx) => q.order = idx)
 }
 
 function addResponse(questionIndex: number) {

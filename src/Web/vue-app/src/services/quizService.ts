@@ -27,6 +27,7 @@ export interface QuizQuestion {
   order: number
   questionType: QuizQuestionType
   placeholder?: string
+  scaleLabels?: string[]
   responses: QuizResponse[]
 }
 
@@ -255,6 +256,30 @@ export class QuizService extends ApiService implements IQuizService {
       await this
         ._httpClient
         .delete(`${import.meta.env.VITE_API_BASE_URL}/quiz/questions/${questionId}`)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  public async getAssignments(quizId: string): Promise<{ id: string; userId: string }[]> {
+    try {
+      const response = await this
+        ._httpClient
+        .get<{ id: string; userId: string }[], AxiosResponse<{ id: string; userId: string }[]>>(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/assignments`)
+      return response.data
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  public async unassignQuiz(quizId: string, userIds: string[]): Promise<void> {
+    try {
+      await this
+        ._httpClient
+        .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/unassign`, {
+          quizId,
+          userIds
+        })
     } catch (error) {
       return Promise.reject(error)
     }

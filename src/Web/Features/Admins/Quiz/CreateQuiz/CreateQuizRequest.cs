@@ -19,6 +19,7 @@ public class CreateQuizQuestionRequest
     public string ScaleMinLabel { get; set; } = "Jamais";
     public string ScaleMidLabel { get; set; } = "Parfois";
     public string ScaleMaxLabel { get; set; } = "Toujours";
+    public List<string> ScaleLabels { get; set; } = new();
     public List<CreateQuizResponseRequest> Responses { get; set; } = new();
 }
 

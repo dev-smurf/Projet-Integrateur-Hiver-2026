@@ -25,7 +25,6 @@
             placeholder="Search users by name or email..."
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
-          <p class="text-xs text-gray-500 mt-1">{{ selectedUserIds.length }} selected</p>
         </div>
 
         <!-- Loading State -->
@@ -33,32 +32,43 @@
           <div v-for="n in 3" :key="n" class="h-12 bg-gray-200 rounded animate-pulse"></div>
         </div>
 
-        <!-- User List with Checkboxes -->
-        <div v-else class="space-y-2">
-          <div
-            v-if="filteredUsers.length === 0"
-            class="text-center py-8 text-gray-500"
-          >
-            <p v-if="users.length === 0">No users found in system.</p>
-            <p v-else>No users match your search.</p>
+        <!-- Two-column assignment panel -->
+        <div v-else class="grid grid-cols-12 gap-4">
+          <!-- Unassigned -->
+          <div class="col-span-5 border rounded-lg p-3 bg-gray-50">
+            <h4 class="text-sm font-semibold mb-2">Non assignés</h4>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+              <label v-for="user in filteredUnassigned" :key="user.id" class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition">
+                <input type="checkbox" :value="(user as any).userId ?? (user as any).id ?? ''" v-model="leftSelected" class="w-4 h-4 text-blue-600 rounded focus:ring-2" />
+                <div class="ml-3">
+                  <p class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</p>
+                  <p class="text-xs text-gray-500">{{ user.email }}</p>
+                </div>
+              </label>
+              <div v-if="filteredUnassigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">Aucun utilisateur</div>
+            </div>
           </div>
 
-          <label
-            v-for="user in filteredUsers"
-            :key="user.id"
-            class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 cursor-pointer transition"
-          >
-            <input
-              type="checkbox"
-              :value="user.userId || user.id"
-              v-model="selectedUserIds"
-              class="w-4 h-4 text-blue-600 rounded focus:ring-2"
-            />
-            <div class="ml-3 flex-1">
-              <p class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</p>
-              <p class="text-sm text-gray-500">{{ user.email }}</p>
+          <!-- Controls -->
+          <div class="col-span-2 flex flex-col items-center justify-center gap-2">
+            <button type="button" @click="moveRight" class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">&gt;</button>
+            <button type="button" @click="moveLeft" class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">&lt;</button>
+          </div>
+
+          <!-- Assigned -->
+          <div class="col-span-5 border rounded-lg p-3 bg-gray-50">
+            <h4 class="text-sm font-semibold mb-2">Assignés</h4>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+              <label v-for="user in filteredAssigned" :key="user.id" class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition">
+                <input type="checkbox" :value="(user as any).userId ?? (user as any).id ?? ''" v-model="rightSelected" class="w-4 h-4 text-blue-600 rounded focus:ring-2" />
+                <div class="ml-3">
+                  <p class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</p>
+                  <p class="text-xs text-gray-500">{{ user.email }}</p>
+                </div>
+              </label>
+              <div v-if="filteredAssigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">Aucun utilisateur assigné</div>
             </div>
-          </label>
+          </div>
         </div>
       </div>
 
@@ -72,10 +82,10 @@
         </button>
         <button
           @click="handleAssign"
-          :disabled="selectedUserIds.length === 0 || assigning"
+          :disabled="changesCount === 0 || assigning"
           class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ assigning ? 'Assigning...' : `Assign to ${selectedUserIds.length} User(s)` }}
+          {{ assigning ? 'Updating...' : 'Apply changes (' + changesCount + ')' }}
         </button>
       </div>
     </div>
@@ -104,25 +114,112 @@ const quizService = useQuizService()
 
 const users = ref<Member[]>([])
 const searchQuery = ref('')
-const selectedUserIds = ref<string[]>([])
+const leftSelected = ref<string[]>([]) // selected in unassigned column
+const rightSelected = ref<string[]>([]) // selected in assigned column
+const initialAssignedIds = ref<string[]>([])
+const currentAssignedIds = ref<string[]>([])
 const assigning = ref(false)
 const loading = ref(false)
 
-const filteredUsers = computed(() => {
-  if (!searchQuery.value|| searchQuery.value.trim() === '') return users.value  
-  const query = searchQuery.value.toLowerCase()
-  return users.value.filter(u => {
-    const fullName = `${u.firstName} ${u.lastName}`.toLowerCase()
-    return fullName.includes(query) || (u.email?.toLowerCase().includes(query) ?? false)
+const changesCount = computed(() => {
+  const toAssign = currentAssignedIds.value.filter(id => !initialAssignedIds.value.includes(id))
+  const toUnassign = initialAssignedIds.value.filter(id => !currentAssignedIds.value.includes(id))
+  return toAssign.length + toUnassign.length
+})
+
+const filteredUnassigned = computed(() => {
+  const query = (searchQuery.value || '').toLowerCase()
+  return users.value
+    .filter(u => {
+      const id = (u as any).userId ?? (u as any).id ?? ''
+      return !currentAssignedIds.value.includes(id)
+    })
+    .filter(u => {
+      if (!query) return true
+      const fullName = `${u.firstName} ${u.lastName}`.toLowerCase()
+      return fullName.includes(query) || (u.email?.toLowerCase().includes(query) ?? false)
+    })
+})
+
+const filteredAssigned = computed(() => {
+  const query = (searchQuery.value || '').toLowerCase()
+  return users.value
+    .filter(u => {
+      const id = (u as any).userId ?? (u as any).id ?? ''
+      return currentAssignedIds.value.includes(id)
+    })
+    .filter(u => {
+      if (!query) return true
+      const fullName = `${u.firstName} ${u.lastName}`.toLowerCase()
+      return fullName.includes(query) || (u.email?.toLowerCase().includes(query) ?? false)
+    })
+})
+
+
+
+async function handleAssign() {
+  assigning.value = true
+  try {
+    const toAssign = currentAssignedIds.value.filter(id => !initialAssignedIds.value.includes(id))
+    const toUnassign = initialAssignedIds.value.filter(id => !currentAssignedIds.value.includes(id))
+
+    if (toAssign.length > 0) {
+      await quizService.assignQuiz(props.quizId, toAssign)
+    }
+
+    if (toUnassign.length > 0) {
+      // convert ids to GUIDs for backend
+      await quizService.unassignQuiz(props.quizId, toUnassign)
+    }
+
+    notify({ type: 'success', text: 'Assignments updated successfully!' })
+    emit('assigned')
+  } catch (err: any) {
+    console.error('Failed to update assignments:', err)
+    notify({ type: 'error', text: err.response?.data?.message || 'Failed to update assignments' })
+  } finally {
+    assigning.value = false
+  }
+}
+
+function moveRight() {
+  // move selected from unassigned to assigned
+  leftSelected.value.forEach(id => {
+    if (!currentAssignedIds.value.includes(id)) currentAssignedIds.value.push(id)
   })
+  leftSelected.value = []
+}
+
+function moveLeft() {
+  // move selected from assigned to unassigned
+  rightSelected.value.forEach(id => {
+    const idx = currentAssignedIds.value.indexOf(id)
+    if (idx !== -1) currentAssignedIds.value.splice(idx, 1)
+  })
+  rightSelected.value = []
+}
+
+onMounted(() => {
+  console.log('AssignQuizModal mounted for quizId=', props.quizId)
+  loadUsers()
 })
 
 async function loadUsers() {
+  console.log('AssignQuizModal.loadUsers start', props.quizId)
   loading.value = true
   try {
     // Load first page with high page size to get most users
     const response = await memberService.search(1, 1000,'')
     users.value = response.items || []
+    // load existing assignments for this quiz
+    try {
+      const assignments = await quizService.getAssignments(props.quizId)
+      const ids = assignments.map((a: any) => a.userId)
+      initialAssignedIds.value = ids
+      currentAssignedIds.value = [...ids]
+    } catch (err) {
+      console.warn('Failed to load quiz assignments:', err)
+    }
   } catch (err) {
     console.error('Failed to load users:', err)
     notify({ type: 'error', text: 'Failed to load users' })
@@ -130,24 +227,4 @@ async function loadUsers() {
     loading.value = false
   }
 }
-
-async function handleAssign() {
-  if (selectedUserIds.value.length === 0) return
-
-  assigning.value = true
-  try {
-    await quizService.assignQuiz(props.quizId, selectedUserIds.value)
-    notify({ type: 'success', text: 'Quiz assigned successfully!' })
-    emit('assigned')
-  } catch (err: any) {
-    console.error('Failed to assign quiz:', err)
-    notify({ type: 'error', text: err.response?.data?.message || 'Failed to assign quiz' })
-  } finally {
-    assigning.value = false
-  }
-}
-
-onMounted(() => {
-  loadUsers()
-})
 </script>
