@@ -2,6 +2,7 @@ using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Web.Dtos;
+using Domain.Extensions;
 
 namespace Web.Features.Admins.Members.GetMemberModules;
 
@@ -32,6 +33,7 @@ public class GetMemberModulesEndpoint : Endpoint<GetMemberModulesRequest, List<M
             Name = mm.Module.Name,
             Subject = mm.Module.Subject,
             CardImageUrl = mm.Module.CardImageUrl,
+            AssignedAt = mm.Created.ToDateTimeUtc(),
             ProgressPercent = mm.ProgressPercent,
             IsCompleted = mm.IsCompleted
         }).ToList();

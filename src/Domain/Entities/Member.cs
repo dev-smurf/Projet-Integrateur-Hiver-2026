@@ -17,6 +17,8 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public string? Street { get; private set; }
     public string? City { get; private set; }
     public string? ZipCode { get; private set; }
+    public string? AdminNotes { get; private set; }
+    public bool AdminNotesVisibleToMember { get; private set; }
     public User User { get; private set; } = null!;
 
     public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
@@ -44,6 +46,8 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public void SetStreet(string? street) => Street = street;
     public void SetCity(string? city) => City = city;
     public void SetZipCode(string? zipCode) => ZipCode = zipCode;
+    public void SetAdminNotes(string? adminNotes) => AdminNotes = adminNotes;
+    public void SetAdminNotesVisibleToMember(bool visible) => AdminNotesVisibleToMember = visible;
     public void SetUser(User user) => User = user;
 
     public void OnCreated(User user)
@@ -78,5 +82,6 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
         Street = Street?.Trim().CapitalizeFirstLetterOfEachWord();
         City = City?.Trim().CapitalizeFirstLetterOfEachWord();
         ZipCode = ZipCode?.Trim().ToUpper();
+        AdminNotes = string.IsNullOrWhiteSpace(AdminNotes) ? null : AdminNotes.Trim();
     }
 }
