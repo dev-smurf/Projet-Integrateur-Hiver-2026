@@ -16,6 +16,8 @@ public class MemberDto
     public string Street { get; set; } = null!;
     public string City { get; set; } = null!;
     public string ZipCode { get; set; } = null!;
+    public string? AdminNotes { get; set; }
+    public bool AdminNotesVisibleToMember { get; set; }
     public List<string> Roles { get; set; } = null!;
     public List<Guid> EquipeIds { get; set; } = [];
 }
