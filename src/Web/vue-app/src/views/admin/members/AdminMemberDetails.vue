@@ -297,11 +297,19 @@
         <textarea
           v-model="notesText"
           rows="5"
-          placeholder="Ajouter des notes confidentielles sur ce membre..."
+          placeholder="Ajouter des notes sur ce membre..."
           class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
         />
+        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
+          <input
+            v-model="notesVisibleToMember"
+            type="checkbox"
+            class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+          />
+          Rendre ces notes visibles par ce membre
+        </label>
         <p class="mt-2 text-xs text-gray-500">
-          Notes sauvegardees localement pour cet appareil.
+          Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir.
         </p>
       </div>
 
@@ -333,6 +341,7 @@ const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
 const removingModule = ref<Record<string, boolean>>({});
 const notesText = ref("");
+const notesVisibleToMember = ref(false);
 const savingNotes = ref(false);
 
 const selectedModuleIds = ref<string[]>([]);
@@ -446,7 +455,9 @@ async function loadData() {
   memberModules.value.forEach(item => {
     progressEdits.value[item.moduleId] = item.progressPercent;
   });
-  notesText.value = localStorage.getItem(`admin-member-notes:${memberId.value}`) ?? "";
+  progressEdits.value = nextEdits;
+  notesText.value = member.value?.adminNotes ?? "";
+  notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
   loading.value = false;
 }
 
@@ -489,10 +500,22 @@ async function removeModule(item: MemberModuleDto) {
   removingModule.value[item.moduleId] = false;
 }
 
-function saveNotes() {
+async function saveNotes() {
+  if (!member.value?.id) return;
   savingNotes.value = true;
-  localStorage.setItem(`admin-member-notes:${memberId.value}`, notesText.value);
-  notify({ type: "success", text: "Notes enregistrees localement." });
+  const response = await memberService.updateMember({
+    ...member.value,
+    adminNotes: notesText.value.trim() || undefined,
+    adminNotesVisibleToMember: notesVisibleToMember.value
+  });
+  if (response.succeeded) {
+    member.value = await memberService.getMember(memberId.value);
+    notesText.value = member.value?.adminNotes ?? "";
+    notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
+    notify({type: "success", text: "Notes enregistrees."});
+  } else {
+    notify({type: "error", text: "Impossible d'enregistrer les notes."});
+  }
   savingNotes.value = false;
 }
 

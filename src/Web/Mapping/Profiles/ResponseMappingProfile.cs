@@ -26,7 +26,8 @@ public class ResponseMappingProfile : Profile
         CreateMap<Member, GetMeMemberResponse>()
             .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.User.RoleNames))
             .ForMember(x => x.PhoneNumber, opt => opt.MapFrom(x => x.GetPhoneNumber()))
-            .ForMember(x => x.PhoneExtension, opt => opt.MapFrom(x => x.GetPhoneExtension()));
+            .ForMember(x => x.PhoneExtension, opt => opt.MapFrom(x => x.GetPhoneExtension()))
+            .ForMember(x => x.VisibleAdminNotes, opt => opt.MapFrom(x => x.AdminNotesVisibleToMember ? x.AdminNotes : null));
 
         CreateMap<Administrator, GetMeAdminResponse>();
 
