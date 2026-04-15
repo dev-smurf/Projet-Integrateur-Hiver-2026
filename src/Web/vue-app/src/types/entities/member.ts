@@ -15,6 +15,9 @@ export class Member implements IPerson {
   street?: string
   city?: string
   zipCode?: string
+  adminNotes?: string
+  adminNotesVisibleToMember?: boolean
+  visibleAdminNotes?: string
   userId?: string
   roles?: string[]
   equipeIds: string[] = []

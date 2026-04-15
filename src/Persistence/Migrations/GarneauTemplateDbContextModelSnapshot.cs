@@ -590,6 +590,12 @@ namespace Persistence.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("AdminNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("AdminNotesVisibleToMember")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Apartment")
                         .HasColumnType("int");
 

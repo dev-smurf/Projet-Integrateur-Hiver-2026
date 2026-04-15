@@ -6,6 +6,7 @@ public class MemberModuleDto
     public string? Name { get; set; }
     public string? Subject { get; set; }
     public string? CardImageUrl { get; set; }
+    public DateTime AssignedAt { get; set; }
     public int ProgressPercent { get; set; }
     public bool IsCompleted { get; set; }
 }
