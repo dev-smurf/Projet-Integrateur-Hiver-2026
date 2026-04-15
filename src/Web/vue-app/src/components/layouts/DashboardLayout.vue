@@ -5,12 +5,10 @@
         <nav class="sticky top-0 h-screen w-64 shrink-0 flex flex-col backdrop-blur border-r border-white/10 z-50"
              style="background-color: #4c6367;">
 
-            <!-- Logo / Titre -->
             <div class="flex items-center h-16 px-6 border-b border-white/10">
                 <span class="font-semibold text-lg" style="color: #98ff98;">Mon App</span>
             </div>
 
-            <!-- Liens de navigation -->
             <div class="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-1">
                 <router-link :to="{ name: 'dashboard' }"
                              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
@@ -43,7 +41,6 @@
                     {{ $t('routes.quiz.name') }}
                 </router-link>
 
-                <!-- Séparateur Admin -->
                 <div v-if="userStore.hasRole(Role.Admin)" class="my-2 border-t" style="border-color: #907288;" />
 
                 <router-link v-if="userStore.hasRole(Role.Admin)"
@@ -69,12 +66,24 @@
                     <UsersRound class="w-4 h-4 shrink-0" />
                     {{ $t("routes.admin.children.equipes.name") }}
                 </router-link>
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.availability' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('availability') ? 'active-link' : 'inactive-link'">
+                    <Calendar class="w-4 h-4 shrink-0" />
+                    {{ $t('appointment.availability') }}
+                </router-link>
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.quiz.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('quiz') ? 'active-link' : 'inactive-link'">
+                    <Brain class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.admin.children.members.quiz.name') }}
+                </router-link>
             </div>
 
-            <!-- Bas de la sidebar : profil + langue + logout -->
             <div class="border-t px-3 py-4 flex flex-col gap-1" style="border-color: #907288;">
 
-                <!-- Langue -->
                 <div class="relative">
                     <button @click="langOpen = !langOpen"
                             class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium"
@@ -168,7 +177,7 @@
     import {
         LayoutDashboard, BookOpen, Shield, LogOut, Languages,
         CheckCircle2, XCircle, X, Users, Layers, UsersRound,
-        ClipboardCheck
+        ClipboardCheck,Brain,Calendar
     } from "lucide-vue-next";
     import { useUserStore } from "@/stores/userStore";
     import { usePersonStore } from "@/stores/personStore";

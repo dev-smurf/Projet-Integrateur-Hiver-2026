@@ -37,7 +37,6 @@
                  style="background-color: rgba(144,114,136,0.2);" />
         </section>
 
-        <!-- Stats -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white border border-gray-200 rounded-xl p-4">
                 <div class="flex items-center justify-between">
@@ -76,14 +75,14 @@
         <!-- Modules + Sidebar -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- Liste des modules -->
+
             <div class="lg:col-span-2 space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-gray-900">{{ $t("pages.memberDashboard.modulesTitle") }}</h2>
                     <span class="text-sm text-gray-500">{{ totalModules }} {{ $t("pages.memberDashboard.modulesCount") }}</span>
                 </div>
 
-                <!-- Skeleton loading -->
+
                 <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div v-for="n in 4" :key="n" class="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
                         <div class="h-24 bg-gray-100 rounded-lg mb-4" />
@@ -150,10 +149,8 @@
                 </div>
             </div>
 
-            <!-- Sidebar droite -->
             <div class="space-y-4">
 
-                <!-- Progression globale -->
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="font-semibold text-gray-900">{{ $t("pages.memberDashboard.progressTitle") }}</h3>
@@ -172,7 +169,6 @@
                     </div>
                 </div>
 
-                <!-- Profil -->
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-full flex items-center justify-center font-semibold text-white"
