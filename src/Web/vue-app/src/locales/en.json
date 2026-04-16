@@ -546,9 +546,9 @@
       "subject": "Subject",
       "image": "Image",
       "imagePreview": "Image preview",
-      "sections": "Sections",
-      "sectionTitle": "Section title",
-      "addSection": "Add a section",
+      "sections": "Pages",
+      "sectionTitle": "Page title",
+      "addSection": "Add a page",
       "assignments": "Assignments"
     }
   },
@@ -597,6 +597,23 @@
       "noAccess": "You don't have access to this module.",
       "loadError": "Could not load module."
     }
+  },
+  "modulePages": {
+    "title": "Pages",
+    "pageTitle": "Page title",
+    "contentPlaceholder": "Page content...",
+    "addPage": "Add a page",
+    "newPage": "New page",
+    "noPages": "No pages yet. Add one to get started.",
+    "createFirstPage": "Create the first page",
+    "pageOfTotal": "Page {current} / {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "deletePage": "Delete page",
+    "confirmDelete": "Delete this page?",
+    "progress": "Progress",
+    "pagesRead": "{read} / {total} pages read",
+    "noContent": "This page has no content yet."
   },
   "common": {
     "Ajouter": "Add",

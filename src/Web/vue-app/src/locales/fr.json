@@ -560,9 +560,9 @@
       "subject": "Sujet",
       "image": "Image",
       "imagePreview": "Aperçu de l'image",
-      "sections": "Sections",
-      "sectionTitle": "Titre de la section",
-      "addSection": "Ajouter une section",
+      "sections": "Pages",
+      "sectionTitle": "Titre de la page",
+      "addSection": "Ajouter une page",
       "assignments": "Assignations"
     }
   },
@@ -611,6 +611,23 @@
       "noAccess": "Vous n'avez pas accès à ce module.",
       "loadError": "Impossible de charger le module."
     }
+  },
+  "modulePages": {
+    "title": "Pages",
+    "pageTitle": "Titre de la page",
+    "contentPlaceholder": "Contenu de la page...",
+    "addPage": "Ajouter une page",
+    "newPage": "Nouvelle page",
+    "noPages": "Aucune page. Ajoutez-en une pour commencer.",
+    "createFirstPage": "Créer la première page",
+    "pageOfTotal": "Page {current} / {total}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "deletePage": "Supprimer la page",
+    "confirmDelete": "Supprimer cette page ?",
+    "progress": "Progression",
+    "pagesRead": "{read} / {total} pages lues",
+    "noContent": "Cette page n'a pas encore de contenu."
   },
   "common": {
     "Ajouter": "Ajouter",
