@@ -32,6 +32,7 @@
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('global.lastName') }}</th>
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden md:table-cell">{{ $t('global.email') }}</th>
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">{{ $t('global.city') }}</th>
+            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden xl:table-cell">Statut du compte</th>
             <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('global.table.actions') }}</th>
           </tr>
         </thead>
@@ -42,17 +43,26 @@
               <td class="px-4 py-3"><div class="h-4 bg-gray-200 rounded w-20" /></td>
               <td class="px-4 py-3 hidden md:table-cell"><div class="h-4 bg-gray-200 rounded w-36" /></td>
               <td class="px-4 py-3 hidden lg:table-cell"><div class="h-4 bg-gray-200 rounded w-24" /></td>
+              <td class="px-4 py-3 hidden xl:table-cell"><div class="h-4 bg-gray-200 rounded w-32" /></td>
               <td class="px-4 py-3 text-right"><div class="h-4 bg-gray-200 rounded w-14 ml-auto" /></td>
             </tr>
           </template>
           <tr v-else-if="!members.length">
-            <td colspan="5" class="px-4 py-8 text-center text-gray-500">{{ $t('global.table.noData') }}</td>
+            <td colspan="6" class="px-4 py-8 text-center text-gray-500">{{ $t('global.table.noData') }}</td>
           </tr>
           <tr v-for="member in members" :key="member.id" class="hover:bg-gray-50 transition cursor-pointer" @click="goToMember(member)">
             <td class="px-4 py-3 text-sm text-gray-900">{{ member.firstName }}</td>
             <td class="px-4 py-3 text-sm text-gray-900">{{ member.lastName }}</td>
             <td class="px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{{ member.email }}</td>
             <td class="px-4 py-3 text-sm text-gray-600 hidden lg:table-cell">{{ member.city || '—' }}</td>
+            <td class="px-4 py-3 hidden xl:table-cell">
+              <span
+                class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+                :class="member.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+              >
+                {{ member.accountActivated ? 'Compte actif' : 'En attente de validation' }}
+              </span>
+            </td>
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
                 <router-link

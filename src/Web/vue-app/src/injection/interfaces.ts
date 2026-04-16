@@ -101,6 +101,8 @@ export interface IModulesService {
   getModuleAssignments(moduleId: string): Promise<any[]>;
   getMyModules(): Promise<any[]>;
   getMyModuleDetail(moduleId: string): Promise<any>;
+  markSectionRead(moduleId: string, sectionId: string): Promise<void>;
+  getSectionProgress(moduleId: string): Promise<{ sectionId: string; isRead: boolean }[]>;
 }
 
 export interface IEquipesService {

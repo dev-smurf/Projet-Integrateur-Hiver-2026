@@ -133,7 +133,7 @@ export class ApiService implements IApiService {
   public headersWithFormDataContentType() {
     return {
       headers: {
-        "Accept": "application/json",
+        "Content-Type": 'multipart/form-data',
       },
     };
   }

@@ -10,4 +10,6 @@ public interface IMemberModuleRepository
     Task UnassignAsync(MemberModule memberModule);
     Task<bool> IsAssignedAsync(Guid memberId, Guid moduleId);
     Task<MemberModule?> GetByMemberAndModuleAsync(Guid memberId, Guid moduleId);
+    Task<List<MemberModuleSectionProgress>> GetSectionProgressAsync(Guid memberModuleId);
+    Task MarkSectionReadAsync(Guid memberId, Guid moduleId, Guid sectionId);
 }

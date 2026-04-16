@@ -32,14 +32,15 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
         if (quiz == null)
             throw new KeyNotFoundException($"Quiz with ID {req.QuizId} not found");
 
+        // Get existing assignments to avoid duplicates
         var existingAssignments = await _assignmentRepository.GetByQuizIdAsync(req.QuizId);
-        var existingUserIds = existingAssignments
+        var alreadyAssignedUserIds = existingAssignments
             .Where(a => !a.Deleted.HasValue)
             .Select(a => a.UserId)
             .ToHashSet();
 
         var newUserIds = req.UserIds
-            .Where(userId => !existingUserIds.Contains(userId))
+            .Where(userId => !alreadyAssignedUserIds.Contains(userId))
             .ToList();
 
         if (newUserIds.Count == 0)
@@ -58,7 +59,8 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
             })
             .ToList();
 
-        await _assignmentRepository.CreateRangeAsync(assignments);
+        if (assignments.Count > 0)
+            await _assignmentRepository.CreateRangeAsync(assignments);
 
         await Send.NoContentAsync(ct);
     }

@@ -53,12 +53,14 @@ import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthenticationService, useUserService} from "@/inversify.config";
 import {useUserStore} from "@/stores/userStore";
+import {usePersonStore} from "@/stores/personStore";
 import {Loader2} from "lucide-vue-next";
-import {Role} from "@/types/enums";
+import type {User} from "@/types";
 
 const router = useRouter();
 const authService = useAuthenticationService();
 const userStore = useUserStore();
+const personStore = usePersonStore();
 const userService = useUserService();
 
 const username = ref("");
@@ -66,9 +68,25 @@ const password = ref("");
 const loading = ref(false);
 const errors = ref<string[]>([]);
 
+async function getCurrentUserWithRetry(retries = 4, delayMs = 250): Promise<User | null> {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const currentUser = await userService.getCurrentUser();
+
+    if (currentUser?.email) {
+      return currentUser;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+  }
+
+  return null;
+}
+
 async function handleLogin() {
   loading.value = true;
   errors.value = [];
+  userStore.reset();
+  personStore.reset();
 
   try {
     const response = await authService.login({
@@ -78,7 +96,14 @@ async function handleLogin() {
 
     if (response.succeeded) {
       userStore.setUsername(username.value);
-      userStore.setUser(await userService.getCurrentUser());
+      const currentUser = await getCurrentUserWithRetry();
+
+      if (!currentUser) {
+        errors.value = ["La session a ete creee, mais le profil n'a pas pu etre charge. Recharge la page."];
+        return;
+      }
+
+      userStore.setUser(currentUser);
       await router.push({ name: "dashboard" });
     } else {
       const backendErrors = response.getErrorMessages("pages.login.validation");

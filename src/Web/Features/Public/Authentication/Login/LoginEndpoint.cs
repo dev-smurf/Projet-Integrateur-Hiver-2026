@@ -50,7 +50,13 @@ public class LoginEndpoint : EndpointWithSanitizedRequest<LoginRequest, Succeede
             return;
         }
 
-        await _notificationService.SendTwoFactorAuthenticationCodeNotification(user, code);
+        var notificationResponse = await _notificationService.SendTwoFactorAuthenticationCodeNotification(user, code);
+        if (!notificationResponse.Succeeded)
+        {
+            await Send.OkAsync(new SucceededOrNotResponse(succeeded: false, notificationResponse.Errors), ct);
+            return;
+        }
+
         var error = new Error("TwoFactorRequired", "Next step: complete two factor authentication.");
         await Send.OkAsync(new SucceededOrNotResponse(succeeded: false, error), ct);
     }
