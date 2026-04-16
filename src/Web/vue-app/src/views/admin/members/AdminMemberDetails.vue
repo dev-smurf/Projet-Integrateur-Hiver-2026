@@ -29,6 +29,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
       <div class="bg-white border border-gray-200 rounded-2xl p-6 animate-fade-up">
         <div class="flex items-center gap-4">
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-700 text-lg font-semibold">
@@ -94,21 +95,6 @@
                   >
                     {{ member?.active ? "Actif" : "Inactif" }}
                   </span>
-                </dd>
-              </div>
-              <div class="flex justify-between gap-4 items-start">
-                <dt class="text-gray-500">Equipes</dt>
-                <dd class="text-right">
-                  <div v-if="memberEquipes.length" class="flex flex-wrap justify-end gap-2">
-                    <span
-                      v-for="equipe in memberEquipes"
-                      :key="equipe"
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700"
-                    >
-                      {{ equipe }}
-                    </span>
-                  </div>
-                  <span v-else class="text-gray-900">N/A</span>
                 </dd>
               </div>
             </dl>
@@ -242,6 +228,83 @@
       </div>
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
+        <h2 class="text-sm font-semibold text-gray-900 mb-4">Assigner un module à des membres</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="text-xs font-medium text-gray-500">1. Sélectionner le module</label>
+            <select
+              v-model="assignModuleId"
+              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+            >
+              <option value="">Choisir un module</option>
+              <option v-for="mod in allModules" :key="mod.id" :value="mod.id">
+                {{ moduleLabel(mod) }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-500">2. Rechercher des membres</label>
+            <input
+              v-model="assignMemberSearch"
+              type="text"
+              placeholder="Nom ou email..."
+              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+            />
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
+          <div class="max-h-80 overflow-y-auto p-2 space-y-1">
+            <label
+              v-for="m in filteredMembersForCheck"
+              :key="m.id"
+              class="flex items-center gap-3 p-3 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 cursor-pointer transition group"
+              :class="{ 'bg-brand-50/50 border-brand-100': assignSelectedIds.includes(String(m.id)) }"
+            >
+              <div class="relative flex items-center justify-center">
+                <input 
+                  type="checkbox" 
+                  :value="String(m.id)" 
+                  v-model="assignSelectedIds" 
+                  class="w-5 h-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 accent-brand-600" 
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-gray-900 truncate">{{ m.firstName }} {{ m.lastName }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ m.email }}</p>
+              </div>
+            </label>
+            <div v-if="filteredMembersForCheck.length === 0" class="text-sm text-gray-400 italic text-center py-8">
+              Aucun membre trouvé.
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between bg-white pt-4">
+          <div class="text-sm text-gray-500">
+            <span class="font-bold text-brand-600">{{ assignSelectedIds.length }}</span> membre(s) sélectionné(s)
+          </div>
+          <div class="flex gap-2">
+             <button
+              v-if="assignSelectedIds.length > 0"
+              @click="assignSelectedIds = []"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition"
+            >
+              Désélectionner tout
+            </button>
+            <button
+              @click="applyAssignModule"
+              :disabled="!assignModuleId || assignSelectedIds.length === 0 || applyingAssign"
+              class="px-6 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ applyingAssign ? 'Assignation...' : `Assigner le module` }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
           <h2 class="text-sm font-semibold text-gray-900">Notes internes</h2>
           <button
@@ -262,36 +325,43 @@
           Notes sauvegardees localement pour cet appareil.
         </p>
       </div>
+
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
-import {useNotification} from "@kyvg/vue3-notification";
-import {useEquipesService, useMemberService, useModulesService} from "@/inversify.config";
-import type {Equipe, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useNotification } from "@kyvg/vue3-notification";
+import { useMemberService, useModulesService } from "@/inversify.config";
+import type { Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
 const route = useRoute();
-const {notify} = useNotification();
-const equipeService = useEquipesService();
+const { notify } = useNotification();
 const memberService = useMemberService();
 const modulesService = useModulesService();
 
 const member = ref<Member | null>(null);
-const equipes = ref<Equipe[]>([]);
 const memberModules = ref<MemberModuleDto[]>([]);
 const allModules = ref<ModuleDto[]>([]);
 const loading = ref(true);
 const moduleSearch = ref("");
 const selectedModuleId = ref("");
+
 const addingModule = ref(false);
 const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
 const removingModule = ref<Record<string, boolean>>({});
 const notesText = ref("");
 const savingNotes = ref(false);
+
+// --- Bloc assigner module (MODIFIÉ) ---
+const allMembers = ref<Member[]>([]);
+const assignModuleId = ref("");
+const assignMemberSearch = ref("");
+const assignSelectedIds = ref<string[]>([]); // Contient les IDs des membres cochés
+const applyingAssign = ref(false);
 
 const memberId = computed(() => String(route.params.id || ""));
 
@@ -324,21 +394,6 @@ const addressLine = computed(() => {
   return joined || "N/A";
 });
 
-const memberEquipes = computed(() => {
-  const equipeIds = member.value?.equipeIds ?? [];
-  if (!equipeIds.length) return [];
-
-  return equipes.value
-    .filter(equipe => {
-      const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
-      return equipeIds.includes(equipeId);
-    })
-    .map(equipe => {
-      const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
-      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
-    });
-});
-
 const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
 
 const progressPercent = computed(() => {
@@ -366,24 +421,41 @@ const filteredModules = computed(() => {
     });
 });
 
+// Nouveau filtre simple pour la liste avec checkbox
+const filteredMembersForCheck = computed(() => {
+  const q = assignMemberSearch.value.toLowerCase().trim();
+  if (!q) return allMembers.value;
+  return allMembers.value.filter(m => 
+    `${m.firstName} ${m.lastName}`.toLowerCase().includes(q) || 
+    m.email?.toLowerCase().includes(q)
+  );
+});
+
 function moduleLabel(mod: ModuleDto) {
   const name = mod.nameFr || mod.nameEn || "Module";
   const subject = mod.sujetFr || mod.sujetEn || "";
   return subject ? `${name} - ${subject}` : name;
 }
 
+async function applyAssignModule() {
+  if (!assignModuleId.value || !assignSelectedIds.value.length) return;
+  applyingAssign.value = true;
+  let success = 0;
+  for (const mId of assignSelectedIds.value) {
+    const res = await memberService.addModuleToMember(mId, assignModuleId.value);
+    if (res.succeeded) success++;
+  }
+  notify({ type: "success", text: `${success} assignation(s) effectuée(s).` });
+  assignSelectedIds.value = [];
+  assignModuleId.value = "";
+  applyingAssign.value = false;
+}
+
 async function loadData() {
   loading.value = true;
-  const [memberData, memberModulesData, modulesData, equipesData] = await Promise.all([
-    memberService.getMember(memberId.value),
-    memberService.getMemberModules(memberId.value),
-    modulesService.getAllModules(),
-    equipeService.getAllEquipes()
-  ]);
-  member.value = memberData;
-  memberModules.value = memberModulesData;
-  allModules.value = modulesData;
-  equipes.value = equipesData;
+  member.value = await memberService.getMember(memberId.value);
+  memberModules.value = await memberService.getMemberModules(memberId.value);
+  allModules.value = await modulesService.getAllModules();
   const nextEdits: Record<string, number> = {};
   memberModules.value.forEach(item => {
     nextEdits[item.moduleId] = item.progressPercent;
@@ -394,53 +466,61 @@ async function loadData() {
   loading.value = false;
 }
 
+async function loadAllMembers() {
+  const response = await memberService.search(1, 1000, "");
+  allMembers.value = response.items || [];
+}
+
 async function addModule() {
   if (!selectedModuleId.value) return;
   addingModule.value = true;
   const response = await memberService.addModuleToMember(memberId.value, selectedModuleId.value);
   if (response.succeeded) {
-    notify({type: "success", text: "Module ajoute."});
+    notify({ type: "success", text: "Module ajoute." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
     selectedModuleId.value = "";
   } else {
-    notify({type: "error", text: "Impossible d'ajouter le module."});
+    notify({ type: "error", text: "Impossible d'ajouter le module." });
   }
   addingModule.value = false;
 }
 
 async function saveProgress(item: MemberModuleDto) {
   const value = progressEdits.value[item.moduleId] ?? item.progressPercent;
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: true};
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: true };
   const response = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, value);
   if (response.succeeded) {
-    notify({type: "success", text: "Progression mise a jour."});
+    notify({ type: "success", text: "Progression mise a jour." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({type: "error", text: "Impossible de mettre a jour la progression."});
+    notify({ type: "error", text: "Impossible de mettre a jour la progression." });
   }
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: false};
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: false };
 }
 
 async function removeModule(item: MemberModuleDto) {
-  removingModule.value = {...removingModule.value, [item.moduleId]: true};
+  removingModule.value = { ...removingModule.value, [item.moduleId]: true };
   const response = await memberService.removeMemberModule(memberId.value, item.moduleId);
   if (response.succeeded) {
-    notify({type: "success", text: "Module retire."});
+    notify({ type: "success", text: "Module retire." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({type: "error", text: "Impossible de retirer le module."});
+    notify({ type: "error", text: "Impossible de retirer le module." });
   }
-  removingModule.value = {...removingModule.value, [item.moduleId]: false};
+  removingModule.value = { ...removingModule.value, [item.moduleId]: false };
 }
 
 function saveNotes() {
   savingNotes.value = true;
   localStorage.setItem(`admin-member-notes:${memberId.value}`, notesText.value);
-  notify({type: "success", text: "Notes enregistrees localement."});
+  notify({ type: "success", text: "Notes enregistrees localement." });
   savingNotes.value = false;
 }
 
-onMounted(loadData);
+onMounted(async () => {
+  await loadData();
+  await loadAllMembers();
+});
 </script>
 
 <style scoped>
