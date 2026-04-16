@@ -16,6 +16,9 @@
           <Eye class="w-3.5 h-3.5" />
           Aperçu
         </span>
+        <span class="text-xs text-gray-400 italic">
+          {{ $t('modulePages.clickToEdit') }}
+        </span>
       </div>
 
       <!-- Loading -->
@@ -50,20 +53,30 @@
           v-html="mod.content"
         ></div>
 
-        <!-- Current page -->
+        <!-- Current page (clickable header = edit page title) -->
         <div v-if="currentPage" class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-          <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
+          <div
+            class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3 cursor-pointer hover:bg-amber-50 transition group"
+            @click.stop="showPopup($event, currentPage.id, null)"
+            :title="$t('modulePages.editPageTitle')"
+          >
             <span class="w-8 h-8 shrink-0 rounded-full bg-brand-100 text-brand-700 text-sm font-bold flex items-center justify-center">
               {{ currentPageIndex + 1 }}
             </span>
-            <h2 class="text-xl font-semibold text-gray-900 truncate">{{ currentPage.title }}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 truncate flex-1">{{ currentPage.title }}</h2>
+            <Pencil class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" />
           </div>
           <div v-if="currentPageSections.length > 0" class="divide-y divide-gray-100">
             <div
               v-for="section in currentPageSections"
               :key="section.id"
-              class="px-6 py-5"
+              class="px-6 py-5 cursor-pointer hover:bg-amber-50/50 transition relative group"
+              @click.stop="showPopup($event, currentPage.id, section.id)"
+              :title="$t('modulePages.editSection')"
             >
+              <span class="absolute top-3 right-3 text-gray-400 opacity-0 group-hover:opacity-100 transition">
+                <Pencil class="w-4 h-4" />
+              </span>
               <h3 v-if="section.title" class="text-lg font-semibold text-gray-800 mb-3">
                 {{ section.title }}
               </h3>
@@ -134,12 +147,35 @@
         </ul>
       </nav>
     </aside>
+
+    <!-- Quick-edit popup -->
+    <Teleport to="body">
+      <div
+        v-if="popup.visible"
+        ref="popupEl"
+        class="fixed z-50"
+        :style="{ left: popup.x + 'px', top: popup.y + 'px' }"
+        @click.stop
+      >
+        <button
+          type="button"
+          @click="goToEdit"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium shadow-lg hover:bg-brand-600 transition cursor-pointer"
+        >
+          <Pencil class="w-3.5 h-3.5" />
+          {{ $t('modulePages.edit') }}
+        </button>
+        <!-- little arrow pointing down -->
+        <div class="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 bg-gray-900 rotate-45" />
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
-import { ArrowLeft, Eye, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ref, computed, onMounted, onBeforeUnmount, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ArrowLeft, Eye, ChevronLeft, ChevronRight, Pencil } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { ModuleDto } from "@/types/entities";
 import type { ModuleSectionDto } from "@/types/entities/moduleSection";
@@ -149,12 +185,21 @@ import '@/components/editor/module-blocks.css';
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 const props = defineProps<{ id: string }>();
+const router = useRouter();
 const modulesService = useModulesService();
 
 const mod = ref<ModuleDto | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentPageIndex = ref(0);
+
+const popup = reactive<{
+  visible: boolean;
+  x: number;
+  y: number;
+  pageId: string | null;
+  sectionId: string | null;
+}>({ visible: false, x: 0, y: 0, pageId: null, sectionId: null });
 
 const sortedPages = computed(() => {
   if (!mod.value?.sections) return [];
@@ -176,10 +221,48 @@ function imageUrl(path: string | undefined): string {
 function goToPage(idx: number) {
   if (idx < 0 || idx >= sortedPages.value.length) return;
   currentPageIndex.value = idx;
+  hidePopup();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function showPopup(event: MouseEvent, pageId: string, sectionId: string | null) {
+  // Position the popup just above the click, clamped to viewport.
+  const POPUP_HEIGHT_ESTIMATE = 48;
+  const MARGIN = 8;
+  let y = event.clientY - POPUP_HEIGHT_ESTIMATE;
+  if (y < MARGIN) y = event.clientY + MARGIN;
+  popup.visible = true;
+  popup.x = event.clientX;
+  popup.y = y;
+  popup.pageId = pageId;
+  popup.sectionId = sectionId;
+}
+
+function hidePopup() {
+  popup.visible = false;
+  popup.pageId = null;
+  popup.sectionId = null;
+}
+
+function goToEdit() {
+  const query: Record<string, string> = {};
+  if (popup.pageId) query.pageId = popup.pageId;
+  if (popup.sectionId) query.sectionId = popup.sectionId;
+  hidePopup();
+  router.push({ name: 'admin.children.modules.edit', params: { id: props.id }, query });
+}
+
+function onDocumentClick() {
+  if (popup.visible) hidePopup();
+}
+
+function onDocumentKey(e: KeyboardEvent) {
+  if (e.key === 'Escape') hidePopup();
+}
+
 onMounted(async () => {
+  document.addEventListener('click', onDocumentClick);
+  document.addEventListener('keydown', onDocumentKey);
   try {
     mod.value = await modulesService.getModuleFlexible(props.id);
     if (!mod.value) {
@@ -189,5 +272,10 @@ onMounted(async () => {
     error.value = "Impossible de charger le module.";
   }
   loading.value = false;
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocumentClick);
+  document.removeEventListener('keydown', onDocumentKey);
 });
 </script>

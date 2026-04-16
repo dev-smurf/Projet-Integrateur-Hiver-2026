@@ -618,7 +618,11 @@
     "addSection": "Add a section",
     "deleteSection": "Delete section",
     "noSections": "No sections yet. Add one to get started.",
-    "dragSection": "Drag to reorder"
+    "dragSection": "Drag to reorder",
+    "edit": "Edit",
+    "clickToEdit": "Click to edit",
+    "editPageTitle": "Edit page title",
+    "editSection": "Edit this section"
   },
   "common": {
     "Ajouter": "Add",

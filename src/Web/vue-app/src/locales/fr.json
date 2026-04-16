@@ -632,7 +632,11 @@
     "addSection": "Ajouter une section",
     "deleteSection": "Supprimer la section",
     "noSections": "Aucune section. Ajoutez-en une pour commencer.",
-    "dragSection": "Glisser pour réorganiser"
+    "dragSection": "Glisser pour réorganiser",
+    "edit": "Modifier",
+    "clickToEdit": "Cliquer pour modifier",
+    "editPageTitle": "Modifier le titre de la page",
+    "editSection": "Modifier cette section"
   },
   "common": {
     "Ajouter": "Ajouter",

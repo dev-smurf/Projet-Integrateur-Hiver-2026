@@ -115,7 +115,9 @@
           <div
             v-for="(section, idx) in pageSections"
             :key="section.id"
-            class="border border-gray-200 rounded-lg overflow-hidden bg-white"
+            :ref="(el) => { if (el) sectionRefs[section.id] = el as HTMLElement; }"
+            class="border border-gray-200 rounded-lg overflow-hidden bg-white transition"
+            :class="highlightedSectionId === section.id ? 'ring-2 ring-amber-400 border-amber-400' : ''"
           >
             <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
               <span class="section-drag-handle cursor-grab text-gray-400 hover:text-gray-600 shrink-0" :title="$t('modulePages.dragSection')">
@@ -166,7 +168,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { ChevronLeft, ChevronRight, Trash2, Plus, FileText, X, GripVertical } from 'lucide-vue-next';
 import { useI18n } from 'vue3-i18n';
@@ -180,6 +182,8 @@ interface LocalPage extends ISectionPayload {
 
 const props = defineProps<{
   sections: ISectionPayload[];
+  initialPageId?: string | null;
+  initialSectionId?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -213,15 +217,41 @@ const visiblePages = computed<LocalPage[]>({
 
 const currentPage = computed<LocalPage | undefined>(() => visiblePages.value[currentPageIndex.value]);
 
+// Tracking section card DOM nodes so we can scroll to a specific one when
+// the parent passes initialSectionId via a deep link.
+const sectionRefs: Record<string, HTMLElement> = {};
+const highlightedSectionId = ref<string | null>(null);
+
 watch(() => props.sections, (newSections) => {
   if (allPages.value.length === 0 && newSections.length > 0) {
     allPages.value = newSections.map(s => ({ ...s, _key: s.id || makeKey() }));
+
+    // Honor deep-link targets from the preview's quick-edit popup.
+    if (props.initialPageId) {
+      const idx = visiblePages.value.findIndex(p => p.id === props.initialPageId);
+      if (idx >= 0) currentPageIndex.value = idx;
+    }
   }
 }, { immediate: true });
 
 // Reload pageSections whenever the active page changes.
 watch(currentPage, (page) => {
   pageSections.value = page ? parsePageContent(page.content ?? '') : [];
+
+  // When the user navigated here via the preview's quick-edit popup with
+  // a target sectionId, scroll to that section and flash-highlight it.
+  if (props.initialSectionId && page && page.id === props.initialPageId) {
+    const targetId = props.initialSectionId;
+    nextTick(() => {
+      const el = sectionRefs[targetId];
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      highlightedSectionId.value = targetId;
+      setTimeout(() => {
+        if (highlightedSectionId.value === targetId) highlightedSectionId.value = null;
+      }, 2500);
+    });
+  }
 }, { immediate: true });
 
 watch(() => visiblePages.value.length, (len) => {
