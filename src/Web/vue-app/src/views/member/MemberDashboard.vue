@@ -168,7 +168,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onActivated, onMounted, ref} from "vue";
 import {useI18n} from "vue3-i18n";
 import {BookOpen, CheckCircle, ClipboardCheck, Layers} from "lucide-vue-next";
 import {useMemberService, useQuizService} from "@/inversify.config";
@@ -273,4 +273,5 @@ async function fetchModules() {
 }
 
 onMounted(fetchModules);
+onActivated(fetchModules);
 </script>

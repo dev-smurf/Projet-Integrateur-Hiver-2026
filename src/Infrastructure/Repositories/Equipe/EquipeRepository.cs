@@ -108,6 +108,45 @@ public class EquipeRepository : IEquipeRepository
             .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
     }
 
+    public async Task<Equipe?> FindByIdWithMembers(Guid id)
+    {
+        return await _context.Equipes
+            .Include(e => e.Membres)
+            .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+    }
+
+    public async Task SetEquipeMembers(Guid equipeId, IEnumerable<Guid> userIds)
+    {
+        var equipe = await _context.Equipes
+            .Include(e => e.Membres)
+            .FirstOrDefaultAsync(e => e.Id == equipeId && e.Deleted == null);
+
+        if (equipe == null) return;
+
+        var targetIds = userIds.Where(id => id != Guid.Empty).Distinct().ToHashSet();
+
+        // Remove members no longer selected
+        var toRemove = equipe.Membres.Where(u => !targetIds.Contains(u.Id)).ToList();
+        foreach (var user in toRemove)
+        {
+            equipe.Membres.Remove(user);
+        }
+
+        // Add newly selected members
+        var currentIds = equipe.Membres.Select(u => u.Id).ToHashSet();
+        var toAddIds = targetIds.Where(id => !currentIds.Contains(id)).ToList();
+        if (toAddIds.Count > 0)
+        {
+            var users = await _context.Users.Where(u => toAddIds.Contains(u.Id)).ToListAsync();
+            foreach (var user in users)
+            {
+                equipe.Membres.Add(user);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
     public async Task CreateEquipe(Equipe equipe)
     {
         await _context.Equipes.AddAsync(equipe);

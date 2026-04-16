@@ -415,6 +415,7 @@
     "confirmation": "Confirmation",
     "cancel": "Cancel",
     "delete": "Delete",
+    "loading": "Loading...",
     "free": "Free",
     "menu": "Menu",
     "title": "Title",
@@ -546,15 +547,18 @@
       "subject": "Subject",
       "image": "Image",
       "imagePreview": "Image preview",
-      "sections": "Sections",
-      "sectionTitle": "Section title",
-      "addSection": "Add a section",
+      "sections": "Pages",
+      "sectionTitle": "Page title",
+      "addSection": "Add a page",
       "assignments": "Assignments"
     }
   },
   "Form_Add_Equipe": {
     "fields": {
-      "name": "Team name"
+      "name": "Team name",
+      "members": "Members",
+      "searchMembers": "Search for a member...",
+      "noMembers": "No members available."
     },
     "validation": {
       "nameRequired": "The name is required."
@@ -598,6 +602,35 @@
       "loadError": "Could not load module."
     }
   },
+  "modulePages": {
+    "title": "Pages",
+    "pageTitle": "Page title",
+    "contentPlaceholder": "Page content...",
+    "addPage": "Add a page",
+    "newPage": "New page",
+    "noPages": "No pages yet. Add one to get started.",
+    "createFirstPage": "Create the first page",
+    "pageOfTotal": "Page {current} / {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "deletePage": "Delete page",
+    "confirmDelete": "Delete this page?",
+    "progress": "Progress",
+    "pagesRead": "{read} / {total} pages read",
+    "noContent": "This page has no content yet.",
+    "sectionTitle": "Section title",
+    "addSection": "Add a section",
+    "deleteSection": "Delete section",
+    "noSections": "No sections yet. Add one to get started.",
+    "dragSection": "Drag to reorder",
+    "edit": "Edit",
+    "clickToEdit": "Click to edit",
+    "editPageTitle": "Edit page title",
+    "editSection": "Edit this section",
+    "moveToPosition": "Move to position",
+    "currentPosition": "Current position",
+    "finish": "Finish"
+  },
   "common": {
     "Ajouter": "Add",
     "cancel": "Cancel"
@@ -624,7 +657,16 @@
     "you": "You",
     "startConversation": "Start conversation",
     "fileTooLarge": "File is too large. Maximum size is 10MB.",
-    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf.",
+    "tabs": {
+      "members": "Members",
+      "equipes": "Teams",
+      "admin": "Admin",
+      "myEquipe": "My team"
+    },
+    "equipeMembersCount": "{count} members",
+    "noEquipeConversations": "No team conversations",
+    "searchEquipe": "Search for a team..."
   },
   "appointment": {
     "requestBtn": "Book Appointment",
