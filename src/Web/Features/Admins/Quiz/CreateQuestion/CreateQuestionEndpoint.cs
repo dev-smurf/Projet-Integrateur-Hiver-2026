@@ -47,7 +47,10 @@ public class CreateQuestionEndpoint : EndpointWithSanitizedRequest<CreateQuestio
             Placeholder = req.Placeholder,
             ScaleMinLabel = req.ScaleMinLabel,
             ScaleMidLabel = req.ScaleMidLabel,
-            ScaleMaxLabel = req.ScaleMaxLabel
+            ScaleMaxLabel = req.ScaleMaxLabel,
+            ScaleLabels = (req.ScaleLabels != null && req.ScaleLabels.Count > 0)
+                ? req.ScaleLabels
+                : Enumerable.Repeat(string.Empty, 10).ToList()
         };
 
         // Add responses

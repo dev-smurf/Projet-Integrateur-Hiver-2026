@@ -12,6 +12,7 @@ public class CreateQuestionRequest : Web.Features.Common.ISanitizable
     public string ScaleMinLabel { get; set; } = "Jamais";
     public string ScaleMidLabel { get; set; } = "Parfois";
     public string ScaleMaxLabel { get; set; } = "Toujours";
+    public List<string> ScaleLabels { get; set; } = new();
     public List<CreateResponseRequest> Responses { get; set; } = new();
 
     public void Sanitize()
@@ -22,6 +23,10 @@ public class CreateQuestionRequest : Web.Features.Common.ISanitizable
         ScaleMinLabel = ScaleMinLabel?.Trim() ?? "Jamais";
         ScaleMidLabel = ScaleMidLabel?.Trim() ?? "Parfois";
         ScaleMaxLabel = ScaleMaxLabel?.Trim() ?? "Toujours";
+        if (ScaleLabels == null || ScaleLabels.Count == 0)
+            ScaleLabels = Enumerable.Repeat(string.Empty, 10).ToList();
+        else
+            ScaleLabels = ScaleLabels.Select(s => s?.Trim() ?? string.Empty).ToList();
 
         foreach (var response in Responses)
         {

@@ -261,7 +261,10 @@
         "invalidUsername": "The username is not valid.",
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
-      }
+      },
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "passwordConfirmation": "Confirmation du mot de passe"
     },
     "twoFactor": {
       "code": "Code",
@@ -409,11 +412,14 @@
     }
   },
   "global": {
+    "confirmation": "Confirmation",
+    "cancel": "Cancel",
+    "delete": "Delete",
     "free": "Free",
     "menu": "Menu",
     "title": "Title",
     "date": "Date",
-    "at": "at",
+    "at": "At",
     "username": "Username",
     "password": "Password",
     "passwordConfirmation": "Password confirmation",
@@ -425,51 +431,48 @@
     "email": "Email",
     "phoneNumber": "Phone number",
     "phoneExtension": "Extension",
-    "apartment": "Office/suite number",
+    "apartment": "Office/Suite number",
     "street": "Address",
     "city": "City",
-    "zipCode": "Zip code",
+    "zipCode": "Postal code",
     "roles": "Roles",
     "name": "Name",
     "download": "Download",
     "add": "Add",
-    "cancel": "Cancel",
     "important": "Important",
-    "addFile": "Add file",
-    "addFiles": "Add files",
-    "replaceFile": "Replace file",
-    "replaceFiles": "Replace files",
-    "removeFile": "Remove this file",
-    "uploadZippedFolder-tooltip": "If you want to transmit multiple documents, please upload <strong>a compressed folder.</strong>",
+    "addFile": "Add a document",
+    "addFiles": "Add documents",
+    "replaceFile": "Replace the document",
+    "replaceFiles": "Replace documents",
+    "removeFile": "Remove this document",
+    "uploadZippedFolder-tooltip": "If you want to send multiple documents, please upload <strong>a compressed folder.</strong>",
     "update": "Update",
     "edit": "Edit",
-    "delete": "Delete",
     "deleted": "Deleted",
     "save": "Save",
+    "back": "Back",
     "yes": "Yes",
     "no": "No",
-    "back": "Back",
     "search": "Search",
     "transfer": "Transfer",
     "formErrorNotification": "There are errors in the form.",
     "quickLinks": "Quick links",
-    "undefined": "N/A",
+    "undefined": "ND",
     "logout": "Logout",
     "changeLanguage": "Change language",
     "test": "Test",
-    "questions": "Questions",
-    "noQuizzesYet": "No quizzes yet.",
     "createFirst": "Create the first quiz",
+    "questions": "Questions",
     "table": {
       "of": "of",
-      "noData": "No available data",
+      "noData": "No data available",
       "actions": "Actions"
     },
-    "confirmation": "Confirmation",
+    "noQuizzesYet": "No quizzes yet.",
     "actions": {
       "view": "View",
       "download": "Download",
-      "update": "Edit",
+      "update": "Update",
       "delete": "Delete"
     }
   },
@@ -692,7 +695,15 @@
     "remove": "Remove",
     "save": "Save",
     "cancel": "Cancel",
-    "assign": "Assign",
+    "assign": {
+      "unassigned": "Unassigned",
+      "assigned": "Assigned",
+      "none": "No users",
+      "noneAssigned": "No users assigned",
+      "searchPlaceholder": "Search users by name or email...",
+      "applyChanges": "Apply changes ({count})",
+      "updating": "Updating..."
+    },
     "assign_button": "Assign to Users",
     "assigning": "Assigning...",
     "assignToUsers": "Assign to {count} User(s)",
@@ -753,7 +764,6 @@
     "startQuiz": "Start quiz",
     "viewResults": "View results",
     "quizNotFound": "Quiz not found.",
-    "question": "Question",
     "of": "of",
     "rate": "Rate",
     "never": "Never",
@@ -768,6 +778,16 @@
     "completionMessage": "Quiz completed successfully.",
     "yourAnswers": "Your answers",
     "yourAnswer": "Your answer",
-    "backToList": "Back to list"
+    "backToList": "Back to list",
+    "move": {
+      "toTop": "Move to top",
+      "up": "Move up",
+      "down": "Move down",
+      "toBottom": "Move to bottom"
+    },
+    "preview": {
+      "title": "Preview",
+      "textPlaceholder": "Text input..."
+    }
   }
 }
