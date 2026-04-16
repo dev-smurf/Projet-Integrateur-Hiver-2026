@@ -36,43 +36,33 @@ public class GarneauTemplateDbContextInitializer
         try
         {
             var pendingMigrations = (await _context.Database.GetPendingMigrationsAsync()).ToList();
-            if (pendingMigrations.Count == 0)
-                return;
+            var tablesAlreadyExist = await TableExistsAsync("AspNetRoles");
 
-            var allMigrations = _context.Database.GetMigrations().ToList();
-            var baselineMigration = allMigrations.FirstOrDefault();
-
-            // If the database already has the schema (from old consolidated migrations),
-            // mark the new migrations as applied instead of re-running them.
-            var connection = _context.Database.GetDbConnection();
-            await connection.OpenAsync();
-            await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AspNetRoles'";
-            var result = await command.ExecuteScalarAsync();
-            var tablesAlreadyExist = result != null && Convert.ToInt32(result) > 0;
-
-            if (tablesAlreadyExist)
+            if (pendingMigrations.Count > 0)
             {
-                // If the schema already exists but migrations history does not, treat the
-                // first migration in the assembly as the baseline and skip re-running it.
-                if (!string.IsNullOrWhiteSpace(baselineMigration) && pendingMigrations.Contains(baselineMigration))
+                var allMigrations = _context.Database.GetMigrations().ToList();
+                var baselineMigration = allMigrations.FirstOrDefault();
+
+                if (tablesAlreadyExist)
                 {
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
-                        "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
-                        baselineMigration, "10.0.2");
-                    _logger.LogInformation(
-                        "Marked baseline migration {MigrationId} as applied because the schema already exists.",
-                        baselineMigration);
+                    // If the schema already exists but migrations history does not, treat the
+                    // first migration in the assembly as the baseline and skip re-running it.
+                    if (!string.IsNullOrWhiteSpace(baselineMigration) && pendingMigrations.Contains(baselineMigration))
+                    {
+                        await _context.Database.ExecuteSqlRawAsync(
+                            "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
+                            "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
+                            baselineMigration, "10.0.2");
+                        _logger.LogInformation(
+                            "Marked baseline migration {MigrationId} as applied because the schema already exists.",
+                            baselineMigration);
+                    }
                 }
 
-                // Run any remaining new migrations
                 await _context.Database.MigrateAsync();
             }
-            else
-            {
-                await _context.Database.MigrateAsync();
-            }
+
+            await EnsureMemberAdminNotesColumnsAsync();
         }
         catch (Exception ex)
         {
@@ -327,5 +317,85 @@ public class GarneauTemplateDbContextInitializer
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Seeded {Count} quizzes with {QCount} questions", quizzes.Length, allQuestions.Count);
+    }
+
+    private async Task<bool> TableExistsAsync(string tableName)
+    {
+        var connection = _context.Database.GetDbConnection();
+        var shouldClose = connection.State != System.Data.ConnectionState.Open;
+
+        if (shouldClose)
+            await connection.OpenAsync();
+
+        try
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @tableName";
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@tableName";
+            parameter.Value = tableName;
+            command.Parameters.Add(parameter);
+            var result = await command.ExecuteScalarAsync();
+            return result != null && Convert.ToInt32(result) > 0;
+        }
+        finally
+        {
+            if (shouldClose)
+                await connection.CloseAsync();
+        }
+    }
+
+    private async Task<bool> ColumnExistsAsync(string tableName, string columnName)
+    {
+        var connection = _context.Database.GetDbConnection();
+        var shouldClose = connection.State != System.Data.ConnectionState.Open;
+
+        if (shouldClose)
+            await connection.OpenAsync();
+
+        try
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = @"
+                SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = @tableName AND COLUMN_NAME = @columnName";
+            var tableParameter = command.CreateParameter();
+            tableParameter.ParameterName = "@tableName";
+            tableParameter.Value = tableName;
+            command.Parameters.Add(tableParameter);
+
+            var columnParameter = command.CreateParameter();
+            columnParameter.ParameterName = "@columnName";
+            columnParameter.Value = columnName;
+            command.Parameters.Add(columnParameter);
+
+            var result = await command.ExecuteScalarAsync();
+            return result != null && Convert.ToInt32(result) > 0;
+        }
+        finally
+        {
+            if (shouldClose)
+                await connection.CloseAsync();
+        }
+    }
+
+    private async Task EnsureMemberAdminNotesColumnsAsync()
+    {
+        if (!await TableExistsAsync("Members"))
+            return;
+
+        if (!await ColumnExistsAsync("Members", "AdminNotes"))
+        {
+            await _context.Database.ExecuteSqlRawAsync("ALTER TABLE [Members] ADD [AdminNotes] nvarchar(max) NULL");
+            _logger.LogInformation("Added missing column Members.AdminNotes");
+        }
+
+        if (!await ColumnExistsAsync("Members", "AdminNotesVisibleToMember"))
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE [Members] ADD [AdminNotesVisibleToMember] bit NOT NULL CONSTRAINT [DF_Members_AdminNotesVisibleToMember] DEFAULT(0)");
+            _logger.LogInformation("Added missing column Members.AdminNotesVisibleToMember");
+        }
     }
 }

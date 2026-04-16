@@ -127,14 +127,6 @@
       </div>
     </div>
 
-    <!-- Assign Quiz Modal -->
-    <AssignQuizModal
-      v-if="showAssignModal && selectedQuizForAssignment"
-      :quiz-id="selectedQuizForAssignment.id"
-      :quiz-title="selectedQuizForAssignment.titre"
-      @close="showAssignModal = false"
-      @assigned="handleAssignmentComplete"
-    />
   </div>
 </template>
 
@@ -144,7 +136,6 @@ import { useRoute } from 'vue-router'
 import { Plus, Pencil, Trash2, BookOpen, Play, Users } from 'lucide-vue-next'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
-import AssignQuizModal from './AssignQuizModal.vue'
 import type { Quiz } from '@/services/quizService'
 
 let quizService: any
@@ -206,10 +197,6 @@ function openAssignModal(quiz: Quiz) {
   showAssignModal.value = true
 }
 
-function handleAssignmentComplete() {
-  showAssignModal.value = false
-  selectedQuizForAssignment.value = null
-  successMessage.value = 'Quiz assigned successfully!'
 
   // Clear success message after 3 seconds
   setTimeout(() => {
@@ -218,7 +205,6 @@ function handleAssignmentComplete() {
 
   // Reload quizzes to show updated assignment count
   loadQuizzes()
-}
 
 onMounted(() => {
   loadQuizzes()

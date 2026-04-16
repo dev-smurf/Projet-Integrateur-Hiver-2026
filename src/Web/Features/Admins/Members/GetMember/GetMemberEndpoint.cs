@@ -54,6 +54,8 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             Street = member.Street ?? string.Empty,
             City = member.City ?? string.Empty,
             ZipCode = member.ZipCode ?? string.Empty,
+            AdminNotes = member.AdminNotes,
+            AdminNotesVisibleToMember = member.AdminNotesVisibleToMember,
             Roles = roles,
             EquipeIds = equipeIds
         };

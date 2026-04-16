@@ -11,5 +11,6 @@ public class GetMeResponse
     public string? Street { get; set; }
     public string? City { get; set; }
     public string? ZipCode { get; set; }
+    public string? VisibleAdminNotes { get; set; }
     public List<string> Roles { get; set; } = null!;
 }
