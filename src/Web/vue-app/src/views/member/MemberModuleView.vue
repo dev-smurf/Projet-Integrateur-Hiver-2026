@@ -113,10 +113,19 @@
           </span>
 
           <button
+            v-if="isLastPage"
+            type="button"
+            @click="finishModule"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition cursor-pointer"
+          >
+            <CheckCircle class="w-4 h-4" />
+            {{ $t('modulePages.finish') }}
+          </button>
+          <button
+            v-else
             type="button"
             @click="goToPage(currentPageIndex + 1)"
-            :disabled="currentPageIndex >= sortedSections.length - 1"
-            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition cursor-pointer"
           >
             {{ $t('modulePages.next') }}
             <ChevronRight class="w-4 h-4" />
@@ -223,6 +232,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useModulesService } from "@/inversify.config";
 import type { ModuleDto } from "@/types/entities";
 import type { ModuleSectionDto } from "@/types/entities/moduleSection";
@@ -233,6 +243,7 @@ import '@/components/editor/module-blocks.css';
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 const props = defineProps<{ moduleId: string }>();
+const router = useRouter();
 const modulesService = useModulesService();
 
 const module = ref<ModuleDto | null>(null);
@@ -241,9 +252,6 @@ const error = ref<string | null>(null);
 const currentPageIndex = ref(0);
 const mobileNavOpen = ref(false);
 const readSections = ref<Set<string>>(new Set());
-
-const PAGE_READ_DELAY_MS = 3000;
-let currentPageTimer: number | null = null;
 
 const sortedSections = computed(() => {
   if (!module.value?.sections) return [];
@@ -269,19 +277,24 @@ function imageUrl(path: string | undefined): string {
   return backendUrl + path;
 }
 
+const isLastPage = computed(() =>
+  sortedSections.value.length > 0 && currentPageIndex.value === sortedSections.value.length - 1
+);
+
 function goToPage(idx: number) {
   if (idx < 0 || idx >= sortedSections.value.length) return;
-
-  // Navigating away from a page counts as having seen it — mark it read
-  // immediately so the progress bar advances on every page change.
-  const leavingPage = currentPage.value;
-  if (leavingPage && !readSections.value.has(leavingPage.id)) {
-    markPageAsRead(leavingPage.id);
-  }
-
   currentPageIndex.value = idx;
   // Scroll to top of page smoothly so the user sees the new page from its start.
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function finishModule() {
+  // Ensure the last page is marked as read before leaving.
+  const last = currentPage.value;
+  if (last && !readSections.value.has(last.id)) {
+    await markPageAsRead(last.id);
+  }
+  router.push({ name: 'member.modules.index' });
 }
 
 async function markPageAsRead(pageId: string) {
@@ -294,24 +307,12 @@ async function markPageAsRead(pageId: string) {
   }
 }
 
-function schedulePageRead() {
-  // Cancel any pending timer.
-  if (currentPageTimer !== null) {
-    window.clearTimeout(currentPageTimer);
-    currentPageTimer = null;
-  }
-  const page = currentPage.value;
-  if (!page || readSections.value.has(page.id)) return;
-
-  currentPageTimer = window.setTimeout(() => {
+// Mark the currently-displayed page as read immediately, so the progress
+// bar advances as soon as the member switches pages (no 3s wait).
+watch(currentPage, (page) => {
+  if (page && !readSections.value.has(page.id)) {
     markPageAsRead(page.id);
-    currentPageTimer = null;
-  }, PAGE_READ_DELAY_MS);
-}
-
-// When the current page changes, start a new read-timer.
-watch(currentPage, () => {
-  schedulePageRead();
+  }
 });
 
 async function loadSectionProgress() {
@@ -338,7 +339,12 @@ onMounted(async () => {
         currentPageIndex.value = firstUnread;
       }
 
-      schedulePageRead();
+      // Mark the page the member lands on as read right away so the progress
+      // jumps by one immediately.
+      const landingPage = currentPage.value;
+      if (landingPage && !readSections.value.has(landingPage.id)) {
+        markPageAsRead(landingPage.id);
+      }
     }
   } catch (e: any) {
     if (e.response?.status === 403) {
@@ -351,8 +357,6 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  if (currentPageTimer !== null) {
-    window.clearTimeout(currentPageTimer);
-  }
+  // no-op (no pending timers to clean up)
 });
 </script>

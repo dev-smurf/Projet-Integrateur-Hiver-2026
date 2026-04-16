@@ -624,7 +624,8 @@
     "editPageTitle": "Edit page title",
     "editSection": "Edit this section",
     "moveToPosition": "Move to position",
-    "currentPosition": "Current position"
+    "currentPosition": "Current position",
+    "finish": "Finish"
   },
   "common": {
     "Ajouter": "Add",

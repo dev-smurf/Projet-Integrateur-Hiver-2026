@@ -638,7 +638,8 @@
     "editPageTitle": "Modifier le titre de la page",
     "editSection": "Modifier cette section",
     "moveToPosition": "Déplacer à la position",
-    "currentPosition": "Position actuelle"
+    "currentPosition": "Position actuelle",
+    "finish": "Terminer"
   },
   "common": {
     "Ajouter": "Ajouter",

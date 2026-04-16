@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onActivated, onMounted, ref } from "vue";
 import { useI18n } from "vue3-i18n";
 import { BookOpen } from "lucide-vue-next";
 import { useMemberService } from "@/inversify.config";
@@ -188,7 +188,7 @@ const filteredModules = computed(() => {
 const activeModules = computed(() => filteredModules.value.filter(mod => !mod.isCompleted));
 const completedModules = computed(() => filteredModules.value.filter(mod => mod.isCompleted));
 
-onMounted(async () => {
+async function reload() {
   try {
     modules.value = await memberService.getMyModules();
   } catch {
@@ -196,5 +196,8 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(reload);
+onActivated(reload);
 </script>
