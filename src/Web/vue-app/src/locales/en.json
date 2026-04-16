@@ -613,7 +613,12 @@
     "confirmDelete": "Delete this page?",
     "progress": "Progress",
     "pagesRead": "{read} / {total} pages read",
-    "noContent": "This page has no content yet."
+    "noContent": "This page has no content yet.",
+    "sectionTitle": "Section title",
+    "addSection": "Add a section",
+    "deleteSection": "Delete section",
+    "noSections": "No sections yet. Add one to get started.",
+    "dragSection": "Drag to reorder"
   },
   "common": {
     "Ajouter": "Add",

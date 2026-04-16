@@ -75,7 +75,22 @@
               class="h-5 w-5 text-emerald-500 shrink-0"
             />
           </div>
-          <div v-if="currentPage.content" class="module-content p-6" v-html="currentPage.content"></div>
+          <div v-if="currentPageSections.length > 0" class="divide-y divide-gray-100">
+            <div
+              v-for="section in currentPageSections"
+              :key="section.id"
+              class="px-6 py-5"
+            >
+              <h3 v-if="section.title" class="text-lg font-semibold text-gray-800 mb-3">
+                {{ section.title }}
+              </h3>
+              <div
+                v-if="section.content"
+                class="module-content prose max-w-none"
+                v-html="section.content"
+              ></div>
+            </div>
+          </div>
           <div v-else class="p-6 text-sm text-gray-400 italic">
             {{ $t('modulePages.noContent') }}
           </div>
@@ -212,6 +227,7 @@ import { useModulesService } from "@/inversify.config";
 import type { ModuleDto } from "@/types/entities";
 import type { ModuleSectionDto } from "@/types/entities/moduleSection";
 import { CheckCircle, List, X, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { parsePageContent, type PageSection } from '@/utils/pageContent';
 import '@/components/editor/module-content.css';
 import '@/components/editor/module-blocks.css';
 
@@ -235,6 +251,10 @@ const sortedSections = computed(() => {
 });
 
 const currentPage = computed<ModuleSectionDto | undefined>(() => sortedSections.value[currentPageIndex.value]);
+
+const currentPageSections = computed<PageSection[]>(() =>
+  currentPage.value ? parsePageContent(currentPage.value.content ?? '') : []
+);
 
 const readCount = computed(() => readSections.value.size);
 

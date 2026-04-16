@@ -627,7 +627,12 @@
     "confirmDelete": "Supprimer cette page ?",
     "progress": "Progression",
     "pagesRead": "{read} / {total} pages lues",
-    "noContent": "Cette page n'a pas encore de contenu."
+    "noContent": "Cette page n'a pas encore de contenu.",
+    "sectionTitle": "Titre de la section",
+    "addSection": "Ajouter une section",
+    "deleteSection": "Supprimer la section",
+    "noSections": "Aucune section. Ajoutez-en une pour commencer.",
+    "dragSection": "Glisser pour réorganiser"
   },
   "common": {
     "Ajouter": "Ajouter",

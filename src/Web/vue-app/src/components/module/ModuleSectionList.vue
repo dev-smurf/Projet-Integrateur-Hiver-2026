@@ -2,22 +2,22 @@
   <div>
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-semibold text-gray-900">{{ $t('modulePages.title') }}</h2>
-      <span v-if="visibleSections.length > 0" class="text-sm text-gray-500">
-        {{ $t('modulePages.pageOfTotal', { current: currentPageIndex + 1, total: visibleSections.length }) }}
+      <span v-if="visiblePages.length > 0" class="text-sm text-gray-500">
+        {{ $t('modulePages.pageOfTotal', { current: currentPageIndex + 1, total: visiblePages.length }) }}
       </span>
     </div>
 
     <!-- Page pills strip (click to jump, drag to reorder) -->
     <div class="flex items-center gap-2 mb-4 flex-wrap">
       <VueDraggable
-        v-if="visibleSections.length > 0"
-        v-model="visibleSections"
+        v-if="visiblePages.length > 0"
+        v-model="visiblePages"
         :animation="200"
-        @end="onReorder"
+        @end="onPageReorder"
         class="flex items-center gap-2 flex-wrap"
       >
         <button
-          v-for="(page, idx) in visibleSections"
+          v-for="(page, idx) in visiblePages"
           :key="page._key"
           type="button"
           @click="goToPage(idx)"
@@ -47,7 +47,7 @@
     </div>
 
     <!-- Empty state -->
-    <div v-if="visibleSections.length === 0"
+    <div v-if="visiblePages.length === 0"
       class="bg-white border-2 border-dashed border-gray-200 rounded-xl p-10 text-center"
     >
       <FileText class="w-10 h-10 text-gray-300 mx-auto mb-3" />
@@ -64,6 +64,7 @@
 
     <!-- Current page editor -->
     <div v-else-if="currentPage" class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <!-- Page header -->
       <div class="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-200">
         <input
           v-model="currentPage.title"
@@ -85,7 +86,7 @@
         <button
           type="button"
           @click="goToPage(currentPageIndex + 1)"
-          :disabled="currentPageIndex >= visibleSections.length - 1"
+          :disabled="currentPageIndex >= visiblePages.length - 1"
           :title="$t('modulePages.next')"
           class="p-1.5 rounded text-gray-500 hover:text-brand-600 hover:bg-brand-50 transition disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
@@ -100,12 +101,65 @@
           <Trash2 class="w-5 h-5" />
         </button>
       </div>
-      <div class="p-4">
-        <RichTextEditor
-          :key="currentPage._key"
-          :modelValue="currentPage.content || ''"
-          @update:modelValue="onContentChange"
-        />
+
+      <!-- Sections within the current page -->
+      <div class="p-4 space-y-4">
+        <VueDraggable
+          v-if="pageSections.length > 0"
+          v-model="pageSections"
+          handle=".section-drag-handle"
+          :animation="200"
+          @end="commitPageSections"
+          class="space-y-4"
+        >
+          <div
+            v-for="(section, idx) in pageSections"
+            :key="section.id"
+            class="border border-gray-200 rounded-lg overflow-hidden bg-white"
+          >
+            <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
+              <span class="section-drag-handle cursor-grab text-gray-400 hover:text-gray-600 shrink-0" :title="$t('modulePages.dragSection')">
+                <GripVertical class="w-4 h-4" />
+              </span>
+              <span class="text-xs font-semibold text-gray-500 shrink-0">{{ idx + 1 }}.</span>
+              <input
+                v-model="section.title"
+                type="text"
+                :placeholder="$t('modulePages.sectionTitle')"
+                class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                @input="commitPageSections"
+              />
+              <button
+                type="button"
+                @click="deleteSection(idx)"
+                :title="$t('modulePages.deleteSection')"
+                class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 transition cursor-pointer"
+              >
+                <X class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="p-3">
+              <RichTextEditor
+                :key="section.id"
+                :modelValue="section.content || ''"
+                @update:modelValue="val => onSectionContentChange(idx, val)"
+              />
+            </div>
+          </div>
+        </VueDraggable>
+
+        <div v-else class="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500">
+          {{ $t('modulePages.noSections') }}
+        </div>
+
+        <button
+          type="button"
+          @click="addSection"
+          class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-dashed border-brand-400 text-brand-600 text-sm font-medium hover:bg-brand-50 transition cursor-pointer"
+        >
+          <Plus class="w-4 h-4" />
+          {{ $t('modulePages.addSection') }}
+        </button>
       </div>
     </div>
   </div>
@@ -114,12 +168,13 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { ChevronLeft, ChevronRight, Trash2, Plus, FileText } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, Trash2, Plus, FileText, X, GripVertical } from 'lucide-vue-next';
 import { useI18n } from 'vue3-i18n';
 import RichTextEditor from '@/components/editor/RichTextEditor.vue';
 import type { ISectionPayload } from '@/types/requests/ISaveModuleFullRequest';
+import { parsePageContent, serializePageContent, newSectionId, type PageSection } from '@/utils/pageContent';
 
-interface LocalSection extends ISectionPayload {
+interface LocalPage extends ISectionPayload {
   _key: string;
 }
 
@@ -135,36 +190,41 @@ const { t } = useI18n();
 
 let keyCounter = 0;
 function makeKey(): string {
-  return `section-${Date.now()}-${keyCounter++}`;
+  return `page-${Date.now()}-${keyCounter++}`;
 }
 
-// All sections including soft-deleted ones (kept so we can send isDeleted=true back on save).
-const allSections = ref<LocalSection[]>([]);
+// All pages (backend "ModuleSection" entities), including soft-deleted ones.
+const allPages = ref<LocalPage[]>([]);
 const currentPageIndex = ref(0);
 
-// Visible pages are those not flagged as deleted.
-const visibleSections = computed<LocalSection[]>({
+// Parsed sub-sections for the currently-selected page. Edited in-memory;
+// serialized back into `currentPage.content` whenever it changes.
+const pageSections = ref<PageSection[]>([]);
+
+const visiblePages = computed<LocalPage[]>({
   get() {
-    return allSections.value.filter(s => !s.isDeleted);
+    return allPages.value.filter(p => !p.isDeleted);
   },
   set(newOrder) {
-    // Called after drag-and-drop reorder. `newOrder` has the visible items in their new order.
-    // We need to preserve deleted entries and rebuild allSections with the new order + deleted at end.
-    const deleted = allSections.value.filter(s => s.isDeleted);
-    allSections.value = [...newOrder, ...deleted];
+    const deleted = allPages.value.filter(p => p.isDeleted);
+    allPages.value = [...newOrder, ...deleted];
   }
 });
 
-const currentPage = computed<LocalSection | undefined>(() => visibleSections.value[currentPageIndex.value]);
+const currentPage = computed<LocalPage | undefined>(() => visiblePages.value[currentPageIndex.value]);
 
 watch(() => props.sections, (newSections) => {
-  if (allSections.value.length === 0 && newSections.length > 0) {
-    allSections.value = newSections.map(s => ({ ...s, _key: s.id || makeKey() }));
+  if (allPages.value.length === 0 && newSections.length > 0) {
+    allPages.value = newSections.map(s => ({ ...s, _key: s.id || makeKey() }));
   }
 }, { immediate: true });
 
-// Clamp the current page index when the visible list shrinks.
-watch(() => visibleSections.value.length, (len) => {
+// Reload pageSections whenever the active page changes.
+watch(currentPage, (page) => {
+  pageSections.value = page ? parsePageContent(page.content ?? '') : [];
+}, { immediate: true });
+
+watch(() => visiblePages.value.length, (len) => {
   if (len === 0) {
     currentPageIndex.value = 0;
   } else if (currentPageIndex.value >= len) {
@@ -173,21 +233,20 @@ watch(() => visibleSections.value.length, (len) => {
 });
 
 function goToPage(idx: number) {
-  if (idx < 0 || idx >= visibleSections.value.length) return;
+  if (idx < 0 || idx >= visiblePages.value.length) return;
   currentPageIndex.value = idx;
 }
 
 function addPage() {
-  const newPage: LocalSection = {
+  const newPage: LocalPage = {
     _key: makeKey(),
     title: '',
     content: '',
-    sortOrder: allSections.value.length,
+    sortOrder: allPages.value.length,
     isDeleted: false,
   };
-  allSections.value.push(newPage);
-  // Jump to the newly added page.
-  currentPageIndex.value = visibleSections.value.length - 1;
+  allPages.value.push(newPage);
+  currentPageIndex.value = visiblePages.value.length - 1;
   emitSections();
 }
 
@@ -196,38 +255,56 @@ function deleteCurrentPage() {
   if (!page) return;
   if (!confirm(t('modulePages.confirmDelete'))) return;
 
-  const fullIndex = allSections.value.findIndex(s => s._key === page._key);
+  const fullIndex = allPages.value.findIndex(p => p._key === page._key);
   if (fullIndex === -1) return;
 
   if (page.id) {
-    // Soft-delete existing page so the backend removes it on save.
-    allSections.value[fullIndex].isDeleted = true;
+    allPages.value[fullIndex].isDeleted = true;
   } else {
-    // New unsaved page — just drop it.
-    allSections.value.splice(fullIndex, 1);
+    allPages.value.splice(fullIndex, 1);
   }
 
-  // Adjust index — the watcher will clamp if needed.
-  if (currentPageIndex.value > 0 && currentPageIndex.value >= visibleSections.value.length) {
-    currentPageIndex.value = Math.max(0, visibleSections.value.length - 1);
+  if (currentPageIndex.value > 0 && currentPageIndex.value >= visiblePages.value.length) {
+    currentPageIndex.value = Math.max(0, visiblePages.value.length - 1);
   }
   emitSections();
 }
 
-function onReorder() {
-  // Recompute sortOrder from the current visible order.
-  visibleSections.value.forEach((s, i) => { s.sortOrder = i; });
+function onPageReorder() {
+  visiblePages.value.forEach((p, i) => { p.sortOrder = i; });
   emitSections();
 }
 
-function onContentChange(val: string) {
+// -------- sub-section management within the current page --------
+
+function addSection() {
+  pageSections.value.push({
+    id: newSectionId(),
+    title: '',
+    content: '',
+  });
+  commitPageSections();
+}
+
+function deleteSection(idx: number) {
+  pageSections.value.splice(idx, 1);
+  commitPageSections();
+}
+
+function onSectionContentChange(idx: number, value: string) {
+  if (!pageSections.value[idx]) return;
+  pageSections.value[idx].content = value;
+  commitPageSections();
+}
+
+function commitPageSections() {
   if (!currentPage.value) return;
-  currentPage.value.content = val;
+  currentPage.value.content = serializePageContent(pageSections.value);
   emitSections();
 }
 
 function emitSections() {
-  const payload: ISectionPayload[] = allSections.value.map(({ _key, ...rest }) => rest);
+  const payload: ISectionPayload[] = allPages.value.map(({ _key, ...rest }) => rest);
   emit('update:sections', payload);
 }
 </script>
