@@ -57,7 +57,7 @@
         <div v-if="currentPage" class="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
           <div
             class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3 cursor-pointer hover:bg-amber-50 transition group"
-            @click.stop="showPopup($event, currentPage.id, null)"
+            @click.stop="goToEdit(currentPage.id, null)"
             :title="$t('modulePages.editPageTitle')"
           >
             <span class="w-8 h-8 shrink-0 rounded-full bg-brand-100 text-brand-700 text-sm font-bold flex items-center justify-center">
@@ -71,7 +71,7 @@
               v-for="section in currentPageSections"
               :key="section.id"
               class="px-6 py-5 cursor-pointer hover:bg-amber-50/50 transition relative group"
-              @click.stop="showPopup($event, currentPage.id, section.id)"
+              @click.stop="goToEdit(currentPage.id, section.id)"
               :title="$t('modulePages.editSection')"
             >
               <span class="absolute top-3 right-3 text-gray-400 opacity-0 group-hover:opacity-100 transition">
@@ -148,32 +148,11 @@
       </nav>
     </aside>
 
-    <!-- Quick-edit popup -->
-    <Teleport to="body">
-      <div
-        v-if="popup.visible"
-        ref="popupEl"
-        class="fixed z-50"
-        :style="{ left: popup.x + 'px', top: popup.y + 'px' }"
-        @click.stop
-      >
-        <button
-          type="button"
-          @click="goToEdit"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-medium shadow-lg hover:bg-brand-600 transition cursor-pointer"
-        >
-          <Pencil class="w-3.5 h-3.5" />
-          {{ $t('modulePages.edit') }}
-        </button>
-        <!-- little arrow pointing down -->
-        <div class="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 bg-gray-900 rotate-45" />
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount, reactive } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ArrowLeft, Eye, ChevronLeft, ChevronRight, Pencil } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
@@ -192,14 +171,6 @@ const mod = ref<ModuleDto | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentPageIndex = ref(0);
-
-const popup = reactive<{
-  visible: boolean;
-  x: number;
-  y: number;
-  pageId: string | null;
-  sectionId: string | null;
-}>({ visible: false, x: 0, y: 0, pageId: null, sectionId: null });
 
 const sortedPages = computed(() => {
   if (!mod.value?.sections) return [];
@@ -221,48 +192,17 @@ function imageUrl(path: string | undefined): string {
 function goToPage(idx: number) {
   if (idx < 0 || idx >= sortedPages.value.length) return;
   currentPageIndex.value = idx;
-  hidePopup();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showPopup(event: MouseEvent, pageId: string, sectionId: string | null) {
-  // Position the popup just above the click, clamped to viewport.
-  const POPUP_HEIGHT_ESTIMATE = 48;
-  const MARGIN = 8;
-  let y = event.clientY - POPUP_HEIGHT_ESTIMATE;
-  if (y < MARGIN) y = event.clientY + MARGIN;
-  popup.visible = true;
-  popup.x = event.clientX;
-  popup.y = y;
-  popup.pageId = pageId;
-  popup.sectionId = sectionId;
-}
-
-function hidePopup() {
-  popup.visible = false;
-  popup.pageId = null;
-  popup.sectionId = null;
-}
-
-function goToEdit() {
+function goToEdit(pageId: string | null, sectionId: string | null) {
   const query: Record<string, string> = {};
-  if (popup.pageId) query.pageId = popup.pageId;
-  if (popup.sectionId) query.sectionId = popup.sectionId;
-  hidePopup();
+  if (pageId) query.pageId = pageId;
+  if (sectionId) query.sectionId = sectionId;
   router.push({ name: 'admin.children.modules.edit', params: { id: props.id }, query });
 }
 
-function onDocumentClick() {
-  if (popup.visible) hidePopup();
-}
-
-function onDocumentKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') hidePopup();
-}
-
 onMounted(async () => {
-  document.addEventListener('click', onDocumentClick);
-  document.addEventListener('keydown', onDocumentKey);
   try {
     mod.value = await modulesService.getModuleFlexible(props.id);
     if (!mod.value) {
@@ -272,10 +212,5 @@ onMounted(async () => {
     error.value = "Impossible de charger le module.";
   }
   loading.value = false;
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocumentClick);
-  document.removeEventListener('keydown', onDocumentKey);
 });
 </script>
