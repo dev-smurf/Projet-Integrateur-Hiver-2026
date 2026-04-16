@@ -20,8 +20,8 @@
     <div v-if="!loading && quizzes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
         <!-- Quiz Image or Placeholder -->
-        <div class="h-40 bg-gray-200 relative overflow-hidden group">
-          <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover">
+          <div class="h-40 bg-gray-200 relative overflow-hidden group">
+            <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
           <div v-else class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
             <BookOpen class="w-16 h-16 text-white opacity-50" />
           </div>
@@ -29,7 +29,7 @@
           <!-- Test Quiz Button Overlay -->
           <router-link
             :to="{ name: 'quiz.take', params: { quizId: quiz.id } }"
-            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"
+            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
               <Play class="w-8 h-8 text-white" />
@@ -192,6 +192,7 @@ async function deleteQuiz() {
 }
 
 function openAssignModal(quiz: Quiz) {
+  console.log('openAssignModal', quiz)
   selectedQuizForAssignment.value = quiz
   showAssignModal.value = true
 }

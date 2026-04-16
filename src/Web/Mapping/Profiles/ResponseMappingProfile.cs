@@ -50,7 +50,8 @@ public class ResponseMappingProfile : Profile
 
         CreateMap<Quiz, QuizDto>();
         CreateMap<QuizQuestion, QuizQuestionDto>()
-            .ForMember(x => x.QuestionTypeDisplay, opt => opt.MapFrom(x => x.QuestionType.GetDisplayName()));
+            .ForMember(x => x.QuestionTypeDisplay, opt => opt.MapFrom(x => x.QuestionType.GetDisplayName()))
+            .ForMember(x => x.ScaleLabels, opt => opt.MapFrom(x => x.ScaleLabels));
         CreateMap<QuizQuestionResponse, QuizResponseColumnDto>();
     }
 }

@@ -43,6 +43,18 @@ public class UpdateQuestionEndpoint : EndpointWithSanitizedRequest<UpdateQuestio
         question.ScaleMinLabel = req.ScaleMinLabel;
         question.ScaleMidLabel = req.ScaleMidLabel;
         question.ScaleMaxLabel = req.ScaleMaxLabel;
+        if (req.ScaleLabels != null && req.ScaleLabels.Count > 0)
+        {
+            question.ScaleLabels = req.ScaleLabels;
+        }
+        if (req.ScaleLabels != null && req.ScaleLabels.Count > 0)
+        {
+            question.ScaleLabels = req.ScaleLabels;
+        }
+        if (req.ScaleLabels != null && req.ScaleLabels.Count > 0)
+        {
+            question.ScaleLabels = req.ScaleLabels;
+        }
         question.SanitazeForSaving();
 
         var existingResponseIds = new HashSet<Guid>(req.Responses.Where(r => r.Id.HasValue).Select(r => r.Id.Value));
