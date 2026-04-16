@@ -123,7 +123,39 @@
               <span class="section-drag-handle cursor-grab text-gray-400 hover:text-gray-600 shrink-0" :title="$t('modulePages.dragSection')">
                 <GripVertical class="w-4 h-4" />
               </span>
-              <span class="text-xs font-semibold text-gray-500 shrink-0">{{ idx + 1 }}.</span>
+
+              <!-- Position picker -->
+              <div class="relative shrink-0">
+                <button
+                  type="button"
+                  @click.stop="togglePositionMenu(section.id)"
+                  :title="$t('modulePages.moveToPosition')"
+                  class="flex items-center gap-0.5 px-1.5 py-0.5 rounded border border-gray-300 bg-white hover:border-brand-400 hover:bg-brand-50 transition cursor-pointer text-xs font-semibold text-gray-600"
+                >
+                  {{ idx + 1 }}
+                  <ChevronDown class="w-3 h-3" />
+                </button>
+                <div
+                  v-if="openPositionMenuFor === section.id"
+                  class="absolute left-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[140px]"
+                >
+                  <div class="px-3 py-1 text-[10px] uppercase tracking-wider text-gray-400 font-semibold border-b border-gray-100">
+                    {{ $t('modulePages.moveToPosition') }}
+                  </div>
+                  <button
+                    v-for="n in pageSections.length"
+                    :key="n"
+                    type="button"
+                    @click.stop="moveSectionTo(idx, n - 1)"
+                    class="w-full text-left px-3 py-1.5 text-sm hover:bg-brand-50 transition cursor-pointer flex items-center justify-between"
+                    :class="n - 1 === idx ? 'text-brand-600 font-semibold bg-brand-50/60' : 'text-gray-700'"
+                  >
+                    <span>{{ n }}</span>
+                    <span v-if="n - 1 === idx" class="text-[10px] text-brand-500">← {{ $t('modulePages.currentPosition') }}</span>
+                  </button>
+                </div>
+              </div>
+
               <input
                 v-model="section.title"
                 type="text"
@@ -168,9 +200,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { ChevronLeft, ChevronRight, Trash2, Plus, FileText, X, GripVertical } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, ChevronDown, Trash2, Plus, FileText, X, GripVertical } from 'lucide-vue-next';
 import { useI18n } from 'vue3-i18n';
 import RichTextEditor from '@/components/editor/RichTextEditor.vue';
 import type { ISectionPayload } from '@/types/requests/ISaveModuleFullRequest';
@@ -221,6 +253,25 @@ const currentPage = computed<LocalPage | undefined>(() => visiblePages.value[cur
 // the parent passes initialSectionId via a deep link.
 const sectionRefs: Record<string, HTMLElement> = {};
 const highlightedSectionId = ref<string | null>(null);
+
+// Position picker: which section's position menu is currently open.
+const openPositionMenuFor = ref<string | null>(null);
+function togglePositionMenu(id: string) {
+  openPositionMenuFor.value = openPositionMenuFor.value === id ? null : id;
+}
+function moveSectionTo(fromIdx: number, toIdx: number) {
+  if (fromIdx === toIdx || toIdx < 0 || toIdx >= pageSections.value.length) {
+    openPositionMenuFor.value = null;
+    return;
+  }
+  const [moved] = pageSections.value.splice(fromIdx, 1);
+  pageSections.value.splice(toIdx, 0, moved);
+  openPositionMenuFor.value = null;
+  commitPageSections();
+}
+function onDocClickClosePositionMenu() {
+  openPositionMenuFor.value = null;
+}
 
 watch(() => props.sections, (newSections) => {
   if (allPages.value.length === 0 && newSections.length > 0) {
@@ -337,4 +388,12 @@ function emitSections() {
   const payload: ISectionPayload[] = allPages.value.map(({ _key, ...rest }) => rest);
   emit('update:sections', payload);
 }
+
+onMounted(() => {
+  document.addEventListener('click', onDocClickClosePositionMenu);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocClickClosePositionMenu);
+});
 </script>

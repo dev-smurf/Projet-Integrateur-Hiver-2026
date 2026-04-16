@@ -636,7 +636,9 @@
     "edit": "Modifier",
     "clickToEdit": "Cliquer pour modifier",
     "editPageTitle": "Modifier le titre de la page",
-    "editSection": "Modifier cette section"
+    "editSection": "Modifier cette section",
+    "moveToPosition": "Déplacer à la position",
+    "currentPosition": "Position actuelle"
   },
   "common": {
     "Ajouter": "Ajouter",
