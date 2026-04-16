@@ -30,6 +30,7 @@
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+
       <div class="bg-white border border-gray-200 rounded-2xl p-6 animate-fade-up">
         <div class="flex items-center gap-4">
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-700 text-lg font-semibold">
@@ -227,59 +228,80 @@
         </div>
       </div>
 
-      <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 shadow-sm animate-fade-up delay-2">
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
+        <h2 class="text-sm font-semibold text-gray-900 mb-4">Assigner un module à des membres</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <h2 class="text-sm font-bold text-gray-900">Assigner des modules</h2>
-            <p class="text-[11px] text-gray-500 uppercase font-medium tracking-wide mt-0.5">Sélectionnez les modules à ajouter au profil</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <router-link
-              :to="{ name: 'admin.children.modules.create' }"
-              class="px-3 py-2 text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition border border-emerald-100"
+            <label class="text-xs font-medium text-gray-500">1. Sélectionner le module</label>
+            <select
+              v-model="assignModuleId"
+              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
             >
-              + Nouveau module
-            </router-link>
+              <option value="">Choisir un module</option>
+              <option v-for="mod in allModules" :key="mod.id" :value="mod.id">
+                {{ moduleLabel(mod) }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-500">2. Rechercher des membres</label>
             <input
-              v-model="assignSearch"
+              v-model="assignMemberSearch"
               type="text"
-              placeholder="Filtrer..."
-              class="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500 w-48"
+              placeholder="Nom ou email..."
+              class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
             />
           </div>
         </div>
 
         <div class="border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
-          <div v-if="filteredAvailableModules.length === 0" class="p-8 text-center text-sm text-gray-400 italic">
-            Aucun autre module disponible.
-          </div>
-          <div v-else class="max-h-60 overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <div class="max-h-80 overflow-y-auto p-2 space-y-1">
             <label
-              v-for="mod in filteredAvailableModules"
-              :key="mod.id"
-              class="flex items-center gap-3 p-3 rounded-lg border border-transparent hover:bg-white hover:shadow-sm cursor-pointer transition"
-              :class="{ 'bg-white border-brand-200 shadow-sm': selectedModuleIds.includes(String(mod.id)) }"
+              v-for="m in filteredMembersForCheck"
+              :key="m.id"
+              class="flex items-center gap-3 p-3 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 cursor-pointer transition group"
+              :class="{ 'bg-brand-50/50 border-brand-100': assignSelectedIds.includes(String(m.id)) }"
             >
-              <input type="checkbox" :value="String(mod.id)" v-model="selectedModuleIds" class="w-4 h-4 rounded accent-brand-600" />
-              <div class="truncate">
-                <p class="text-xs font-bold text-gray-900 truncate">{{ mod.nameFr || mod.nameEn||mod.content }}</p>
-                <p class="text-[10px] text-gray-500 uppercase font-medium truncate">{{ mod.sujetFr || mod.name ||mod.sujetEn || 'Général' }}</p>
+              <div class="relative flex items-center justify-center">
+                <input 
+                  type="checkbox" 
+                  :value="String(m.id)" 
+                  v-model="assignSelectedIds" 
+                  class="w-5 h-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 accent-brand-600" 
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-gray-900 truncate">{{ m.firstName }} {{ m.lastName }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ m.email }}</p>
               </div>
             </label>
+            <div v-if="filteredMembersForCheck.length === 0" class="text-sm text-gray-400 italic text-center py-8">
+              Aucun membre trouvé.
+            </div>
           </div>
         </div>
 
-        <div class="mt-4 flex items-center justify-between pt-4 border-t border-gray-100">
-          <div class="text-[11px] font-bold text-gray-400 uppercase">
-            <span class="text-brand-600">{{ selectedModuleIds.length }}</span> sélectionné(s)
+        <div class="mt-4 flex items-center justify-between bg-white pt-4">
+          <div class="text-sm text-gray-500">
+            <span class="font-bold text-brand-600">{{ assignSelectedIds.length }}</span> membre(s) sélectionné(s)
           </div>
-          <button
-            @click="assignMultipleModules"
-            :disabled="!selectedModuleIds.length || applyingAssign"
-            class="px-8 py-2 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black disabled:opacity-20 transition shadow-sm"
-          >
-            {{ applyingAssign ? 'Assignation...' : 'Assigner les modules' }}
-          </button>
+          <div class="flex gap-2">
+             <button
+              v-if="assignSelectedIds.length > 0"
+              @click="assignSelectedIds = []"
+              class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition"
+            >
+              Désélectionner tout
+            </button>
+            <button
+              @click="applyAssignModule"
+              :disabled="!assignModuleId || assignSelectedIds.length === 0 || applyingAssign"
+              class="px-6 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ applyingAssign ? 'Assignation...' : `Assigner le module` }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -323,8 +345,14 @@ import { useRoute } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import { useMemberService, useModulesService } from "@/inversify.config";
 import type { Member, MemberModuleDto, ModuleDto } from "@/types/entities";
+import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useNotification } from "@kyvg/vue3-notification";
+import { useMemberService, useModulesService } from "@/inversify.config";
+import type { Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
 const route = useRoute();
+const { notify } = useNotification();
 const { notify } = useNotification();
 const memberService = useMemberService();
 const modulesService = useModulesService();
@@ -344,8 +372,11 @@ const notesText = ref("");
 const notesVisibleToMember = ref(false);
 const savingNotes = ref(false);
 
-const selectedModuleIds = ref<string[]>([]);
-const assignSearch = ref("");
+// --- Bloc assigner module (MODIFIÉ) ---
+const allMembers = ref<Member[]>([]);
+const assignModuleId = ref("");
+const assignMemberSearch = ref("");
+const assignSelectedIds = ref<string[]>([]); // Contient les IDs des membres cochés
 const applyingAssign = ref(false);
 
 const memberId = computed(() => String(route.params.id || ""));
@@ -373,21 +404,6 @@ const addressLine = computed(() => {
   const zip = member.value?.zipCode || "";
   const joined = [street, zip].filter(Boolean).join(" ");
   return joined || "N/A";
-});
-
-const memberEquipes = computed(() => {
-  const equipeIds = member.value?.equipeIds ?? [];
-  if (!equipeIds.length) return [];
-
-  return equipes.value
-    .filter(equipe => {
-      const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
-      return equipeIds.includes(equipeId);
-    })
-    .map(equipe => {
-      const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
-      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
-    });
 });
 
 const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
@@ -424,27 +440,34 @@ const filteredAvailableModules = computed(() => {
   );
 });
 
+// Nouveau filtre simple pour la liste avec checkbox
+const filteredMembersForCheck = computed(() => {
+  const q = assignMemberSearch.value.toLowerCase().trim();
+  if (!q) return allMembers.value;
+  return allMembers.value.filter(m => 
+    `${m.firstName} ${m.lastName}`.toLowerCase().includes(q) || 
+    m.email?.toLowerCase().includes(q)
+  );
+});
+
 function moduleLabel(mod: ModuleDto) {
   const name = mod.nameFr || mod.nameEn || "Module";
   const subject = mod.sujetFr || mod.sujetEn || "";
   return subject ? `${name} - ${subject}` : name;
 }
 
-async function assignMultipleModules() {
-  if (!selectedModuleIds.value.length) return;
+async function applyAssignModule() {
+  if (!assignModuleId.value || !assignSelectedIds.value.length) return;
   applyingAssign.value = true;
-  let successCount = 0;
-  try {
-    for (const modId of selectedModuleIds.value) {
-      const res = await memberService.addModuleToMember(memberId.value, modId);
-      if (res.succeeded) successCount++;
-    }
-    notify({ type: "success", text: `${successCount} module(s) ajouté(s).` });
-    selectedModuleIds.value = [];
-    await loadData();
-  } finally {
-    applyingAssign.value = false;
+  let success = 0;
+  for (const mId of assignSelectedIds.value) {
+    const res = await memberService.addModuleToMember(mId, assignModuleId.value);
+    if (res.succeeded) success++;
   }
+  notify({ type: "success", text: `${success} assignation(s) effectuée(s).` });
+  assignSelectedIds.value = [];
+  assignModuleId.value = "";
+  applyingAssign.value = false;
 }
 
 async function loadData() {
@@ -452,6 +475,7 @@ async function loadData() {
   member.value = await memberService.getMember(memberId.value);
   memberModules.value = await memberService.getMemberModules(memberId.value);
   allModules.value = await modulesService.getAllModules();
+  const nextEdits: Record<string, number> = {};
   memberModules.value.forEach(item => {
     progressEdits.value[item.moduleId] = item.progressPercent;
   });
@@ -461,15 +485,21 @@ async function loadData() {
   loading.value = false;
 }
 
+async function loadAllMembers() {
+  const response = await memberService.search(1, 1000, "");
+  allMembers.value = response.items || [];
+}
+
 async function addModule() {
   if (!selectedModuleId.value) return;
   addingModule.value = true;
   const response = await memberService.addModuleToMember(memberId.value, selectedModuleId.value);
   if (response.succeeded) {
     notify({ type: "success", text: "Module ajoute." });
-    await loadData();
+    memberModules.value = await memberService.getMemberModules(memberId.value);
     selectedModuleId.value = "";
   } else {
+    notify({ type: "error", text: "Impossible d'ajouter le module." });
     notify({ type: "error", text: "Impossible d'ajouter le module." });
   }
   addingModule.value = false;
@@ -477,27 +507,27 @@ async function addModule() {
 
 async function saveProgress(item: MemberModuleDto) {
   const value = progressEdits.value[item.moduleId] ?? item.progressPercent;
-  savingProgress.value[item.moduleId] = true;
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: true };
   const response = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, value);
   if (response.succeeded) {
     notify({ type: "success", text: "Progression mise a jour." });
-    await loadData();
+    memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
     notify({ type: "error", text: "Impossible de mettre a jour la progression." });
   }
-  savingProgress.value[item.moduleId] = false;
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: false };
 }
 
 async function removeModule(item: MemberModuleDto) {
-  removingModule.value[item.moduleId] = true;
+  removingModule.value = { ...removingModule.value, [item.moduleId]: true };
   const response = await memberService.removeMemberModule(memberId.value, item.moduleId);
   if (response.succeeded) {
     notify({ type: "success", text: "Module retire." });
-    await loadData();
+    memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
     notify({ type: "error", text: "Impossible de retirer le module." });
   }
-  removingModule.value[item.moduleId] = false;
+  removingModule.value = { ...removingModule.value, [item.moduleId]: false };
 }
 
 async function saveNotes() {
@@ -519,7 +549,10 @@ async function saveNotes() {
   savingNotes.value = false;
 }
 
-onMounted(loadData);
+onMounted(async () => {
+  await loadData();
+  await loadAllMembers();
+});
 </script>
 
 <style scoped>
