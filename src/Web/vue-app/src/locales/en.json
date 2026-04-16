@@ -415,6 +415,7 @@
     "confirmation": "Confirmation",
     "cancel": "Cancel",
     "delete": "Delete",
+    "loading": "Loading...",
     "free": "Free",
     "menu": "Menu",
     "title": "Title",
@@ -554,7 +555,10 @@
   },
   "Form_Add_Equipe": {
     "fields": {
-      "name": "Team name"
+      "name": "Team name",
+      "members": "Members",
+      "searchMembers": "Search for a member...",
+      "noMembers": "No members available."
     },
     "validation": {
       "nameRequired": "The name is required."

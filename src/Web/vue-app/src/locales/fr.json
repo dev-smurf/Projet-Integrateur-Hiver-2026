@@ -418,6 +418,7 @@
     "title": "Titre",
     "date": "Date",
     "at": "à",
+    "loading": "Chargement...",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "passwordConfirmation": "Confirmation du mot de passe",
@@ -568,7 +569,10 @@
   },
   "Form_Add_Equipe": {
     "fields": {
-      "name": "Nom de l'équipe"
+      "name": "Nom de l'équipe",
+      "members": "Membres",
+      "searchMembers": "Rechercher un membre...",
+      "noMembers": "Aucun membre disponible."
     },
     "validation": {
       "nameRequired": "Le nom est obligatoire."
