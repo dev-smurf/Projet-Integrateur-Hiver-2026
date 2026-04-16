@@ -271,6 +271,14 @@ function imageUrl(path: string | undefined): string {
 
 function goToPage(idx: number) {
   if (idx < 0 || idx >= sortedSections.value.length) return;
+
+  // Navigating away from a page counts as having seen it — mark it read
+  // immediately so the progress bar advances on every page change.
+  const leavingPage = currentPage.value;
+  if (leavingPage && !readSections.value.has(leavingPage.id)) {
+    markPageAsRead(leavingPage.id);
+  }
+
   currentPageIndex.value = idx;
   // Scroll to top of page smoothly so the user sees the new page from its start.
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -322,6 +330,14 @@ onMounted(async () => {
     module.value = await modulesService.getMyModuleDetail(props.moduleId);
     if (module.value?.sections?.length) {
       await loadSectionProgress();
+
+      // Resume on the first unread page (or stay on 0 if the member has
+      // read everything — let them review from the start).
+      const firstUnread = sortedSections.value.findIndex(s => !readSections.value.has(s.id));
+      if (firstUnread > 0) {
+        currentPageIndex.value = firstUnread;
+      }
+
       schedulePageRead();
     }
   } catch (e: any) {
