@@ -638,7 +638,16 @@
     "you": "Vous",
     "startConversation": "Démarrer la conversation",
     "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
-    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf."
+    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf.",
+    "tabs": {
+      "members": "Membres",
+      "equipes": "Équipes",
+      "admin": "Admin",
+      "myEquipe": "Mon équipe"
+    },
+    "equipeMembersCount": "{count} membres",
+    "noEquipeConversations": "Aucune conversation d'équipe",
+    "searchEquipe": "Rechercher une équipe..."
   },
   "appointment": {
     "requestBtn": "Prendre un RDV",

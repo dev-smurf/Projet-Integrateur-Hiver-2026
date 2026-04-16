@@ -624,7 +624,16 @@
     "you": "You",
     "startConversation": "Start conversation",
     "fileTooLarge": "File is too large. Maximum size is 10MB.",
-    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf."
+    "unsupportedFileType": "Unsupported file type. Allowed: jpg, png, gif, webp, pdf.",
+    "tabs": {
+      "members": "Members",
+      "equipes": "Teams",
+      "admin": "Admin",
+      "myEquipe": "My team"
+    },
+    "equipeMembersCount": "{count} members",
+    "noEquipeConversations": "No team conversations",
+    "searchEquipe": "Search for a team..."
   },
   "appointment": {
     "requestBtn": "Book Appointment",
