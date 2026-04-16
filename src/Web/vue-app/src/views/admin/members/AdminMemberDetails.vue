@@ -85,6 +85,32 @@
                 <dt class="text-gray-500">Créé le</dt>
                 <dd class="text-gray-900">{{ createdAt }}</dd>
               </div>
+              <div class="flex justify-between gap-4">
+                <dt class="text-gray-500">Statut</dt>
+                <dd>
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                    :class="member?.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+                  >
+                    {{ member?.accountActivated ? "Compte actif" : "En attente de validation" }}
+                  </span>
+                </dd>
+              </div>
+              <div class="flex justify-between gap-4 items-start">
+                <dt class="text-gray-500">Equipes</dt>
+                <dd class="text-right">
+                  <div v-if="memberEquipes.length" class="flex flex-wrap justify-end gap-2">
+                    <span
+                      v-for="equipe in memberEquipes"
+                      :key="equipe"
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700"
+                    >
+                      {{ equipe }}
+                    </span>
+                  </div>
+                  <span v-else class="text-gray-900">N/A</span>
+                </dd>
+              </div>
             </dl>
           </div>
           <div>
@@ -196,7 +222,23 @@
             {{ savingNotes ? "Enregistrement..." : "Enregistrer" }}
           </button>
         </div>
-        <textarea v-model="notesText" rows="4" class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+        <textarea
+          v-model="notesText"
+          rows="5"
+          placeholder="Ajouter des notes sur ce membre..."
+          class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+        />
+        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
+          <input
+            v-model="notesVisibleToMember"
+            type="checkbox"
+            class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+          />
+          Rendre ces notes visibles par ce membre
+        </label>
+        <p class="mt-2 text-xs text-gray-500">
+          Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir.
+        </p>
       </div>
     </div>
   </div>
@@ -206,22 +248,25 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
-import { useMemberService, useModulesService } from "@/inversify.config";
-import type { Member, MemberModuleDto, ModuleDto } from "@/types/entities";
+import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
+import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
 const route = useRoute();
 const { notify } = useNotification();
 const memberService = useMemberService();
 const modulesService = useModulesService();
+const equipeService = useEquipesService();
 
 const member = ref<Member | null>(null);
 const memberModules = ref<MemberModuleDto[]>([]);
 const allModules = ref<ModuleDto[]>([]);
+const equipes = ref<Equipe[]>([]);
 const loading = ref(true);
 
 const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
 const notesText = ref("");
+const notesVisibleToMember = ref(false);
 const savingNotes = ref(false);
 
 const selectedModuleIds = ref<string[]>([]);
@@ -254,6 +299,21 @@ const addressLine = computed(() => {
   return [street, apt, zip].filter(Boolean).join(" ") || "N/A";
 });
 
+const memberEquipes = computed(() => {
+  const equipeIds = member.value?.equipeIds ?? [];
+  if (!equipeIds.length) return [];
+
+  return equipes.value
+    .filter(equipe => {
+      const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
+      return equipeIds.includes(equipeId);
+    })
+    .map(equipe => {
+      const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
+      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
+    });
+});
+
 const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
 
 const progressPercent = computed(() => {
@@ -277,19 +337,24 @@ const filteredAvailableModules = computed(() => {
 async function loadData() {
   loading.value = true;
   try {
-    const [m, mMods, all] = await Promise.all([
+    const [memberData, memberModulesData, modulesData, equipesData] = await Promise.all([
       memberService.getMember(memberId.value),
       memberService.getMemberModules(memberId.value),
-      modulesService.getAllModules()
+      modulesService.getAllModules(),
+      equipeService.getAllEquipes()
     ]);
-    member.value = m;
-    memberModules.value = mMods || [];
-    allModules.value = all || [];
-    
+    member.value = memberData;
+    memberModules.value = memberModulesData || [];
+    allModules.value = modulesData || [];
+    equipes.value = equipesData || [];
+
+    const nextEdits: Record<string, number> = {};
     memberModules.value.forEach(item => {
-      progressEdits.value[item.moduleId] = item.progressPercent;
+      nextEdits[item.moduleId] = item.progressPercent;
     });
-    notesText.value = m?.adminNotes || "";
+    progressEdits.value = nextEdits;
+    notesText.value = member.value?.adminNotes ?? "";
+    notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
   } finally {
     loading.value = false;
   }
@@ -322,10 +387,21 @@ async function saveProgress(item: MemberModuleDto) {
 }
 
 async function saveNotes() {
-  if (!member.value) return;
+  if (!member.value?.id) return;
   savingNotes.value = true;
-  const res = await memberService.updateMember({ ...member.value, adminNotes: notesText.value });
-  if (res.succeeded) notify({ type: "success", text: "Notes sauvées" });
+  const response = await memberService.updateMember({
+    ...member.value,
+    adminNotes: notesText.value.trim() || undefined,
+    adminNotesVisibleToMember: notesVisibleToMember.value
+  });
+  if (response.succeeded) {
+    member.value = await memberService.getMember(memberId.value);
+    notesText.value = member.value?.adminNotes ?? "";
+    notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
+    notify({type: "success", text: "Notes enregistrees."});
+  } else {
+    notify({type: "error", text: "Impossible d'enregistrer les notes."});
+  }
   savingNotes.value = false;
 }
 
