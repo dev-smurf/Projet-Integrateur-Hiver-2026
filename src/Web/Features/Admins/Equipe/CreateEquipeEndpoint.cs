@@ -34,6 +34,17 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
         newEquipe.SanitazeForSaving();
 
         await _equipeService.CreateEquipe(newEquipe);
+
+        // Assign the selected members (if any).
+        var userIds = (req.MemberUserIds ?? new List<string>())
+            .Select(s => Guid.TryParse(s, out var g) ? g : Guid.Empty)
+            .Where(g => g != Guid.Empty)
+            .ToList();
+        if (userIds.Count > 0)
+        {
+            await _equipeService.SetEquipeMembers(newEquipe.Id, userIds);
+        }
+
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 }

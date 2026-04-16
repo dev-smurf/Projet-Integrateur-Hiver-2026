@@ -1,12 +1,14 @@
 import * as signalR from '@microsoft/signalr'
 import Cookies from 'universal-cookie'
 import {useChatStore} from '@/stores/chatStore'
-import type {ChatMessage} from '@/types/entities'
+import {useUserStore} from '@/stores/userStore'
+import type {ChatMessage, EquipeMessage} from '@/types/entities'
 
 let connection: signalR.HubConnection | null = null
 
 export function useSignalR() {
   const chatStore = useChatStore()
+  const userStore = useUserStore()
 
   async function connect() {
     if (connection?.state === signalR.HubConnectionState.Connected) return
@@ -34,6 +36,16 @@ export function useSignalR() {
       // Could update read receipts UI in the future
     })
 
+    connection.on('ReceiveEquipeMessage', (message: EquipeMessage) => {
+      const conversationId = message.equipeConversationId
+      if (conversationId) chatStore.clearEquipeTyping(conversationId)
+      chatStore.receiveEquipeMessage(message, userStore.user?.id)
+    })
+
+    connection.on('EquipeUserTyping', (data: { conversationId: string, equipeId: string, senderId: string }) => {
+      if (data.conversationId) chatStore.setEquipeTyping(data.conversationId)
+    })
+
     try {
       await connection.start()
     } catch (err) {
@@ -58,5 +70,15 @@ export function useSignalR() {
     }
   }
 
-  return {connect, disconnect, sendTyping}
+  async function sendEquipeTyping(conversationId: string, equipeId: string) {
+    if (connection?.state === signalR.HubConnectionState.Connected) {
+      try {
+        await connection.invoke('SendEquipeTyping', conversationId, equipeId)
+      } catch {
+        // Non-blocking
+      }
+    }
+  }
+
+  return {connect, disconnect, sendTyping, sendEquipeTyping}
 }

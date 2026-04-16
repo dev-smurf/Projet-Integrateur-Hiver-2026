@@ -21,6 +21,63 @@
         />
       </div>
 
+      <!-- Member picker -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          {{ $t('Form_Add_Equipe.fields.members') }}
+          <span class="text-gray-400 font-normal">
+            ({{ selectedMemberIds.length }})
+          </span>
+        </label>
+        <div class="relative mb-2">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            v-model="memberSearch"
+            type="text"
+            :placeholder="$t('Form_Add_Equipe.fields.searchMembers')"
+            class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+          />
+        </div>
+        <div
+          v-if="loadingMembers"
+          class="text-sm text-gray-400 italic px-2 py-4 text-center"
+        >
+          {{ $t('global.loading') }}
+        </div>
+        <div
+          v-else-if="filteredMembers.length === 0"
+          class="text-sm text-gray-400 italic px-2 py-4 text-center border-2 border-dashed border-gray-200 rounded-lg"
+        >
+          {{ $t('Form_Add_Equipe.fields.noMembers') }}
+        </div>
+        <div
+          v-else
+          class="max-h-64 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100"
+        >
+          <label
+            v-for="m in filteredMembers"
+            :key="m.userId"
+            class="flex items-center gap-3 px-3 py-2 hover:bg-brand-50 cursor-pointer transition"
+          >
+            <input
+              type="checkbox"
+              :value="m.userId"
+              v-model="selectedMemberIds"
+              class="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+            />
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-semibold shrink-0">
+              {{ getInitials(m) }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-gray-900 truncate">
+                {{ m.fullName || `${m.firstName || ''} ${m.lastName || ''}`.trim() }}
+              </div>
+              <div class="text-xs text-gray-500 truncate">{{ m.email }}</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
         <router-link
           :to="{ name: 'admin.children.equipes.index' }"
@@ -43,19 +100,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
-import { Loader2 } from "lucide-vue-next";
-import { useEquipesService } from "@/inversify.config";
+import { Loader2, Search } from "lucide-vue-next";
+import { useEquipesService, useMemberService } from "@/inversify.config";
 import { useI18n } from "vue3-i18n";
 import type { IEditEquipeRequest } from "@/types/requests/IEditEquipeRequest";
+import type { Member } from "@/types/entities";
 
 const router = useRouter();
 const route = useRoute();
 const { notify } = useNotification();
 const { t } = useI18n();
 const equipesService = useEquipesService();
+const memberService = useMemberService();
 
 const id = route.params.id as string;
 
@@ -67,6 +126,26 @@ const _equipe = ref<IEditEquipeRequest>({
 const loading = ref(true);
 const submitting = ref(false);
 
+const allMembers = ref<Member[]>([]);
+const loadingMembers = ref(true);
+const memberSearch = ref("");
+const selectedMemberIds = ref<string[]>([]);
+
+const filteredMembers = computed(() => {
+  const q = memberSearch.value.trim().toLowerCase();
+  if (!q) return allMembers.value;
+  return allMembers.value.filter(m =>
+    (m.fullName || `${m.firstName || ''} ${m.lastName || ''}`).toLowerCase().includes(q)
+    || (m.email || '').toLowerCase().includes(q)
+  );
+});
+
+function getInitials(m: Member): string {
+  const first = (m.firstName || m.fullName?.split(' ')[0] || '?')[0];
+  const last = (m.lastName || m.fullName?.split(' ')[1] || '')[0] || '';
+  return (first + last).toUpperCase();
+}
+
 async function fetchEquipe() {
   try {
     const equipe = await equipesService.getEquipe(id);
@@ -74,6 +153,7 @@ async function fetchEquipe() {
       nameFr: equipe.nameFr || "",
       nameEn: equipe.nameEn || "",
     };
+    selectedMemberIds.value = (equipe as any).memberUserIds ?? [];
   } catch {
     notify({
       type: "error",
@@ -83,6 +163,17 @@ async function fetchEquipe() {
     router.push({ name: "admin.children.equipes.index" });
   } finally {
     loading.value = false;
+  }
+}
+
+async function fetchMembers() {
+  try {
+    const resp = await memberService.search(0, 1000, "");
+    allMembers.value = (resp.items || []).filter(m => !!m.userId);
+  } catch {
+    allMembers.value = [];
+  } finally {
+    loadingMembers.value = false;
   }
 }
 
@@ -98,7 +189,10 @@ async function handleSubmit() {
   submitting.value = true;
 
   try {
-    const response = await equipesService.updateEquipe(id, _equipe.value);
+    const response = await equipesService.updateEquipe(id, {
+      ..._equipe.value,
+      memberUserIds: selectedMemberIds.value,
+    });
 
     if (response?.succeeded) {
       notify({
@@ -124,5 +218,7 @@ async function handleSubmit() {
   }
 }
 
-onMounted(fetchEquipe);
+onMounted(async () => {
+  await Promise.all([fetchEquipe(), fetchMembers()]);
+});
 </script>

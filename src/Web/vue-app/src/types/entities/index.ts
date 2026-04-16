@@ -10,6 +10,8 @@ export * from "./memberModuleDto"
 export * from "./dashboardSummaryDto"
 export * from "./conversation"
 export * from "./chatMessage"
+export * from "./equipeConversation"
+export * from "./equipeMessage"
 export * from "./appointment"
 export type { ModuleSectionDto } from "./moduleSection";
 export * from "./equipe";

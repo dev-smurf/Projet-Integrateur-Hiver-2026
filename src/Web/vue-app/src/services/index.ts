@@ -5,5 +5,6 @@ export * from './memberService';
 export * from './userService';
 export * from './moduleService';
 export * from './conversationService';
+export * from './equipeConversationService';
 export * from './AppointmentService';
 export * from './quizService';

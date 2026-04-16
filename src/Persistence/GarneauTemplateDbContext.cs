@@ -54,6 +54,9 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<Book> Books { get; set; } = null!;
     public DbSet<Conversation> Conversations { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<EquipeConversation> EquipeConversations { get; set; } = null!;
+    public DbSet<EquipeMessage> EquipeMessages { get; set; } = null!;
+    public DbSet<EquipeMessageRead> EquipeMessageReads { get; set; } = null!;
     public DbSet<Appointment> Appointments { get; set; } = null!;
     public DbSet<AdminAvailability> AdminAvailabilities { get; set; } = null!;
     public DbSet<AdminAvailabilityOverride> AdminAvailabilityOverrides { get; set; } = null!;

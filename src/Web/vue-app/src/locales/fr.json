@@ -418,6 +418,7 @@
     "title": "Titre",
     "date": "Date",
     "at": "à",
+    "loading": "Chargement...",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "passwordConfirmation": "Confirmation du mot de passe",
@@ -560,15 +561,18 @@
       "subject": "Sujet",
       "image": "Image",
       "imagePreview": "Aperçu de l'image",
-      "sections": "Sections",
-      "sectionTitle": "Titre de la section",
-      "addSection": "Ajouter une section",
+      "sections": "Pages",
+      "sectionTitle": "Titre de la page",
+      "addSection": "Ajouter une page",
       "assignments": "Assignations"
     }
   },
   "Form_Add_Equipe": {
     "fields": {
-      "name": "Nom de l'équipe"
+      "name": "Nom de l'équipe",
+      "members": "Membres",
+      "searchMembers": "Rechercher un membre...",
+      "noMembers": "Aucun membre disponible."
     },
     "validation": {
       "nameRequired": "Le nom est obligatoire."
@@ -612,6 +616,35 @@
       "loadError": "Impossible de charger le module."
     }
   },
+  "modulePages": {
+    "title": "Pages",
+    "pageTitle": "Titre de la page",
+    "contentPlaceholder": "Contenu de la page...",
+    "addPage": "Ajouter une page",
+    "newPage": "Nouvelle page",
+    "noPages": "Aucune page. Ajoutez-en une pour commencer.",
+    "createFirstPage": "Créer la première page",
+    "pageOfTotal": "Page {current} / {total}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "deletePage": "Supprimer la page",
+    "confirmDelete": "Supprimer cette page ?",
+    "progress": "Progression",
+    "pagesRead": "{read} / {total} pages lues",
+    "noContent": "Cette page n'a pas encore de contenu.",
+    "sectionTitle": "Titre de la section",
+    "addSection": "Ajouter une section",
+    "deleteSection": "Supprimer la section",
+    "noSections": "Aucune section. Ajoutez-en une pour commencer.",
+    "dragSection": "Glisser pour réorganiser",
+    "edit": "Modifier",
+    "clickToEdit": "Cliquer pour modifier",
+    "editPageTitle": "Modifier le titre de la page",
+    "editSection": "Modifier cette section",
+    "moveToPosition": "Déplacer à la position",
+    "currentPosition": "Position actuelle",
+    "finish": "Terminer"
+  },
   "common": {
     "Ajouter": "Ajouter",
     "cancel": "Annuler"
@@ -638,7 +671,16 @@
     "you": "Vous",
     "startConversation": "Démarrer la conversation",
     "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
-    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf."
+    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf.",
+    "tabs": {
+      "members": "Membres",
+      "equipes": "Équipes",
+      "admin": "Admin",
+      "myEquipe": "Mon équipe"
+    },
+    "equipeMembersCount": "{count} membres",
+    "noEquipeConversations": "Aucune conversation d'équipe",
+    "searchEquipe": "Rechercher une équipe..."
   },
   "appointment": {
     "requestBtn": "Prendre un RDV",
