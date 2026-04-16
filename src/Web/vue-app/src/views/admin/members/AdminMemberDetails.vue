@@ -143,9 +143,9 @@
 
         <div class="mt-4 flex items-center justify-between pt-4 border-t border-gray-100">
           <div class="text-[11px] font-bold text-gray-400 uppercase">
-            <span class="text-brand-600">{{ selectedModuleIds.length }}</span> sélectionné(s)
           </div>
           <button
+          <span class="text-brand-600">{{ selectedModuleIds.length }}</span> sélectionné(s)
             @click="assignMultipleModules"
             :disabled="!selectedModuleIds.length || applyingAssign"
             class="px-8 py-2 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black disabled:opacity-20 transition"
