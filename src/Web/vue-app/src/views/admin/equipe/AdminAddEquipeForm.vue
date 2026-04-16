@@ -12,11 +12,11 @@
                         {{ $t("Form_Add_Equipe.fields.name") }}
                         <span class="text-red-500">*</span>
                     </label>
-
                     <input v-model="_equipe.nameFr"
                            type="text"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
                 </div>
+
                 <div>
                     <div class="flex items-center justify-between gap-3 mb-2">
                         <label class="text-sm font-medium text-gray-700">
@@ -30,6 +30,7 @@
                             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         </div>
                     </div>
+
                     <div class="border border-gray-100 rounded-md max-h-60 overflow-auto p-2 bg-gray-50">
                         <template v-if="loadingMembers">
                             <div class="flex items-center justify-center py-6">
@@ -45,41 +46,40 @@
                             <div v-else class="space-y-1">
                                 <label v-for="m in filteredMembers"
                                        :key="m.id"
-                                       class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/50 transition cursor-pointer"></label>
+                                       class="flex items-center gap-3 px-2 py-2 rounded hover:bg-white/50 transition cursor-pointer">
                                     <input type="checkbox"
-                                         class="w-4 h-4 text-brand-600 rounded"
-                                          :value="m.id"
-                                            v-model="selectedMemberIds" />
-                                <div class="min-w-0">
-                                    <div class="text-sm font-medium text-gray-900 truncate">{{ m.firstName }} {{ m.lastName }}</div>
-                                    <div class="text-xs text-gray-500 truncate">{{ m.email }}</div>
-                                </div>
-
+                                           class="w-4 h-4 text-brand-600 rounded"
+                                           :value="m.id"
+                                           v-model="selectedMemberIds" />
+                                    <div class="min-w-0">
+                                        <div class="text-sm font-medium text-gray-900 truncate">{{ m.firstName }} {{ m.lastName }}</div>
+                                        <div class="text-xs text-gray-500 truncate">{{ m.email }}</div>
+                                    </div>
+                                </label>
                             </div>
                         </template>
                     </div>
 
                     <p class="mt-2 text-xs text-gray-500">
-                      {{ $t("Form_Add_Equipe.help.membersHint") || "Sélectionnez les membres à assigner à l'équipe lors de la création." }}
+                        {{ $t("Form_Add_Equipe.help.membersHint") || "Sélectionnez les membres à assigner à l'équipe lors de la création." }}
                     </p>
                 </div>
 
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <router-link :to="{ name: 'admin.children.equipes.index' }"
+                                 class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                        {{ $t("global.cancel") }}
+                    </router-link>
 
-                                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                                        <router-link :to="{ name: 'admin.children.equipes.index' }"
-                                                     class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                                            {{ $t("global.cancel") }}
-                                        </router-link>
-
-                                        <button type="submit"
-                                                :disabled="submitting"
-                                                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
-                                            {{ $t("global.save") }}
-                                        </button>
-                                    </div>
-</form>
-    </div>
+                    <button type="submit"
+                            :disabled="submitting"
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
+                        {{ $t("global.save") }}
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -87,23 +87,23 @@
     import { ref, computed, onMounted } from "vue";
     import { useRouter } from "vue-router";
     import { useNotification } from "@kyvg/vue3-notification";
-    import { Loader2 } from "lucide-vue-next";
-    import { useEquipesService } from "@/inversify.config";
+    import { Loader2, Search } from "lucide-vue-next";
+    import { useEquipesService, useMemberService } from "@/inversify.config";
     import { useI18n } from "vue3-i18n";
     import type { ICreateEquipeRequest } from "@/types/requests/ICreateEquipeRequest";
+    import type { Member } from "@/types/entities";
 
     const router = useRouter();
     const { notify } = useNotification();
     const { t } = useI18n();
     const equipesService = useEquipesService();
+    const memberService = useMemberService();
 
     const _equipe = ref<ICreateEquipeRequest>({
         nameFr: "",
     });
 
     const submitting = ref(false);
-
-    // Members selection state
     const allMembers = ref<Member[]>([]);
     const loadingMembers = ref(true);
     const memberSearch = ref("");
@@ -117,10 +117,10 @@
             (m.email || "").toLowerCase().includes(q)
         );
     });
+
     async function loadMembers() {
         loadingMembers.value = true;
         try {
-
             const response = await memberService.search(1, 9999, "");
             allMembers.value = response.items || [];
         } catch {
@@ -129,7 +129,6 @@
             loadingMembers.value = false;
         }
     }
-    
 
     async function handleSubmit() {
         if (!_equipe.value.nameFr?.trim()) {
@@ -143,8 +142,7 @@
         submitting.value = true;
 
         try {
-            // Un seul appel qui crée l'équipe ET assigne les membres
-            const payload: any = {
+            const payload: ICreateEquipeRequest = {
                 nameFr: _equipe.value.nameFr,
                 nameEn: (_equipe.value as any).nameEn ?? "",
                 memberIds: selectedMemberIds.value,
@@ -157,7 +155,6 @@
                     type: "success",
                     text: t("pages.equipes.create.successMessage"),
                 });
-
                 await router.push({ name: "admin.children.equipes.index" });
             } else {
                 notify({
@@ -174,6 +171,7 @@
             submitting.value = false;
         }
     }
+
     onMounted(async () => {
         await loadMembers();
     });

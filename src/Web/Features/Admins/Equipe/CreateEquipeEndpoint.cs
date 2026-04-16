@@ -6,11 +6,13 @@ using Domain.Common;
 
 public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNotResponse>
 {
-    private readonly IEquipeRepository _equipeService;
+    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
 
-    public CreateEquipeEndpoint(IEquipeRepository equipeService)
+    public CreateEquipeEndpoint(IEquipeRepository equipeRepository, IMemberEquipeRepository memberEquipeRepository)
     {
-        _equipeService = equipeService;
+        _equipeRepository = equipeRepository;
+        _memberEquipeRepository = memberEquipeRepository;
     }
 
     public override void Configure()
@@ -33,7 +35,16 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
 
         newEquipe.SanitazeForSaving();
 
-        await _equipeService.CreateEquipe(newEquipe);
+        await _equipeRepository.CreateEquipe(newEquipe);
+
+        if (req.MemberIds?.Any() == true)
+        {
+            foreach (var memberId in req.MemberIds.Where(id => id != Guid.Empty).Distinct())
+            {
+                await _memberEquipeRepository.AssignAsync(new MemberEquipe(memberId, newEquipe.Id));
+            }
+        }
+
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 }

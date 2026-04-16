@@ -87,30 +87,22 @@
       </table>
     </div>
 
-    <div
-      v-if="totalItems > pageSize"
-      class="flex items-center justify-between mt-4"
-    >
+    <div v-if="totalItems > pageSize" class="flex items-center justify-between mt-4">
       <span class="text-sm text-gray-500">
-        {{ (pageIndex - 1) * pageSize + 1 }}–{{
-          Math.min(pageIndex * pageSize, totalItems)
-        }}
+        {{ (pageIndex - 1) * pageSize + 1 }}–{{ Math.min(pageIndex * pageSize, totalItems) }}
         {{ $t("global.table.of") }} {{ totalItems }}
       </span>
       <div class="flex gap-2">
         <button
-           
           @click="pageIndex > 1 && changePage(pageIndex - 1)"
+          :disabled="pageIndex <= 1"
           class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
           <ChevronLeft class="w-4 h-4" />
         </button>
-        <button>
-          @click="
-            pageIndex * pageSize < totalItems && changePage(pageIndex + 1)
-          "
+        <button
+          @click="pageIndex * pageSize < totalItems && changePage(pageIndex + 1)"
           :disabled="pageIndex * pageSize >= totalItems"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
           <ChevronRight class="w-4 h-4" />
         </button>
       </div>
