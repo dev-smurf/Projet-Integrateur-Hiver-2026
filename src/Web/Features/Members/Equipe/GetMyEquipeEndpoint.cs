@@ -8,18 +8,15 @@ namespace Web.Features.Members.Equipe;
 public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
 {
     private readonly IAuthenticatedMemberService _authenticatedMemberService;
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
     private readonly IEquipeRepository _equipeRepository;
     private readonly IMemberRepository _memberRepository;
 
     public GetMyEquipeEndpoint(
         IAuthenticatedMemberService authenticatedMemberService,
-        IMemberEquipeRepository memberEquipeRepository,
         IEquipeRepository equipeRepository,
         IMemberRepository memberRepository)
     {
         _authenticatedMemberService = authenticatedMemberService;
-        _memberEquipeRepository = memberEquipeRepository;
         _equipeRepository = equipeRepository;
         _memberRepository = memberRepository;
     }
@@ -36,7 +33,7 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
     {
         var member = _authenticatedMemberService.GetAuthenticatedMember();
 
-        var equipeIds = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
+        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
 
         if (equipeIds.Count == 0)
         {
@@ -59,13 +56,23 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
             Id = equipe.Id.ToString(),
             NameFr = equipe.NameFr,
             NameEn = equipe.NameEn,
-            Members = equipe.MemberEquipes.Select(me => new GetMyEquipeMemberDto
-            {
-                Id = me.MemberId.ToString(),
-                FirstName = me.Member.FirstName,
-                LastName = me.Member.LastName,
-                Email = me.Member.Email
-            }).ToList(),
+            Members = equipe.Membres
+                .Select(user =>
+                {
+                    var equipeMember = _memberRepository.FindByUserId(user.Id);
+                    return equipeMember == null
+                        ? null
+                        : new GetMyEquipeMemberDto
+                        {
+                            Id = equipeMember.Id.ToString(),
+                            FirstName = equipeMember.FirstName,
+                            LastName = equipeMember.LastName,
+                            Email = equipeMember.Email
+                        };
+                })
+                .Where(m => m != null)
+                .Cast<GetMyEquipeMemberDto>()
+                .ToList(),
             Modules = memberModules.Select(mm => new GetMyEquipeModuleDto
             {
                 ModuleId = mm.ModuleId.ToString(),

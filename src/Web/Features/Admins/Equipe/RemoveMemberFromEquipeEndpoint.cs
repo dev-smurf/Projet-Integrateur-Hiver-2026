@@ -7,11 +7,13 @@ namespace Web.Features.Admins.Equipe;
 
 public class RemoveMemberFromEquipeEndpoint : Endpoint<RemoveMemberFromEquipeRequest, SucceededOrNotResponse>
 {
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberRepository _memberRepository;
 
-    public RemoveMemberFromEquipeEndpoint(IMemberEquipeRepository memberEquipeRepository)
+    public RemoveMemberFromEquipeEndpoint(IEquipeRepository equipeRepository, IMemberRepository memberRepository)
     {
-        _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
+        _memberRepository = memberRepository;
     }
 
     public override void Configure()
@@ -31,16 +33,26 @@ public class RemoveMemberFromEquipeEndpoint : Endpoint<RemoveMemberFromEquipeReq
             return;
         }
 
-        var memberEquipe = await _memberEquipeRepository.GetByMemberAndEquipeAsync(memberId, equipeId);
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
+        if (equipe == null)
+        {
+            await Send.OkAsync(new SucceededOrNotResponse(false,
+                new Error("NotFound", "Equipe introuvable.")), ct);
+            return;
+        }
 
-        if (memberEquipe == null)
+        var member = _memberRepository.FindById(memberId);
+        var user = equipe.Membres.FirstOrDefault(m => m.Id == member.User.Id);
+
+        if (user == null)
         {
             await Send.OkAsync(new SucceededOrNotResponse(false,
                 new Error("NotFound", "Assignation introuvable.")), ct);
             return;
         }
 
-        await _memberEquipeRepository.UnassignAsync(memberEquipe);
+        equipe.Membres.Remove(user);
+        await _equipeRepository.UpdateEquipe(equipe);
         await Send.OkAsync(new SucceededOrNotResponse(true), cancellation: ct);
     }
 }
