@@ -10,6 +10,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
 using Infrastructure.Repositories.Conversations;
+using Infrastructure.Repositories.Equipe;
 using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;

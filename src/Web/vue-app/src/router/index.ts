@@ -36,6 +36,8 @@ import QuizList from "@/views/member/quiz/QuizList.vue";
 import QuizResults from "@/views/member/quiz/QuizResults.vue";
 import QuizTake from "@/views/member/quiz/QuizTake.vue";
 
+import AdminEquipeDetails from "@/views/admin/equipe/AdminEquipeDetails.vue";
+
 let routerInstance: Router | null = null;
 
 export function getRouter(): Router {
@@ -188,6 +190,12 @@ export function getRouter(): Router {
             path: `${i18n.t("routes.admin.children.equipes.path")}/${i18n.t("routes.admin.children.equipes.edit.path")}`,
             name: "admin.children.equipes.edit",
             component: AdminEditEquipeForm,
+            props: true,
+          },
+          {
+            path: `${i18n.t("routes.admin.children.equipes.path")}/details/:id`,
+            name: "admin.children.equipes.details",
+            component: AdminEquipeDetails,
             props: true,
           },
           {

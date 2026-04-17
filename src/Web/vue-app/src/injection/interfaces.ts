@@ -112,6 +112,9 @@ export interface IEquipesService {
   createEquipe(request: any): Promise<SucceededOrNotResponse>;
   updateEquipe(id: string, request: any): Promise<SucceededOrNotResponse>;
   deleteEquipe(id: string): Promise<SucceededOrNotResponse>;
+  getEquipeMembers(equipeId: string): Promise<any>;
+  assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse>;
+  removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse>;
 }
 
 export interface IUserService {

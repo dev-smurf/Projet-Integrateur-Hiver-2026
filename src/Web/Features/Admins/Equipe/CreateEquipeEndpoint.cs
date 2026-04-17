@@ -6,11 +6,13 @@ using Domain.Common;
 
 public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNotResponse>
 {
-    private readonly IEquipeRepository _equipeService;
+    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
 
-    public CreateEquipeEndpoint(IEquipeRepository equipeService)
+    public CreateEquipeEndpoint(IEquipeRepository equipeRepository, IMemberEquipeRepository memberEquipeRepository)
     {
-        _equipeService = equipeService;
+        _equipeRepository = equipeRepository;
+        _memberEquipeRepository = memberEquipeRepository;
     }
 
     public override void Configure()
