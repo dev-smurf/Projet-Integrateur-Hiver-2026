@@ -47,6 +47,7 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<Administrator> Administrators { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<MemberModule> MemberModules { get; set; } = null!;
+    public DbSet<MemberModuleSectionProgress> MemberModuleSectionProgress { get; set; } = null!;
     public DbSet<Domain.Entities.Module> Modules { get; set; } = null!;
     public DbSet<ModuleSection> ModuleSections { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;

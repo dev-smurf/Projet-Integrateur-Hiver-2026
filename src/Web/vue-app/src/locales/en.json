@@ -169,6 +169,7 @@
       "defaultName": "Member",
       "tagline": "Track your modules, your progress, and the next steps.",
       "viewBooks": "My books",
+      "viewModules": "View my modules",
       "updateProfile": "My profile",
       "modulesTitle": "Added modules",
       "modulesCount": "modules",
@@ -453,6 +454,7 @@
       "noData": "No available data",
       "actions": "Actions"
     },
+    "confirmation": "Confirmation",
     "actions": {
       "view": "View",
       "download": "Download",
@@ -581,11 +583,6 @@
       "noAccess": "You don't have access to this module.",
       "loadError": "Could not load module."
     }
-  },
-  "global": {
-    "confirmation": "Confirmation",
-    "cancel": "Cancel",
-    "delete": "Delete"
   },
   "common": {
     "Ajouter": "Add",

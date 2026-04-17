@@ -10,6 +10,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
 using Infrastructure.Repositories.Conversations;
+using Infrastructure.Repositories.Equipe;
 using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
@@ -91,7 +92,33 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-await app.Services.InitializeAndSeedDatabase();
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+var shouldInitializeDatabase = app.Configuration.GetValue<bool?>("Database:InitializeOnStartup")
+    ?? app.Environment.IsDevelopment();
+var shouldSeedDatabase = app.Configuration.GetValue<bool?>("Database:SeedOnStartup")
+    ?? app.Environment.IsDevelopment();
+
+if (shouldInitializeDatabase)
+{
+    try
+    {
+        await app.Services.InitializeDatabase();
+
+        if (shouldSeedDatabase)
+            await app.Services.SeedDatabase();
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex, "Database initialization failed during startup.");
+
+        if (app.Environment.IsDevelopment())
+            throw;
+    }
+}
+else
+{
+    startupLogger.LogInformation("Skipping database initialization during startup.");
+}
 
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
