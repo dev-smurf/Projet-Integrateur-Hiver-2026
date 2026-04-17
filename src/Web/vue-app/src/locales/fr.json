@@ -213,6 +213,13 @@
         "modules": "Modules assignés",
         "progress": "Progression moyenne"
       },
+      "members": {
+        "add": "Ajouter des membres à l'équipe",
+        "remove": "Supprimer des membres de l'équipe",
+        "list": "Liste des membres de l'équipe",
+        "noMembers": "Aucun membre dans cette équipe pour le moment."
+
+      },
       "modulesTitle": "Modules de l'équipe",
       "membersTitle": "Membres de l'équipe",
       "noModules": "Aucun module assigné pour le moment.",
