@@ -29,12 +29,12 @@ public class GetAssignedQuizzesEndpoint : Endpoint<EmptyRequest, List<AssignedQu
         var assignments = await _assignmentRepository.GetByUserIdAsync(userId);
 
         var result = assignments
-            .Where(a => !a.Deleted.HasValue)
+            .Where(a => !a.Deleted.HasValue && a.Quiz != null)
             .Select(a => new AssignedQuizDto
             {
                 Id = a.Id,
                 QuizId = a.QuizId,
-                Titre = a.Quiz.Titre,
+                Titre = a.Quiz!.Titre,
                 Description = a.Quiz.Description,
                 ImageUrl = a.Quiz.ImageUrl,
                 AssignedAt = a.AssignedAt,

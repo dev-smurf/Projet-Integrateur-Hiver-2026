@@ -88,7 +88,7 @@
                                 {{ memberInitials(member) }}
                             </div>
                             <div class="min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">{{ member.firstname }} {{ member.lastname }}</p>
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ member.firstName }} {{ member.lastName }}</p>
                                 <p class="text-xs text-gray-500 truncate">{{ member.email }}</p>
                             </div>
                         </div>
@@ -147,7 +147,7 @@
     });
 
     function memberInitials(member: any): string {
-        return ((member.firstname?.[0] || "") + (member.lastname?.[0] || "")).toUpperCase();
+        return ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
     }
 
     async function loadData() {
@@ -171,7 +171,9 @@
         if (!selectedMemberId.value) return;
         addingMember.value = true;
         try {
-            const response = await equipesService.assignMembersToEquipe(equipeId.value, [selectedMemberId.value]);
+            const currentMemberIds = equipeMembers.value.map(m => m.memberId);
+            const allMemberIds = [...currentMemberIds, selectedMemberId.value];
+            const response = await equipesService.assignMembersToEquipe(equipeId.value, allMemberIds);
             if (response.succeeded) {
                 notify({ type: "success", text: "Membre ajouté avec succès" });
                 selectedMemberId.value = "";

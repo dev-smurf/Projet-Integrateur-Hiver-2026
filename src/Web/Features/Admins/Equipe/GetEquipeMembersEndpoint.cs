@@ -48,8 +48,8 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
                     {
                         MemberId = member.Id.ToString(),
                         UserId = user.Id.ToString(),
-                        Firstname = member.FirstName,
-                        Lastname = member.LastName,
+                        FirstName = member.FirstName,
+                        LastName = member.LastName,
                         Email = member.Email
                     };
             })
@@ -82,7 +82,7 @@ public class GetEquipeMemberDto
 {
     public string MemberId { get; set; } = null!;
     public string UserId { get; set; } = null!;
-    public string Firstname { get; set; } = null!;
-    public string Lastname { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
 }
