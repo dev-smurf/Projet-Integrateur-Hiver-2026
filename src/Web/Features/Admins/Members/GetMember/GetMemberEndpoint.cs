@@ -1,8 +1,8 @@
+using Domain.Entities;
 using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Web.Dtos;
-using Domain.Entities;
 
 namespace Web.Features.Admins.Members.GetMember;
 

@@ -1,170 +1,201 @@
 <template>
-  <div class="space-y-8">
-    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-brand-700 text-white p-6 sm:p-8 shadow-lg">
-      <div class="relative z-10 max-w-3xl">
-        <p class="text-sm text-white/80">{{ $t("pages.memberDashboard.welcomeLabel") }}</p>
-        <h1 class="text-3xl sm:text-4xl font-semibold mt-1">
-          {{ displayName }}
-        </h1>
-        <p class="mt-2 text-white/90 text-sm sm:text-base">
-          {{ $t("pages.memberDashboard.tagline") }}
-        </p>
-      </div>
-      <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/20 blur-3xl" />
-      <div class="absolute right-16 bottom-0 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
-    </section>
+    <div class="space-y-8">
 
-    <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="bg-white border border-gray-200 rounded-xl p-4">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.modules") }}</p>
-          <Layers class="h-4 w-4 text-brand-500" />
-        </div>
-        <p class="text-2xl font-semibold text-gray-900 mt-3">{{ totalModules }}</p>
-        <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.modulesHint") }}</p>
-      </div>
-      <div class="bg-white border border-gray-200 rounded-xl p-4">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.completed") }}</p>
-          <CheckCircle class="h-4 w-4 text-emerald-500" />
-        </div>
-        <p class="text-2xl font-semibold text-gray-900 mt-3">{{ completedModules }}</p>
-        <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.completedHint") }}</p>
-      </div>
-    </section>
-
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-gray-900">{{ $t("pages.memberDashboard.modulesTitle") }}</h2>
-          <span class="text-sm text-gray-500">{{ totalModules }} {{ $t("pages.memberDashboard.modulesCount") }}</span>
-        </div>
-
-        <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div v-for="n in 4" :key="n" class="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
-            <div class="h-24 bg-gray-100 rounded-lg mb-4" />
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-            <div class="h-3 bg-gray-200 rounded w-1/2" />
-            <div class="h-2 bg-gray-200 rounded mt-4" />
-          </div>
-        </div>
-
-        <div v-else-if="!moduleCards.length" class="text-center py-10 text-gray-500">
-          {{ $t("pages.memberDashboard.emptyModules") }}
-        </div>
-
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <router-link
-            v-for="mod in moduleCards"
-            :key="mod.id"
-            :to="{ name: 'member.modules.view', params: { moduleId: mod.id } }"
-            class="block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:border-brand-200 transition"
-          >
-            <div class="h-28 bg-gray-50 flex items-center justify-center overflow-hidden">
-              <img
-                v-if="mod.imageUrl"
-                :src="mod.imageUrl"
-                :alt="mod.name"
-                class="h-full w-full object-cover"
-              />
-              <BookOpen v-else class="h-8 w-8 text-brand-400" />
-            </div>
-            <div class="p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <h3 class="font-semibold text-gray-900 line-clamp-1">{{ mod.name }}</h3>
-                  <p class="text-sm text-gray-500 line-clamp-2 mt-1">{{ mod.subject }}</p>
+        <!-- Bannière d'accueil -->
+        <section class="relative overflow-hidden rounded-2xl text-white p-6 sm:p-8 shadow-lg"
+                 style="background: linear-gradient(to right, #4c6367, #5a7578, #4c6367);">
+            <div class="relative z-10 max-w-3xl">
+                <p class="text-sm" style="color: rgba(152,255,152,0.8);">{{ $t("pages.memberDashboard.welcomeLabel") }}</p>
+                <h1 class="text-3xl sm:text-4xl font-semibold mt-1" style="color: white;">
+                    {{ displayName }}
+                </h1>
+                <p class="mt-2 text-sm sm:text-base" style="color: rgba(255,255,255,0.9);">
+                    {{ $t("pages.memberDashboard.tagline") }}
+                </p>
+                <div class="mt-5 flex flex-wrap gap-3">
+                    <router-link :to="{ name: 'member.modules.index' }"
+                                 class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+                                 style="background-color: rgba(152,255,152,0.2); color: #98ff98;"
+                                 @mouseover="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.3)'"
+                                 @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.2)'">
+                        <BookOpen class="h-4 w-4" />
+                        {{ $t("pages.memberDashboard.viewModules") }}
+                    </router-link>
+                    <router-link :to="{ name: 'account' }"
+                                 class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+                                 style="background-color: rgba(144,114,136,0.3); color: white;"
+                                 @mouseover="e => e.currentTarget.style.backgroundColor='rgba(144,114,136,0.5)'"
+                                 @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(144,114,136,0.3)'">
+                        <User class="h-4 w-4" />
+                        {{ $t("pages.memberDashboard.updateProfile") }}
+                    </router-link>
                 </div>
-                <span
-                  class="text-xs font-medium px-2 py-1 rounded-full"
-                  :class="mod.isCompleted ? 'bg-emerald-50 text-emerald-600' : mod.progressPercent > 0 ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-500'"
-                >
-                  {{ mod.statusLabel }}
-                </span>
-              </div>
-              <div class="mt-4">
-                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>{{ $t("pages.memberDashboard.progressLabel") }}</span>
-                  <span>{{ mod.progressPercent }}%</span>
-                </div>
-                <div class="h-2 rounded-full bg-gray-100">
-                  <div
-                    class="h-full rounded-full bg-brand-500 transition-all"
-                    :style="{ width: mod.progressPercent + '%' }"
-                  />
-                </div>
-              </div>
-              <div class="mt-4 flex items-center justify-between">
-                <span class="text-xs text-gray-400">{{ formatAssignedAt(mod.assignedAt) }}</span>
-                <span class="text-sm font-medium text-brand-600 hover:text-brand-700 transition">
-                  {{ $t("pages.memberDashboard.continue") }}
-                </span>
-              </div>
             </div>
-          </router-link>
-        </div>
-      </div>
+            <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full blur-3xl"
+                 style="background-color: rgba(152,255,152,0.15);" />
+            <div class="absolute right-16 bottom-0 h-24 w-24 rounded-full blur-2xl"
+                 style="background-color: rgba(144,114,136,0.2);" />
+        </section>
 
-      <div class="space-y-4">
-        <div class="bg-white border border-gray-200 rounded-xl p-5">
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <p class="text-sm text-gray-500">Quiz assignes</p>
-              <p class="font-semibold text-gray-900">{{ assignedQuizzes.length }} quiz</p>
-            </div>
-            <ClipboardCheck class="h-5 w-5 text-brand-500" />
-          </div>
-
-          <div v-if="loading" class="mt-4 space-y-3">
-            <div v-for="n in 2" :key="n" class="h-16 rounded-xl bg-gray-100 animate-pulse" />
-          </div>
-
-          <div v-else-if="!assignedQuizzes.length" class="mt-4 text-sm text-gray-500">
-            Aucun quiz assigne pour le moment.
-          </div>
-
-          <div v-else class="mt-4 space-y-3">
-            <div
-              v-for="quiz in assignedQuizzes"
-              :key="quiz.id"
-              class="rounded-xl border border-gray-200 p-4"
-            >
-              <div class="flex items-start justify-between gap-3 mb-3">
-                <div class="min-w-0 flex items-center gap-3">
-                  <div class="h-14 w-14 rounded-lg bg-gray-50 overflow-hidden flex items-center justify-center shrink-0">
-                    <img
-                      v-if="quiz.imageUrl"
-                      :src="imageUrl(quiz.imageUrl)"
-                      :alt="quiz.titre"
-                      class="h-full w-full object-cover"
-                    />
-                    <ClipboardCheck v-else class="h-6 w-6 text-brand-400" />
-                  </div>
-                  <div class="min-w-0">
-                    <p class="font-semibold text-gray-900 line-clamp-1">{{ quiz.titre }}</p>
-                    <p v-if="quiz.description" class="mt-1 text-sm text-gray-500 line-clamp-2">{{ quiz.description }}</p>
-                  </div>
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.modules") }}</p>
+                    <Layers class="h-4 w-4" style="color: #4c6367;" />
                 </div>
-                <router-link
-                  :to="{ name: quiz.isCompleted ? 'quiz.results' : 'quiz.take', params: { quizId: quiz.quizId } }"
-                  class="shrink-0 rounded-lg bg-brand-600 px-3 py-2 text-xs font-medium text-white hover:bg-brand-700 transition"
-                >
-                  {{ quiz.isCompleted ? 'Voir' : 'Commencer' }}
-                </router-link>
-              </div>
-
-              <span
-                class="inline-flex rounded-full px-2 py-1 text-xs font-medium"
-                :class="quiz.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
-              >
-                {{ quiz.isCompleted ? 'Termine' : 'A faire' }}
-              </span>
+                <p class="text-2xl font-semibold text-gray-900 mt-3">{{ totalModules }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.modulesHint") }}</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.completed") }}</p>
+                    <CheckCircle class="h-4 w-4 text-emerald-500" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-900 mt-3">{{ completedModules }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.completedHint") }}</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.average") }}</p>
+                    <Activity class="h-4 w-4" style="color: #907288;" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-900 mt-3">{{ averageProgress }}%</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.averageHint") }}</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.stats.next") }}</p>
+                    <Sparkles class="h-4 w-4 text-amber-500" />
+                </div>
+                <p class="text-base font-semibold text-gray-900 mt-3 line-clamp-2">{{ nextModuleName }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $t("pages.memberDashboard.stats.nextHint") }}</p>
+            </div>
+        </section>
+
+        <!-- Modules + Sidebar -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+
+            <div class="lg:col-span-2 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">{{ $t("pages.memberDashboard.modulesTitle") }}</h2>
+                    <span class="text-sm text-gray-500">{{ totalModules }} {{ $t("pages.memberDashboard.modulesCount") }}</span>
+                </div>
+
+
+                <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div v-for="n in 4" :key="n" class="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                        <div class="h-24 bg-gray-100 rounded-lg mb-4" />
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                        <div class="h-3 bg-gray-200 rounded w-1/2" />
+                        <div class="h-2 bg-gray-200 rounded mt-4" />
+                    </div>
+                </div>
+
+                <div v-else-if="!moduleCards.length" class="text-center py-10 text-gray-500">
+                    {{ $t("pages.memberDashboard.emptyModules") }}
+                </div>
+
+                <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div v-for="mod in moduleCards"
+                         :key="mod.id"
+                         class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition">
+                        <div class="h-28 bg-gray-50 flex items-center justify-center overflow-hidden">
+                            <img v-if="mod.imageUrl"
+                                 :src="mod.imageUrl"
+                                 :alt="mod.name"
+                                 class="h-full w-full object-cover" />
+                            <BookOpen v-else class="h-8 w-8" style="color: #4c6367;" />
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 line-clamp-1">{{ mod.name }}</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-2 mt-1">{{ mod.subject }}</p>
+                                </div>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full"
+                                      :style="mod.isCompleted
+                                      ? 'background-color: rgba(152,255,152,0.15); color: #2d8f4e;'
+                                      : mod.progressPercent>
+                                    0
+                                    ? 'background-color: rgba(144,114,136,0.15); color: #907288;'
+                                    : 'background-color: #f3f4f6; color: #6b7280;'"
+                                    >
+                                    {{ mod.statusLabel }}
+                                </span>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>{{ $t("pages.memberDashboard.progressLabel") }}</span>
+                                    <span>{{ mod.progressPercent }}%</span>
+                                </div>
+                                <div class="h-2 rounded-full bg-gray-100">
+                                    <div class="h-full rounded-full transition-all"
+                                         style="background-color: #98ff98;"
+                                         :style="{ width: mod.progressPercent + '%', backgroundColor: '#98ff98' }" />
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between">
+                                <span class="text-xs text-gray-400">{{ $t("pages.memberDashboard.lastUpdate") }}</span>
+                                <button class="text-sm font-medium transition"
+                                        style="color: #4c6367;"
+                                        @mouseover="e => e.currentTarget.style.color='#98ff98'"
+                                        @mouseleave="e => e.currentTarget.style.color='#4c6367'">
+                                    {{ $t("pages.memberDashboard.continue") }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-semibold text-gray-900">{{ $t("pages.memberDashboard.progressTitle") }}</h3>
+                        <Gauge class="h-4 w-4" style="color: #4c6367;" />
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">{{ $t("pages.memberDashboard.progressHint") }}</p>
+                    <div class="h-3 rounded-full bg-gray-100">
+                        <div class="h-full rounded-full transition-all"
+                             style="background-color: #98ff98;"
+                             :style="{ width: averageProgress + '%' }" />
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                        <span>0%</span>
+                        <span style="color: #4c6367; font-weight: 600;">{{ averageProgress }}%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-full flex items-center justify-center font-semibold text-white"
+                             style="background-color: #907288;">
+                            {{ initials }}
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{{ $t("pages.memberDashboard.profileTitle") }}</p>
+                            <p class="font-semibold text-gray-900">{{ displayName }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-2 text-sm text-gray-500">
+                        <p>{{ userStore.user.email || $t("global.undefined") }}</p>
+                        <p>{{ $t("pages.memberDashboard.profileHint") }}</p>
+                    </div>
+                    <router-link :to="{ name: 'account' }"
+                                 class="mt-4 inline-flex items-center gap-2 text-sm font-medium transition"
+                                 style="color: #4c6367;"
+                                 @mouseover="e => e.currentTarget.style.color='#98ff98'"
+                                 @mouseleave="e => e.currentTarget.style.color='#4c6367'">
+                        {{ $t("pages.memberDashboard.manageProfile") }}
+                        <ArrowRight class="h-4 w-4" />
+                    </router-link>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -190,7 +221,7 @@ const modules = ref<MemberModuleDto[]>([]);
 const assignedQuizzes = ref<AssignedQuiz[]>([]);
 
 const displayName = computed(() => {
-  return personStore.person.fullName || userStore.user.fullName || t("pages.memberDashboard.defaultName");
+  return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
 });
 
 function imageUrl(path?: string): string | undefined {
