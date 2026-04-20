@@ -22,9 +22,13 @@ public class SendGridMessageFactory : ISendGridMessageFactory
 
     public SendGridMessage CreateFromModel<TModel>(TModel model) where TModel : NotificationModel
     {
+        var lang = _webHostEnvironment.IsProduction() ? "Fr" : "Fr"; // Default to French
+        var fromName = _mailingSettings.FromName.GetValueOrDefault(lang, "Garneau");
+        var fromAddress = _mailingSettings.FromAddress.GetValueOrDefault(lang, "noreply@garneau.com");
+
         var msg = new SendGridMessage
         {
-            From = new EmailAddress(_mailingSettings.FromAddress, _mailingSettings.FromName),
+            From = new EmailAddress(fromAddress, fromName),
             TemplateId = model.TemplateId()
         };
 

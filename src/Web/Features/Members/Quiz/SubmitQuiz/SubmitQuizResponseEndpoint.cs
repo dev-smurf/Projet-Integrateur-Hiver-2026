@@ -28,6 +28,10 @@ public class SubmitQuizResponseEndpoint : Endpoint<SubmitQuizRequest, SubmitQuiz
 
     public override async Task HandleAsync(SubmitQuizRequest req, CancellationToken ct)
     {
+        // Valider que le QuizQuestionId est un GUID valide
+        if (req.QuizQuestionId == Guid.Empty)
+            throw new BadHttpRequestException("QuizQuestionId cannot be empty");
+
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
 
         var allQuizzes = _quizRepository.FindAll();
