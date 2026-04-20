@@ -22,7 +22,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search users by name or email..."
+            :placeholder="$t('quiz.assign.searchPlaceholder')"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
         </div>
@@ -36,7 +36,7 @@
         <div v-else class="grid grid-cols-12 gap-4">
           <!-- Unassigned -->
           <div class="col-span-5 border rounded-lg p-3 bg-gray-50">
-            <h4 class="text-sm font-semibold mb-2">Non assignés</h4>
+            <h4 class="text-sm font-semibold mb-2">{{ $t('quiz.assign.unassigned') }}</h4>
             <div class="space-y-2 max-h-64 overflow-y-auto">
               <label v-for="user in filteredUnassigned" :key="user.id" class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition">
                 <input type="checkbox" :value="(user as any).userId ?? (user as any).id ?? ''" v-model="leftSelected" class="w-4 h-4 text-blue-600 rounded focus:ring-2" />
@@ -45,7 +45,7 @@
                   <p class="text-xs text-gray-500">{{ user.email }}</p>
                 </div>
               </label>
-              <div v-if="filteredUnassigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">Aucun utilisateur</div>
+              <div v-if="filteredUnassigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">{{ $t('quiz.assign.none') }}</div>
             </div>
           </div>
 
@@ -57,7 +57,7 @@
 
           <!-- Assigned -->
           <div class="col-span-5 border rounded-lg p-3 bg-gray-50">
-            <h4 class="text-sm font-semibold mb-2">Assignés</h4>
+            <h4 class="text-sm font-semibold mb-2">{{ $t('quiz.assign.assigned') }}</h4>
             <div class="space-y-2 max-h-64 overflow-y-auto">
               <label v-for="user in filteredAssigned" :key="user.id" class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition">
                 <input type="checkbox" :value="(user as any).userId ?? (user as any).id ?? ''" v-model="rightSelected" class="w-4 h-4 text-blue-600 rounded focus:ring-2" />
@@ -66,7 +66,7 @@
                   <p class="text-xs text-gray-500">{{ user.email }}</p>
                 </div>
               </label>
-              <div v-if="filteredAssigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">Aucun utilisateur assigné</div>
+              <div v-if="filteredAssigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">{{ $t('quiz.assign.noneAssigned') }}</div>
             </div>
           </div>
         </div>
@@ -78,14 +78,14 @@
           @click="$emit('close')"
           class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
         >
-          Cancel
+          {{ $t('global.cancel') }}
         </button>
         <button
           @click="handleAssign"
           :disabled="changesCount === 0 || assigning"
           class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ assigning ? 'Updating...' : 'Apply changes (' + changesCount + ')' }}
+          {{ assigning ? $t('quiz.assign.updating') : $t('quiz.assign.applyChanges', { count: changesCount }) }}
         </button>
       </div>
     </div>
@@ -94,6 +94,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue3-i18n'
 import { useNotification } from '@kyvg/vue3-notification'
 import { useMemberService, useQuizService } from '@/inversify.config'
 import type { Member } from '@/types/entities'
@@ -108,6 +109,7 @@ const emit = defineEmits<{
   assigned: []
 }>()
 
+const { t } = useI18n()
 const { notify } = useNotification()
 const memberService = useMemberService()
 const quizService = useQuizService()
@@ -172,11 +174,11 @@ async function handleAssign() {
       await quizService.unassignQuiz(props.quizId, toUnassign)
     }
 
-    notify({ type: 'success', text: 'Assignments updated successfully!' })
+    notify({ type: 'success', text: t('quiz.assign.successMessage') })
     emit('assigned')
   } catch (err: any) {
     console.error('Failed to update assignments:', err)
-    notify({ type: 'error', text: err.response?.data?.message || 'Failed to update assignments' })
+    notify({ type: 'error', text: err.response?.data?.message || t('quiz.assign.failedMessage') })
   } finally {
     assigning.value = false
   }

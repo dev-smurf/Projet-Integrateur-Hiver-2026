@@ -107,15 +107,15 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Équipes</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('pages.memberForm.teams') }}</label>
           <Select2Multi
             v-model="member.equipeIds"
             :options="equipeOptions"
-            placeholder="Sélectionner une ou plusieurs équipes"
-            search-placeholder="Rechercher une équipe"
-            empty-text="Aucune équipe trouvée"
+            :placeholder="$t('pages.memberForm.teamsPlaceholder')"
+            :search-placeholder="$t('pages.memberForm.teamsSearchPlaceholder')"
+            :empty-text="$t('pages.memberForm.teamsEmpty')"
           />
-          <p class="mt-1 text-xs text-gray-500">Optionnel</p>
+          <p class="mt-1 text-xs text-gray-500">{{ $t('pages.memberForm.teamsOptional') }}</p>
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">

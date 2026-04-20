@@ -6,12 +6,12 @@
 
       <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p class="text-sm uppercase tracking-[0.2em] text-brand-200">Admin Center</p>
+          <p class="text-sm uppercase tracking-[0.2em] text-brand-200">{{ t('pages.adminDashboard.title') }}</p>
           <h1 class="mt-2 text-3xl font-semibold">
             {{ t('pages.dashboard.welcome') }}, {{ personStore.person.fullName || userStore.user.fullName }}
           </h1>
           <p class="mt-2 max-w-xl text-sm text-slate-200">
-            Tableau de bord pour piloter les membres, leurs parcours et les modules de preparation.
+            {{ t('pages.adminDashboard.subtitle') }}
           </p>
         </div>
         <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-sm text-slate-100">
@@ -38,8 +38,8 @@
     <section v-if="isAdmin" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 class="text-lg font-semibold text-slate-900">Nouveaux membres (30 jours)</h2>
-          <p class="text-sm text-slate-500">Clique un membre pour afficher ses details.</p>
+          <h2 class="text-lg font-semibold text-slate-900">{{ t('pages.adminDashboard.recentMembers') }}</h2>
+          <p class="text-sm text-slate-500">{{ t('pages.adminDashboard.clickMemberHint') }}</p>
         </div>
         <div class="flex flex-wrap gap-3">
           <div class="relative">
@@ -47,7 +47,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Rechercher un membre"
+              :placeholder="t('pages.adminDashboard.searchMember')"
               class="w-60 rounded-full border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
             />
           </div>
@@ -55,30 +55,30 @@
             v-model="roleFilter"
             class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
           >
-            <option value="all">Tous les roles</option>
-            <option value="admin">Admin</option>
-            <option value="member">Membre</option>
+            <option value="all">{{ t('pages.adminDashboard.allRoles') }}</option>
+            <option value="admin">{{ t('pages.adminDashboard.roleAdmin') }}</option>
+            <option value="member">{{ t('pages.adminDashboard.roleMember') }}</option>
           </select>
           <select
             v-model="sortKey"
             class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
           >
-            <option value="recent">Plus recents</option>
-            <option value="name">Nom</option>
-            <option value="email">Email</option>
+            <option value="recent">{{ t('pages.adminDashboard.sortRecent') }}</option>
+            <option value="name">{{ t('global.name') }}</option>
+            <option value="email">{{ t('global.email') }}</option>
           </select>
           <router-link
             :to="{ name: 'admin.children.members.index' }"
             class="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
-            Voir tous les membres
+            {{ t('pages.adminDashboard.viewAllMembers') }}
           </router-link>
         </div>
       </div>
 
       <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
         <span>{{ totalMembersLabel }}</span>
-        <span v-if="isLoadingMembers">Chargement...</span>
+        <span v-if="isLoadingMembers">{{ t('global.loading') }}</span>
       </div>
 
       <div class="mt-4 grid gap-6 lg:grid-cols-[2.2fr_1fr]">
@@ -88,7 +88,7 @@
           </div>
 
           <div v-else-if="filteredMembers.length === 0" class="rounded-2xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-500">
-            Aucun membre ne correspond aux filtres.
+            {{ t('pages.adminDashboard.noMembersMatch') }}
           </div>
 
           <div v-else class="divide-y divide-slate-100">
@@ -105,7 +105,7 @@
                 </div>
                 <div>
                   <p class="text-sm font-semibold text-slate-900">{{ member.displayName }}</p>
-                  <p class="text-xs text-slate-500">{{ member.email || 'Email non disponible' }}</p>
+                  <p class="text-xs text-slate-500">{{ member.email || t('pages.adminDashboard.emailUnavailable') }}</p>
                 </div>
               </div>
               <div class="hidden items-center gap-6 text-xs text-slate-500 lg:flex">
@@ -124,24 +124,24 @@
               </div>
               <div>
                 <p class="text-sm font-semibold text-slate-900">{{ selectedMember.displayName }}</p>
-                <p class="text-xs text-slate-500">{{ selectedMember.email || 'Email non disponible' }}</p>
+                <p class="text-xs text-slate-500">{{ selectedMember.email || t('pages.adminDashboard.emailUnavailable') }}</p>
               </div>
             </div>
 
             <div class="rounded-2xl bg-white p-4 shadow-sm">
-              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Contact</p>
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ t('pages.adminDashboard.contact') }}</p>
               <p class="mt-2 text-sm text-slate-800">{{ selectedMember.phoneLabel }}</p>
               <p class="text-sm text-slate-600">{{ selectedMember.addressLabel }}</p>
             </div>
 
             <div class="rounded-2xl bg-white p-4 shadow-sm">
-              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Inscription</p>
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ t('pages.adminDashboard.registration') }}</p>
               <p class="mt-2 text-sm text-slate-800">{{ selectedMember.createdLabel }}</p>
               <p class="text-sm text-slate-600">{{ selectedMember.activeLabel }}</p>
             </div>
 
             <div class="rounded-2xl bg-white p-4 shadow-sm">
-              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Roles</p>
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ t('global.roles') }}</p>
               <div class="mt-2 flex flex-wrap gap-2">
                 <span v-for="role in selectedMember.roles" :key="role" class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
                   {{ role }}
@@ -151,20 +151,20 @@
 
             <div class="rounded-2xl bg-white p-4 shadow-sm">
               <div class="flex items-center justify-between">
-                <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Progression</p>
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ t('pages.adminDashboard.progression') }}</p>
                 <span class="text-xs font-semibold text-slate-600">{{ memberProgressLabel }}</span>
               </div>
               <div class="mt-3 h-2 w-full rounded-full bg-slate-200">
                 <div class="h-2 rounded-full bg-brand-500" :style="{ width: memberProgressPercent + '%' }"></div>
               </div>
               <p class="mt-2 text-xs text-slate-500">
-                {{ completedModulesCount }} module(s) termines sur {{ memberModules.length }}
+                {{ t('pages.adminDashboard.modulesCompleted', { completed: completedModulesCount, total: memberModules.length }) }}
               </p>
             </div>
           </div>
 
           <div v-else class="rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
-            Selectionne un membre pour afficher ses details.
+            {{ t('pages.adminDashboard.selectMemberHint') }}
           </div>
         </div>
       </div>
@@ -174,15 +174,15 @@
       <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-semibold text-slate-900">Modules du membre</h2>
-            <p class="text-sm text-slate-500">Detail du parcours et progression par module.</p>
+            <h2 class="text-lg font-semibold text-slate-900">{{ t('pages.adminDashboard.memberModules') }}</h2>
+            <p class="text-sm text-slate-500">{{ t('pages.adminDashboard.memberModulesHint') }}</p>
           </div>
           <TrendingUp class="h-5 w-5 text-brand-500" />
         </div>
 
         <div class="mt-6">
           <div v-if="isLoadingModules" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-            Chargement des modules...
+            {{ t('pages.adminDashboard.loadingModules') }}
           </div>
 
           <div v-else-if="memberModulesError" class="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
@@ -190,7 +190,7 @@
           </div>
 
           <div v-else-if="memberModules.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-            Aucun module associe a ce membre.
+            {{ t('pages.adminDashboard.noModulesForMember') }}
           </div>
 
           <div v-else class="space-y-4">
@@ -205,7 +205,7 @@
                     class="rounded-full px-3 py-1 text-xs font-semibold"
                     :class="module.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-slate-600 shadow-sm'"
                   >
-                    {{ module.isCompleted ? 'Termine' : module.progressPercent + '%' }}
+                    {{ module.isCompleted ? t('pages.adminDashboard.completed') : module.progressPercent + '%' }}
                   </span>
                 </div>
               </div>
@@ -213,13 +213,13 @@
                 <div class="h-2 rounded-full bg-brand-500" :style="{ width: module.progressPercent + '%' }"></div>
               </div>
               <div class="mt-3 flex items-center gap-3">
-                <span class="text-xs text-slate-500">Progression automatique par lecture</span>
+                <span class="text-xs text-slate-500">{{ t('pages.adminDashboard.autoProgress') }}</span>
                 <button
                   type="button"
                   class="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50"
                   @click="removeModule(module.moduleId)"
                 >
-                  Retirer
+                  {{ t('pages.adminDashboard.remove') }}
                 </button>
               </div>
             </div>
@@ -229,18 +229,18 @@
 
       <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-slate-900">Actions rapides</h2>
+          <h2 class="text-lg font-semibold text-slate-900">{{ t('pages.adminDashboard.quickActions') }}</h2>
           <ArrowUpRight class="h-4 w-4 text-slate-400" />
         </div>
         <div class="mt-4 space-y-3">
           <div class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Associer un module</p>
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ t('pages.adminDashboard.assignModule') }}</p>
             <div class="mt-3 flex flex-wrap items-center gap-3">
               <select
                 v-model="selectedModuleId"
                 class="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
               >
-                <option value="">Choisir un module</option>
+                <option value="">{{ t('pages.adminDashboard.chooseModule') }}</option>
                 <option v-for="module in availableModules" :key="module.id" :value="module.id">
                   {{ module.nameFr || module.nameEn || 'Module' }}
                 </option>
@@ -251,7 +251,7 @@
                 :disabled="!selectedMemberId || !selectedModuleId"
                 @click="assignModuleToMember"
               >
-                Ajouter
+                {{ t('global.add') }}
               </button>
             </div>
           </div>
@@ -265,7 +265,7 @@
               <component :is="action.icon" class="h-4 w-4 text-brand-600" />
               <span>{{ action.label }}</span>
             </div>
-            <span class="text-xs text-slate-400">Acceder</span>
+            <span class="text-xs text-slate-400">{{ t('pages.adminDashboard.access') }}</span>
           </router-link>
         </div>
       </div>
@@ -303,12 +303,12 @@ const todayLabel = new Intl.DateTimeFormat("fr-CA", {dateStyle: "full"}).format(
 
 const dashboardSummary = ref<DashboardSummaryDto | null>(null);
 
-const quickActions = [
-  {label: "Ajouter un membre", to: {name: "admin.children.members.add"}, icon: UserPlus},
-  {label: "Voir les membres", to: {name: "admin.children.members.index"}, icon: Users},
-  {label: "Creer un module", to: {name: "admin.children.modules.add"}, icon: FolderPlus},
-  {label: "Voir les modules", to: {name: "admin.children.modules.index"}, icon: BookOpen},
-];
+const quickActions = computed(() => [
+  {label: t('pages.adminDashboard.addMember'), to: {name: "admin.children.members.add"}, icon: UserPlus},
+  {label: t('pages.adminDashboard.viewMembers'), to: {name: "admin.children.members.index"}, icon: Users},
+  {label: t('pages.adminDashboard.createModule'), to: {name: "admin.children.modules.add"}, icon: FolderPlus},
+  {label: t('pages.adminDashboard.viewModules'), to: {name: "admin.children.modules.index"}, icon: BookOpen},
+]);
 
 const searchQuery = ref("");
 const roleFilter = ref<"all" | "admin" | "member">("all");
@@ -327,17 +327,17 @@ const allModules = ref<ModuleDto[]>([]);
 
 const totalMembersLabel = computed(() => {
   if (totalMembers.value === 0)
-    return "Aucun nouveau membre sur 30 jours";
-  return `${totalMembers.value} nouveau(x) membre(s) sur 30 jours`;
+    return t('pages.adminDashboard.noNewMembers');
+  return t('pages.adminDashboard.newMembersCount', { count: totalMembers.value });
 });
 
 const kpis = computed(() => {
   const summary = dashboardSummary.value;
   return [
-    {label: "Membres actifs", value: formatNumber(summary?.totalMembers ?? 0), icon: Users},
-    {label: "Nouveaux (30 jours)", value: formatNumber(summary?.newMembersLast30Days ?? 0), icon: UserPlus},
-    {label: "Modules", value: formatNumber(summary?.totalModules ?? 0), icon: BookOpen},
-    {label: "Progression moyenne", value: `${summary?.averageProgressPercent ?? 0}%`, icon: TrendingUp},
+    {label: t('pages.adminDashboard.kpiActiveMembers'), value: formatNumber(summary?.totalMembers ?? 0), icon: Users},
+    {label: t('pages.adminDashboard.kpiNewMembers'), value: formatNumber(summary?.newMembersLast30Days ?? 0), icon: UserPlus},
+    {label: t('pages.adminDashboard.kpiModules'), value: formatNumber(summary?.totalModules ?? 0), icon: BookOpen},
+    {label: t('pages.adminDashboard.kpiAverageProgress'), value: `${summary?.averageProgressPercent ?? 0}%`, icon: TrendingUp},
   ];
 });
 
@@ -375,13 +375,13 @@ const filteredMembers = computed(() => {
       .slice(0, 2)
       .toUpperCase();
     const roles = (member.roles ?? []).map(role => role.toLowerCase());
-    const roleLabel = roles.includes("admin") ? "Admin" : roles.includes("member") ? "Membre" : "Utilisateur";
-    const phoneLabel = member.phoneNumber ? member.phoneNumber : "Telephone non renseigne";
+    const roleLabel = roles.includes("admin") ? t('pages.adminDashboard.roleAdmin') : roles.includes("member") ? t('pages.adminDashboard.roleMember') : t('pages.adminDashboard.roleUser');
+    const phoneLabel = member.phoneNumber ? member.phoneNumber : t('pages.adminDashboard.noPhone');
 
     return {
       id: member.id ?? member.email ?? fullName,
       rawId: member.id ?? "",
-      displayName: fullName || "Nom non renseigne",
+      displayName: fullName || t('pages.adminDashboard.noName'),
       email: member.email ?? "",
       initials: initials || "?",
       roleLabel,
@@ -405,22 +405,22 @@ const selectedMember = computed(() => {
     .slice(0, 2)
     .toUpperCase();
   const roles = (member.roles ?? []).map(role => role.toLowerCase());
-  const roleLabel = roles.includes("admin") ? "Admin" : roles.includes("member") ? "Membre" : "Utilisateur";
-  const phoneLabel = member.phoneNumber ? member.phoneNumber : "Telephone non renseigne";
+  const roleLabel = roles.includes("admin") ? t('pages.adminDashboard.roleAdmin') : roles.includes("member") ? t('pages.adminDashboard.roleMember') : t('pages.adminDashboard.roleUser');
+  const phoneLabel = member.phoneNumber ? member.phoneNumber : t('pages.adminDashboard.noPhone');
   const addressParts = [member.street, member.city, member.zipCode]
     .filter(part => part && String(part).trim().length > 0)
     .join(", ");
 
   return {
-    displayName: fullName || "Nom non renseigne",
+    displayName: fullName || t('pages.adminDashboard.noName'),
     email: member.email ?? "",
     initials: initials || "?",
     phoneLabel,
     roleLabel,
-    roles: roleLabel ? [roleLabel] : ["Utilisateur"],
-    addressLabel: addressParts || "Adresse non renseignee",
-    createdLabel: member.created ? formatDate(member.created) : "Date inconnue",
-    activeLabel: member.accountActivated ? "Compte actif" : "En attente de validation"
+    roles: roleLabel ? [roleLabel] : [t('pages.adminDashboard.roleUser')],
+    addressLabel: addressParts || t('pages.adminDashboard.noAddress'),
+    createdLabel: member.created ? formatDate(member.created) : t('pages.adminDashboard.unknownDate'),
+    activeLabel: member.accountActivated ? t('pages.adminDashboard.accountActive') : t('pages.adminDashboard.pendingValidation')
   };
 });
 
@@ -470,7 +470,7 @@ async function loadMembers(searchValue: string) {
   } catch (error) {
     members.value = [];
     totalMembers.value = 0;
-    memberError.value = "Impossible de charger les membres.";
+    memberError.value = t('pages.adminDashboard.errorLoadMembers');
   } finally {
     isLoadingMembers.value = false;
   }
@@ -488,7 +488,7 @@ async function loadMemberModules(memberId: string) {
     memberModules.value = response;
   } catch (error) {
     memberModules.value = [];
-    memberModulesError.value = "Impossible de charger les modules du membre.";
+    memberModulesError.value = t('pages.adminDashboard.errorLoadMemberModules');
   } finally {
     isLoadingModules.value = false;
   }
@@ -548,7 +548,7 @@ function formatNumber(value: number) {
 function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime()))
-    return "Date inconnue";
+    return t('pages.adminDashboard.unknownDate');
   return new Intl.DateTimeFormat("fr-CA", {dateStyle: "medium"}).format(date);
 }
 </script>

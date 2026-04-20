@@ -3,17 +3,17 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">{{ equipe?.nameFr || equipe?.nameEn || "Équipe" }}</h1>
-                <p class="text-sm text-gray-500">Détails et gestion des membres</p>
+                <p class="text-sm text-gray-500">{{ $t('pages.equipeDetails.subtitle') }}</p>
             </div>
             <div class="flex items-center gap-2">
                 <router-link :to="{ name: 'admin.children.equipes.index' }"
                              class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                    Retour
+                    {{ $t('global.back') }}
                 </router-link>
                 <router-link v-if="equipe?.id"
                              :to="{ name: 'admin.children.equipes.edit', params: { id: equipe.id } }"
                              class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition">
-                    Modifier
+                    {{ $t('global.edit') }}
                 </router-link>
             </div>
         </div>
@@ -29,14 +29,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-white border border-gray-200 rounded-xl p-4">
                     <div class="flex items-center justify-between">
-                        <p class="text-sm text-gray-500">Nombre de membres</p>
+                        <p class="text-sm text-gray-500">{{ $t('pages.equipeDetails.memberCount') }}</p>
                         <Users class="h-5 w-5 text-brand-600" />
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ equipeMembers.length }}</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-4">
                     <div class="flex items-center justify-between">
-                        <p class="text-sm text-gray-500">Membres disponibles</p>
+                        <p class="text-sm text-gray-500">{{ $t('pages.equipeDetails.availableMembers') }}</p>
                         <CheckCircle2 class="h-5 w-5 text-emerald-600" />
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ availableMembersCount }}</p>
@@ -45,21 +45,21 @@
 
             <!-- Gestion des membres -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
-                <h2 class="text-sm font-semibold text-gray-900 mb-4">Gestion des membres</h2>
+                <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('pages.equipeDetails.memberManagement') }}</h2>
 
                 <div class="flex flex-wrap items-end gap-3 mb-4">
                     <div class="flex-1 min-w-[220px]">
-                        <label class="text-xs font-medium text-gray-500">Rechercher un membre</label>
+                        <label class="text-xs font-medium text-gray-500">{{ $t('pages.equipeDetails.searchMember') }}</label>
                         <input v-model="memberSearch"
                                type="text"
-                               placeholder="Rechercher par nom ou email"
+                               :placeholder="$t('pages.equipeDetails.searchPlaceholder')"
                                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" />
                     </div>
                     <div class="flex-1 min-w-[220px]">
-                        <label class="text-xs font-medium text-gray-500">Sélectionner un membre</label>
+                        <label class="text-xs font-medium text-gray-500">{{ $t('pages.equipeDetails.selectMember') }}</label>
                         <select v-model="selectedMemberId"
                                 class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm">
-                            <option value="">Choisir un membre...</option>
+                            <option value="">{{ $t('pages.equipeDetails.chooseMember') }}</option>
                             <option v-for="m in filteredAvailableMembers" :key="m.id" :value="m.id">
                                 {{ m.firstName }} {{ m.lastName }} ({{ m.email }})
                             </option>
@@ -68,15 +68,15 @@
                     <button @click="addMember"
                             :disabled="!selectedMemberId || addingMember"
                             class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ addingMember ? "Ajout..." : "Ajouter" }}
+                        {{ addingMember ? $t('pages.equipeDetails.adding') : $t('global.add') }}
                     </button>
                 </div>
 
-                <h3 class="text-sm font-medium text-gray-900 mb-3">Membres assignés ({{ equipeMembers.length }})</h3>
+                <h3 class="text-sm font-medium text-gray-900 mb-3">{{ $t('pages.equipeDetails.assignedMembers') }} ({{ equipeMembers.length }})</h3>
 
                 <div v-if="equipeMembers.length === 0" class="text-center py-8 text-gray-500">
                     <UsersRound class="w-8 h-8 mx-auto mb-2 opacity-30" />
-                    <p class="text-sm">Aucun membre assigné à cette équipe.</p>
+                    <p class="text-sm">{{ $t('pages.equipeDetails.noMembersAssigned') }}</p>
                 </div>
 
                 <div v-else class="space-y-2 max-h-96 overflow-y-auto">
@@ -107,11 +107,13 @@
 <script lang="ts" setup>
     import { ref, computed, onMounted } from "vue";
     import { useRoute } from "vue-router";
+    import { useI18n } from "vue3-i18n";
     import { useNotification } from "@kyvg/vue3-notification";
     import { Users, CheckCircle2, UsersRound, Trash2 } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
     import type { Member } from "@/types/entities";
 
+    const { t } = useI18n();
     const route = useRoute();
     const { notify } = useNotification();
     const equipesService = useEquipesService();
@@ -161,7 +163,7 @@
             const allMembersResponse = await memberService.search(1, 9999, "");
             allMembers.value = allMembersResponse.items || [];
         } catch (error) {
-            notify({ type: "error", text: "Erreur lors du chargement des données" });
+            notify({ type: "error", text: t("pages.equipeDetails.notify.loadError") });
         } finally {
             loading.value = false;
         }
@@ -175,15 +177,15 @@
             const allMemberIds = [...currentMemberIds, selectedMemberId.value];
             const response = await equipesService.assignMembersToEquipe(equipeId.value, allMemberIds);
             if (response.succeeded) {
-                notify({ type: "success", text: "Membre ajouté avec succès" });
+                notify({ type: "success", text: t("pages.equipeDetails.notify.memberAdded") });
                 selectedMemberId.value = "";
                 memberSearch.value = "";
                 await loadData();
             } else {
-                notify({ type: "error", text: "Impossible d'ajouter le membre" });
+                notify({ type: "error", text: t("pages.equipeDetails.notify.memberAddError") });
             }
         } catch {
-            notify({ type: "error", text: "Erreur lors de l'ajout" });
+            notify({ type: "error", text: t("pages.equipeDetails.notify.addError") });
         } finally {
             addingMember.value = false;
         }
@@ -195,13 +197,13 @@
         try {
             const response = await equipesService.removeMemberFromEquipe(equipeId.value, member.memberId);
             if (response.succeeded) {
-                notify({ type: "success", text: "Membre retiré avec succès" });
+                notify({ type: "success", text: t("pages.equipeDetails.notify.memberRemoved") });
                 await loadData();
             } else {
-                notify({ type: "error", text: "Impossible de retirer le membre" });
+                notify({ type: "error", text: t("pages.equipeDetails.notify.memberRemoveError") });
             }
         } catch {
-            notify({ type: "error", text: "Erreur lors du retrait" });
+            notify({ type: "error", text: t("pages.equipeDetails.notify.removeError") });
         } finally {
             removingMemberId.value = null;
         }

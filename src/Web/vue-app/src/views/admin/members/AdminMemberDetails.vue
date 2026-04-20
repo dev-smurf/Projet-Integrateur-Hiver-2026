@@ -2,22 +2,22 @@
   <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Membre</h1>
-        <p class="text-sm text-gray-500">Détails complets, progression et modules</p>
+        <h1 class="text-2xl font-bold text-gray-900">{{ fullName }}</h1>
+        <p class="text-sm text-gray-500">{{ $t('pages.memberDetails.subtitle') }}</p>
       </div>
       <div class="flex items-center gap-2">
         <router-link
           :to="{ name: 'admin.children.members.index' }"
           class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          Retour
+          {{ $t('global.back') }}
         </router-link>
         <router-link
           v-if="member?.id"
           :to="{ name: 'admin.children.members.edit', params: { id: member?.id } }"
           class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
         >
-          Modifier
+          {{ $t('global.edit') }}
         </router-link>
       </div>
     </div>
@@ -36,7 +36,7 @@
           </div>
           <div>
             <div class="text-lg font-semibold text-gray-900">{{ fullName }}</div>
-            <div class="text-sm text-gray-500">{{ member?.email || "N/A" }}</div>
+            <div class="text-sm text-gray-500">{{ member?.email || $t('pages.memberDetails.na') }}</div>
           </div>
         </div>
 
@@ -57,13 +57,13 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
               <div class="text-xl font-semibold text-gray-900">{{ progressPercent }}%</div>
-              <div class="text-xs text-gray-500">Progression</div>
+              <div class="text-xs text-gray-500">{{ $t('pages.memberDetails.progression') }}</div>
             </div>
           </div>
           <div class="text-sm text-gray-600">
-            <div class="font-medium text-gray-900">Résumé</div>
-            <div>{{ memberModules.length }} module(s) assignés</div>
-            <div>{{ completedModules }} terminé(s)</div>
+            <div class="font-medium text-gray-900">{{ $t('pages.memberDetails.summary') }}</div>
+            <div>{{ memberModules.length }} {{ $t('pages.memberDetails.modulesAssigned') }}</div>
+            <div>{{ completedModules }} {{ $t('pages.memberDetails.modulesCompleted') }}</div>
           </div>
         </div>
       </div>
@@ -71,33 +71,33 @@
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 animate-fade-up delay-1">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 class="text-sm font-semibold text-gray-900 mb-3">Informations personnelles</h2>
+            <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ $t('pages.memberDetails.personalInfo') }}</h2>
             <dl class="space-y-2 text-sm text-gray-600">
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Prénom</dt>
-                <dd class="text-gray-900">{{ member?.firstName || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.firstName') }}</dt>
+                <dd class="text-gray-900">{{ member?.firstName || $t('pages.memberDetails.na') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Nom</dt>
-                <dd class="text-gray-900">{{ member?.lastName || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.lastName') }}</dt>
+                <dd class="text-gray-900">{{ member?.lastName || $t('pages.memberDetails.na') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Créé le</dt>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.createdAt') }}</dt>
                 <dd class="text-gray-900">{{ createdAt }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Statut</dt>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.status') }}</dt>
                 <dd>
                   <span
                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                     :class="member?.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                   >
-                    {{ member?.accountActivated ? "Compte actif" : "En attente de validation" }}
+                    {{ member?.accountActivated ? $t('pages.memberDetails.accountActive') : $t('pages.memberDetails.pendingValidation') }}
                   </span>
                 </dd>
               </div>
               <div class="flex justify-between gap-4 items-start">
-                <dt class="text-gray-500">Equipes</dt>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.teams') }}</dt>
                 <dd class="text-right">
                   <div v-if="memberEquipes.length" class="flex flex-wrap justify-end gap-2">
                     <span
@@ -108,25 +108,25 @@
                       {{ equipe }}
                     </span>
                   </div>
-                  <span v-else class="text-gray-900">N/A</span>
+                  <span v-else class="text-gray-900">{{ $t('pages.memberDetails.na') }}</span>
                 </dd>
               </div>
             </dl>
           </div>
           <div>
-            <h2 class="text-sm font-semibold text-gray-900 mb-3">Contact et adresse</h2>
+            <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ $t('pages.memberDetails.contactAndAddress') }}</h2>
             <dl class="space-y-2 text-sm text-gray-600">
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Email</dt>
-                <dd class="text-gray-900">{{ member?.email || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ $t('global.email') }}</dt>
+                <dd class="text-gray-900">{{ member?.email || $t('pages.memberDetails.na') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Téléphone</dt>
-                <dd class="text-gray-900">{{ member?.phoneNumber || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.phone') }}</dt>
+                <dd class="text-gray-900">{{ member?.phoneNumber || $t('pages.memberDetails.na') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Ville</dt>
-                <dd class="text-gray-900">{{ member?.city || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ $t('pages.memberDetails.city') }}</dt>
+                <dd class="text-gray-900">{{ member?.city || $t('pages.memberDetails.na') }}</dd>
               </div>
             </dl>
           </div>
@@ -136,20 +136,20 @@
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
-            <h2 class="text-sm font-bold text-gray-900">Assigner des modules</h2>
-            <p class="text-[11px] text-gray-500 uppercase font-medium tracking-wide mt-0.5">Sélectionnez les modules à ajouter</p>
+            <h2 class="text-sm font-bold text-gray-900">{{ $t('pages.memberDetails.assignModules') }}</h2>
+            <p class="text-[11px] text-gray-500 uppercase font-medium tracking-wide mt-0.5">{{ $t('pages.memberDetails.selectModulesToAdd') }}</p>
           </div>
           <input
             v-model="assignSearch"
             type="text"
-            placeholder="Filtrer..."
+            :placeholder="$t('pages.memberDetails.filter')"
             class="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-500 w-48"
           />
         </div>
 
         <div class="border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
           <div v-if="filteredAvailableModules.length === 0" class="p-8 text-center text-sm text-gray-400 italic">
-            Aucun autre module disponible.
+            {{ $t('pages.memberDetails.noModulesAvailable') }}
           </div>
           <div v-else class="max-h-60 overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             <label
@@ -169,45 +169,45 @@
 
         <div class="mt-4 flex items-center justify-between pt-4 border-t border-gray-100">
           <div class="text-[11px] font-bold text-gray-400 uppercase">
-            <span class="text-brand-600">{{ selectedModuleIds.length }}</span> sélectionné(s)
+            <span class="text-brand-600">{{ selectedModuleIds.length }}</span> {{ $t('pages.memberDetails.selected') }}
           </div>
           <button
             @click="assignMultipleModules"
             :disabled="!selectedModuleIds.length || applyingAssign"
             class="px-8 py-2 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black disabled:opacity-20 transition"
           >
-            {{ applyingAssign ? 'Assignation...' : 'Assigner les modules' }}
+            {{ applyingAssign ? $t('pages.memberDetails.assigning') : $t('pages.memberDetails.assignModulesBtn') }}
           </button>
         </div>
       </div>
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
-         <h2 class="text-sm font-semibold text-gray-900 mb-6">Progression des modules</h2>
-         <div v-if="!memberModules.length" class="text-sm text-gray-500">Aucun module assigné.</div>
+         <h2 class="text-sm font-semibold text-gray-900 mb-6">{{ $t('pages.memberDetails.modulesProgress') }}</h2>
+         <div v-if="!memberModules.length" class="text-sm text-gray-500">{{ $t('pages.memberDetails.noModulesAssigned') }}</div>
          <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div v-for="item in memberModules" :key="item.moduleId" class="p-5 border border-gray-200 rounded-2xl bg-white shadow-sm">
               <div class="flex justify-between items-start mb-4">
                 <div class="space-y-1">
-                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module</div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $t('pages.memberDetails.module') }}</div>
                   <div class="text-sm font-bold text-gray-900">{{ item.nameFr || item.nameEn || item.name }}</div>
-                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-2">Sujet</div>
-                  <div class="text-[11px] font-medium text-gray-600">{{ item.sujetFr || 'Général' }}</div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-2">{{ $t('pages.memberDetails.subject') }}</div>
+                  <div class="text-[11px] font-medium text-gray-600">{{ item.sujetFr || $t('pages.memberDetails.general') }}</div>
                 </div>
                 <span class="px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest" :class="item.isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'">
-                  {{ item.isCompleted ? 'Actif' : 'En cours' }}
+                  {{ item.isCompleted ? $t('pages.memberDetails.active') : $t('pages.memberDetails.inProgress') }}
                 </span>
               </div>
-              
+
               <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Progression</span>
+                  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $t('pages.memberDetails.progression') }}</span>
                   <span class="text-xs font-black text-gray-900">{{ progressEdits[item.moduleId] }}%</span>
                 </div>
                 <input type="range" v-model.number="progressEdits[item.moduleId]" class="w-full accent-[#0f172a] h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer" />
-                
+
                 <div class="pt-4">
                   <button @click="saveProgress(item)" :disabled="savingProgress[item.moduleId]" class="w-full py-3 bg-[#0f172a] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black transition disabled:opacity-50">
-                    {{ savingProgress[item.moduleId] ? 'En cours...' : 'Mettre à jour' }}
+                    {{ savingProgress[item.moduleId] ? $t('pages.memberDetails.saving') : $t('pages.memberDetails.updateBtn') }}
                   </button>
                 </div>
               </div>
@@ -217,15 +217,15 @@
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold text-gray-900">Notes internes</h2>
+          <h2 class="text-sm font-semibold text-gray-900">{{ $t('pages.memberDetails.notes.title') }}</h2>
           <button @click="saveNotes" :disabled="savingNotes" class="px-3 py-1.5 text-xs font-medium bg-gray-900 text-white rounded-lg">
-            {{ savingNotes ? "Enregistrement..." : "Enregistrer" }}
+            {{ savingNotes ? $t('pages.memberDetails.notes.saving') : $t('pages.memberDetails.notes.save') }}
           </button>
         </div>
         <textarea
           v-model="notesText"
           rows="5"
-          placeholder="Ajouter des notes sur ce membre..."
+          :placeholder="$t('pages.memberDetails.notes.placeholder')"
           class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
         />
         <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
@@ -234,10 +234,10 @@
             type="checkbox"
             class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
           />
-          Rendre ces notes visibles par ce membre
+          {{ $t('pages.memberDetails.notes.visibleToMember') }}
         </label>
         <p class="mt-2 text-xs text-gray-500">
-          Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir.
+          {{ $t('pages.memberDetails.notes.hint') }}
         </p>
       </div>
     </div>
@@ -247,10 +247,12 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue3-i18n";
 import { useNotification } from "@kyvg/vue3-notification";
 import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
 import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
+const { t } = useI18n();
 const route = useRoute();
 const { notify } = useNotification();
 const memberService = useMemberService();
@@ -288,7 +290,7 @@ const initials = computed(() => {
 });
 
 const createdAt = computed(() => {
-  if (!member.value?.created) return "N/A";
+  if (!member.value?.created) return t("pages.memberDetails.na");
   return new Date(member.value.created).toLocaleDateString();
 });
 
@@ -296,7 +298,7 @@ const addressLine = computed(() => {
   const street = member.value?.street || "";
   const apt = member.value?.apartment ? `#${member.value.apartment}` : "";
   const zip = member.value?.zipCode || "";
-  return [street, apt, zip].filter(Boolean).join(" ") || "N/A";
+  return [street, apt, zip].filter(Boolean).join(" ") || t("pages.memberDetails.na");
 });
 
 const memberEquipes = computed(() => {
@@ -367,7 +369,7 @@ async function assignMultipleModules() {
     for (const id of selectedModuleIds.value) {
       await memberService.addModuleToMember(memberId.value, id);
     }
-    notify({ type: "success", text: "Modules assignés" });
+    notify({ type: "success", text: t("pages.memberDetails.notify.modulesAssigned") });
     selectedModuleIds.value = [];
     await loadData();
   } finally {
@@ -380,7 +382,7 @@ async function saveProgress(item: MemberModuleDto) {
   savingProgress.value[item.moduleId] = true;
   const res = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, val);
   if (res.succeeded) {
-    notify({ type: "success", text: "Mis à jour" });
+    notify({ type: "success", text: t("pages.memberDetails.notify.updated") });
     await loadData();
   }
   savingProgress.value[item.moduleId] = false;
@@ -398,9 +400,9 @@ async function saveNotes() {
     member.value = await memberService.getMember(memberId.value);
     notesText.value = member.value?.adminNotes ?? "";
     notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
-    notify({type: "success", text: "Notes enregistrees."});
+    notify({type: "success", text: t("pages.memberDetails.notify.notesSaved")});
   } else {
-    notify({type: "error", text: "Impossible d'enregistrer les notes."});
+    notify({type: "error", text: t("pages.memberDetails.notify.notesError")});
   }
   savingNotes.value = false;
 }

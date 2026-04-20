@@ -1,12 +1,12 @@
 <template>
   <div class="bg-white border border-gray-200 rounded-lg p-4">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Assignation des membres</h3>
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $t('pages.moduleAssignment.title') }}</h3>
 
     <div class="flex gap-2 mb-4">
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Rechercher un membre..."
+        :placeholder="$t('pages.moduleAssignment.searchPlaceholder')"
         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
       />
     </div>
@@ -23,8 +23,8 @@
         {{ member.fullName || `${member.firstName} ${member.lastName}` }}
       </button>
     </div>
-    <p v-else-if="!allMembers.length" class="text-sm text-gray-400 mb-4">Chargement des membres...</p>
-    <p v-else class="text-sm text-gray-400 mb-4">Tous les membres sont déjà assignés.</p>
+    <p v-else-if="!allMembers.length" class="text-sm text-gray-400 mb-4">{{ $t('pages.moduleAssignment.loading') }}</p>
+    <p v-else class="text-sm text-gray-400 mb-4">{{ $t('pages.moduleAssignment.allAssigned') }}</p>
 
     <!-- Assigned members -->
     <div class="space-y-2">
@@ -42,13 +42,14 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <p v-if="!assignments.length" class="text-sm text-gray-400 py-2">Aucun membre assigné.</p>
+      <p v-if="!assignments.length" class="text-sm text-gray-400 py-2">{{ $t('pages.moduleAssignment.noneAssigned') }}</p>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue3-i18n';
 import { useModulesService, useMemberService } from '@/inversify.config';
 import { useNotification } from '@kyvg/vue3-notification';
 
@@ -70,6 +71,7 @@ const props = defineProps<{
   moduleId: string;
 }>();
 
+const { t } = useI18n();
 const { notify } = useNotification();
 const modulesService = useModulesService();
 const membersService = useMemberService();
@@ -109,7 +111,7 @@ async function assign(member: MemberItem) {
     searchQuery.value = '';
     await loadAssignments();
   } catch {
-    notify({ type: 'error', text: 'Erreur lors de l\'assignation.' });
+    notify({ type: 'error', text: t('pages.moduleAssignment.assignError') });
   }
 }
 
@@ -118,7 +120,7 @@ async function unassign(assignment: MemberModuleDto) {
     await modulesService.unassignModule(props.moduleId, assignment.memberId);
     await loadAssignments();
   } catch {
-    notify({ type: 'error', text: 'Erreur lors de la désassignation.' });
+    notify({ type: 'error', text: t('pages.moduleAssignment.unassignError') });
   }
 }
 

@@ -2,24 +2,24 @@
   <div class="space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Mes modules</h1>
-        <p class="mt-1 text-sm text-gray-500">Modules en cours et modules termines.</p>
+        <h1 class="text-2xl font-bold text-gray-900">{{ $t('pages.memberModules.title') }}</h1>
+        <p class="mt-1 text-sm text-gray-500">{{ $t('pages.memberModules.subtitle') }}</p>
       </div>
 
       <div class="flex flex-col gap-2 sm:flex-row">
         <input
           v-model="search"
           type="text"
-          placeholder="Rechercher un module..."
+          :placeholder="$t('pages.memberModules.searchPlaceholder')"
           class="w-full sm:w-72 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
         />
         <select
           v-model="statusFilter"
           class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
         >
-          <option value="all">Tous</option>
-          <option value="active">Non termines</option>
-          <option value="completed">Termines</option>
+          <option value="all">{{ $t('pages.memberModules.filterAll') }}</option>
+          <option value="active">{{ $t('pages.memberModules.filterActive') }}</option>
+          <option value="completed">{{ $t('pages.memberModules.filterCompleted') }}</option>
         </select>
       </div>
     </div>
@@ -36,12 +36,12 @@
     </div>
 
     <div v-else-if="!filteredModules.length" class="text-center py-14 text-gray-500 rounded-xl border border-dashed border-gray-300 bg-white">
-      Aucun module ne correspond a la recherche.
+      {{ $t('pages.memberModules.noResults') }}
     </div>
 
     <section v-else class="space-y-8">
       <div v-if="activeModules.length" class="space-y-4">
-        <h2 class="text-lg font-semibold text-gray-900">Modules non termines</h2>
+        <h2 class="text-lg font-semibold text-gray-900">{{ $t('pages.memberModules.activeTitle') }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <router-link
             v-for="mod in activeModules"
@@ -61,12 +61,12 @@
             <div class="p-4 flex flex-col flex-1">
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold text-gray-900 line-clamp-1">{{ mod.name }}</h3>
-                <span class="rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">A faire</span>
+                <span class="rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">{{ $t('pages.memberModules.badgeTodo') }}</span>
               </div>
               <p class="mt-1 text-sm text-gray-500 line-clamp-2">{{ mod.subject }}</p>
               <div class="mt-4">
                 <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Progression</span>
+                  <span>{{ $t('pages.memberModules.progress') }}</span>
                   <span>{{ mod.progressPercent }}%</span>
                 </div>
                 <div class="h-2 rounded-full bg-gray-100">
@@ -80,7 +80,7 @@
       </div>
 
       <div v-if="completedModules.length" class="space-y-4">
-        <h2 class="text-lg font-semibold text-gray-900">Modules termines</h2>
+        <h2 class="text-lg font-semibold text-gray-900">{{ $t('pages.memberModules.completedTitle') }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <router-link
             v-for="mod in completedModules"
@@ -100,7 +100,7 @@
             <div class="p-4 flex flex-col flex-1">
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold text-gray-900 line-clamp-1">{{ mod.name }}</h3>
-                <span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">Termine</span>
+                <span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">{{ $t('pages.memberModules.badgeCompleted') }}</span>
               </div>
               <p class="mt-1 text-sm text-gray-500 line-clamp-2">{{ mod.subject }}</p>
               <p class="mt-4 text-xs text-gray-400">{{ mod.assignedLabel }}</p>
@@ -135,10 +135,10 @@ function imageUrl(path?: string): string | undefined {
 }
 
 function assignedLabel(value?: string): string {
-  if (!value) return "Date d'affectation inconnue";
+  if (!value) return t("pages.memberModules.unknownAssignedDate");
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Date d'affectation inconnue";
-  return `Assigne le ${date.toLocaleDateString()}`;
+  if (Number.isNaN(date.getTime())) return t("pages.memberModules.unknownAssignedDate");
+  return t("pages.memberModules.assignedOn", { date: date.toLocaleDateString() });
 }
 
 const normalizedModules = computed(() => {

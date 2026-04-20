@@ -32,7 +32,7 @@
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('global.lastName') }}</th>
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden md:table-cell">{{ $t('global.email') }}</th>
             <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">{{ $t('global.city') }}</th>
-            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden xl:table-cell">Statut du compte</th>
+            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3 hidden xl:table-cell">{{ $t('pages.memberIndex.accountStatus') }}</th>
             <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider px-4 py-3">{{ $t('global.table.actions') }}</th>
           </tr>
         </thead>
@@ -60,7 +60,7 @@
                 class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
                 :class="member.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
               >
-                {{ member.accountActivated ? 'Compte actif' : 'En attente de validation' }}
+                {{ member.accountActivated ? $t('pages.memberIndex.accountActive') : $t('pages.memberIndex.pendingValidation') }}
               </span>
             </td>
             <td class="px-4 py-3 text-right">

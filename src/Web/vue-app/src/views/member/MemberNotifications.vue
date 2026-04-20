@@ -1,9 +1,9 @@
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Notifications</h1>
+      <h1 class="text-2xl font-bold text-gray-900">{{ $t('pages.notifications.title') }}</h1>
       <p class="mt-1 text-sm text-gray-500">
-        Messages transmis par l'administration.
+        {{ $t('pages.notifications.subtitle') }}
       </p>
     </div>
 
@@ -22,9 +22,9 @@
       v-else-if="notifications.length === 0"
       class="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center"
     >
-      <h2 class="text-lg font-semibold text-gray-900">Aucune notification</h2>
+      <h2 class="text-lg font-semibold text-gray-900">{{ $t('pages.notifications.empty') }}</h2>
       <p class="mt-2 text-sm text-gray-500">
-        Les messages visibles envoyes par l'administration apparaitront ici.
+        {{ $t('pages.notifications.emptyHint') }}
       </p>
     </div>
 
@@ -40,14 +40,14 @@
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
-              Administration
+              {{ $t('pages.notifications.sender') }}
             </p>
             <h2 class="mt-2 text-lg font-semibold text-gray-900">
               {{ notification.title }}
             </h2>
           </div>
           <div class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
-            Info
+            {{ $t('pages.notifications.badge') }}
           </div>
         </div>
         <p class="mt-4 whitespace-pre-line text-sm leading-6 text-gray-700">
@@ -60,11 +60,13 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue3-i18n";
 import { useMemberService } from "@/inversify.config";
 import { usePersonStore } from "@/stores/personStore";
 import { useUserStore } from "@/stores/userStore";
 import { markMemberAdminNoteAsRead, MEMBER_ADMIN_NOTE_READ_EVENT } from "@/utils/memberAdminNotes";
 
+const { t } = useI18n();
 const memberService = useMemberService();
 const personStore = usePersonStore();
 const userStore = useUserStore();
@@ -77,7 +79,7 @@ const notifications = computed(() => {
   return [
     {
       id: "admin-note",
-      title: "Message de l'administration",
+      title: t("pages.notifications.defaultTitle"),
       message
     }
   ];
