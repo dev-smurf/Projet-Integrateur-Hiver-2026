@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(GarneauTemplateDbContext))]
-    partial class GarneauTemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420163008_AddScaleLabelsJsonColumn")]
+    partial class AddScaleLabelsJsonColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -448,115 +451,6 @@ namespace Persistence.Migrations
                     b.ToTable("Equipe", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EquipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastMessageAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipeId");
-
-                    b.ToTable("EquipeConversations");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EquipeMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AttachmentContentType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AttachmentFileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AttachmentUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EquipeConversationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ExpediteurId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Texte")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipeConversationId");
-
-                    b.HasIndex("ExpediteurId");
-
-                    b.ToTable("EquipeMessages");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EquipeMessageRead", b =>
-                {
-                    b.Property<Guid>("EquipeMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EquipeMessageId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EquipeMessageReads");
-                });
-
             modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -699,12 +593,6 @@ namespace Persistence.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("AdminNotes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("AdminNotesVisibleToMember")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("Apartment")
                         .HasColumnType("int");
 
@@ -802,55 +690,6 @@ namespace Persistence.Migrations
                         .HasFilter("Deleted IS NULL");
 
                     b.ToTable("MemberModules");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberModuleSectionProgress", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRead")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("MemberModuleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ModuleSectionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModuleSectionId");
-
-                    b.HasIndex("MemberModuleId", "ModuleSectionId")
-                        .IsUnique()
-                        .HasFilter("Deleted IS NULL");
-
-                    b.ToTable("MemberModuleSectionProgress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
@@ -1555,55 +1394,6 @@ namespace Persistence.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>
-                {
-                    b.HasOne("Domain.Entities.Equipe", "Equipe")
-                        .WithMany()
-                        .HasForeignKey("EquipeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Equipe");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EquipeMessage", b =>
-                {
-                    b.HasOne("Domain.Entities.EquipeConversation", "EquipeConversation")
-                        .WithMany("Messages")
-                        .HasForeignKey("EquipeConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.User", "Expediteur")
-                        .WithMany()
-                        .HasForeignKey("ExpediteurId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EquipeConversation");
-
-                    b.Navigation("Expediteur");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EquipeMessageRead", b =>
-                {
-                    b.HasOne("Domain.Entities.EquipeMessage", "EquipeMessage")
-                        .WithMany("Reads")
-                        .HasForeignKey("EquipeMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EquipeMessage");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.Identity.UserRole", b =>
                 {
                     b.HasOne("Domain.Entities.Identity.Role", "Role")
@@ -1650,25 +1440,6 @@ namespace Persistence.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Module");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberModuleSectionProgress", b =>
-                {
-                    b.HasOne("Domain.Entities.MemberModule", "MemberModule")
-                        .WithMany("SectionProgress")
-                        .HasForeignKey("MemberModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.ModuleSection", "ModuleSection")
-                        .WithMany()
-                        .HasForeignKey("ModuleSectionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("MemberModule");
-
-                    b.Navigation("ModuleSection");
                 });
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
@@ -1838,16 +1609,6 @@ namespace Persistence.Migrations
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>
-                {
-                    b.Navigation("Messages");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EquipeMessage", b =>
-                {
-                    b.Navigation("Reads");
-                });
-
             modelBuilder.Entity("Domain.Entities.Identity.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -1861,11 +1622,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Member", b =>
                 {
                     b.Navigation("MemberModules");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberModule", b =>
-                {
-                    b.Navigation("SectionProgress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Module", b =>

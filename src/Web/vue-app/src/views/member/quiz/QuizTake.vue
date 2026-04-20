@@ -234,12 +234,18 @@ const submitQuiz = async () => {
 
   try {
     for (const question of quiz.value.questions) {
+      // Valider que question.id existe et n'est pas vide
+      if (!question.id) {
+        console.error('Question ID is empty or null:', question)
+        throw new Error('Invalid question ID')
+      }
+
       const response = responses.value[question.id]
       await quizService.submitResponse({
         quizQuestionId: question.id,
-        selectedScore: response.selectedScore,
-        selectedResponseId: response.selectedResponseId,
-        selectedTextResponse: response.selectedTextResponse
+        selectedScore: response?.selectedScore,
+        selectedResponseId: response?.selectedResponseId,
+        selectedTextResponse: response?.selectedTextResponse
       })
     }
 

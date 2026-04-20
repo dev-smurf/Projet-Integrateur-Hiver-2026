@@ -168,16 +168,21 @@
                 </div>
 
                 <!-- Scale Labels -->
-                <div v-if="question.questionType === 0" class="mt-3">
+                <div v-if="question.questionType === 0" class="mt-3" :key="`scale-${question.id}-${question.questionType}`">
                   <label class="block text-xs font-medium text-gray-600 mb-2">{{ $t('quiz.scaleLabels_title') }}</label>
                   <div class="space-y-2">
                     <!-- Input Fields -->
                     <!-- Per-step label inputs (1..10) -->
                     <!-- Per-step label inputs (1..10) - responsive grid (wraps to multiple rows) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-                      <div v-for="(lbl, idx) in question.scaleLabels" :key="idx" class="flex flex-col">
+                      <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="flex flex-col">
                         <div class="text-xs text-gray-500 mb-1">{{ idx + 1 }}</div>
-                        <input v-model="question.scaleLabels[idx]" :placeholder="(idx===0? $t('quiz.scaleMinLabel') : (idx===4? $t('quiz.scaleMidLabel') : (idx===9? $t('quiz.scaleMaxLabel') : '')) )" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+                        <input 
+                          :value="question.scaleLabels?.[idx] || ''"
+                          @input="(e: any) => { if (question.scaleLabels) question.scaleLabels[idx] = e.target.value }"
+                          :placeholder="(idx===0? $t('quiz.scaleMinLabel') : (idx===4? $t('quiz.scaleMidLabel') : (idx===9? $t('quiz.scaleMaxLabel') : '')) )" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" 
+                        />
                       </div>
                     </div>
                     <!-- Preview: match player view (labels + 1..10 buttons) -->
@@ -193,7 +198,6 @@
                         </div>
                       </div>
                     </div>
-                <!-- secondary preview removed; single player-style preview remains above -->
                   </div>
                 </div>
 
@@ -305,7 +309,7 @@ onMounted(async () => {
         scaleMidLabel: q.scaleMidLabel || 'Parfois',
         scaleMaxLabel: q.scaleMaxLabel || 'Toujours',
         // local-only per-step labels (1..10) - prefer ScaleLabels from server if present
-        scaleLabels: (q.scaleLabels && q.scaleLabels.length === 10)
+        scaleLabels: (q.scaleLabels && Array.isArray(q.scaleLabels) && q.scaleLabels.length === 10)
           ? q.scaleLabels
           : Array.from({ length: 10 }, (_, i) => {
               if (i === 0) return q.scaleMinLabel || 'Jamais'
@@ -487,6 +491,7 @@ function addQuestion() {
     scaleMinLabel: 'Jamais',
     scaleMidLabel: 'Parfois',
     scaleMaxLabel: 'Toujours',
+    scaleLabels: Array(10).fill(''),
     responses: [{ id: '', responseText: '', order: 0 }]
   })
 }

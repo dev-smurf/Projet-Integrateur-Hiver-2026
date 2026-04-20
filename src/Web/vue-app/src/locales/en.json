@@ -262,9 +262,9 @@
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
       },
-      "username": "Nom d'utilisateur",
-      "password": "Mot de passe",
-      "passwordConfirmation": "Confirmation du mot de passe"
+      "username": "Username",
+      "password": "Password",
+      "passwordConfirmation": "Password confirmation"
     },
     "twoFactor": {
       "code": "Code",

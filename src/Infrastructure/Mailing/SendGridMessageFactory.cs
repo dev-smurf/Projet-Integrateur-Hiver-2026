@@ -22,9 +22,10 @@ public class SendGridMessageFactory : ISendGridMessageFactory
 
     public SendGridMessage CreateFromModel<TModel>(TModel model) where TModel : NotificationModel
     {
+        
         var msg = new SendGridMessage
         {
-            From = new EmailAddress(_mailingSettings.FromAddress, _mailingSettings.FromName),
+           From = new EmailAddress(_mailingSettings.FromAddress, _mailingSettings.FromName),
             TemplateId = model.TemplateId()
         };
 
