@@ -2,48 +2,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-950: #0f0f0f;
-  --color-brand-900: #1a1a1a;
-  --color-brand-800: #262626;
-  --color-brand-700: #66a88f;
-  --color-brand-600: #7ab99f;
-  --color-brand-500: #90c9b0;
-  --color-brand-400: #a7d7c2;
-  --color-brand-300: #bfe4d5;
-  --color-brand-200: #d7efe5;
-  --color-brand-100: #ecf7f2;
-  --color-brand-50: #f7fcfa;
-}
-
-:root {
-  --brand-pulse-outer: rgba(122, 185, 159, 0.35);
-  --brand-pulse-inner: rgba(122, 185, 159, 0);
-}
-
-body.theme-admin {
-  --color-brand-700: #5c9f95;
-  --color-brand-600: #6fb0a6;
-  --color-brand-500: #86c1b7;
-  --color-brand-400: #9fd1c8;
-  --color-brand-300: #b9ded7;
-  --color-brand-200: #d2ebe6;
-  --color-brand-100: #e9f6f3;
-  --color-brand-50: #f6fbfa;
-  --brand-pulse-outer: rgba(111, 176, 166, 0.35);
-  --brand-pulse-inner: rgba(111, 176, 166, 0);
-}
-
-body.theme-member {
-  --color-brand-700: #66a88f;
-  --color-brand-600: #7ab99f;
-  --color-brand-500: #90c9b0;
-  --color-brand-400: #a7d7c2;
-  --color-brand-300: #bfe4d5;
-  --color-brand-200: #d7efe5;
-  --color-brand-100: #ecf7f2;
-  --color-brand-50: #f7fcfa;
-  --brand-pulse-outer: rgba(122, 185, 159, 0.35);
-  --brand-pulse-inner: rgba(122, 185, 159, 0);
+    --color-brand-950: #2f3f39;
+    --color-brand-900: #3d5149;
+    --color-brand-800: #4c6367;
+    --color-brand-700: #8d9c7c;
+    --color-brand-600: #7EDC7E;
+    --color-brand-500: #907288;
+    --color-brand-400: #b0a7ae;
+    --color-brand-300: #cbc2c8;
+    --color-brand-200: #e2dde0;
+    --color-brand-100: #f1edf0;
+    --color-brand-50: #faf8f9;
 }
 
 @layer base {
@@ -51,6 +20,7 @@ body.theme-member {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #f6f5f4;
   }
 }
 
@@ -109,8 +79,8 @@ body.theme-member {
 
 /* Chat bubble pulse when new message arrives */
 @keyframes bubble-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 var(--brand-pulse-outer); }
-  50% { box-shadow: 0 0 0 12px var(--brand-pulse-inner); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(192, 57, 43, 0); }
 }
 
 .bubble-pulse {

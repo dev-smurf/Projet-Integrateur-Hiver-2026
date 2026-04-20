@@ -8,7 +8,7 @@ import {
   ITwoFactorRequest
 } from "@/types/requests"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
-import {Administrator, Book, ChatMessage, Conversation, Member, User,Equipe} from "@/types/entities"
+import {Administrator, Book, ChatMessage, Conversation, EquipeConversation, EquipeMessage, Member, User,Equipe} from "@/types/entities"
 import {Guid} from "@/types";
 import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
 
@@ -101,6 +101,8 @@ export interface IModulesService {
   getModuleAssignments(moduleId: string): Promise<any[]>;
   getMyModules(): Promise<any[]>;
   getMyModuleDetail(moduleId: string): Promise<any>;
+  markSectionRead(moduleId: string, sectionId: string): Promise<void>;
+  getSectionProgress(moduleId: string): Promise<{ sectionId: string; isRead: boolean }[]>;
 }
 
 export interface IEquipesService {
@@ -110,6 +112,9 @@ export interface IEquipesService {
   createEquipe(request: any): Promise<SucceededOrNotResponse>;
   updateEquipe(id: string, request: any): Promise<SucceededOrNotResponse>;
   deleteEquipe(id: string): Promise<SucceededOrNotResponse>;
+  getEquipeMembers(equipeId: string): Promise<any>;
+  assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse>;
+  removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse>;
 }
 
 export interface IUserService {
@@ -121,6 +126,14 @@ export interface IConversationService {
   getMessages(conversationId: string, page?: number, pageSize?: number): Promise<ChatMessage[]>
   createConversation(memberId: string): Promise<{ id: string }>
   sendMessage(conversationId: string, text: string, attachment?: File): Promise<ChatMessage>
+  markAsRead(conversationId: string): Promise<void>
+  getUnreadCount(): Promise<number>
+}
+
+export interface IEquipeConversationService {
+  getConversations(): Promise<EquipeConversation[]>
+  getMessages(conversationId: string, page?: number, pageSize?: number): Promise<EquipeMessage[]>
+  sendMessage(conversationId: string, text: string, attachment?: File): Promise<EquipeMessage>
   markAsRead(conversationId: string): Promise<void>
   getUnreadCount(): Promise<number>
 }

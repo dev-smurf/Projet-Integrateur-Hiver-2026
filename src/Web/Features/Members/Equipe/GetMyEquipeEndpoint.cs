@@ -1,20 +1,103 @@
-using Application.Interfaces.Services.Users;
+using Application.Interfaces.Services.Members;
 using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Web.Features.Members.Equipe;
 
-public class MyEquipeResponse
+public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
 {
-    public string? Id { get; set; }
-    public string? NameFr { get; set; }
-    public string? NameEn { get; set; }
-    public List<EquipeMemberResponse> Members { get; set; } = [];
-    public List<EquipeModuleResponse> Modules { get; set; } = [];
+    private readonly IAuthenticatedMemberService _authenticatedMemberService;
+    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberRepository _memberRepository;
+
+    public GetMyEquipeEndpoint(
+        IAuthenticatedMemberService authenticatedMemberService,
+        IEquipeRepository equipeRepository,
+        IMemberRepository memberRepository)
+    {
+        _authenticatedMemberService = authenticatedMemberService;
+        _equipeRepository = equipeRepository;
+        _memberRepository = memberRepository;
+    }
+
+    public override void Configure()
+    {
+        Get("members/me/equipe");
+        Roles(Domain.Constants.User.Roles.MEMBER);
+        AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
+        DontCatchExceptions();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var member = _authenticatedMemberService.GetAuthenticatedMember();
+
+        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
+
+        if (equipeIds.Count == 0)
+        {
+            await Send.OkAsync(null, cancellation: ct);
+            return;
+        }
+
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeIds.First());
+
+        if (equipe == null)
+        {
+            await Send.OkAsync(null, cancellation: ct);
+            return;
+        }
+
+        var memberModules = await _memberRepository.GetMemberModules(member.Id);
+
+        var response = new GetMyEquipeResponse
+        {
+            Id = equipe.Id.ToString(),
+            NameFr = equipe.NameFr,
+            NameEn = equipe.NameEn,
+            Members = equipe.Membres
+                .Select(user =>
+                {
+                    var equipeMember = _memberRepository.FindByUserId(user.Id);
+                    return equipeMember == null
+                        ? null
+                        : new GetMyEquipeMemberDto
+                        {
+                            Id = equipeMember.Id.ToString(),
+                            FirstName = equipeMember.FirstName,
+                            LastName = equipeMember.LastName,
+                            Email = equipeMember.Email
+                        };
+                })
+                .Where(m => m != null)
+                .Cast<GetMyEquipeMemberDto>()
+                .ToList(),
+            Modules = memberModules.Select(mm => new GetMyEquipeModuleDto
+            {
+                ModuleId = mm.ModuleId.ToString(),
+                NameFr = mm.Module.Name,
+                NameEn = mm.Module.Name,
+                CardImageUrl = mm.Module.CardImageUrl,
+                ProgressPercent = mm.ProgressPercent,
+                IsCompleted = mm.IsCompleted
+            }).ToList()
+        };
+
+        await Send.OkAsync(response, cancellation: ct);
+    }
 }
 
-public class EquipeMemberResponse
+public class GetMyEquipeResponse
+{
+    public string Id { get; set; } = null!;
+    public string? NameFr { get; set; }
+    public string? NameEn { get; set; }
+    public List<GetMyEquipeMemberDto> Members { get; set; } = new();
+    public List<GetMyEquipeModuleDto> Modules { get; set; } = new();
+}
+
+public class GetMyEquipeMemberDto
 {
     public string Id { get; set; } = null!;
     public string FirstName { get; set; } = null!;
@@ -22,7 +105,7 @@ public class EquipeMemberResponse
     public string Email { get; set; } = null!;
 }
 
-public class EquipeModuleResponse
+public class GetMyEquipeModuleDto
 {
     public string ModuleId { get; set; } = null!;
     public string? NameFr { get; set; }
@@ -32,86 +115,4 @@ public class EquipeModuleResponse
     public string? CardImageUrl { get; set; }
     public int ProgressPercent { get; set; }
     public bool IsCompleted { get; set; }
-}
-
-public class GetMyEquipeEndpoint : EndpointWithoutRequest<MyEquipeResponse>
-{
-    private readonly IEquipeRepository _equipeRepository;
-    private readonly IMemberRepository _memberRepository;
-    private readonly IAuthenticatedUserService _authService;
-
-    public GetMyEquipeEndpoint(
-        IEquipeRepository equipeRepository,
-        IMemberRepository memberRepository,
-        IAuthenticatedUserService authService)
-    {
-        _equipeRepository = equipeRepository;
-        _memberRepository = memberRepository;
-        _authService = authService;
-    }
-
-    public override void Configure()
-    {
-        Get("members/me/equipe");
-        Roles(Domain.Constants.User.Roles.MEMBER);
-        AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
-    }
-
-    public override async Task HandleAsync(CancellationToken ct)
-    {
-        var user = _authService.GetAuthenticatedUser();
-        if (user == null)
-        {
-            await Send.UnauthorizedAsync(ct);
-            return;
-        }
-
-        var equipe = await _equipeRepository.FindByUserId(user.Id);
-        if (equipe == null)
-        {
-            await Send.OkAsync(new MyEquipeResponse(), ct);
-            return;
-        }
-
-        // Récupérer les infos des membres de l'équipe
-        var members = new List<EquipeMemberResponse>();
-        foreach (var membre in equipe.Membres)
-        {
-            var member = _memberRepository.FindByUserId(membre.Id);
-            if (member != null)
-            {
-                members.Add(new EquipeMemberResponse
-                {
-                    Id = member.Id.ToString(),
-                    FirstName = member.FirstName,
-                    LastName = member.LastName,
-                    Email = member.User.Email ?? ""
-                });
-            }
-        }
-
-        // Récupérer les modules du membre connecté
-        var currentMember = _memberRepository.FindByUserId(user.Id);
-        var modules = new List<EquipeModuleResponse>();
-        if (currentMember != null)
-        {
-            var memberModules = await _memberRepository.GetMemberModules(currentMember.Id);
-            modules = memberModules.Select(mm => new EquipeModuleResponse
-            {
-                ModuleId = mm.ModuleId.ToString(),
-                CardImageUrl = mm.Module?.CardImageUrl,
-                ProgressPercent = mm.ProgressPercent,
-                IsCompleted = mm.IsCompleted
-            }).ToList();
-        }
-
-        await Send.OkAsync(new MyEquipeResponse
-        {
-            Id = equipe.Id.ToString(),
-            NameFr = equipe.NameFr,
-            NameEn = equipe.NameEn,
-            Members = members,
-            Modules = modules
-        }, ct);
-    }
 }

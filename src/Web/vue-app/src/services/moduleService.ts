@@ -195,6 +195,25 @@ export class ModulesApiService extends ApiService implements IModulesService {
         return response.data;
     }
 
+    public async markSectionRead(moduleId: string, sectionId: string): Promise<void> {
+        await this._httpClient.post(
+            `${import.meta.env.VITE_API_BASE_URL}/member/modules/${moduleId}/sections/${sectionId}/read`,
+            {},
+            this.headersWithJsonContentType()
+        );
+    }
+
+    public async getSectionProgress(moduleId: string): Promise<{ sectionId: string; isRead: boolean }[]> {
+        try {
+            const response = await this._httpClient.get<{ sectionId: string; isRead: boolean }[]>(
+                `${import.meta.env.VITE_API_BASE_URL}/member/modules/${moduleId}/sections/progress`
+            );
+            return response.data ?? [];
+        } catch {
+            return [];
+        }
+    }
+
     private prepareFormData(request: ICreateModuleRequest | IEditModuleRequest): FormData {
         const formData = new FormData();
 

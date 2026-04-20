@@ -62,6 +62,13 @@ public class UpdateEquipeEndpoint : Endpoint<EditEquipeRequest, SucceededOrNotRe
         Logger.LogInformation("[UpdateEquipe] Mise à jour en base de données...");
         await _repository.UpdateEquipe(entity);
 
+        // Replace the equipe's members with the selected list.
+        var userIds = (req.MemberUserIds ?? new List<string>())
+            .Select(s => Guid.TryParse(s, out var g) ? g : Guid.Empty)
+            .Where(g => g != Guid.Empty)
+            .ToList();
+        await _repository.SetEquipeMembers(guidId, userIds);
+
         Logger.LogInformation("[UpdateEquipe] Succès!");
         Response = new SucceededOrNotResponse(true);
     }

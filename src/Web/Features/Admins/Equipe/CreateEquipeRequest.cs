@@ -5,6 +5,7 @@ public class CreateEquipeRequest : ISanitizable
 {
     public string? NameFr { get; set; }
     public string? NameEn { get; set; }
+    public List<Guid>? MemberIds { get; set; }
 
     public void Sanitize()
     {

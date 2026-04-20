@@ -16,11 +16,17 @@ public static class ConfigureServices
         return services;
     }
 
-    public static async Task InitializeAndSeedDatabase(this IServiceProvider serviceProvider)
+    public static async Task InitializeDatabase(this IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
         var initializer = scope.ServiceProvider.GetRequiredService<GarneauTemplateDbContextInitializer>();
         await initializer.InitialiseAsync();
+    }
+
+    public static async Task SeedDatabase(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var initializer = scope.ServiceProvider.GetRequiredService<GarneauTemplateDbContextInitializer>();
         await initializer.SeedAsync();
     }
 
