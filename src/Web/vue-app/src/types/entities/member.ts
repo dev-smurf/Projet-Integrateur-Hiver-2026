@@ -4,6 +4,7 @@ export class Member implements IPerson {
   id?: string
   created?: string
   active?: boolean
+  accountActivated?: boolean
   firstName?: string
   lastName?: string
   fullName?: string
@@ -16,4 +17,5 @@ export class Member implements IPerson {
   zipCode?: string
   userId?: string
   roles?: string[]
+  equipeIds: string[] = []
 }

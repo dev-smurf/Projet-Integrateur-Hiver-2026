@@ -11,6 +11,24 @@
     </div>
 
     <form v-if="!successMessage" @submit.prevent="handleResetPassword" class="space-y-4 mt-6">
+      <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+        <p class="text-sm font-semibold text-amber-900 mb-2">
+          {{ $t('pages.resetPassword.passwordRequirements.title') }}
+        </p>
+        <ul class="space-y-2">
+          <li
+            v-for="requirement in passwordRequirements"
+            :key="requirement.label"
+            class="flex items-center gap-2 text-sm"
+            :class="requirement.valid ? 'text-emerald-700' : 'text-amber-800'"
+          >
+            <CheckCircle2 v-if="requirement.valid" class="h-4 w-4 shrink-0" />
+            <Circle v-else class="h-4 w-4 shrink-0" />
+            <span>{{ requirement.label }}</span>
+          </li>
+        </ul>
+      </div>
+
       <div>
         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.password') }}</label>
         <input
@@ -46,11 +64,11 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import {useAuthenticationService} from "@/inversify.config";
-import {Loader2} from "lucide-vue-next";
+import {CheckCircle2, Circle, Loader2} from "lucide-vue-next";
 
 const props = defineProps<{userId: string; token: string}>();
 
@@ -63,6 +81,37 @@ const passwordConfirmation = ref("");
 const loading = ref(false);
 const errors = ref<string[]>([]);
 const successMessage = ref("");
+
+const passwordRequirements = computed(() => [
+  {
+    label: t("pages.resetPassword.passwordRequirements.minLength"),
+    valid: password.value.length >= 10
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.uppercase"),
+    valid: /[A-Z]/.test(password.value)
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.lowercase"),
+    valid: /[a-z]/.test(password.value)
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.digit"),
+    valid: /\d/.test(password.value)
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.special"),
+    valid: /[^A-Za-z0-9]/.test(password.value)
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.uniqueChars"),
+    valid: new Set(password.value).size >= 6
+  },
+  {
+    label: t("pages.resetPassword.passwordRequirements.match"),
+    valid: passwordConfirmation.value.length > 0 && password.value === passwordConfirmation.value
+  }
+]);
 
 async function handleResetPassword() {
   loading.value = true;

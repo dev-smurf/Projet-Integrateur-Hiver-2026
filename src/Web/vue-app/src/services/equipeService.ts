@@ -32,8 +32,46 @@ export interface MyEquipeModule {
   isCompleted: boolean;
 }
 
+export interface GetEquipeMembersResponse {
+  equipeId: string;
+  members: {
+    id: string;
+    memberId: string;
+    equipeId: string;
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+  }[];
+}
+
 @injectable()
 export class EquipeService extends ApiService implements IEquipesService {
+  public async assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse> {
+    const response = await this._httpClient.post<any, import("axios").AxiosResponse<SucceededOrNotResponse>>(
+      `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/assign-members`,
+      { memberIds },
+      this.headersWithJsonContentType(),
+    );
+
+    const data = response.data;
+      return new SucceededOrNotResponse(
+          data?.succeeded ?? (response.status >= 200 && response.status < 300),
+          data?.errors ?? [],
+      );
+  }
+
+  public async removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse> {
+    const response = await this._httpClient.delete<any, import("axios").AxiosResponse<SucceededOrNotResponse>>(
+      `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/members/${memberId}`,
+    );
+
+    const data = response.data;
+      return new SucceededOrNotResponse(
+          data?.succeeded ?? (response.status >= 200 && response.status < 300),
+          data?.errors ?? [],
+      );
+  }
+
   public async getMyEquipe(): Promise<MyEquipeResponse | null> {
     try {
       const response = await this._httpClient.get<MyEquipeResponse>(
@@ -45,9 +83,6 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  /**
-   * Récupère tous les équipes
-   */
   public async getAllEquipes(): Promise<Equipe[]> {
     try {
       const response = await this._httpClient.get<Equipe[]>(
@@ -60,9 +95,6 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  /**
-   * Récupère un équipe spécifique par son ID
-   */
   public async getEquipe(id: string): Promise<Equipe> {
     try {
       const response = await this._httpClient.get<Equipe>(
@@ -105,9 +137,6 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  /**
-   * Création d'une equipe
-   */
   public async createEquipe(
     request: ICreateEquipeRequest,
   ): Promise<SucceededOrNotResponse> {
@@ -139,9 +168,6 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  /**
-   * Mise à jour d'une equipe existante
-   */
   public async updateEquipe(
     id: string,
     request: IEditEquipeRequest,
@@ -171,9 +197,6 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  /**
-   * Suppression (soft delete) d'une equipe existante
-   */
   public async deleteEquipe(id: string): Promise<SucceededOrNotResponse> {
     try {
       const response = await this._httpClient.delete<any>(
@@ -197,5 +220,13 @@ export class EquipeService extends ApiService implements IEquipesService {
         Array.isArray(message) ? message : [message],
       );
     }
+  }
+
+  public async getEquipeMembers(equipeId: string): Promise<GetEquipeMembersResponse> {
+    const response = await this._httpClient.get<GetEquipeMembersResponse>(
+      `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/members`,
+    );
+
+    return response.data;
   }
 }

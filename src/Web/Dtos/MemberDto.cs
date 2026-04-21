@@ -6,6 +6,7 @@ public class MemberDto
     public Guid UserId { get; set; }
     public DateTime Created { get; set; }
     public bool Active { get; set; }
+    public bool AccountActivated { get; set; }
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string FullName { get; set; } = null!;
@@ -17,4 +18,5 @@ public class MemberDto
     public string City { get; set; } = null!;
     public string ZipCode { get; set; } = null!;
     public List<string> Roles { get; set; } = null!;
+    public List<Guid> EquipeIds { get; set; } = [];
 }

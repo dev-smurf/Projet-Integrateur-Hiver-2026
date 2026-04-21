@@ -45,78 +45,64 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          <template v-if="loading">
-            <tr v-for="n in 5" :key="n" class="animate-pulse">
-              <td class="px-4 py-3">
-                <div class="h-4 bg-gray-200 rounded w-20" />
-              </td>
-              <td class="px-4 py-3 text-right">
-                <div class="h-4 bg-gray-200 rounded w-14 ml-auto" />
-              </td>
+            <template v-if="loading">
+                <tr v-for="n in 5" :key="n" class="animate-pulse">
+                    <td class="px-4 py-3">
+                        <div class="h-4 bg-gray-200 rounded w-20" />
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="h-4 bg-gray-200 rounded w-14 ml-auto" />
+                    </td>
+                </tr>
+            </template>
+            <tr v-else-if="!equipes.length">
+                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                    {{ $t("global.table.noData") }}
+                </td>
             </tr>
-          </template>
-          <tr v-else-if="!equipes.length">
-            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-              {{ $t("global.table.noData") }}
-            </td>
-          </tr>
-          <tr
-            v-for="equipe in equipes"
-            :key="equipe.id"
-            class="hover:bg-gray-50 transition"
-          >
-            <td class="px-4 py-3 text-sm text-gray-900">
-              {{ equipe.nameFr || equipe.nameEn }}
-            </td>
-            <td class="px-4 py-3 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <router-link
-                  :to="{
-                    name: 'admin.children.equipes.edit',
+            <tr v-for="equipe in equipes"
+                :key="equipe.id"
+                class="hover:bg-gray-50 transition cursor-pointer">
+                <td class="px-4 py-3 text-sm text-gray-900">
+                        {{ equipe.nameFr || equipe.nameEn }}
+                </td>
+
+                <td class="px-4 py-3 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <router-link @click.stop :to="{
+                    name: 'admin.children.equipes.details',
                     params: { id: equipe.id },
                   }"
-                  class="p-1.5 text-gray-400 hover:text-brand-600 transition"
-                >
-                  <Pencil class="w-4 h-4" />
-                </router-link>
-                <button
-                  @click="confirmDelete(equipe)"
-                  class="p-1.5 text-gray-400 hover:text-brand-600 transition"
-                >
-                  <Trash2 class="w-4 h-4" />
-                </button>
-              </div>
-            </td>
-          </tr>
+                                     class="p-1.5 text-gray-400 hover:text-brand-600 transition">
+                            <Pencil class="w-4 h-4" />
+                        </router-link>
+                        <button @click="confirmDelete(equipe)"
+                                class="p-1.5 text-gray-400 hover:text-brand-600 transition">
+                            <Trash2 class="w-4 h-4" />
+                        </button>
+                    </div>
+                </td>
+            </tr>
         </tbody>
       </table>
     </div>
 
-    <div
-      v-if="totalItems > pageSize"
-      class="flex items-center justify-between mt-4"
-    >
+    <div v-if="totalItems > pageSize" class="flex items-center justify-between mt-4">
       <span class="text-sm text-gray-500">
-        {{ (pageIndex - 1) * pageSize + 1 }}–{{
-          Math.min(pageIndex * pageSize, totalItems)
-        }}
+        {{ (pageIndex - 1) * pageSize + 1 }}–{{ Math.min(pageIndex * pageSize, totalItems) }}
         {{ $t("global.table.of") }} {{ totalItems }}
       </span>
       <div class="flex gap-2">
         <button
           @click="pageIndex > 1 && changePage(pageIndex - 1)"
           :disabled="pageIndex <= 1"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
           <ChevronLeft class="w-4 h-4" />
         </button>
         <button
-          @click="
-            pageIndex * pageSize < totalItems && changePage(pageIndex + 1)
-          "
+          @click="pageIndex * pageSize < totalItems && changePage(pageIndex + 1)"
           :disabled="pageIndex * pageSize >= totalItems"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
           <ChevronRight class="w-4 h-4" />
         </button>
       </div>
@@ -156,6 +142,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue3-i18n";
+import { useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import {
   Plus,
@@ -169,8 +156,9 @@ import { useEquipesService } from "@/inversify.config";
 import type { Equipe } from "@/types/entities";
 
 const { t } = useI18n();
-const { notify } = useNotification();
+ const { notify } = useNotification();
 const equipeService = useEquipesService();
+const router = useRouter();
 
 const allEquipes = ref<Equipe[]>([]);
 const loading = ref(true);
@@ -199,6 +187,13 @@ function onSearch() {
   pageIndex.value = 1;
 }
 
+function goToEquipeDetails(equipe: Equipe) {
+        if (!equipe.id) return;
+        router.push({
+            name: "admin.children.equipes.details",
+            params: { id: equipe.id },
+        });
+}
 async function fetchEquipes() {
   loading.value = true;
   try {

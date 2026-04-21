@@ -29,7 +29,7 @@
           <!-- Test Quiz Button Overlay -->
           <router-link
             :to="{ name: 'quiz.take', params: { quizId: quiz.id } }"
-            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
+            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"
           >
             <div class="flex flex-col items-center gap-2">
               <Play class="w-8 h-8 text-white" />

@@ -44,26 +44,19 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }} (555-555-5555)</label>
           <input
             v-model="member.phoneNumber"
             type="tel"
             placeholder="555-555-5555"
+            inputmode="numeric"
+            maxlength="12"
+            @input="handlePhoneNumberInput"
             @blur="if (member.phoneNumber) validateField('phoneNumber', member.phoneNumber, [mustMatchPhoneNumberFormat]); else fieldErrors.phoneNumber = undefined;"
             class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
             :class="fieldErrors.phoneNumber ? 'border-red-400' : 'border-gray-300'"
           />
           <p v-if="fieldErrors.phoneNumber" class="text-sm text-red-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneExtension') }}</label>
-          <input v-model.number="member.phoneExtension" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.apartment') }}</label>
-          <input v-model.number="member.apartment" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.street') }}</label>
@@ -76,17 +69,31 @@
           <input v-model="member.city" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }} (A1A 1A1)</label>
           <input
             v-model="member.zipCode"
             type="text"
             placeholder="A1A 1A1"
+            maxlength="7"
+            @input="handleZipCodeInput"
             @blur="if (member.zipCode) validateField('zipCode', member.zipCode, [mustMatchZipCodeFormat]); else fieldErrors.zipCode = undefined;"
             class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
             :class="fieldErrors.zipCode ? 'border-red-400' : 'border-gray-300'"
           />
           <p v-if="fieldErrors.zipCode" class="text-sm text-red-500 mt-1">{{ fieldErrors.zipCode }}</p>
         </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Équipes</label>
+        <Select2Multi
+          v-model="member.equipeIds"
+          :options="equipeOptions"
+          placeholder="Sélectionner une ou plusieurs équipes"
+          search-placeholder="Rechercher une équipe"
+          empty-text="Aucune équipe trouvée"
+        />
+        <p class="mt-1 text-xs text-gray-500">Optionnel</p>
       </div>
 
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
@@ -110,14 +117,16 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, reactive} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue3-i18n";
 import {useNotification} from "@kyvg/vue3-notification";
 import {Loader2} from "lucide-vue-next";
-import {useMemberService} from "@/inversify.config";
-import {Member} from "@/types/entities";
+import {useEquipesService, useMemberService} from "@/inversify.config";
+import Select2Multi from "@/components/forms/Select2Multi.vue";
+import {Equipe, Member} from "@/types/entities";
 import {validate} from "@/validation";
+import {formatPhoneNumberInput, formatPostalCodeInput} from "@/validation/formatters";
 import type {Rule} from "@/validation/rules";
 import {required, mustMatchEmailFormat, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
@@ -125,15 +134,42 @@ const router = useRouter();
 const {t} = useI18n();
 const {notify} = useNotification();
 const memberService = useMemberService();
+const equipeService = useEquipesService();
 
 const member = reactive(new Member());
 const submitting = ref(false);
 const apiErrors = ref<string[]>([]);
 const fieldErrors = reactive<Record<string, string | undefined>>({});
+const equipes = ref<Equipe[]>([]);
+
+const equipeOptions = computed(() =>
+  equipes.value.map((equipe) => ({
+    value: String((equipe as any).id ?? equipe.Id),
+    label: String((equipe as any).nameFr ?? (equipe as any).NameFr ?? (equipe as any).nameEn ?? (equipe as any).NameEn ?? ""),
+  })).filter((option) => option.value && option.label),
+);
+
+onMounted(async () => {
+  equipes.value = await equipeService.getAllEquipes();
+});
 
 function validateField(field: string, value: string, rules: Rule[]) {
   const result = validate(value, rules);
   fieldErrors[field] = result.valid ? undefined : result.message;
+}
+
+function handlePhoneNumberInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPhoneNumberInput(input.value);
+  member.phoneNumber = formattedValue;
+  input.value = formattedValue;
+}
+
+function handleZipCodeInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPostalCodeInput(input.value);
+  member.zipCode = formattedValue;
+  input.value = formattedValue;
 }
 
 function validateForm(): boolean {
@@ -167,7 +203,10 @@ async function handleSubmit() {
   submitting.value = true;
   apiErrors.value = [];
 
-  const response = await memberService.createMember(member);
+  const response = await memberService.createMember({
+    ...member,
+    equipeIds: member.equipeIds ?? [],
+  });
   if (response.succeeded) {
     notify({type: "success", text: t("pages.members.create.validation.successMessage")});
     await router.push({name: "admin.children.members.index"});

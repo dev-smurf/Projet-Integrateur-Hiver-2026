@@ -101,6 +101,8 @@ export interface IModulesService {
   getModuleAssignments(moduleId: string): Promise<any[]>;
   getMyModules(): Promise<any[]>;
   getMyModuleDetail(moduleId: string): Promise<any>;
+  markSectionRead(moduleId: string, sectionId: string): Promise<void>;
+  getSectionProgress(moduleId: string): Promise<{ sectionId: string; isRead: boolean }[]>;
 }
 
 export interface IEquipesService {
@@ -110,6 +112,9 @@ export interface IEquipesService {
   createEquipe(request: any): Promise<SucceededOrNotResponse>;
   updateEquipe(id: string, request: any): Promise<SucceededOrNotResponse>;
   deleteEquipe(id: string): Promise<SucceededOrNotResponse>;
+  getEquipeMembers(equipeId: string): Promise<any>;
+  assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse>;
+  removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse>;
 }
 
 export interface IUserService {
