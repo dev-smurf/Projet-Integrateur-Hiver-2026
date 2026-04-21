@@ -467,6 +467,19 @@
     "undefined": "ND",
     "logout": "Déconnexion",
     "changeLanguage": "Changer de langue",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "test": "Tester",
+    "add": "Ajouter",
+    "createFirst": "Créer le premier",
+    "questions": "Questions",
+    "cancel": "Annuler",
+    "update": "Modifier",
+    "table": {
+      "noData": "Aucune donnée disponible",
+      "actions": "Actions"
+    },
+    "changeLanguage": "Changer de langue",
     "test": "Tester",
     "questions": "Questions",
     "noQuizzesYet": "Aucun quiz pour le moment.",
@@ -779,6 +792,25 @@
     "completionMessage": "Quiz complete avec succes.",
     "yourAnswers": "Vos reponses",
     "yourAnswer": "Votre reponse",
-    "backToList": "Retour a la liste"
+    "backToList": "Retour a la liste",
+    "assign": {
+      "unassigned": "Non assignés",
+      "assigned": "Assignés",
+      "none": "Aucun utilisateur",
+      "noneAssigned": "Aucun utilisateur assigné",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom ou courriel...",
+      "applyChanges": "Appliquer les modifications ({count})",
+      "updating": "Mise à jour..."
+    },
+    "move": {
+      "toTop": "Placer en haut",
+      "up": "Placer avant",
+      "down": "Placer après",
+      "toBottom": "Placer en bas"
+    },
+    "preview": {
+      "title": "Aperçu",
+      "textPlaceholder": "Entrée texte..."
+    }
   }
 }

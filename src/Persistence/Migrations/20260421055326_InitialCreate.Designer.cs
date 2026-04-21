@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(GarneauTemplateDbContext))]
-    partial class GarneauTemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260421055326_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -687,55 +690,6 @@ namespace Persistence.Migrations
                         .HasFilter("Deleted IS NULL");
 
                     b.ToTable("MemberModules");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberModuleSectionProgress", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRead")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("MemberModuleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ModuleSectionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModuleSectionId");
-
-                    b.HasIndex("MemberModuleId", "ModuleSectionId")
-                        .IsUnique()
-                        .HasFilter("Deleted IS NULL");
-
-                    b.ToTable("MemberModuleSectionProgress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
@@ -1488,25 +1442,6 @@ namespace Persistence.Migrations
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MemberModuleSectionProgress", b =>
-                {
-                    b.HasOne("Domain.Entities.MemberModule", "MemberModule")
-                        .WithMany("SectionProgress")
-                        .HasForeignKey("MemberModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.ModuleSection", "ModuleSection")
-                        .WithMany()
-                        .HasForeignKey("ModuleSectionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("MemberModule");
-
-                    b.Navigation("ModuleSection");
-                });
-
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.HasOne("Domain.Entities.Appointment", "Appointment")
@@ -1687,11 +1622,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Member", b =>
                 {
                     b.Navigation("MemberModules");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberModule", b =>
-                {
-                    b.Navigation("SectionProgress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Module", b =>

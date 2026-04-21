@@ -45,6 +45,12 @@ public class QuizAssignmentRepository : IQuizAssignmentRepository
             .ToListAsync();
     }
 
+    public async Task<QuizAssignment?> GetByUserIdAndQuizAsync(Guid userId, Guid quizId)
+    {
+        return await _context.QuizAssignments
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.QuizId == quizId);
+    }
+
     public async Task CreateAsync(QuizAssignment assignment)
     {
         _context.QuizAssignments.Add(assignment);

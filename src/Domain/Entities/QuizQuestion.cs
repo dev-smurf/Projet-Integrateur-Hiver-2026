@@ -1,4 +1,6 @@
 using Domain.Common;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -14,6 +16,8 @@ namespace Domain.Entities
         public string ScaleMidLabel { get; set; } = "Parfois";
         public string ScaleMaxLabel { get; set; } = "Toujours";
 
+        public List<string> ScaleLabels { get; set; } = Enumerable.Repeat(string.Empty, 10).ToList();
+
         public Quiz Quiz { get; set; } = null!;
 
         public ICollection<QuizQuestionResponse> Responses { get; set; } = new List<QuizQuestionResponse>();
@@ -25,6 +29,10 @@ namespace Domain.Entities
             ScaleMinLabel = ScaleMinLabel?.Trim() ?? "Jamais";
             ScaleMidLabel = ScaleMidLabel?.Trim() ?? "Parfois";
             ScaleMaxLabel = ScaleMaxLabel?.Trim() ?? "Toujours";
+            if (ScaleLabels == null)
+                ScaleLabels = Enumerable.Repeat(string.Empty, 10).ToList();
+            else
+                ScaleLabels = ScaleLabels.Select(s => s?.Trim() ?? string.Empty).ToList();
         }
     }
 }
