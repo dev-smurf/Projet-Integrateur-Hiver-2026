@@ -66,17 +66,9 @@
             <span class="text-gray-500">{{ $t('global.phoneNumber') }}</span>
             <span class="text-gray-900 font-medium">{{ person.phoneNumber || '—' }}</span>
           </div>
-          <div v-if="person.phoneExtension" class="flex justify-between text-sm">
-            <span class="text-gray-500">{{ $t('global.phoneExtension') }}</span>
-            <span class="text-gray-900 font-medium">{{ person.phoneExtension }}</span>
-          </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">{{ $t('global.street') }}</span>
             <span class="text-gray-900 font-medium">{{ person.street || '—' }}</span>
-          </div>
-          <div v-if="person.apartment" class="flex justify-between text-sm">
-            <span class="text-gray-500">{{ $t('global.apartment') }}</span>
-            <span class="text-gray-900 font-medium">{{ person.apartment }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">{{ $t('global.city') }}</span>
@@ -145,21 +137,14 @@
               v-model="form.phoneNumber"
               type="text"
               placeholder="555-555-5555"
+              inputmode="numeric"
+              maxlength="12"
+              @input="handlePhoneNumberInput"
               @blur="touchField('phoneNumber')"
               class="w-full px-3 py-2 rounded-lg border text-sm transition-colors"
               :class="fieldError('phoneNumber') ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:ring-brand-500'"
             />
             <p v-if="fieldError('phoneNumber')" class="text-xs text-red-500 mt-1">{{ fieldError('phoneNumber') }}</p>
-          </div>
-
-          <!-- Phone extension -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-1">{{ $t('global.phoneExtension') }}</label>
-            <input
-              v-model.number="form.phoneExtension"
-              type="number"
-              class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
-            />
           </div>
 
           <!-- Street -->
@@ -168,16 +153,6 @@
             <input
               v-model="form.street"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
-            />
-          </div>
-
-          <!-- Apartment -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-1">{{ $t('global.apartment') }}</label>
-            <input
-              v-model.number="form.apartment"
-              type="number"
               class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-brand-500 text-sm transition-colors"
             />
           </div>
@@ -199,6 +174,8 @@
               v-model="form.zipCode"
               type="text"
               placeholder="H0H 0H0"
+              maxlength="7"
+              @input="handleZipCodeInput"
               @blur="touchField('zipCode')"
               class="w-full px-3 py-2 rounded-lg border text-sm transition-colors"
               :class="fieldError('zipCode') ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:ring-brand-500'"
@@ -232,6 +209,7 @@ import {useMemberService, useAdministratorService} from "@/inversify.config";
 import {Role} from "@/types/enums";
 import type {IPerson} from "@/types/entities/person";
 import {validate} from "@/validation";
+import {formatPhoneNumberInput, formatPostalCodeInput} from "@/validation/formatters";
 import {required, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
 const {t} = useI18n();
@@ -251,8 +229,6 @@ const form = reactive({
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  phoneExtension: undefined as number | undefined,
-  apartment: undefined as number | undefined,
   street: '',
   city: '',
   zipCode: '',
@@ -268,6 +244,20 @@ const initials = computed(() => {
 
 function touchField(field: string) {
   touched[field] = true;
+}
+
+function handlePhoneNumberInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPhoneNumberInput(input.value);
+  form.phoneNumber = formattedValue;
+  input.value = formattedValue;
+}
+
+function handleZipCodeInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPostalCodeInput(input.value);
+  form.zipCode = formattedValue;
+  input.value = formattedValue;
 }
 
 function fieldError(field: string): string | undefined {
@@ -308,8 +298,6 @@ function startEditing() {
   form.firstName = person.value.firstName || '';
   form.lastName = person.value.lastName || '';
   form.phoneNumber = person.value.phoneNumber || '';
-  form.phoneExtension = person.value.phoneExtension || undefined;
-  form.apartment = person.value.apartment || undefined;
   form.street = person.value.street || '';
   form.city = person.value.city || '';
   form.zipCode = person.value.zipCode || '';
@@ -344,8 +332,6 @@ async function save() {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         phoneNumber: form.phoneNumber?.trim() || undefined,
-        phoneExtension: form.phoneExtension || undefined,
-        apartment: form.apartment || undefined,
         street: form.street?.trim() || undefined,
         city: form.city?.trim() || undefined,
         zipCode: form.zipCode?.trim() || undefined,
@@ -363,8 +349,6 @@ async function save() {
       person.value.lastName = form.lastName.trim();
       if (isMember.value) {
         person.value.phoneNumber = form.phoneNumber?.trim() || undefined;
-        person.value.phoneExtension = form.phoneExtension || undefined;
-        person.value.apartment = form.apartment || undefined;
         person.value.street = form.street?.trim() || undefined;
         person.value.city = form.city?.trim() || undefined;
         person.value.zipCode = form.zipCode?.trim() || undefined;

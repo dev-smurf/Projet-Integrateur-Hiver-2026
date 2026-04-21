@@ -8,16 +8,16 @@ namespace Web.Features.Admins.Members.DeleteMember;
 public class DeleteMemberEndpoint : Endpoint<DeleteMemberRequest, EmptyResponse>
 {
     private readonly IMemberRepository _memberRepository;
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
     private readonly IHttpContextUserService _httpContextUserService;
 
     public DeleteMemberEndpoint(
         IMemberRepository memberRepository,
-        IMemberEquipeRepository memberEquipeRepository,
+        IEquipeRepository equipeRepository,
         IHttpContextUserService httpContextUserService)
     {
         _memberRepository = memberRepository;
-        _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
         _httpContextUserService = httpContextUserService;
     }
 
@@ -33,14 +33,8 @@ public class DeleteMemberEndpoint : Endpoint<DeleteMemberRequest, EmptyResponse>
     {
         var member = _memberRepository.FindById(req.Id);
 
-        // Soft-delete les assignations d'équipes
-        var assignments = await _memberEquipeRepository.GetByMemberIdAsync(member.Id);
-        foreach (var assignment in assignments)
-        {
-            await _memberEquipeRepository.UnassignAsync(assignment);
-        }
+        await _equipeRepository.ReplaceUserEquipes(member.User, []);
 
-        // Soft-delete le membre
         member.SoftDelete(_httpContextUserService.Username);
         await _memberRepository.Update(member);
 

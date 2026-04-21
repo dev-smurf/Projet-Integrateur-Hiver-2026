@@ -292,12 +292,23 @@
       "tooltip": "Si le nom d'utilisateur est valide, un email sera envoyé à l'adresse indiquée avec un lien pour réinitialiser votre mot de passe",
       "validation": {
         "success": "Courriel de réinitalisation du mot de passe envoyé.",
+        "userNotFound": "Aucun compte n'est associé à cette adresse courriel.",
         "invalidUsername": "Le nom d'utilisateur est invalide.",
         "invalidResetPasswordRelativeUrl": "L'URL de réinitialisation du mot de passe est introuvable.",
         "errorOccured": "Une erreur est survenue lors de l'envoi du courriel de réinitialisation du mot de passe."
       }
     },
     "resetPassword": {
+      "passwordRequirements": {
+        "title": "Votre mot de passe doit respecter les criteres suivants :",
+        "minLength": "Au moins 10 caracteres",
+        "uppercase": "Au moins une lettre majuscule",
+        "lowercase": "Au moins une lettre minuscule",
+        "digit": "Au moins un chiffre",
+        "special": "Au moins un caractere special",
+        "uniqueChars": "Au moins 6 caracteres differents",
+        "match": "La confirmation correspond au mot de passe"
+      },
       "validation": {
         "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
         "invalidUserId": "L'identifiant de l'utilisateur est invalide.",
@@ -459,6 +470,19 @@
     "quickLinks": "Liens rapides",
     "undefined": "ND",
     "logout": "Déconnexion",
+    "changeLanguage": "Changer de langue",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "test": "Tester",
+    "add": "Ajouter",
+    "createFirst": "Créer le premier",
+    "questions": "Questions",
+    "cancel": "Annuler",
+    "update": "Modifier",
+    "table": {
+      "noData": "Aucune donnée disponible",
+      "actions": "Actions"
+    },
     "changeLanguage": "Changer de langue",
     "test": "Tester",
     "questions": "Questions",
@@ -772,6 +796,25 @@
     "completionMessage": "Quiz complete avec succes.",
     "yourAnswers": "Vos reponses",
     "yourAnswer": "Votre reponse",
-    "backToList": "Retour a la liste"
+    "backToList": "Retour a la liste",
+    "assign": {
+      "unassigned": "Non assignés",
+      "assigned": "Assignés",
+      "none": "Aucun utilisateur",
+      "noneAssigned": "Aucun utilisateur assigné",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom ou courriel...",
+      "applyChanges": "Appliquer les modifications ({count})",
+      "updating": "Mise à jour..."
+    },
+    "move": {
+      "toTop": "Placer en haut",
+      "up": "Placer avant",
+      "down": "Placer après",
+      "toBottom": "Placer en bas"
+    },
+    "preview": {
+      "title": "Aperçu",
+      "textPlaceholder": "Entrée texte..."
+    }
   }
 }

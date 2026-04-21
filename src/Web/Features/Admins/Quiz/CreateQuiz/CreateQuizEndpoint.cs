@@ -54,7 +54,10 @@ public class CreateQuizEndpoint : Endpoint<CreateQuizRequest, EmptyResponse>
                     Placeholder = questionReq.Placeholder,
                     ScaleMinLabel = questionReq.ScaleMinLabel ?? "Jamais",
                     ScaleMidLabel = questionReq.ScaleMidLabel ?? "Parfois",
-                    ScaleMaxLabel = questionReq.ScaleMaxLabel ?? "Toujours"
+                    ScaleMaxLabel = questionReq.ScaleMaxLabel ?? "Toujours",
+                    ScaleLabels = (questionReq.ScaleLabels != null && questionReq.ScaleLabels.Count > 0)
+                        ? questionReq.ScaleLabels
+                        : Enumerable.Repeat(string.Empty, 10).ToList()
                 };
 
                 foreach (var responseReq in questionReq.Responses)

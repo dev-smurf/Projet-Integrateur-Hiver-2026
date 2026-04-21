@@ -90,10 +90,25 @@
                 <dd>
                   <span
                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                    :class="member?.active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600'"
+                    :class="member?.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                   >
-                    {{ member?.active ? "Actif" : "Inactif" }}
+                    {{ member?.accountActivated ? "Compte actif" : "En attente de validation" }}
                   </span>
+                </dd>
+              </div>
+              <div class="flex justify-between gap-4 items-start">
+                <dt class="text-gray-500">Equipes</dt>
+                <dd class="text-right">
+                  <div v-if="memberEquipes.length" class="flex flex-wrap justify-end gap-2">
+                    <span
+                      v-for="equipe in memberEquipes"
+                      :key="equipe"
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700"
+                    >
+                      {{ equipe }}
+                    </span>
+                  </div>
+                  <span v-else class="text-gray-900">N/A</span>
                 </dd>
               </div>
             </dl>
@@ -255,15 +270,17 @@
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useNotification} from "@kyvg/vue3-notification";
-import {useMemberService, useModulesService} from "@/inversify.config";
-import type {Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import {useEquipesService, useMemberService, useModulesService} from "@/inversify.config";
+import type {Equipe, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
 
 const route = useRoute();
 const {notify} = useNotification();
+const equipeService = useEquipesService();
 const memberService = useMemberService();
 const modulesService = useModulesService();
 
 const member = ref<Member | null>(null);
+const equipes = ref<Equipe[]>([]);
 const memberModules = ref<MemberModuleDto[]>([]);
 const allModules = ref<ModuleDto[]>([]);
 const loading = ref(true);
@@ -301,10 +318,24 @@ const createdAt = computed(() => {
 
 const addressLine = computed(() => {
   const street = member.value?.street || "";
-  const apartment = member.value?.apartment ? `#${member.value.apartment}` : "";
   const zip = member.value?.zipCode || "";
-  const joined = [street, apartment, zip].filter(Boolean).join(" ");
+  const joined = [street, zip].filter(Boolean).join(" ");
   return joined || "N/A";
+});
+
+const memberEquipes = computed(() => {
+  const equipeIds = member.value?.equipeIds ?? [];
+  if (!equipeIds.length) return [];
+
+  return equipes.value
+    .filter(equipe => {
+      const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
+      return equipeIds.includes(equipeId);
+    })
+    .map(equipe => {
+      const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
+      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
+    });
 });
 
 const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
@@ -342,9 +373,16 @@ function moduleLabel(mod: ModuleDto) {
 
 async function loadData() {
   loading.value = true;
-  member.value = await memberService.getMember(memberId.value);
-  memberModules.value = await memberService.getMemberModules(memberId.value);
-  allModules.value = await modulesService.getAllModules();
+  const [memberData, memberModulesData, modulesData, equipesData] = await Promise.all([
+    memberService.getMember(memberId.value),
+    memberService.getMemberModules(memberId.value),
+    modulesService.getAllModules(),
+    equipeService.getAllEquipes()
+  ]);
+  member.value = memberData;
+  memberModules.value = memberModulesData;
+  allModules.value = modulesData;
+  equipes.value = equipesData;
   const nextEdits: Record<string, number> = {};
   memberModules.value.forEach(item => {
     nextEdits[item.moduleId] = item.progressPercent;

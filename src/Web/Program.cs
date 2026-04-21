@@ -10,7 +10,6 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
 using Infrastructure.Repositories.Conversations;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
@@ -93,6 +92,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+EnsureProductionMailingSettingsAreValid(app.Configuration, app.Environment);
 var shouldInitializeDatabase = app.Configuration.GetValue<bool?>("Database:InitializeOnStartup")
     ?? app.Environment.IsDevelopment();
 var shouldSeedDatabase = app.Configuration.GetValue<bool?>("Database:SeedOnStartup")
@@ -180,3 +180,17 @@ app.MapHub<Web.Hubs.ChatHub>("/api/chat-hub");
 app.MapFallbackToFile("vue/index.html");
 
 app.Run();
+
+static void EnsureProductionMailingSettingsAreValid(IConfiguration configuration, IWebHostEnvironment environment)
+{
+    if (!environment.IsProduction())
+        return;
+
+    var apiKey = configuration["SendGrid:ApiKey"];
+    if (string.IsNullOrWhiteSpace(apiKey) || string.Equals(apiKey, "placeholder", StringComparison.OrdinalIgnoreCase))
+        throw new InvalidOperationException("SendGrid:ApiKey must be configured in production.");
+
+    var fromAddress = configuration["Mailing:FromAddress"];
+    if (string.IsNullOrWhiteSpace(fromAddress))
+        throw new InvalidOperationException("Mailing:FromAddress must be configured in production.");
+}
