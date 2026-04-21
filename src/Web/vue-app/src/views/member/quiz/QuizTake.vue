@@ -243,6 +243,14 @@ const submitQuiz = async () => {
       })
     }
 
+    // Mark quiz as completed before redirecting
+    try {
+      await quizService.completeQuiz(quiz.value.id)
+    } catch (error) {
+      console.error('Failed to mark quiz as completed:', error)
+      // Ne pas afficher d'erreur, la soumission est réussie
+    }
+
     // Redirect to results
     router.push({ name: 'quiz.results', params: { quizId: quiz.value.id } })
   } catch (error) {
