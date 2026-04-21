@@ -26,7 +26,7 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
     {
         if (!Guid.TryParse(req.EquipeId, out var equipeId))
         {
-            await SendErrorsAsync(400, cancellation: ct);
+            HttpContext.Response.StatusCode = 400;
             return;
         }
 
@@ -49,10 +49,6 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
         await Send.OkAsync(response, cancellation: ct);
     }
 
-    private async Task SendErrorsAsync(int v, CancellationToken cancellation)
-    {
-        throw new NotImplementedException();
-    }
 }
 
 public class GetEquipeMembersRequest

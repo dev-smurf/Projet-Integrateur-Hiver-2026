@@ -54,7 +54,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             City = member.City ?? string.Empty,
             ZipCode = member.ZipCode ?? string.Empty,
             Roles = roles,
-            EquipeIds = equipeIds
+            EquipeIds = equipeIds.ToList()
         };
     }
 }

@@ -36,7 +36,7 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
     {
         var member = _authenticatedMemberService.GetAuthenticatedMember();
 
-        var equipeIds = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
+        var equipeIds = (await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id)).ToList();
 
         if (equipeIds.Count == 0)
         {
@@ -44,7 +44,7 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
             return;
         }
 
-        var equipe = await _equipeRepository.FindByIdWithMembers(equipeIds.First());
+        var equipe = await _equipeRepository.FindById(equipeIds.First());
 
         if (equipe == null)
         {
@@ -53,13 +53,14 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
         }
 
         var memberModules = await _memberRepository.GetMemberModules(member.Id);
+        var assignments = await _memberEquipeRepository.GetByEquipeIdAsync(equipe.Id);
 
         var response = new GetMyEquipeResponse
         {
             Id = equipe.Id.ToString(),
             NameFr = equipe.NameFr,
             NameEn = equipe.NameEn,
-            Members = equipe.MemberEquipes.Select(me => new GetMyEquipeMemberDto
+            Members = assignments.Select(me => new GetMyEquipeMemberDto
             {
                 Id = me.MemberId.ToString(),
                 FirstName = me.Member.FirstName,
