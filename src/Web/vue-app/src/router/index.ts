@@ -11,6 +11,7 @@ import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
 import MemberDashboard from "@/views/member/MemberDashboard.vue";
+import MemberEquipe from "@/views/member/Equipe.vue";
 
 import Admin from "@/views/admin/Admin.vue";
 import AdminAvailability from "@/views/admin/AdminAvailability.vue";
@@ -106,6 +107,16 @@ export function getRouter(): Router {
         component: Account,
         meta: {
           title: "routes.account.name",
+        },
+      },
+      {
+        path: i18n.t("routes.equipe.path"),
+        alias: getLocalizedRoutes("routes.equipe.path"),
+        name: "equipe",
+        component: MemberEquipe,
+        meta: {
+          requiredRole: Role.Member,
+          title: "routes.equipe.name",
         },
       },
       {

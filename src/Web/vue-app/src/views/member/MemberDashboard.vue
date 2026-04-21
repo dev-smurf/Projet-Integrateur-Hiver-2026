@@ -226,13 +226,17 @@ function imageUrl(path?: string): string | undefined {
 
 const moduleCards = computed(() => {
   return modules.value.map((mod) => {
-    const isFrench = locale === "fr";
-    const name = isFrench
-      ? (mod.nameFr || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
-      : (mod.nameEn || mod.nameFr || t("pages.memberDashboard.unnamedModule"));
-    const subject = isFrench
-      ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
-      : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject"));
+    const isFrench = locale.value === "fr";
+    const name =
+      mod.name ||
+      (isFrench
+        ? (mod.nameFr || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
+        : (mod.nameEn || mod.nameFr || t("pages.memberDashboard.unnamedModule")));
+    const subject =
+      mod.subject ||
+      (isFrench
+        ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
+        : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject")));
     const progressPercent = mod.progressPercent ?? 0;
     const isCompleted = mod.isCompleted || progressPercent >= 100;
     const statusLabel = isCompleted
