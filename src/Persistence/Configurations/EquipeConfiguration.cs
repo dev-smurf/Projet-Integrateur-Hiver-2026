@@ -8,8 +8,6 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
 {
     public void Configure(EntityTypeBuilder<Equipe> builder)
     {
-        builder.ToTable("Equipe");
-
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.NameFr)

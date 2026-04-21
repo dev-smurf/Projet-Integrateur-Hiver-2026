@@ -91,7 +91,34 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-await app.Services.InitializeAndSeedDatabase();
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+EnsureProductionMailingSettingsAreValid(app.Configuration, app.Environment);
+var shouldInitializeDatabase = app.Configuration.GetValue<bool?>("Database:InitializeOnStartup")
+    ?? app.Environment.IsDevelopment();
+var shouldSeedDatabase = app.Configuration.GetValue<bool?>("Database:SeedOnStartup")
+    ?? app.Environment.IsDevelopment();
+
+if (shouldInitializeDatabase)
+{
+    try
+    {
+        await app.Services.InitializeDatabase();
+
+        if (shouldSeedDatabase)
+            await app.Services.SeedDatabase();
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex, "Database initialization failed during startup.");
+
+        if (app.Environment.IsDevelopment())
+            throw;
+    }
+}
+else
+{
+    startupLogger.LogInformation("Skipping database initialization during startup.");
+}
 
 var supportedCultures = new[] { "en-CA", "fr-CA" };
 app.UseRequestLocalization(options =>
@@ -153,3 +180,17 @@ app.MapHub<Web.Hubs.ChatHub>("/api/chat-hub");
 app.MapFallbackToFile("vue/index.html");
 
 app.Run();
+
+static void EnsureProductionMailingSettingsAreValid(IConfiguration configuration, IWebHostEnvironment environment)
+{
+    if (!environment.IsProduction())
+        return;
+
+    var apiKey = configuration["SendGrid:ApiKey"];
+    if (string.IsNullOrWhiteSpace(apiKey) || string.Equals(apiKey, "placeholder", StringComparison.OrdinalIgnoreCase))
+        throw new InvalidOperationException("SendGrid:ApiKey must be configured in production.");
+
+    var fromAddress = configuration["Mailing:FromAddress"];
+    if (string.IsNullOrWhiteSpace(fromAddress))
+        throw new InvalidOperationException("Mailing:FromAddress must be configured in production.");
+}

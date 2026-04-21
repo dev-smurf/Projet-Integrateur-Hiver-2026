@@ -1,210 +1,172 @@
 <template>
-    <div class="min-h-screen bg-gray-100">
-        <Transition enter-active-class="transition-opacity duration-200"
-                    enter-from-class="opacity-0"
-                    enter-to-class="opacity-100"
-                    leave-active-class="transition-opacity duration-200"
-                    leave-from-class="opacity-100"
-                    leave-to-class="opacity-0">
-            <div v-if="sidebarOpen"
-                 class="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                 @click="sidebarOpen = false" />
-        </Transition>
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-               class="fixed inset-y-0 left-0 z-50 w-60 bg-brand-900 flex flex-col transition-transform duration-200 lg:translate-x-0">
-            <div class="px-5 py-5 flex items-center gap-3 border-b border-white/10">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center">
-                    <LayoutDashboard class="w-5 h-5 text-white" />
-                </div>
-                <div class="leading-tight">
-                    <span class="text-white font-semibold text-sm tracking-wide">Garneau</span>
-                    <span class="block text-gray-500 text-[11px]">Plateforme intÃ©grÃ©e</span>
-                </div>
+    <div class="min-h-screen bg-gray-100 flex">
+
+        <!-- Sidebar -->
+        <nav class="sticky top-0 h-screen w-64 shrink-0 flex flex-col backdrop-blur border-r border-white/10 z-50"
+             style="background-color: #4c6367;">
+
+            <div class="flex items-center h-16 px-6 border-b border-white/10">
+                <span class="font-semibold text-lg" style="color: #98ff98;">Mon App</span>
             </div>
 
-            <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
-                <div v-if="userStore.hasRole(Role.Member)">
-                    <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
-                        {{ $t('routes.dashboard.name') }}
-                    </p>
-                    <ul class="space-y-0.5">
-                        <li>
-                            <router-link :to="{ name: 'dashboard' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('dashboard') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <LayoutDashboard class="w-4 h-4" />
-                                {{ $t('routes.dashboard.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'quiz' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('books') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <BookOpen class="w-4 h-4" />
-                                {{ $t('routes.quiz.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'equipe' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('equipe') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <UsersRound class="w-4 h-4" />
-                                {{ $t('routes.equipe.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'quiz' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('quiz') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <ClipboardCheck class="w-4 h-4" />
-                                {{ $t('routes.quiz.name') }}
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
+            <div class="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-1">
+                <router-link :to="{ name: 'dashboard' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('dashboard') ? 'active-link' : 'inactive-link'">
+                    <LayoutDashboard class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.dashboard.name') }}
+                </router-link>
 
-                <!-- Admin section -->
-                <div v-if="userStore.hasRole(Role.Admin)">
-                    <p class="px-3 mb-2 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
-                        {{ $t('routes.admin.name') }}
-                    </p>
-                    <ul class="space-y-0.5">
-                        <li>
-                            <router-link :to="{ name: 'adminDashboard' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('adminDashboard') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <Shield class="w-4 h-4" />
-                                {{ $t('routes.adminDashboard.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'admin.children.members.index' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('admin.children.members') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <Users class="w-4 h-4" />
-                                {{ $t('routes.admin.children.members.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'admin.children.modules.index' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('admin.children.modules') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <Layers class="w-4 h-4" />
-                                {{ $t('routes.admin.children.modules.name') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'admin.children.equipes.index' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('admin.children.equipes.index') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <UsersRound class="w-4 h-4" />
-                                {{ $t("routes.admin.children.equipes.name") }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'admin.children.availability' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('admin.children.availability') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <UsersRound class="w-4 h-4" />
-                                {{ $t('appointment.availability') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link :to="{ name: 'admin.children.quiz.index' }"
-                                         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
-                                         :class="isActive('admin.children.quiz.index') ? 'text-white bg-brand-600' : 'text-gray-400 hover:text-white hover:bg-white/5'"
-                                         @click="sidebarOpen = false">
-                                <UsersRound class="w-4 h-4" />
-                                {{ $t('routes.admin.children.members.quiz.name') }}
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                <router-link v-if="userStore.hasRole(Role.Member)"
+                             :to="{ name: 'member.modules.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('member.modules') ? 'active-link' : 'inactive-link'">
+                    <BookOpen class="w-4 h-4 shrink-0" />
+                    Mes modules
+                </router-link>
 
-            <div class="border-t border-white/10 px-3 py-3 space-y-2">
+                <router-link v-if="userStore.hasRole(Role.Member)"
+                             :to="{ name: 'equipe' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('equipe') ? 'active-link' : 'inactive-link'">
+                    <UsersRound class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.equipe.name') }}
+                </router-link>
+
+                <router-link v-if="userStore.hasRole(Role.Member)"
+                             :to="{ name: 'quiz.list' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('quiz') ? 'active-link' : 'inactive-link'">
+                    <ClipboardCheck class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.quiz.name') }}
+                </router-link>
+
+                <div v-if="userStore.hasRole(Role.Admin)" class="my-2 border-t" style="border-color: #907288;" />
+
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.members.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('admin.children.members') ? 'active-link' : 'inactive-link'">
+                    <Users class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.admin.children.members.name') }}
+                </router-link>
+
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.modules.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('admin.children.modules') ? 'active-link' : 'inactive-link'">
+                    <Layers class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.admin.children.modules.name') }}
+                </router-link>
+
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.equipes.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('admin.children.equipes') ? 'active-link' : 'inactive-link'">
+                    <UsersRound class="w-4 h-4 shrink-0" />
+                    {{ $t("routes.admin.children.equipes.name") }}
+                </router-link>
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.availability' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('availability') ? 'active-link' : 'inactive-link'">
+                    <Calendar class="w-4 h-4 shrink-0" />
+                    {{ $t('appointment.availability') }}
+                </router-link>
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.quiz.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('quiz') ? 'active-link' : 'inactive-link'">
+                    <Brain class="w-4 h-4 shrink-0" />
+                    {{ $t('routes.admin.children.members.quiz.name') }}
+                </router-link>
+            </div>
+
+            <div class="border-t px-3 py-4 flex flex-col gap-1" style="border-color: #907288;">
+
                 <div class="relative">
                     <button @click="langOpen = !langOpen"
-                            class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition text-gray-400 hover:text-white hover:bg-white/5 w-full cursor-pointer">
-                        <Languages class="w-4 h-4" />
-                        {{ $t('global.changeLanguage') }}
+                            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium"
+                            style="color: #d1d5db;"
+                            @mouseover="e => e.currentTarget.style.color='#98ff98'"
+                            @mouseleave="e => e.currentTarget.style.color='#d1d5db'">
+                        <Languages class="h-4 w-4 shrink-0" />
+                        Langue
                     </button>
                     <div v-if="langOpen"
-                         class="absolute bottom-full left-0 mb-1 w-full bg-brand-800 rounded-lg shadow-lg py-1 z-50">
+                         class="absolute bottom-full left-0 mb-2 min-w-[120px] rounded-lg py-1 shadow-lg"
+                         style="background-color: #3a4f52;">
                         <button v-for="loc in LOCALES"
                                 :key="loc.value"
                                 @click="switchLanguage(loc.value)"
-                                class="w-full text-left px-3 py-2 text-sm transition cursor-pointer"
-                                :class="currentLocale === loc.value ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                                class="w-full px-3 py-2 text-left text-sm transition"
+                                :style="currentLocale === loc.value
+                ? 'color: #98ff98; background-color: rgba(152,255,152,0.1);'
+                : 'color: #d1d5db;'">
                             {{ loc.caption }}
                         </button>
                     </div>
                 </div>
 
-                <!-- Profile link -->
+                <!-- Profil -->
                 <router-link :to="{ name: 'account' }"
-                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition group"
-                             @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-semibold shrink-0">
+                             class="flex items-center gap-3 px-3 py-2 rounded-xl transition hover-profile">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
+                         style="background-color: #907288; color: white;">
                         {{ initials }}
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-white truncate">{{ personStore.person.firstName }} {{ personStore.person.lastName }}</p>
-                        <p class="text-[11px] text-gray-500 truncate">{{ $t('routes.account.name') }}</p>
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-medium" style="color: white;">
+                            {{ personStore.person.firstName }} {{ personStore.person.lastName }}
+                        </p>
+                        <p class="truncate text-xs" style="color: #98ff98;">{{ $t('routes.account.name') }}</p>
                     </div>
-                    <button @click.prevent.stop="handleLogout"
-                            class="p-1.5 text-gray-500 hover:text-brand-400 rounded-lg hover:bg-white/5 transition cursor-pointer opacity-0 group-hover:opacity-100"
-                            :title="$t('global.logout')">
-                        <LogOut class="w-4 h-4" />
-                    </button>
                 </router-link>
+
+                <!-- Logout -->
+                <button @click="handleLogout"
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium logout-btn"
+                        :title="$t('global.logout')"
+                        style="color: #d1d5db;">
+                    <LogOut class="h-4 w-4 shrink-0" />
+                    {{ $t('global.logout') }}
+                </button>
             </div>
-        </aside>
+        </nav>
 
-        <!-- Main area -->
-        <div class="flex-1 flex flex-col min-h-screen min-w-0 lg:ml-60">
-
-            <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+        <!-- Contenu principal -->
+        <div class="flex-1 min-w-0">
+            <main class="w-full px-6 py-8">
                 <router-view />
             </main>
         </div>
-    </div>
 
-    <!-- Notifications -->
-    <notifications position="bottom right" :duration="4000" :speed="300" width="360">
-        <template #body="{ item, close }">
-            <div class="mb-3 mr-3 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
-                 :class="item.type === 'success' ? 'bg-white border border-green-200' : 'bg-white border border-red-200'">
-                <div class="flex items-start gap-3 px-4 py-3">
-                    <div class="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                         :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
-                        <CheckCircle2 v-if="item.type === 'success'" class="w-3.5 h-3.5" />
-                        <XCircle v-else class="w-3.5 h-3.5" />
+        <!-- Notifications -->
+        <notifications position="bottom right" :duration="4000" :speed="300" width="360">
+            <template #body="{ item, close }">
+                <div class="mb-3 mr-3 overflow-hidden rounded-xl shadow-lg backdrop-blur-sm"
+                     :class="item.type === 'success' ? 'border border-green-200 bg-white' : 'border border-red-200 bg-white'">
+                    <div class="flex items-start gap-3 px-4 py-3">
+                        <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                             :class="item.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
+                            <CheckCircle2 v-if="item.type === 'success'" class="h-3.5 w-3.5" />
+                            <XCircle v-else class="h-3.5 w-3.5" />
+                        </div>
+                        <p class="flex-1 text-sm leading-snug text-gray-700">{{ item.text }}</p>
+                        <button @click="close" class="mt-0.5 shrink-0 text-gray-300 transition hover:text-gray-500">
+                            <X class="h-3.5 w-3.5" />
+                        </button>
                     </div>
-                    <p class="text-sm text-gray-700 flex-1 leading-snug">{{ item.text }}</p>
-                    <button @click="close" class="text-gray-300 hover:text-gray-500 transition shrink-0 mt-0.5">
-                        <X class="w-3.5 h-3.5" />
-                    </button>
+                    <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
+                        <div class="toast-progress h-full"
+                             :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'" />
+                    </div>
                 </div>
-                <div class="h-0.5 w-full" :class="item.type === 'success' ? 'bg-green-100' : 'bg-red-100'">
-                    <div class="h-full toast-progress"
-                         :class="item.type === 'success' ? 'bg-green-500' : 'bg-red-500'" />
-                </div>
-            </div>
-        </template>
-    </notifications>
+            </template>
+        </notifications>
 
-    <ChatBubble />
+        <ChatBubble />
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -215,7 +177,7 @@
     import {
         LayoutDashboard, BookOpen, Shield, LogOut, Languages,
         CheckCircle2, XCircle, X, Users, Layers, UsersRound,
-        ClipboardCheck, Menu
+        ClipboardCheck,Brain,Calendar
     } from "lucide-vue-next";
     import { useUserStore } from "@/stores/userStore";
     import { usePersonStore } from "@/stores/personStore";
@@ -237,7 +199,6 @@
     const chatStore = useChatStore();
     const { connect: connectSignalR, disconnect: disconnectSignalR } = useSignalR();
 
-    const sidebarOpen = ref(false);
     const langOpen = ref(false);
     const currentLocale = ref(i18nInstance.getLocale());
 
@@ -286,7 +247,7 @@
                 if (member) personStore.setPerson(member);
             }
         } catch {
-            // API failed â€” personStore already has persisted data from login
+            // API failed — personStore already has persisted data from login
         }
 
         // Initialize chat
@@ -295,7 +256,7 @@
             const unreadCount = await conversationService.getUnreadCount();
             chatStore.setUnreadCount(unreadCount);
         } catch {
-            // Chat unavailable â€” non-blocking
+            // Chat unavailable — non-blocking
         }
     });
 
@@ -304,3 +265,27 @@
         await disconnectSignalR();
     });
 </script>
+<style scoped>
+    .active-link {
+        color: #98ff98;
+        background-color: rgba(152, 255, 152, 0.15);
+    }
+
+    .inactive-link {
+        color: #d1d5db;
+    }
+
+        .inactive-link:hover {
+            color: #98ff98;
+            background-color: rgba(144, 114, 136, 0.2);
+        }
+
+    .logout-btn:hover {
+        color: #98ff98;
+        background-color: rgba(144, 114, 136, 0.2);
+    }
+
+    .hover-profile:hover {
+        background-color: rgba(144, 114, 136, 0.2);
+    }
+</style>

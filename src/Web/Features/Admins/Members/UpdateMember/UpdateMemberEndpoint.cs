@@ -14,15 +14,18 @@ public class UpdateMemberEndpoint : EndpointWithSanitizedRequest<UpdateMemberReq
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     private readonly IMemberRepository _memberRepository;
+    private readonly IEquipeRepository _equipeRepository;
 
     public UpdateMemberEndpoint(
         IMapper mapper,
         IUserRepository userRepository,
-        IMemberRepository memberRepository)
+        IMemberRepository memberRepository,
+        IEquipeRepository equipeRepository)
     {
         _mapper = mapper;
         _userRepository = userRepository;
         _memberRepository = memberRepository;
+        _equipeRepository = equipeRepository;
     }
 
     public override void Configure()
@@ -61,5 +64,6 @@ public class UpdateMemberEndpoint : EndpointWithSanitizedRequest<UpdateMemberReq
         existingMember.SetUser(_mapper.Map(req, user));
 
         await _memberRepository.Update(existingMember);
+        await _equipeRepository.ReplaceUserEquipes(existingMember.User, req.EquipeIds);
     }
 }

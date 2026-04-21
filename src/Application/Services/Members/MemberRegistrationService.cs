@@ -6,6 +6,7 @@ using Application.Services.Users.Dtos;
 using AutoMapper;
 using Application.Extensions;
 using Domain.Entities;
+using Domain.Entities.Identity;
 using Domain.Repositories;
 using Application.Interfaces.Services.Notifications;
 using Application.Settings;
@@ -17,6 +18,7 @@ public class MemberRegistrationService : IMemberRegistrationService
 {
     private readonly IMapper _mapper;
     private readonly IMemberRepository _memberRepository;
+    private readonly IEquipeRepository _equipeRepository;
     private readonly IUserCreationService _userCreationService;
     private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
@@ -25,6 +27,7 @@ public class MemberRegistrationService : IMemberRegistrationService
     public MemberRegistrationService(
         IMapper mapper,
         IMemberRepository memberRepository,
+        IEquipeRepository equipeRepository,
         IUserCreationService userCreationService,
         IUserRepository userRepository,
         INotificationService notificationService,
@@ -32,6 +35,7 @@ public class MemberRegistrationService : IMemberRegistrationService
     {
         _mapper = mapper;
         _memberRepository = memberRepository;
+        _equipeRepository = equipeRepository;
         _userCreationService = userCreationService;
         _userRepository = userRepository;
         _notificationService = notificationService;
@@ -47,6 +51,7 @@ public class MemberRegistrationService : IMemberRegistrationService
         member.SetUser(user);
 
         await _memberRepository.Create(member);
+        await AssignMemberToEquipes(user, memberRegistrationDto.EquipeIds);
 
         var baseUrlNormalized = (_baseUrl ?? string.Empty).TrimEnd('/');
         var rawToken = await _userRepository.GetResetPasswordTokenForUser(user);
@@ -68,5 +73,20 @@ public class MemberRegistrationService : IMemberRegistrationService
         }
 
         return member;
+    }
+
+    private async Task AssignMemberToEquipes(User user, IEnumerable<Guid>? equipeIds)
+    {
+        var ids = equipeIds?
+            .Where(id => id != Guid.Empty)
+            .Distinct()
+            .ToList() ?? [];
+
+        if (ids.Count == 0)
+        {
+            return;
+        }
+
+        await _equipeRepository.AssignUserToEquipes(user, ids);
     }
 }
