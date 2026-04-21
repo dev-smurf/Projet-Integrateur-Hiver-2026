@@ -44,26 +44,19 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneNumber') }} (555-555-5555)</label>
           <input
             v-model="member.phoneNumber"
             type="tel"
             placeholder="555-555-5555"
+            inputmode="numeric"
+            maxlength="12"
+            @input="handlePhoneNumberInput"
             @blur="if (member.phoneNumber) validateField('phoneNumber', member.phoneNumber, [mustMatchPhoneNumberFormat]); else fieldErrors.phoneNumber = undefined;"
             class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
             :class="fieldErrors.phoneNumber ? 'border-red-400' : 'border-gray-300'"
           />
           <p v-if="fieldErrors.phoneNumber" class="text-sm text-red-500 mt-1">{{ fieldErrors.phoneNumber }}</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.phoneExtension') }}</label>
-          <input v-model.number="member.phoneExtension" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.apartment') }}</label>
-          <input v-model.number="member.apartment" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.street') }}</label>
@@ -76,11 +69,13 @@
           <input v-model="member.city" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('global.zipCode') }} (A1A 1A1)</label>
           <input
             v-model="member.zipCode"
             type="text"
             placeholder="A1A 1A1"
+            maxlength="7"
+            @input="handleZipCodeInput"
             @blur="if (member.zipCode) validateField('zipCode', member.zipCode, [mustMatchZipCodeFormat]); else fieldErrors.zipCode = undefined;"
             class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
             :class="fieldErrors.zipCode ? 'border-red-400' : 'border-gray-300'"
@@ -131,6 +126,7 @@ import {useEquipesService, useMemberService} from "@/inversify.config";
 import Select2Multi from "@/components/forms/Select2Multi.vue";
 import {Equipe, Member} from "@/types/entities";
 import {validate} from "@/validation";
+import {formatPhoneNumberInput, formatPostalCodeInput} from "@/validation/formatters";
 import type {Rule} from "@/validation/rules";
 import {required, mustMatchEmailFormat, mustMatchPhoneNumberFormat, mustMatchZipCodeFormat} from "@/validation/rules";
 
@@ -160,6 +156,20 @@ onMounted(async () => {
 function validateField(field: string, value: string, rules: Rule[]) {
   const result = validate(value, rules);
   fieldErrors[field] = result.valid ? undefined : result.message;
+}
+
+function handlePhoneNumberInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPhoneNumberInput(input.value);
+  member.phoneNumber = formattedValue;
+  input.value = formattedValue;
+}
+
+function handleZipCodeInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const formattedValue = formatPostalCodeInput(input.value);
+  member.zipCode = formattedValue;
+  input.value = formattedValue;
 }
 
 function validateForm(): boolean {

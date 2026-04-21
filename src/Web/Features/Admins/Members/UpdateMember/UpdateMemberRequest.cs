@@ -14,6 +14,8 @@ public class UpdateMemberRequest : ISanitizable
     public string Street { get; set; } = null!;
     public string City { get; set; } = null!;
     public string ZipCode { get; set; } = null!;
+    public string? AdminNotes { get; set; }
+    public bool AdminNotesVisibleToMember { get; set; }
     public List<Guid> EquipeIds { get; set; } = [];
 
     public void Sanitize()
@@ -25,5 +27,6 @@ public class UpdateMemberRequest : ISanitizable
         Street = Street.Trim();
         City = City.Trim();
         ZipCode = ZipCode.Trim();
+        AdminNotes = string.IsNullOrWhiteSpace(AdminNotes) ? null : AdminNotes.Trim();
     }
 }

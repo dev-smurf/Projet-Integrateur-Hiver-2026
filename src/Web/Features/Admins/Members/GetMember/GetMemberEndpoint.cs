@@ -43,6 +43,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             UserId = member.User.Id,
             Created = member.Created.ToDateTimeUtc(),
             Active = member.Active,
+            AccountActivated = !string.IsNullOrWhiteSpace(member.User.PasswordHash),
             FirstName = member.FirstName,
             LastName = member.LastName,
             FullName = member.FullName,
@@ -53,6 +54,8 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             Street = member.Street ?? string.Empty,
             City = member.City ?? string.Empty,
             ZipCode = member.ZipCode ?? string.Empty,
+            AdminNotes = member.AdminNotes,
+            AdminNotesVisibleToMember = member.AdminNotesVisibleToMember,
             Roles = roles,
             EquipeIds = equipeIds.ToList()
         };

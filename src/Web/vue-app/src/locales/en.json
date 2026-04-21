@@ -281,12 +281,23 @@
       "tooltip": "If username is valid, an email will be sent to the address specified with a link to reset your password.",
       "validation": {
         "success": "Reset password email sent.",
+        "userNotFound": "No account is associated with this email address.",
         "invalidUsername": "The username is not valid.",
         "invalidResetPasswordRelativeUrl": "The reset password URL could not be found.",
         "errorOccured": "An error occurred while sending reset password email."
       }
     },
     "resetPassword": {
+      "passwordRequirements": {
+        "title": "Your password must meet the following requirements:",
+        "minLength": "At least 10 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "digit": "At least one digit",
+        "special": "At least one special character",
+        "uniqueChars": "At least 6 unique characters",
+        "match": "Confirmation matches the password"
+      },
       "validation": {
         "success": "The password was successfully reset. You'll be redirected to the login page.",
         "invalidUserId": "The user id is not valid.",

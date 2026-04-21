@@ -7,8 +7,12 @@
       <p class="text-sm text-green-700">{{ successMessage }}</p>
     </div>
 
-    <div v-if="errors.length" class="mb-4 p-3 bg-brand-50 border border-brand-200 rounded-lg">
-      <p v-for="error in errors" :key="error" class="text-sm text-brand-600">{{ error }}</p>
+    <div
+      v-if="errors.length"
+      class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+      aria-live="polite"
+    >
+      <p v-for="error in errors" :key="error" class="text-sm font-medium text-red-700">{{ error }}</p>
     </div>
 
     <form @submit.prevent="handleForgotPassword" class="space-y-4">
