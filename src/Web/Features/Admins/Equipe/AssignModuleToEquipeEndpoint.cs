@@ -8,15 +8,18 @@ namespace Web.Features.Admins.Equipe;
 
 public class AssignModuleToEquipeEndpoint : Endpoint<AssignModuleToEquipeRequest, SucceededOrNotResponse>
 {
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
     private readonly IMemberModuleRepository _memberModuleRepository;
+    private readonly IMemberRepository _memberRepository;
 
     public AssignModuleToEquipeEndpoint(
-        IMemberEquipeRepository memberEquipeRepository,
-        IMemberModuleRepository memberModuleRepository)
+        IEquipeRepository equipeRepository,
+        IMemberModuleRepository memberModuleRepository,
+        IMemberRepository memberRepository)
     {
-        _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
         _memberModuleRepository = memberModuleRepository;
+        _memberRepository = memberRepository;
     }
 
     public override void Configure()
@@ -37,14 +40,22 @@ public class AssignModuleToEquipeEndpoint : Endpoint<AssignModuleToEquipeRequest
             return;
         }
 
-        var members = await _memberEquipeRepository.GetByEquipeIdAsync(equipeId);
-
-        foreach (var me in members)
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
+        if (equipe == null)
         {
-            if (!await _memberModuleRepository.IsAssignedAsync(me.MemberId, moduleId))
-            {
-                await _memberModuleRepository.AssignAsync(new MemberModule(me.MemberId, moduleId));
-            }
+            await Send.OkAsync(new SucceededOrNotResponse(false,
+                new Error("TeamNotFound", "Team not found.")), ct);
+            return;
+        }
+
+        foreach (var user in equipe.Membres)
+        {
+            var member = _memberRepository.FindByUserId(user.Id);
+            if (member == null)
+                continue;
+
+            if (!await _memberModuleRepository.IsAssignedAsync(member.Id, moduleId))
+                await _memberModuleRepository.AssignAsync(new MemberModule(member.Id, moduleId));
         }
 
         await Send.OkAsync(new SucceededOrNotResponse(true));

@@ -261,6 +261,27 @@ export class QuizService extends ApiService implements IQuizService {
     }
   }
 
+  public async getUserResponses(quizId: string): Promise<any> {
+    try {
+      const response = await this
+        ._httpClient
+        .get(`${import.meta.env.VITE_API_BASE_URL}/quiz/responses/${quizId}`)
+      return response.data
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  public async completeQuiz(quizId: string): Promise<void> {
+    try {
+      await this
+        ._httpClient
+        .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/complete`, {})
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   public async getAssignments(quizId: string): Promise<{ id: string; userId: string }[]> {
     try {
       const response = await this

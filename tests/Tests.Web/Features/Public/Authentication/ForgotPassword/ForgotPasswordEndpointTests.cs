@@ -2,6 +2,7 @@ using Application.Interfaces.Services.Notifications;
 using Application.Settings;
 using Domain.Common;
 using Domain.Repositories;
+using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tests.Common.Builders;
@@ -56,8 +57,8 @@ public class ForgotPasswordEndpointTests
         // Assert
         _endpoint.Response.Succeeded.ShouldBeFalse();
         _endpoint.Response.Errors.ShouldContain(x =>
-            x.Code == "UserNotFound" &&
-            x.Description == "Aucun compte n'est associe a cette adresse courriel.");
+            x.ErrorType == "UserNotFound" &&
+            x.ErrorMessage == "Aucun compte n'est associe a cette adresse courriel.");
         _notificationService.Verify(
             x => x.SendForgotPasswordNotification(It.IsAny<Domain.Entities.Identity.User>(), It.IsAny<string>()),
             Times.Never);

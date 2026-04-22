@@ -1,20 +1,20 @@
+using Domain.Entities;
 using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Web.Dtos;
-using Domain.Entities;
 
 namespace Web.Features.Admins.Members.GetMember;
 
 public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
 {
     private readonly IMemberRepository _memberRepository;
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
 
-    public GetMemberEndpoint(IMemberRepository memberRepository, IMemberEquipeRepository memberEquipeRepository)
+    public GetMemberEndpoint(IMemberRepository memberRepository, IEquipeRepository equipeRepository)
     {
         _memberRepository = memberRepository;
-        _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
     }
 
     public override void Configure()
@@ -36,7 +36,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
     private async Task<MemberDto> MapMember(Member member)
     {
         var roles = member.User.UserRoles.Select(r => r.Role.Name ?? string.Empty).Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
-        var equipeIds = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
+        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
         return new MemberDto
         {
             Id = member.Id,

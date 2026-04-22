@@ -102,6 +102,15 @@
       </router-link>
     </div>
 
+    <!-- Assign Quiz Modal -->
+    <AssignQuizModal
+      v-if="showAssignModal && selectedQuizForAssignment"
+      :quiz-id="selectedQuizForAssignment.id"
+      :quiz-title="selectedQuizForAssignment.titre"
+      @close="showAssignModal = false; selectedQuizForAssignment = null"
+      @assigned="onAssigned"
+    />
+
     <!-- Delete Confirmation Modal -->
     <div v-if="quizToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
@@ -134,6 +143,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Plus, Pencil, Trash2, BookOpen, Play, Users } from 'lucide-vue-next'
+import AssignQuizModal from './AssignQuizModal.vue'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
 import type { Quiz } from '@/services/quizService'
@@ -192,19 +202,15 @@ async function deleteQuiz() {
 }
 
 function openAssignModal(quiz: Quiz) {
-  console.log('openAssignModal', quiz)
   selectedQuizForAssignment.value = quiz
   showAssignModal.value = true
 }
 
-
-  // Clear success message after 3 seconds
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
-
-  // Reload quizzes to show updated assignment count
+function onAssigned() {
+  showAssignModal.value = false
+  selectedQuizForAssignment.value = null
   loadQuizzes()
+}
 
 onMounted(() => {
   loadQuizzes()

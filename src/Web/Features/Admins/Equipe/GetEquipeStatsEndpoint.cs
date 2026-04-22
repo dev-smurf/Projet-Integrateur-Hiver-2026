@@ -6,15 +6,18 @@ namespace Web.Features.Admins.Equipe;
 
 public class GetEquipeStatsEndpoint : EndpointWithoutRequest<EquipeStatsResponse>
 {
-    private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
     private readonly IMemberModuleRepository _memberModuleRepository;
+    private readonly IMemberRepository _memberRepository;
 
     public GetEquipeStatsEndpoint(
-        IMemberEquipeRepository memberEquipeRepository,
-        IMemberModuleRepository memberModuleRepository)
+        IEquipeRepository equipeRepository,
+        IMemberModuleRepository memberModuleRepository,
+        IMemberRepository memberRepository)
     {
-        _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
         _memberModuleRepository = memberModuleRepository;
+        _memberRepository = memberRepository;
     }
 
     public override void Configure()
@@ -33,15 +36,24 @@ public class GetEquipeStatsEndpoint : EndpointWithoutRequest<EquipeStatsResponse
             return;
         }
 
-        var members = await _memberEquipeRepository.GetByEquipeIdAsync(equipeId);
-        var memberCount = members.Count();
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
+        if (equipe == null)
+        {
+            HttpContext.Response.StatusCode = 404;
+            return;
+        }
 
+        var memberCount = equipe.Membres.Count;
         var totalProgress = 0;
         var totalModules = 0;
 
-        foreach (var me in members)
+        foreach (var user in equipe.Membres)
         {
-            var modules = await _memberModuleRepository.GetByMemberIdAsync(me.MemberId);
+            var member = _memberRepository.FindByUserId(user.Id);
+            if (member == null)
+                continue;
+
+            var modules = await _memberModuleRepository.GetByMemberIdAsync(member.Id);
             foreach (var mm in modules)
             {
                 totalProgress += mm.ProgressPercent;

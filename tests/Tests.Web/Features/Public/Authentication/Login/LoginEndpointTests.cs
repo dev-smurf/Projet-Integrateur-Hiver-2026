@@ -2,6 +2,7 @@ using Application.Interfaces.Services.Notifications;
 using Application.Interfaces.Services.Users;
 using Application.Settings;
 using Domain.Common;
+using FastEndpoints;
 using Microsoft.Extensions.Options;
 using Tests.Common.Builders;
 using Web.Features.Public.Authentication.Login;
@@ -63,7 +64,7 @@ public class LoginEndpointTests
         // Assert
         _endpoint.Response.Succeeded.ShouldBeFalse();
         _endpoint.Response.Errors.ShouldContain(x =>
-            x.Code == notificationError.Code &&
-            x.Description == notificationError.Description);
+            x.ErrorType == notificationError.ErrorType &&
+            x.ErrorMessage == notificationError.ErrorMessage);
     }
 }
