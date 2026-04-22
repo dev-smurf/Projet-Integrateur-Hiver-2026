@@ -40,10 +40,10 @@
       </div>
     </section>
 
-    <!-- ─── MAIN GRID (3 colonnes) ─────────────────────────────── -->
+    <!-- ─── MAIN GRID (2 colonnes: 1/3 gauche + 2/3 droite) ─────── -->
     <div v-if="isAdmin" class="grid gap-6 lg:grid-cols-3">
 
-      <!-- ══ Colonne gauche : Nouveaux membres ══════════════════ -->
+      <!-- ══ Colonne gauche : Membres + Actions rapides ═══════════ -->
       <div class="lg:col-span-1 flex flex-col gap-4">
 
         <!-- Nouveaux membres ce mois -->
@@ -122,30 +122,19 @@
           </div>
         </div>
 
-      </div>
-
-      <!-- ══ Colonne droite : Modules du membre ═════════════════ -->
-      <div class="lg:col-span-2 flex flex-col gap-4">
-
-        <!-- Assigner un module -->
+        <!-- Associer un module (dans la colonne gauche) -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
               <TrendingUp class="h-4 w-4" />
             </div>
-            <div>
-              <h2 class="text-sm font-semibold text-slate-800">Modules du membre</h2>
-              <p class="text-xs text-slate-400">Sélectionnez un membre pour voir et gérer ses modules.</p>
-            </div>
+            <h2 class="text-sm font-semibold text-slate-800">Assigner un module</h2>
           </div>
-
-          <!-- Associer un module -->
-          <div class="px-5 py-4 bg-slate-50 border-b border-slate-100">
-            <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Associer un module</p>
-            <div class="flex flex-wrap items-center gap-3">
+          <div class="px-5 py-4">
+            <div class="flex flex-col gap-3">
               <select
                 v-model="selectedModuleId"
-                class="flex-1 min-w-[200px] rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
+                class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
               >
                 <option value="">Choisir un module…</option>
                 <option v-for="module in availableModules" :key="module.id" :value="module.id">
@@ -154,20 +143,36 @@
               </select>
               <button
                 type="button"
-                class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                class="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
                 :disabled="!selectedMemberId || !selectedModuleId"
                 @click="assignModuleToMember"
               >
                 Ajouter
               </button>
             </div>
-            <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500">
-              ⚠ Cliquez d'abord sur un membre dans la liste à gauche.
+            <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500 italic">
+              ⚠ Cliquez d'abord sur un membre dans la liste ci-dessus.
             </p>
           </div>
+        </div>
 
-          <!-- Liste des modules -->
-          <div class="max-h-96 overflow-y-auto px-5 py-4 space-y-3">
+      </div>
+
+      <!-- ══ Colonne droite : Modules du membre ═════════════════ -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
+
+        <!-- Liste des modules -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <TrendingUp class="h-4 w-4" />
+            </div>
+            <div>
+              <h2 class="text-sm font-semibold text-slate-800">Modules du membre sélectionné</h2>
+              <p class="text-xs text-slate-400">Progression et gestion des modules assignés.</p>
+            </div>
+          </div>
+          <div class="px-5 py-4 space-y-3">
             <div v-if="!selectedMemberId" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
               <TrendingUp class="mx-auto h-8 w-8 text-slate-300 mb-2" />
               <p class="text-sm text-slate-400">Choisissez un membre pour afficher ses modules.</p>
