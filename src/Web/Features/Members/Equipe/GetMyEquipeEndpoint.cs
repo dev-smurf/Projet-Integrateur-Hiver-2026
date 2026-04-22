@@ -8,22 +8,25 @@ namespace Web.Features.Members.Equipe;
 public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
 {
     private readonly IAuthenticatedMemberService _authenticatedMemberService;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
     private readonly IEquipeRepository _equipeRepository;
     private readonly IMemberRepository _memberRepository;
 
     public GetMyEquipeEndpoint(
         IAuthenticatedMemberService authenticatedMemberService,
+        IMemberEquipeRepository memberEquipeRepository,
         IEquipeRepository equipeRepository,
         IMemberRepository memberRepository)
     {
         _authenticatedMemberService = authenticatedMemberService;
+        _memberEquipeRepository = memberEquipeRepository;
         _equipeRepository = equipeRepository;
         _memberRepository = memberRepository;
     }
 
     public override void Configure()
     {
-        Get("members/me/equipe");
+        Get("members/me/equipes/{equipeId}");
         Roles(Domain.Constants.User.Roles.MEMBER);
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
         DontCatchExceptions();
@@ -32,17 +35,22 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var member = _authenticatedMemberService.GetAuthenticatedMember();
+        var equipeIdString = Route<string>("equipeId");
 
-        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
-
-        if (equipeIds.Count == 0)
+        if (!Guid.TryParse(equipeIdString, out var equipeId))
         {
             await Send.OkAsync(null, cancellation: ct);
             return;
         }
 
-        var equipe = await _equipeRepository.FindByIdWithMembers(equipeIds.First());
+        var assignment = await _memberEquipeRepository.GetByMemberAndEquipeAsync(member.Id, equipeId);
+        if (assignment == null)
+        {
+            await Send.OkAsync(null, cancellation: ct);
+            return;
+        }
 
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
         if (equipe == null)
         {
             await Send.OkAsync(null, cancellation: ct);
@@ -56,23 +64,13 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
             Id = equipe.Id.ToString(),
             NameFr = equipe.NameFr,
             NameEn = equipe.NameEn,
-            Members = equipe.Membres
-                .Select(user =>
-                {
-                    var equipeMember = _memberRepository.FindByUserId(user.Id);
-                    return equipeMember == null
-                        ? null
-                        : new GetMyEquipeMemberDto
-                        {
-                            Id = equipeMember.Id.ToString(),
-                            FirstName = equipeMember.FirstName,
-                            LastName = equipeMember.LastName,
-                            Email = equipeMember.Email
-                        };
-                })
-                .Where(m => m != null)
-                .Cast<GetMyEquipeMemberDto>()
-                .ToList(),
+            Members = equipe.MemberEquipes.Select(me => new GetMyEquipeMemberDto
+            {
+                Id = me.MemberId.ToString(),
+                FirstName = me.Member.FirstName,
+                LastName = me.Member.LastName,
+                Email = me.Member.Email
+            }).ToList(),
             Modules = memberModules.Select(mm => new GetMyEquipeModuleDto
             {
                 ModuleId = mm.ModuleId.ToString(),
