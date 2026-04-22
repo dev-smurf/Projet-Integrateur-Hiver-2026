@@ -7,6 +7,7 @@ public interface IQuizAssignmentRepository
     Task<QuizAssignment> GetByIdAsync(Guid id);
     Task<List<QuizAssignment>> GetByUserIdAsync(Guid userId);
     Task<List<QuizAssignment>> GetByQuizIdAsync(Guid quizId);
+    Task<QuizAssignment?> GetByUserIdAndQuizAsync(Guid userId, Guid quizId);
     Task CreateAsync(QuizAssignment assignment);
     Task CreateRangeAsync(IEnumerable<QuizAssignment> assignments);
     Task UpdateAsync(QuizAssignment assignment);
