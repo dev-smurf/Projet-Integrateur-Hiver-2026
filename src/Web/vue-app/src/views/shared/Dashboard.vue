@@ -1,204 +1,231 @@
 <template>
-  <div class="space-y-8">
-    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
-      <div class="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-brand-500/20 blur-3xl"></div>
-      <div class="absolute bottom-0 left-0 h-32 w-64 bg-gradient-to-r from-brand-500/10 to-transparent"></div>
+  <div class="space-y-6">
 
-      <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <!-- ─── HERO BANNER ────────────────────────────────────────────── -->
+    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white px-8 py-7">
+      <div class="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-brand-500/20 blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 left-0 h-32 w-72 bg-gradient-to-r from-brand-500/10 to-transparent pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p class="text-sm uppercase tracking-[0.2em] text-brand-200">Admin Center</p>
-          <h1 class="mt-2 text-3xl font-semibold">
+          <p class="text-xs uppercase tracking-[0.2em] text-brand-300 font-medium">Admin Center</p>
+          <h1 class="mt-1 text-2xl font-bold">
             {{ t('pages.dashboard.welcome') }}, {{ personStore.person.fullName || userStore.user.fullName }}
           </h1>
-          <p class="mt-2 max-w-xl text-sm text-slate-200">
-            Tableau de bord pour piloter les membres, leurs parcours et les modules de preparation.
+          <p class="mt-1 max-w-lg text-sm text-slate-300">
+            Pilotez vos membres, leurs parcours et les modules de préparation.
           </p>
         </div>
-        <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-sm text-slate-100">
-          <Clock class="h-4 w-4 text-brand-200" />
+        <div class="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm text-slate-200 shrink-0">
+          <Clock class="h-4 w-4 text-brand-300" />
           <span>{{ todayLabel }}</span>
         </div>
       </div>
     </section>
 
-    <section v-if="isAdmin" class="grid gap-4 lg:grid-cols-2">
-      <div v-for="kpi in kpis" :key="kpi.label" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ kpi.label }}</p>
-            <p class="mt-2 text-2xl font-semibold text-slate-900">{{ kpi.value }}</p>
-          </div>
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-            <component :is="kpi.icon" class="h-5 w-5" />
-          </div>
+    <!-- ─── KPI CARDS ────────────────────────────────────────────── -->
+    <section v-if="isAdmin" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        v-for="kpi in kpis"
+        :key="kpi.label"
+        class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm"
+      >
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+          <component :is="kpi.icon" class="h-5 w-5" />
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-medium">{{ kpi.label }}</p>
+          <p class="mt-0.5 text-2xl font-bold text-slate-900">{{ kpi.value }}</p>
         </div>
       </div>
     </section>
 
-    <section v-if="isAdmin" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 class="text-lg font-semibold text-slate-900">Nouveaux membres (ce mois)</h2>
-          <p class="text-sm text-slate-500">Les 4 derniers membres ajoutes ce mois.</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <router-link
-            :to="{ name: 'admin.children.members.index' }"
-            class="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
-            Voir tous les membres
-          </router-link>
-        </div>
-      </div>
+    <!-- ─── MAIN GRID (3 colonnes) ─────────────────────────────── -->
+    <div v-if="isAdmin" class="grid gap-6 lg:grid-cols-3">
 
-      <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
-        <span>{{ newMembersLabel }}</span>
-        <span v-if="isLoadingMembers">Chargement...</span>
-      </div>
+      <!-- ══ Colonne gauche : Nouveaux membres ══════════════════ -->
+      <div class="lg:col-span-1 flex flex-col gap-4">
 
-      <div class="mt-4 grid gap-6 lg:grid-cols-[2.2fr_1fr]">
-        <div class="max-h-[380px] overflow-y-auto pr-2">
-          <div v-if="memberError" class="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
-            {{ memberError }}
-          </div>
-
-          <div v-else-if="newMembersThisMonth.length === 0" class="rounded-2xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-500">
-            Aucun nouveau membre ce mois.
-          </div>
-
-          <div v-else class="divide-y divide-slate-100">
+        <!-- Nouveaux membres ce mois -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <UserPlus class="h-4 w-4" />
+              </div>
+              <div>
+                <h2 class="text-sm font-semibold text-slate-800">Nouveaux membres</h2>
+                <p class="text-xs text-slate-400">{{ newMembersLabel }}</p>
+              </div>
+            </div>
             <router-link
+              :to="{ name: 'admin.children.members.index' }"
+              class="text-xs font-medium text-brand-600 hover:text-brand-700 transition"
+            >
+              Voir tous →
+            </router-link>
+          </div>
+
+          <div class="max-h-72 overflow-y-auto divide-y divide-slate-100">
+            <div v-if="isLoadingMembers" class="p-4 space-y-3">
+              <div v-for="n in 3" :key="n" class="h-10 rounded-lg bg-slate-100 animate-pulse" />
+            </div>
+
+            <div v-else-if="memberError" class="p-4 text-sm text-rose-600 bg-rose-50">
+              {{ memberError }}
+            </div>
+
+            <div v-else-if="newMembersThisMonth.length === 0" class="p-6 text-center text-sm text-slate-400 italic">
+              Aucun nouveau membre ce mois.
+            </div>
+
+            <router-link
+              v-else
               v-for="member in newMembersThisMonth"
               :key="member.id"
-              class="flex w-full items-center justify-between gap-4 py-4 text-left transition hover:bg-slate-50"
               :to="{ name: 'admin.children.members.details', params: { id: member.id } }"
+              class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition"
             >
-              <div class="flex items-center gap-4">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-sm font-semibold text-brand-700">
-                  {{ member.initials }}
-                </div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-900">{{ member.displayName }}</p>
-                  <p class="text-xs text-slate-500">{{ member.email || 'Email non disponible' }}</p>
-                </div>
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-xs font-bold text-brand-700">
+                {{ member.initials }}
               </div>
-              <span class="text-xs text-slate-400">Voir details</span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-slate-800">{{ member.displayName }}</p>
+                <p class="truncate text-xs text-slate-400">{{ member.email || 'Email non disponible' }}</p>
+              </div>
+              <span class="ml-auto shrink-0 text-xs text-slate-300">→</span>
             </router-link>
           </div>
         </div>
 
-        <div class="space-y-6">
-          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-lg font-semibold text-slate-900">Modules du membre</h2>
-                <p class="text-sm text-slate-500">Liste des modules associes et progression.</p>
-              </div>
-              <TrendingUp class="h-5 w-5 text-brand-500" />
+        <!-- Actions rapides -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+              <ArrowUpRight class="h-4 w-4" />
             </div>
-
-            <div class="mt-6">
-              <div v-if="!selectedMemberId" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-                Choisis un membre pour afficher ses modules.
+            <h2 class="text-sm font-semibold text-slate-800">Actions rapides</h2>
+          </div>
+          <div class="divide-y divide-slate-100">
+            <router-link
+              v-for="action in quickActions"
+              :key="action.label"
+              :to="action.to"
+              class="flex items-center justify-between px-5 py-3 text-sm text-slate-700 hover:bg-slate-50 transition group"
+            >
+              <div class="flex items-center gap-3">
+                <component :is="action.icon" class="h-4 w-4 text-brand-500 group-hover:text-brand-700" />
+                <span>{{ action.label }}</span>
               </div>
+              <span class="text-xs text-slate-300 group-hover:text-brand-500 transition">→</span>
+            </router-link>
+          </div>
+        </div>
 
-              <div v-else-if="isLoadingModules" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-                Chargement des modules...
-              </div>
+      </div>
 
-              <div v-else-if="memberModulesError" class="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
-                {{ memberModulesError }}
-              </div>
+      <!-- ══ Colonne droite : Modules du membre ═════════════════ -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
 
-              <div v-else-if="memberModules.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-                Aucun module associe a ce membre.
-              </div>
-
-              <div v-else class="space-y-4">
-                <div v-for="module in formattedModules" :key="module.moduleId" class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-semibold text-slate-900">{{ module.title }}</p>
-                      <p class="text-xs text-slate-500">{{ module.subtitle }}</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span
-                          class="rounded-full px-3 py-1 text-xs font-semibold"
-                          :class="module.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-slate-600 shadow-sm'"
-                      >
-                        {{ module.isCompleted ? 'Termine' : module.progressPercent + '%' }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="mt-3 h-2 w-full rounded-full bg-slate-200">
-                    <div class="h-2 rounded-full bg-brand-500" :style="{ width: module.progressPercent + '%' }"></div>
-                  </div>
-                  <div class="mt-3 flex items-center justify-between gap-3">
-                    <span class="text-xs text-slate-500">Progression automatique par lecture</span>
-                    <button
-                        type="button"
-                        class="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50"
-                        @click="removeModule(module.moduleId)"
-                    >
-                      Retirer
-                    </button>
-                  </div>
-                </div>
-              </div>
+        <!-- Assigner un module -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <TrendingUp class="h-4 w-4" />
+            </div>
+            <div>
+              <h2 class="text-sm font-semibold text-slate-800">Modules du membre</h2>
+              <p class="text-xs text-slate-400">Sélectionnez un membre pour voir et gérer ses modules.</p>
             </div>
           </div>
-          
-          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-              <h2 class="text-lg font-semibold text-slate-900">Actions rapides</h2>
-              <ArrowUpRight class="h-4 w-4 text-slate-400" />
+
+          <!-- Associer un module -->
+          <div class="px-5 py-4 bg-slate-50 border-b border-slate-100">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Associer un module</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <select
+                v-model="selectedModuleId"
+                class="flex-1 min-w-[200px] rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
+              >
+                <option value="">Choisir un module…</option>
+                <option v-for="module in availableModules" :key="module.id" :value="module.id">
+                  {{ module.name || 'Module' }}
+                </option>
+              </select>
+              <button
+                type="button"
+                class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                :disabled="!selectedMemberId || !selectedModuleId"
+                @click="assignModuleToMember"
+              >
+                Ajouter
+              </button>
+            </div>
+            <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500">
+              ⚠ Cliquez d'abord sur un membre dans la liste à gauche.
+            </p>
+          </div>
+
+          <!-- Liste des modules -->
+          <div class="max-h-96 overflow-y-auto px-5 py-4 space-y-3">
+            <div v-if="!selectedMemberId" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+              <TrendingUp class="mx-auto h-8 w-8 text-slate-300 mb-2" />
+              <p class="text-sm text-slate-400">Choisissez un membre pour afficher ses modules.</p>
             </div>
 
-            <div class="mt-4 space-y-3">
-             
+            <div v-else-if="isLoadingModules" class="space-y-3">
+              <div v-for="n in 3" :key="n" class="h-16 rounded-xl bg-slate-100 animate-pulse" />
+            </div>
 
-              <div class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Associer un module</p>
-                <div class="mt-3 flex flex-wrap items-center gap-3">
-                  <select
-                    v-model="selectedModuleId"
-                    class="min-w-[220px] flex-1 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none"
+            <div v-else-if="memberModulesError" class="rounded-xl bg-rose-50 border border-rose-100 p-4 text-sm text-rose-700">
+              {{ memberModulesError }}
+            </div>
+
+            <div v-else-if="memberModules.length === 0" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-400">
+              Aucun module associé à ce membre.
+            </div>
+
+            <div
+              v-else
+              v-for="module in formattedModules"
+              :key="module.moduleId"
+              class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm text-slate-800 truncate">{{ module.title }}</p>
+                  <p class="text-xs text-slate-400 mt-0.5 truncate">{{ module.subtitle }}</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span
+                    class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                    :class="module.isCompleted ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'"
                   >
-                    <option value="">Choisir un module</option>
-                    <option v-for="module in availableModules" :key="module.id" :value="module.id">
-                      {{ module.name || 'Module' }}
-                    </option>
-                  </select>
+                    {{ module.isCompleted ? '✓ Terminé' : module.progressPercent + '%' }}
+                  </span>
                   <button
                     type="button"
-                    class="rounded-full bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
-                    :disabled="!selectedMemberId || !selectedModuleId"
-                    @click="assignModuleToMember"
+                    class="rounded-full border border-rose-200 px-2.5 py-0.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
+                    @click="removeModule(module.moduleId)"
                   >
-                    Ajouter
+                    Retirer
                   </button>
                 </div>
               </div>
-
-              <router-link
-                v-for="action in quickActions"
-                :key="action.label"
-                :to="action.to"
-                class="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:bg-brand-50"
-              >
-                <div class="flex items-center gap-3">
-                  <component :is="action.icon" class="h-4 w-4 text-brand-600" />
-                  <span>{{ action.label }}</span>
-                </div>
-                <span class="text-xs text-slate-400">Acceder</span>
-              </router-link>
+              <div class="mt-3 h-1.5 w-full rounded-full bg-slate-100">
+                <div
+                  class="h-1.5 rounded-full transition-all duration-500"
+                  :class="module.isCompleted ? 'bg-emerald-500' : 'bg-brand-500'"
+                  :style="{ width: module.progressPercent + '%' }"
+                />
+              </div>
             </div>
           </div>
-
-          
         </div>
+
       </div>
-    </section>
+    </div>
+
   </div>
 </template>
 
@@ -234,7 +261,7 @@ const dashboardSummary = ref<DashboardSummaryDto | null>(null);
 const quickActions = [
   {label: "Ajouter un membre", to: {name: "admin.children.members.add"}, icon: UserPlus},
   {label: "Voir les membres", to: {name: "admin.children.members.index"}, icon: Users},
-  {label: "Creer un module", to: {name: "admin.children.modules.add"}, icon: FolderPlus},
+  {label: "Créer un module", to: {name: "admin.children.modules.add"}, icon: FolderPlus},
   {label: "Voir les modules", to: {name: "admin.children.modules.index"}, icon: BookOpen},
 ];
 
@@ -250,11 +277,9 @@ const selectedModuleId = ref("");
 const allModules = ref<ModuleDto[]>([]);
 
 function isInCurrentMonth(value?: string) {
-  if (!value)
-    return false;
+  if (!value) return false;
   const d = new Date(value);
-  if (Number.isNaN(d.getTime()))
-    return false;
+  if (Number.isNaN(d.getTime())) return false;
   const now = new Date();
   return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
 }
@@ -279,8 +304,7 @@ const newMembersThisMonth = computed(() => {
 
 const newMembersLabel = computed(() => {
   const count = newMembersThisMonth.value.length;
-  if (count === 0)
-    return "Aucun nouveau membre ce mois";
+  if (count === 0) return "Aucun nouveau membre ce mois";
   return `${count} nouveau(x) membre(s) ce mois`;
 });
 
@@ -300,25 +324,19 @@ const availableModules = computed(() => {
 watch(selectedMemberId, async (memberId) => {
   memberModulesError.value = "";
   selectedModuleId.value = "";
-
   if (!memberId) {
     memberModules.value = [];
     return;
   }
-
   await loadMemberModules(memberId);
 });
 
 async function loadMembers() {
-  if (!isAdmin.value)
-    return;
-
+  if (!isAdmin.value) return;
   isLoadingMembers.value = true;
   memberError.value = "";
-
   try {
     members.value = await memberService.getRecentMembers(120, 200, "");
-
     if (!selectedMemberId.value && newMembersThisMonth.value.length > 0)
       selectedMemberId.value = newMembersThisMonth.value[0].id;
   } catch (error) {
@@ -331,15 +349,11 @@ async function loadMembers() {
 }
 
 async function loadMemberModules(memberId: string) {
-  if (!memberId)
-    return;
-
+  if (!memberId) return;
   isLoadingModules.value = true;
   memberModulesError.value = "";
-
   try {
-    const response = await memberService.getMemberModules(memberId);
-    memberModules.value = response;
+    memberModules.value = await memberService.getMemberModules(memberId);
   } catch (error) {
     memberModules.value = [];
     memberModulesError.value = "Impossible de charger les modules du membre.";
@@ -357,16 +371,14 @@ async function loadDashboardSummary() {
 }
 
 async function assignModuleToMember() {
-  if (!selectedMemberId.value || !selectedModuleId.value)
-    return;
+  if (!selectedMemberId.value || !selectedModuleId.value) return;
   await memberService.addModuleToMember(selectedMemberId.value, selectedModuleId.value);
   selectedModuleId.value = "";
   await loadMemberModules(selectedMemberId.value);
 }
 
 async function removeModule(moduleId: string) {
-  if (!selectedMemberId.value)
-    return;
+  if (!selectedMemberId.value) return;
   await memberService.removeModuleFromMember(selectedMemberId.value, moduleId);
   await loadMemberModules(selectedMemberId.value);
 }
