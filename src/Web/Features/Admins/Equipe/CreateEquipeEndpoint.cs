@@ -1,18 +1,18 @@
-using Domain.Common;
-using Domain.Entities;
-using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Domain.Entities;
+using Domain.Repositories;
+using Domain.Common;
 
 public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNotResponse>
 {
     private readonly IEquipeRepository _equipeRepository;
-    private readonly IMemberRepository _memberRepository;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
 
-    public CreateEquipeEndpoint(IEquipeRepository equipeRepository, IMemberRepository memberRepository)
+    public CreateEquipeEndpoint(IEquipeRepository equipeRepository, IMemberEquipeRepository memberEquipeRepository)
     {
         _equipeRepository = equipeRepository;
-        _memberRepository = memberRepository;
+        _memberEquipeRepository = memberEquipeRepository;
     }
 
     public override void Configure()
@@ -37,15 +37,13 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
 
         await _equipeRepository.CreateEquipe(newEquipe);
 
-        var memberUserIds = (req.MemberIds ?? [])
-            .Where(id => id != Guid.Empty)
-            .Distinct()
-            .Select(id => _memberRepository.FindById(id).User.Id)
-            .Distinct()
-            .ToList();
-
-        if (memberUserIds.Count > 0)
-            await _equipeRepository.SetEquipeMembers(newEquipe.Id, memberUserIds);
+        if (req.MemberIds?.Any() == true)
+        {
+            foreach (var memberId in req.MemberIds.Where(id => id != Guid.Empty).Distinct())
+            {
+                await _memberEquipeRepository.AssignAsync(new MemberEquipe(memberId, newEquipe.Id));
+            }
+        }
 
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }

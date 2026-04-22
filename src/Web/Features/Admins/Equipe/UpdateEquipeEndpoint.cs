@@ -53,24 +53,27 @@ public class UpdateEquipeEndpoint : Endpoint<EditEquipeRequest, SucceededOrNotRe
 
         Logger.LogInformation("[UpdateEquipe] Équipe trouvée, mise à jour...");
 
-        if (!string.IsNullOrWhiteSpace(req.NameFr) || !string.IsNullOrWhiteSpace(req.NameEn))
+        if (!string.IsNullOrWhiteSpace(req.NameFr))
         {
             entity.NameFr = req.NameFr.Trim().CapitalizeFirstLetterOfEachWord()!;
+        }
+
+        if (!string.IsNullOrWhiteSpace(req.NameEn))
+        {
             entity.NameEn = req.NameEn.Trim().CapitalizeFirstLetterOfEachWord()!;
         }
 
         Logger.LogInformation("[UpdateEquipe] Mise à jour en base de données...");
         await _repository.UpdateEquipe(entity);
-
-        // Replace the equipe's members with the selected list.
-        var userIds = (req.MemberUserIds ?? new List<string>())
+        var memberIds = (req.MemberIds ?? new List<string>())
             .Select(s => Guid.TryParse(s, out var g) ? g : Guid.Empty)
             .Where(g => g != Guid.Empty)
             .ToList();
-        await _repository.SetEquipeMembers(guidId, userIds);
+
+
+        await _repository.SetEquipeMembers(guidId, memberIds);
 
         Logger.LogInformation("[UpdateEquipe] Succès!");
         Response = new SucceededOrNotResponse(true);
     }
-
 }

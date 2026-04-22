@@ -33,7 +33,14 @@
     "equipe": {
       "path": "/teams",
       "fullPath": "/teams",
-      "name": "Teams"
+      "name": "Teams",
+      "children": {
+        "myEquipe": {
+          "path": ":id/details",
+          "fullPath": "/teams/:id/details",
+          "name": "My team"
+        }
+      }
     },
     "progression": {
       "path": "/progression",
@@ -164,55 +171,6 @@
       "membersDesc": "View and manage members.",
       "booksDesc": "Browse and manage books."
     },
-    "adminDashboard": {
-      "title": "Admin Center",
-      "subtitle": "Dashboard to manage members, their progress, and preparation modules.",
-      "recentMembers": "New members (30 days)",
-      "clickMemberHint": "Click a member to see their details.",
-      "searchMember": "Search for a member",
-      "allRoles": "All roles",
-      "roleAdmin": "Admin",
-      "roleMember": "Member",
-      "roleUser": "User",
-      "sortRecent": "Most recent",
-      "viewAllMembers": "View all members",
-      "noMembersMatch": "No members match the filters.",
-      "emailUnavailable": "Email unavailable",
-      "contact": "Contact",
-      "registration": "Registration",
-      "progression": "Progress",
-      "modulesCompleted": "{completed} module(s) completed out of {total}",
-      "selectMemberHint": "Select a member to see their details.",
-      "memberModules": "Member modules",
-      "memberModulesHint": "Progress details by module.",
-      "loadingModules": "Loading modules...",
-      "noModulesForMember": "No modules associated with this member.",
-      "autoProgress": "Automatic progress by reading",
-      "remove": "Remove",
-      "quickActions": "Quick actions",
-      "assignModule": "Assign a module",
-      "chooseModule": "Choose a module",
-      "access": "Access",
-      "addMember": "Add a member",
-      "viewMembers": "View members",
-      "createModule": "Create a module",
-      "viewModules": "View modules",
-      "noNewMembers": "No new members in the last 30 days",
-      "newMembersCount": "{count} new member(s) in 30 days",
-      "kpiActiveMembers": "Active members",
-      "kpiNewMembers": "New (30 days)",
-      "kpiModules": "Modules",
-      "kpiAverageProgress": "Average progress",
-      "noPhone": "Phone not provided",
-      "noName": "Name not provided",
-      "noAddress": "Address not provided",
-      "unknownDate": "Unknown date",
-      "accountActive": "Active account",
-      "pendingValidation": "Pending validation",
-      "errorLoadMembers": "Unable to load members.",
-      "errorLoadMemberModules": "Unable to load member modules.",
-      "completed": "Completed"
-    },
     "memberDashboard": {
       "welcomeLabel": "Welcome",
       "defaultName": "Member",
@@ -249,47 +207,6 @@
         "inProgress": "In progress",
         "completed": "Completed"
       }
-    },
-    "memberModules": {
-      "title": "My modules",
-      "subtitle": "Modules in progress and completed modules.",
-      "searchPlaceholder": "Search for a module...",
-      "filterAll": "All",
-      "filterActive": "Not completed",
-      "filterCompleted": "Completed",
-      "noResults": "No module matches the search.",
-      "activeTitle": "Modules not completed",
-      "badgeTodo": "To do",
-      "completedTitle": "Completed modules",
-      "badgeCompleted": "Completed",
-      "unknownAssignedDate": "Unknown assignment date",
-      "assignedOn": "Assigned on {date}",
-      "progress": "Progress"
-    },
-    "notifications": {
-      "title": "Notifications",
-      "subtitle": "Messages sent by administration.",
-      "empty": "No notifications",
-      "emptyHint": "Visible messages sent by administration will appear here.",
-      "sender": "Administration",
-      "badge": "Info",
-      "defaultTitle": "Message from administration"
-    },
-    "moduleAssignment": {
-      "title": "Member assignment",
-      "searchPlaceholder": "Search for a member...",
-      "loading": "Loading members...",
-      "allAssigned": "All members are already assigned.",
-      "noneAssigned": "No assigned members.",
-      "assignError": "Error during assignment.",
-      "unassignError": "Error during unassignment."
-    },
-    "memberForm": {
-      "teams": "Teams",
-      "teamsPlaceholder": "Select one or more teams",
-      "teamsSearchPlaceholder": "Search for a team",
-      "teamsEmpty": "No team found",
-      "teamsOptional": "Optional"
     },
     "equipe": {
       "myEquipe": "My team",
@@ -352,9 +269,9 @@
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
       },
-      "username": "Username",
-      "password": "Password",
-      "passwordConfirmation": "Password confirmation"
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "passwordConfirmation": "Confirmation du mot de passe"
     },
     "twoFactor": {
       "code": "Code",
@@ -460,83 +377,6 @@
           "memberNotFoundException": "Could not find member."
         }
       }
-    },
-    "equipeDetails": {
-      "subtitle": "Details and member management",
-      "memberCount": "Number of members",
-      "availableMembers": "Available members",
-      "memberManagement": "Member management",
-      "searchMember": "Search for a member",
-      "searchPlaceholder": "Search by name or email",
-      "selectMember": "Select a member",
-      "chooseMember": "Choose a member...",
-      "adding": "Adding...",
-      "assignedMembers": "Assigned members",
-      "noMembersAssigned": "No members assigned to this team.",
-      "notify": {
-        "loadError": "Error loading data",
-        "memberAdded": "Member added successfully",
-        "memberAddError": "Unable to add member",
-        "addError": "Error adding member",
-        "memberRemoved": "Member removed successfully",
-        "memberRemoveError": "Unable to remove member",
-        "removeError": "Error removing member"
-      }
-    },
-    "memberDetails": {
-      "subtitle": "Full details, progress and modules",
-      "na": "N/A",
-      "progression": "Progress",
-      "summary": "Summary",
-      "modulesAssigned": "module(s) assigned",
-      "modulesCompleted": "completed",
-      "personalInfo": "Personal information",
-      "firstName": "First name",
-      "lastName": "Last name",
-      "createdAt": "Created on",
-      "status": "Status",
-      "accountActive": "Account active",
-      "pendingValidation": "Pending validation",
-      "teams": "Teams",
-      "contactAndAddress": "Contact and address",
-      "phone": "Phone",
-      "city": "City",
-      "assignModules": "Assign modules",
-      "selectModulesToAdd": "Select modules to add",
-      "filter": "Filter...",
-      "noModulesAvailable": "No other modules available.",
-      "selected": "selected",
-      "assigning": "Assigning...",
-      "assignModulesBtn": "Assign modules",
-      "noModulesAssigned": "No modules assigned.",
-      "module": "Module",
-      "subject": "Subject",
-      "general": "General",
-      "active": "Active",
-      "inProgress": "In progress",
-      "saving": "Saving...",
-      "updateBtn": "Update",
-      "modulesProgress": "Module progress",
-      "assignedModules": "Assigned modules",
-      "notify": {
-        "modulesAssigned": "Modules assigned",
-        "updated": "Updated",
-        "notesSaved": "Notes saved.",
-        "notesError": "Unable to save notes."
-      },
-      "notes": {
-        "title": "Internal notes",
-        "save": "Save",
-        "saving": "Saving...",
-        "placeholder": "Add notes about this member...",
-        "visibleToMember": "Make these notes visible to this member",
-        "hint": "These notes are saved on the server. Check the box if the member should see them."
-      }
-    },
-    "memberIndex": {
-      "accountStatus": "Account status",
-      "accountActive": "Account active",
-      "pendingValidation": "Pending validation"
     }
   },
   "products": {
@@ -725,11 +565,7 @@
       "name": "Team name",
       "members": "Members",
       "searchMembers": "Search for a member...",
-      "noMembers": "No members available.",
-      "addMembers": "Add members"
-    },
-    "help": {
-      "membersHint": "Select members to assign to the team upon creation."
+      "noMembers": "No members available."
     },
     "validation": {
       "nameRequired": "The name is required."
@@ -915,9 +751,7 @@
       "noneAssigned": "No users assigned",
       "searchPlaceholder": "Search users by name or email...",
       "applyChanges": "Apply changes ({count})",
-      "updating": "Updating...",
-      "successMessage": "Assignments updated successfully!",
-      "failedMessage": "Failed to update assignments"
+      "updating": "Updating..."
     },
     "assign_button": "Assign to Users",
     "assigning": "Assigning...",

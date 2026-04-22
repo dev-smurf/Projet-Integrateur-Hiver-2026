@@ -44,6 +44,12 @@ export interface GetEquipeMembersResponse {
   }[];
 }
 
+export interface MyEquipeListItem {
+  id: string;
+  nameFr?: string;
+  nameEn?: string;
+}
+
 @injectable()
 export class EquipeService extends ApiService implements IEquipesService {
   public async assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse> {
@@ -72,15 +78,32 @@ export class EquipeService extends ApiService implements IEquipesService {
       );
   }
 
-  public async getMyEquipe(): Promise<MyEquipeResponse | null> {
+  public async getMyEquipes(): Promise<MyEquipeListItem[]> {
+    try {
+      const response = await this._httpClient.get<MyEquipeListItem[]>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/equipes`,
+      );
+      return response.data ?? [];
+    } catch {
+      return [];
+    }
+  }
+
+  public async getMyEquipeDetails(equipeId: string): Promise<MyEquipeResponse | null> {
     try {
       const response = await this._httpClient.get<MyEquipeResponse>(
-        `${import.meta.env.VITE_API_BASE_URL}/members/me/equipe`,
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/equipes/${equipeId}`,
       );
       return response.data ?? null;
     } catch {
       return null;
     }
+  }
+
+  public async getMyEquipe(): Promise<MyEquipeResponse | null> {
+    const list = await this.getMyEquipes();
+    if (!list.length) return null;
+    return await this.getMyEquipeDetails(list[0].id);
   }
 
   public async getAllEquipes(): Promise<Equipe[]> {

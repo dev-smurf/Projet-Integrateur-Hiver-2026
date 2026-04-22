@@ -31,9 +31,16 @@
       "name": "Tableau de bord admin"
     },
     "equipe": {
-      "path": "/equipe",
-      "fullPath": "/equipe",
-      "name": "Équipe"
+      "path": "/equipes",
+      "fullPath": "/equipes",
+      "name": "Équipes",
+      "children": {
+        "myEquipe": {
+          "path": ":id/details",
+          "fullPath": "/equipes/:id/details",
+          "name": "Mon équipe"
+        }
+      }
     },
     "progression": {
       "path": "/progression",
@@ -165,55 +172,6 @@
       "membersDesc": "Voir et gérer les membres.",
       "booksDesc": "Parcourir et gérer les livres."
     },
-    "adminDashboard": {
-      "title": "Admin Center",
-      "subtitle": "Tableau de bord pour piloter les membres, leurs parcours et les modules de preparation.",
-      "recentMembers": "Nouveaux membres (30 jours)",
-      "clickMemberHint": "Clique un membre pour afficher ses details.",
-      "searchMember": "Rechercher un membre",
-      "allRoles": "Tous les roles",
-      "roleAdmin": "Admin",
-      "roleMember": "Membre",
-      "roleUser": "Utilisateur",
-      "sortRecent": "Plus recents",
-      "viewAllMembers": "Voir tous les membres",
-      "noMembersMatch": "Aucun membre ne correspond aux filtres.",
-      "emailUnavailable": "Email non disponible",
-      "contact": "Contact",
-      "registration": "Inscription",
-      "progression": "Progression",
-      "modulesCompleted": "{completed} module(s) termines sur {total}",
-      "selectMemberHint": "Selectionne un membre pour afficher ses details.",
-      "memberModules": "Modules du membre",
-      "memberModulesHint": "Detail du parcours et progression par module.",
-      "loadingModules": "Chargement des modules...",
-      "noModulesForMember": "Aucun module associe a ce membre.",
-      "autoProgress": "Progression automatique par lecture",
-      "remove": "Retirer",
-      "quickActions": "Actions rapides",
-      "assignModule": "Associer un module",
-      "chooseModule": "Choisir un module",
-      "access": "Acceder",
-      "addMember": "Ajouter un membre",
-      "viewMembers": "Voir les membres",
-      "createModule": "Creer un module",
-      "viewModules": "Voir les modules",
-      "noNewMembers": "Aucun nouveau membre sur 30 jours",
-      "newMembersCount": "{count} nouveau(x) membre(s) sur 30 jours",
-      "kpiActiveMembers": "Membres actifs",
-      "kpiNewMembers": "Nouveaux (30 jours)",
-      "kpiModules": "Modules",
-      "kpiAverageProgress": "Progression moyenne",
-      "noPhone": "Telephone non renseigne",
-      "noName": "Nom non renseigne",
-      "noAddress": "Adresse non renseignee",
-      "unknownDate": "Date inconnue",
-      "accountActive": "Compte actif",
-      "pendingValidation": "En attente de validation",
-      "errorLoadMembers": "Impossible de charger les membres.",
-      "errorLoadMemberModules": "Impossible de charger les modules du membre.",
-      "completed": "Termine"
-    },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
       "defaultName": "Membre",
@@ -250,47 +208,6 @@
         "inProgress": "En cours",
         "completed": "Termine"
       }
-    },
-    "memberModules": {
-      "title": "Mes modules",
-      "subtitle": "Modules en cours et modules terminés.",
-      "searchPlaceholder": "Rechercher un module...",
-      "filterAll": "Tous",
-      "filterActive": "Non terminés",
-      "filterCompleted": "Terminés",
-      "noResults": "Aucun module ne correspond à la recherche.",
-      "activeTitle": "Modules non terminés",
-      "badgeTodo": "À faire",
-      "completedTitle": "Modules terminés",
-      "badgeCompleted": "Terminé",
-      "unknownAssignedDate": "Date d'affectation inconnue",
-      "assignedOn": "Assigné le {date}",
-      "progress": "Progression"
-    },
-    "notifications": {
-      "title": "Notifications",
-      "subtitle": "Messages transmis par l'administration.",
-      "empty": "Aucune notification",
-      "emptyHint": "Les messages visibles envoyés par l'administration apparaîtront ici.",
-      "sender": "Administration",
-      "badge": "Info",
-      "defaultTitle": "Message de l'administration"
-    },
-    "moduleAssignment": {
-      "title": "Assignation des membres",
-      "searchPlaceholder": "Rechercher un membre...",
-      "loading": "Chargement des membres...",
-      "allAssigned": "Tous les membres sont déjà assignés.",
-      "noneAssigned": "Aucun membre assigné.",
-      "assignError": "Erreur lors de l'assignation.",
-      "unassignError": "Erreur lors de la désassignation."
-    },
-    "memberForm": {
-      "teams": "Équipes",
-      "teamsPlaceholder": "Sélectionner une ou plusieurs équipes",
-      "teamsSearchPlaceholder": "Rechercher une équipe",
-      "teamsEmpty": "Aucune équipe trouvée",
-      "teamsOptional": "Optionnel"
     },
     "equipe": {
       "myEquipe": "Mon équipe",
@@ -410,83 +327,6 @@
         "passwordAndConfirmationMustMatch": "Le mot de passe et sa confirmation doivent être identiques.",
         "errorOccured": "Une erreur est survenue lors de la réinitialisation du mot de passe."
       }
-    },
-    "equipeDetails": {
-      "subtitle": "Détails et gestion des membres",
-      "memberCount": "Nombre de membres",
-      "availableMembers": "Membres disponibles",
-      "memberManagement": "Gestion des membres",
-      "searchMember": "Rechercher un membre",
-      "searchPlaceholder": "Rechercher par nom ou email",
-      "selectMember": "Sélectionner un membre",
-      "chooseMember": "Choisir un membre...",
-      "adding": "Ajout...",
-      "assignedMembers": "Membres assignés",
-      "noMembersAssigned": "Aucun membre assigné à cette équipe.",
-      "notify": {
-        "loadError": "Erreur lors du chargement des données",
-        "memberAdded": "Membre ajouté avec succès",
-        "memberAddError": "Impossible d'ajouter le membre",
-        "addError": "Erreur lors de l'ajout",
-        "memberRemoved": "Membre retiré avec succès",
-        "memberRemoveError": "Impossible de retirer le membre",
-        "removeError": "Erreur lors du retrait"
-      }
-    },
-    "memberDetails": {
-      "subtitle": "Détails complets, progression et modules",
-      "na": "N/A",
-      "progression": "Progression",
-      "summary": "Résumé",
-      "modulesAssigned": "module(s) assignés",
-      "modulesCompleted": "terminé(s)",
-      "personalInfo": "Informations personnelles",
-      "firstName": "Prénom",
-      "lastName": "Nom",
-      "createdAt": "Créé le",
-      "status": "Statut",
-      "accountActive": "Compte actif",
-      "pendingValidation": "En attente de validation",
-      "teams": "Equipes",
-      "contactAndAddress": "Contact et adresse",
-      "phone": "Téléphone",
-      "city": "Ville",
-      "assignModules": "Assigner des modules",
-      "selectModulesToAdd": "Sélectionnez les modules à ajouter",
-      "filter": "Filtrer...",
-      "noModulesAvailable": "Aucun autre module disponible.",
-      "selected": "sélectionné(s)",
-      "assigning": "Assignation...",
-      "assignModulesBtn": "Assigner les modules",
-      "noModulesAssigned": "Aucun module assigné.",
-      "module": "Module",
-      "subject": "Sujet",
-      "general": "Général",
-      "active": "Actif",
-      "inProgress": "En cours",
-      "saving": "En cours...",
-      "updateBtn": "Mettre à jour",
-      "modulesProgress": "Progression des modules",
-      "assignedModules": "Modules assignés",
-      "notify": {
-        "modulesAssigned": "Modules assignés",
-        "updated": "Mis à jour",
-        "notesSaved": "Notes enregistrees.",
-        "notesError": "Impossible d'enregistrer les notes."
-      },
-      "notes": {
-        "title": "Notes internes",
-        "save": "Enregistrer",
-        "saving": "Enregistrement...",
-        "placeholder": "Ajouter des notes sur ce membre...",
-        "visibleToMember": "Rendre ces notes visibles par ce membre",
-        "hint": "Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir."
-      }
-    },
-    "memberIndex": {
-      "accountStatus": "Statut du compte",
-      "accountActive": "Compte actif",
-      "pendingValidation": "En attente de validation"
     },
     "members": {
       "create": {
@@ -746,11 +586,7 @@
       "name": "Nom de l'équipe",
       "members": "Membres",
       "searchMembers": "Rechercher un membre...",
-      "noMembers": "Aucun membre disponible.",
-      "addMembers": "Ajouter des membres"
-    },
-    "help": {
-      "membersHint": "Sélectionnez les membres à assigner à l'équipe lors de la création."
+      "noMembers": "Aucun membre disponible."
     },
     "validation": {
       "nameRequired": "Le nom est obligatoire."
@@ -1013,9 +849,7 @@
       "noneAssigned": "Aucun utilisateur assigné",
       "searchPlaceholder": "Rechercher des utilisateurs par nom ou courriel...",
       "applyChanges": "Appliquer les modifications ({count})",
-      "updating": "Mise à jour...",
-      "successMessage": "Assignations mises à jour avec succès!",
-      "failedMessage": "Échec de la mise à jour des assignations"
+      "updating": "Mise à jour..."
     },
     "move": {
       "toTop": "Placer en haut",
