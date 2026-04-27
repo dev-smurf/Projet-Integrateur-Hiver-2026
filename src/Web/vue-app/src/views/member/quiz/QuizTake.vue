@@ -89,6 +89,35 @@
           </button>
         </div>
 
+        <!-- Multiple Selection Question -->
+        <div v-else-if="currentQuestion.questionType === 3" class="space-y-3">
+          <button
+            v-for="option in currentQuestion.responses"
+            :key="option.id"
+            @click="toggleResponse(option.id)"
+            :class="[
+              'w-full p-4 rounded-lg border-2 transition-all text-left',
+              responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)
+                ? 'border-blue-500 bg-blue-50 font-bold'
+                : 'border-gray-300 hover:border-blue-300'
+            ]"
+          >
+            <span class="inline-flex items-center gap-3">
+              <span
+                :class="[
+                  'w-5 h-5 rounded border-2 flex items-center justify-center',
+                  responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)
+                    ? 'border-blue-500 bg-blue-500 text-white'
+                    : 'border-gray-300'
+                ]"
+              >
+                <span v-if="responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)">&#10003;</span>
+              </span>
+              {{ option.responseText }}
+            </span>
+          </button>
+        </div>
+
         <!-- Text Input Question -->
         <div v-else-if="currentQuestion.questionType === 2" class="space-y-3">
           <textarea
@@ -162,14 +191,23 @@ const currentQuestionIndex = ref(0)
 const responses = ref<Record<string, any>>({})
 onMounted(async () => {
   try {
-    const quizId = route.params.quizId as string
-    quiz.value = await quizService.getById(quizId)
+    const assignmentId = route.params.assignmentId as string
+    const assignedQuizzes = await quizService.getAssignedQuizzes()
+    const assignment = assignedQuizzes.find(q => q.id === assignmentId)
+
+    if (!assignment) {
+      quiz.value = null
+      return
+    }
+
+    quiz.value = await quizService.getById(assignment.quizId)
 
     // Initialize responses object
     quiz.value?.questions.forEach(q => {
       responses.value[q.id] = {
         selectedScore: undefined,
         selectedResponseId: undefined,
+        selectedResponseIds: [],
         selectedTextResponse: ''
       }
     })
@@ -195,6 +233,8 @@ const answeredCount = computed(() => {
         return response?.selectedResponseId !== undefined
       case 2: // TextInput
         return response?.selectedTextResponse?.trim() !== ''
+      case 3: // MultipleSelection
+        return response?.selectedResponseIds?.length > 0
       default:
         return false
     }
@@ -210,6 +250,20 @@ const selectScore = (score: number) => {
 const selectResponse = (responseId: string) => {
   if (currentQuestion.value) {
     responses.value[currentQuestion.value.id].selectedResponseId = responseId
+  }
+}
+
+const toggleResponse = (responseId: string) => {
+  if (!currentQuestion.value) return
+
+  const questionResponse = responses.value[currentQuestion.value.id]
+  const selectedResponseIds = questionResponse.selectedResponseIds as string[]
+  const existingIndex = selectedResponseIds.indexOf(responseId)
+
+  if (existingIndex >= 0) {
+    selectedResponseIds.splice(existingIndex, 1)
+  } else {
+    selectedResponseIds.push(responseId)
   }
 }
 
@@ -236,23 +290,25 @@ const submitQuiz = async () => {
     for (const question of quiz.value.questions) {
       const response = responses.value[question.id]
       await quizService.submitResponse({
+        quizAssignmentId: route.params.assignmentId as string,
         quizQuestionId: question.id,
         selectedScore: response.selectedScore,
         selectedResponseId: response.selectedResponseId,
+        selectedResponseIds: response.selectedResponseIds,
         selectedTextResponse: response.selectedTextResponse
       })
     }
 
     // Mark quiz as completed before redirecting
     try {
-      await quizService.completeQuiz(quiz.value.id)
+      await quizService.completeQuiz(route.params.assignmentId as string)
     } catch (error) {
       console.error('Failed to mark quiz as completed:', error)
       // Ne pas afficher d'erreur, la soumission est réussie
     }
 
     // Redirect to results
-    router.push({ name: 'quiz.results', params: { quizId: quiz.value.id } })
+    router.push({ name: 'quiz.results', params: { assignmentId: route.params.assignmentId as string } })
   } catch (error) {
     console.error('Failed to submit quiz:', error)
     alert('Failed to submit quiz. Please try again.')

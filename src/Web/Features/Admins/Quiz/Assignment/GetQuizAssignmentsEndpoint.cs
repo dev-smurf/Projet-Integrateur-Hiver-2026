@@ -33,7 +33,11 @@ public class GetQuizAssignmentsEndpoint : EndpointWithoutRequest<List<QuizAssign
         Response = assignments.Select(a => new QuizAssignedUserDto
         {
             Id = a.Id.ToString(),
-            UserId = a.UserId.ToString()
+            UserId = a.UserId.ToString(),
+            Version = a.Version,
+            AvailableAt = a.AvailableAt,
+            DueDate = a.DueDate,
+            CompletedAt = a.CompletedAt
         }).ToList();
     }
 }
@@ -42,4 +46,8 @@ public class QuizAssignedUserDto
 {
     public string Id { get; set; } = null!;
     public string UserId { get; set; } = null!;
+    public int Version { get; set; }
+    public DateTime? AvailableAt { get; set; }
+    public DateTime? DueDate { get; set; }
+    public DateTime? CompletedAt { get; set; }
 }

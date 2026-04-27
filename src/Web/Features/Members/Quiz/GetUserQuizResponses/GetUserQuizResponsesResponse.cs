@@ -31,7 +31,9 @@ public class QuestionResponseDto
     // Pour MultipleChoice
     public List<MultipleChoiceOption> Options { get; set; } = [];
     public Guid? SelectedResponseId { get; set; }
+    public List<Guid> SelectedResponseIds { get; set; } = [];
     public string? SelectedResponseText { get; set; }
+    public List<string> SelectedResponseTexts { get; set; } = [];
 
     // Pour TextInput
     public string? SelectedTextResponse { get; set; }

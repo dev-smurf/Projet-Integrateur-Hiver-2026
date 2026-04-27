@@ -146,13 +146,13 @@
       "name": "Mes quiz",
       "children": {
         "take": {
-          "path": ":quizId/faire",
-          "fullPath": "/quiz/:quizId/faire",
+          "path": ":assignmentId/faire",
+          "fullPath": "/quiz/:assignmentId/faire",
           "name": "Faire le quiz"
         },
         "results": {
-          "path": ":quizId/resultats",
-          "fullPath": "/quiz/:quizId/resultats",
+          "path": ":assignmentId/resultats",
+          "fullPath": "/quiz/:assignmentId/resultats",
           "name": "Resultats du quiz"
         }
       }
@@ -729,6 +729,9 @@
     "typeScale": "Échelle 1-10 (Jamais/Parfois/Toujours)",
     "typeMultipleChoice": "Choix unique (Sélection simple)",
     "typeTextInput": "Texte libre (Texte libre)",
+    "typeMultipleSelection": "Choix multiples (Sélection multiple)",
+    "singleSelectionHint": "Le membre pourra sélectionner une seule réponse.",
+    "multipleSelectionHint": "Le membre pourra sélectionner plusieurs réponses.",
     "scaleLabels": "L'échelle utilisera ces étiquettes guides :",
     "dragToReorder": "Faites glisser pour réorganiser",
     "draggable": "Faites glisser pour réorganiser",
@@ -772,6 +775,10 @@
     "completed": "Complete",
     "pending": "En attente",
     "assignedOn": "Assigne le",
+    "availableOn": "Disponible le",
+    "version": "Version",
+    "resendVersion": "Renvoyer une nouvelle version aux joueurs selectionnes",
+    "availableAt": "Date et heure de disponibilite",
     "dueDate": "Date limite",
     "completedOn": "Complete le",
     "startQuiz": "Commencer le quiz",

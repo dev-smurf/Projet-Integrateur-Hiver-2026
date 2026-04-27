@@ -147,12 +147,14 @@
                   <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('quiz.questionType') }} *</label>
                   <select
                     v-model.number="question.questionType"
+                    @change="ensureChoiceResponses(question)"
                     required
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
                   >
                     <option :value="0">{{ $t('quiz.typeScale') }}</option>
                     <option :value="1">{{ $t('quiz.typeMultipleChoice') }}</option>
                     <option :value="2">{{ $t('quiz.typeTextInput') }}</option>
+                    <option :value="3">{{ $t('quiz.typeMultipleSelection') }}</option>
                   </select>
                 </div>
 
@@ -198,9 +200,14 @@
                 </div>
 
                 <!-- Responses Section -->
-                <div v-if="question.questionType === 1" class="border-t border-gray-300 pt-3">
+                <div v-if="question.questionType === 1 || question.questionType === 3" class="border-t border-gray-300 pt-3">
                   <div class="flex justify-between items-center mb-2">
-                    <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                    <div>
+                      <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                      <p class="text-xs text-gray-500">
+                        {{ question.questionType === 3 ? $t('quiz.multipleSelectionHint') : $t('quiz.singleSelectionHint') }}
+                      </p>
+                    </div>
                     <button type="button" @click="addResponse(qIdx)" class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition">{{ $t('quiz.addResponse') }}</button>
                   </div>
 
@@ -208,6 +215,15 @@
                   <div class="space-y-2">
                     <div v-for="(response, rIdx) in question.responses" :key="rIdx" class="flex gap-2 items-center">
                       <span class="text-xs text-gray-500 font-medium min-w-fit">{{ rIdx + 1 }}.</span>
+                      <span
+                        :class="[
+                          'w-4 h-4 border-2 border-gray-400 flex items-center justify-center shrink-0',
+                          question.questionType === 3 ? 'rounded' : 'rounded-full'
+                        ]"
+                      >
+                        <span v-if="question.questionType === 1" class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        <span v-else class="text-[10px] leading-none text-gray-500">&#10003;</span>
+                      </span>
                       <input v-model="response.responseText" type="text" class="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" :placeholder="$t('quiz.responseText') + '...'" />
                       <button type="button" @click="removeResponse(qIdx, rIdx)" class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition">{{ $t('global.delete') }}</button>
                     </div>
@@ -343,40 +359,6 @@ onMounted(async () => {
     loading.value = false
   }
 })
-
-function dragStart(event: DragEvent, index: number) {
-  draggedIndex.value = index
-  if (event.dataTransfer) {
-    event.dataTransfer.effectAllowed = 'move'
-  }
-}
-
-function dragOver(event: DragEvent, index: number) {
-  dragOverIndex.value = index
-  if (event.dataTransfer) {
-    event.dataTransfer.dropEffect = 'move'
-  }
-}
-
-function dragDrop(event: DragEvent, dropIndex: number) {
-  event.preventDefault()
-  if (draggedIndex.value !== null && draggedIndex.value !== dropIndex) {
-    const draggedQuestion = form.value.questions[draggedIndex.value]
-    form.value.questions.splice(draggedIndex.value, 1)
-    const newIndex = dropIndex > draggedIndex.value ? dropIndex - 1 : dropIndex
-    form.value.questions.splice(newIndex, 0, draggedQuestion)
-    form.value.questions.forEach((q, idx) => {
-      q.order = idx
-    })
-    draggedIndex.value = null
-  }
-  dragOverIndex.value = null
-}
-
-function dragEnd() {
-  draggedIndex.value = null
-  dragOverIndex.value = null
-}
 
 async function handleSubmit() {
   if (!quizService) {
@@ -530,6 +512,16 @@ function addResponse(questionIndex: number) {
     responseText: '',
     order: responses.length
   })
+}
+
+function ensureChoiceResponses(question: any) {
+  if ((question.questionType === 1 || question.questionType === 3) && question.responses.length === 0) {
+    question.responses.push({
+      id: '',
+      responseText: '',
+      order: 0
+    })
+  }
 }
 
 function removeResponse(questionIndex: number, responseIndex: number) {

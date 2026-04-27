@@ -39,6 +39,9 @@
 
             <!-- Status Badge -->
             <div class="mb-4">
+              <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full mr-2">
+                {{ $t('quiz.version') }} {{ quiz.version }}
+              </span>
               <span 
                 v-if="quiz.isCompleted"
                 class="inline-block bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full"
@@ -56,6 +59,7 @@
             <!-- Dates -->
             <div class="text-xs text-gray-500 mb-4 space-y-1">
               <p>{{ $t('quiz.assignedOn') }}: {{ formatDate(quiz.assignedAt) }}</p>
+              <p v-if="quiz.availableAt">{{ $t('quiz.availableOn') }}: {{ formatDateTime(quiz.availableAt) }}</p>
               <p v-if="quiz.dueDate">{{ $t('quiz.dueDate') }}: {{ formatDate(quiz.dueDate) }}</p>
               <p v-if="quiz.completedAt">{{ $t('quiz.completedOn') }}: {{ formatDate(quiz.completedAt) }}</p>
             </div>
@@ -63,14 +67,14 @@
             <!-- Action Button -->
             <button
               v-if="!quiz.isCompleted"
-              @click="startQuiz(quiz.quizId)"
+              @click="startQuiz(quiz)"
               class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors"
             >
               {{ $t('quiz.startQuiz') }}
             </button>
             <button
               v-else
-              @click="viewResults(quiz.quizId)"
+              @click="viewResults(quiz)"
               class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors"
             >
               {{ $t('quiz.viewResults') }}
@@ -113,11 +117,16 @@ const formatDate = (date: Date | string): string => {
   return d.toLocaleDateString()
 }
 
-const startQuiz = (quizId: string) => {
-  router.push({ name: 'quiz.take', params: { quizId } })
+const formatDateTime = (date: Date | string): string => {
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleString()
 }
 
-const viewResults = (quizId: string) => {
-  router.push({ name: 'quiz.results', params: { quizId } })
+const startQuiz = (quiz: AssignedQuiz) => {
+  router.push({ name: 'quiz.take', params: { assignmentId: quiz.id } })
+}
+
+const viewResults = (quiz: AssignedQuiz) => {
+  router.push({ name: 'quiz.results', params: { assignmentId: quiz.id } })
 }
 </script>

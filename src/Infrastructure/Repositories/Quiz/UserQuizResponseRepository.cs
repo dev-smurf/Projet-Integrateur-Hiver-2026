@@ -37,12 +37,33 @@ public class UserQuizResponseRepository : IUserQuizResponseRepository
             .ToListAsync();
     }
 
+    public async Task<List<UserQuizResponse>> GetByAssignmentAsync(Guid userId, Guid assignmentId)
+    {
+        return await _context.UserQuizResponses
+            .AsNoTracking()
+            .Include(x => x.Question)
+            .Where(x => x.UserId == userId && x.QuizAssignmentId == assignmentId)
+            .OrderBy(x => x.Question.Order)
+            .ToListAsync();
+    }
+
     public async Task<UserQuizResponse?> GetByUserAndQuestionAsync(Guid userId, Guid questionId)
     {
         return await _context.UserQuizResponses
             .AsNoTracking()
             .Include(x => x.Question)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.QuizQuestionId == questionId);
+    }
+
+    public async Task<UserQuizResponse?> GetByAssignmentAndQuestionAsync(Guid userId, Guid assignmentId, Guid questionId)
+    {
+        return await _context.UserQuizResponses
+            .AsNoTracking()
+            .Include(x => x.Question)
+            .FirstOrDefaultAsync(x =>
+                x.UserId == userId
+                && x.QuizAssignmentId == assignmentId
+                && x.QuizQuestionId == questionId);
     }
 
     public async Task CreateAsync(UserQuizResponse response)

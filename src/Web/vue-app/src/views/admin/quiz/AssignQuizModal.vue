@@ -15,6 +15,26 @@
                        placeholder="Search users by name or email..."
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="text-sm text-gray-700">
+                        <span class="block font-medium mb-1">{{ $t('quiz.availableAt') }}</span>
+                        <input v-model="availableAt"
+                               type="datetime-local"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                    </label>
+                    <label class="text-sm text-gray-700">
+                        <span class="block font-medium mb-1">{{ $t('quiz.dueDate') }}</span>
+                        <input v-model="dueDate"
+                               type="datetime-local"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                    </label>
+                </div>
+
+                <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <input v-model="resendNewVersion" type="checkbox" class="w-4 h-4 text-blue-600 rounded" />
+                    <span>{{ $t('quiz.resendVersion') }}</span>
+                </label>
+
                 <div v-if="loading" class="space-y-2">
                     <div v-for="n in 3" :key="n" class="h-12 bg-gray-200 rounded animate-pulse"></div>
                 </div>
@@ -58,7 +78,7 @@
             <div class="border-t border-gray-200 p-4 flex justify-end gap-3 bg-gray-50">
                 <button @click="$emit('close')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">Cancel</button>
                 <button @click="handleAssign"
-                        :disabled="changesCount === 0 || assigning"
+                        :disabled="!canApply || assigning"
                         class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50">
                     {{ assigning ? 'Updating...' : 'Apply (' + changesCount + ')' }}
                 </button>
@@ -93,6 +113,9 @@ const leftSelected = ref<string[]>([]) // selected in unassigned column
 const rightSelected = ref<string[]>([]) // selected in assigned column
 const initialAssignedIds = ref<string[]>([])
 const currentAssignedIds = ref<string[]>([])
+const availableAt = ref('')
+const dueDate = ref('')
+const resendNewVersion = ref(false)
 const assigning = ref(false)
 const loading = ref(false)
 
@@ -100,6 +123,10 @@ const changesCount = computed(() => {
   const toAssign = currentAssignedIds.value.filter(id => !initialAssignedIds.value.includes(id))
   const toUnassign = initialAssignedIds.value.filter(id => !currentAssignedIds.value.includes(id))
   return toAssign.length + toUnassign.length
+})
+
+const canApply = computed(() => {
+  return changesCount.value > 0 || (resendNewVersion.value && currentAssignedIds.value.length > 0)
 })
 
 const filteredUnassigned = computed(() => {
@@ -137,9 +164,12 @@ async function handleAssign() {
   try {
     const toAssign = currentAssignedIds.value.filter(id => !initialAssignedIds.value.includes(id))
     const toUnassign = initialAssignedIds.value.filter(id => !currentAssignedIds.value.includes(id))
+    const assignmentUserIds = resendNewVersion.value ? currentAssignedIds.value : toAssign
+    const availableDate = availableAt.value ? new Date(availableAt.value) : undefined
+    const due = dueDate.value ? new Date(dueDate.value) : undefined
 
-    if (toAssign.length > 0) {
-      await quizService.assignQuiz(props.quizId, toAssign)
+    if (assignmentUserIds.length > 0) {
+      await quizService.assignQuiz(props.quizId, assignmentUserIds, availableDate, due)
     }
 
     if (toUnassign.length > 0) {
@@ -189,7 +219,7 @@ async function loadUsers() {
     // load existing assignments for this quiz
     try {
       const assignments = await quizService.getAssignments(props.quizId)
-      const ids = assignments.map((a: any) => a.userId)
+      const ids = [...new Set(assignments.map((a: any) => a.userId))]
       initialAssignedIds.value = ids
       currentAssignedIds.value = [...ids]
     } catch (err) {

@@ -145,13 +145,13 @@
       "name": "My quizzes",
       "children": {
         "take": {
-          "path": ":quizId/take",
-          "fullPath": "/quiz/:quizId/take",
+          "path": ":assignmentId/take",
+          "fullPath": "/quiz/:assignmentId/take",
           "name": "Take quiz"
         },
         "results": {
-          "path": ":quizId/results",
-          "fullPath": "/quiz/:quizId/results",
+          "path": ":assignmentId/results",
+          "fullPath": "/quiz/:assignmentId/results",
           "name": "Quiz results"
         }
       }
@@ -716,6 +716,9 @@
     "typeScale": "Scale 1-10 (Never/Sometimes/Always)",
     "typeMultipleChoice": "Multiple Choice (Single Selection)",
     "typeTextInput": "Text Input (Free Text)",
+    "typeMultipleSelection": "Multiple Choice (Multiple Selection)",
+    "singleSelectionHint": "The member will be able to select one answer.",
+    "multipleSelectionHint": "The member will be able to select several answers.",
     "scaleLabels": "The scale will use these guide labels:",
     "dragToReorder": "Drag to reorder",
     "draggable": "Drag to reorder",
@@ -759,6 +762,10 @@
     "completed": "Completed",
     "pending": "Pending",
     "assignedOn": "Assigned on",
+    "availableOn": "Available on",
+    "version": "Version",
+    "resendVersion": "Send a new version to selected players",
+    "availableAt": "Availability date and time",
     "dueDate": "Due date",
     "completedOn": "Completed on",
     "startQuiz": "Start quiz",

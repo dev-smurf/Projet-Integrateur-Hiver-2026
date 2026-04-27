@@ -34,10 +34,12 @@ public class GetAssignedQuizzesEndpoint : Endpoint<EmptyRequest, List<AssignedQu
             {
                 Id = a.Id,
                 QuizId = a.QuizId,
+                Version = a.Version,
                 Titre = a.Quiz.Titre,
                 Description = a.Quiz.Description,
                 ImageUrl = a.Quiz.ImageUrl,
                 AssignedAt = a.AssignedAt,
+                AvailableAt = a.AvailableAt,
                 DueDate = a.DueDate,
                 CompletedAt = a.CompletedAt
             })

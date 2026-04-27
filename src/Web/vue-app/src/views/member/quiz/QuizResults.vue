@@ -119,6 +119,42 @@
               </div>
             </div>
 
+            <!-- Multiple Selection Answer -->
+            <div v-else-if="response.questionType === 'MultipleSelection'" class="space-y-2">
+              <div
+                v-for="option in response.options"
+                :key="option.id"
+                :class="[
+                  'p-4 rounded-lg border-2 transition-all cursor-default',
+                  option.isSelected
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 bg-gray-50'
+                ]"
+              >
+                <div class="flex items-start gap-3">
+                  <div :class="[
+                    'w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5',
+                    option.isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                  ]">
+                    <svg v-if="option.isSelected" class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <p :class="[
+                    'text-sm',
+                    option.isSelected ? 'font-bold text-blue-600' : 'text-gray-700'
+                  ]">
+                    {{ option.text }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-4 p-3 bg-blue-50 rounded border border-blue-100">
+                <p class="text-xs text-gray-600 uppercase tracking-wide">{{ $t('quiz.yourAnswer') }}</p>
+                <p class="font-bold text-blue-600 mt-1">{{ response.selectedResponseText }}</p>
+              </div>
+            </div>
+
             <!-- Text Answer -->
             <div v-else-if="response.questionType === 'TextInput'" class="space-y-3">
               <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
@@ -159,12 +195,20 @@ const userResponses = ref<any>(null)
 
 onMounted(async () => {
   try {
-    const quizId = route.params.quizId as string
-    console.log('Loading quiz:', quizId)
-    quiz.value = await quizService.getById(quizId)
+    const assignmentId = route.params.assignmentId as string
+    const assignedQuizzes = await quizService.getAssignedQuizzes()
+    const assignment = assignedQuizzes.find(q => q.id === assignmentId)
+
+    if (!assignment) {
+      quiz.value = null
+      return
+    }
+
+    console.log('Loading quiz:', assignment.quizId)
+    quiz.value = await quizService.getById(assignment.quizId)
     console.log('Quiz loaded:', quiz.value)
 
-    userResponses.value = await quizService.getUserResponses(quizId)
+    userResponses.value = await quizService.getUserResponses(assignmentId)
     console.log('User responses loaded:', userResponses.value)
   } catch (error) {
     console.error('Failed to load quiz:', error)
