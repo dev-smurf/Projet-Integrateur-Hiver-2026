@@ -199,32 +199,29 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onActivated, onMounted, ref} from "vue";
 import {useI18n} from "vue3-i18n";
-import {Activity, ArrowRight, BookOpen, CheckCircle, Gauge, Layers, Sparkles, User} from "lucide-vue-next";
-import {useMemberService} from "@/inversify.config";
+import {BookOpen, CheckCircle, ClipboardCheck, Layers} from "lucide-vue-next";
+import {useMemberService, useQuizService} from "@/inversify.config";
 import {usePersonStore} from "@/stores/personStore";
 import {useUserStore} from "@/stores/userStore";
 import type {MemberModuleDto} from "@/types/entities";
+import type {AssignedQuiz} from "@/services/quizService";
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
 
 const {locale, t} = useI18n();
 const memberService = useMemberService();
+const quizService = useQuizService();
 const personStore = usePersonStore();
 const userStore = useUserStore();
 
 const loading = ref(true);
 const modules = ref<MemberModuleDto[]>([]);
+const assignedQuizzes = ref<AssignedQuiz[]>([]);
 
 const displayName = computed(() => {
   return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
-});
-
-const initials = computed(() => {
-  const first = personStore.person.firstName || "";
-  const last = personStore.person.lastName || "";
-  return ((first[0] || "") + (last[0] || "")).toUpperCase();
 });
 
 function imageUrl(path?: string): string | undefined {
@@ -234,14 +231,21 @@ function imageUrl(path?: string): string | undefined {
 }
 
 const moduleCards = computed(() => {
-  return modules.value.map((mod) => {
+  return modules.value
+    .filter((mod) => !(mod.isCompleted || (mod.progressPercent ?? 0) >= 100))
+    .sort((a, b) => {
+      const left = a.assignedAt ? new Date(a.assignedAt).getTime() : 0;
+      const right = b.assignedAt ? new Date(b.assignedAt).getTime() : 0;
+      return right - left;
+    })
+    .map((mod) => {
     const isFrench = locale === "fr";
     const name = isFrench
-      ? (mod.nameFr || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
-      : (mod.nameEn || mod.nameFr || t("pages.memberDashboard.unnamedModule"));
+      ? (mod.nameFr || mod.name || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
+      : (mod.nameEn || mod.name || mod.nameFr || t("pages.memberDashboard.unnamedModule"));
     const subject = isFrench
-      ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
-      : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject"));
+      ? (mod.sujetFr || mod.subject || mod.sujetEn || t("pages.memberDashboard.noSubject"))
+      : (mod.sujetEn || mod.subject || mod.sujetFr || t("pages.memberDashboard.noSubject"));
     const progressPercent = mod.progressPercent ?? 0;
     const isCompleted = mod.isCompleted || progressPercent >= 100;
     const statusLabel = isCompleted
@@ -255,6 +259,7 @@ const moduleCards = computed(() => {
       name,
       subject,
       imageUrl: imageUrl(mod.cardImageUrl),
+      assignedAt: mod.assignedAt,
       progressPercent,
       isCompleted,
       statusLabel
@@ -263,27 +268,41 @@ const moduleCards = computed(() => {
 });
 
 const totalModules = computed(() => moduleCards.value.length);
-const completedModules = computed(() => moduleCards.value.filter((mod) => mod.isCompleted).length);
-const averageProgress = computed(() => {
-  if (!moduleCards.value.length) return 0;
-  const total = moduleCards.value.reduce((sum, mod) => sum + mod.progressPercent, 0);
-  return Math.round(total / moduleCards.value.length);
-});
-const nextModuleName = computed(() => {
-  const next = moduleCards.value.find((mod) => !mod.isCompleted);
-  return next?.name || t("pages.memberDashboard.stats.nextEmpty");
-});
+const completedModules = computed(() => modules.value.filter((mod) => mod.isCompleted || (mod.progressPercent ?? 0) >= 100).length);
+function formatAssignedAt(value?: string) {
+  if (!value) return t("pages.memberDashboard.lastUpdate");
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return t("pages.memberDashboard.lastUpdate");
+  return `Assigne le ${date.toLocaleDateString()}`;
+}
 
 async function fetchModules() {
   loading.value = true;
   try {
-    modules.value = await memberService.getMyModules();
+    if (!personStore.person.firstName || typeof personStore.person.visibleAdminNotes === "undefined") {
+      try {
+        const authenticatedMember = await memberService.getAuthenticated();
+        if (authenticatedMember) {
+          personStore.setPerson(authenticatedMember);
+        }
+      } catch {
+        // Ignore profile refresh failures and keep module loading available.
+      }
+    }
+    const [memberModules, quizzes] = await Promise.all([
+      memberService.getMyModules(),
+      quizService.getAssignedQuizzes().catch(() => [])
+    ]);
+    modules.value = memberModules;
+    assignedQuizzes.value = quizzes;
   } catch {
     modules.value = [];
+    assignedQuizzes.value = [];
   } finally {
     loading.value = false;
   }
 }
 
 onMounted(fetchModules);
+onActivated(fetchModules);
 </script>

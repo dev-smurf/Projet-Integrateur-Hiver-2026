@@ -255,20 +255,18 @@ async function loadMessages() {
   scrollToBottom()
 }
 
-// For members: auto-load their single conversation
+// Members: load messages if a conversation is already selected.
+// (The auto-fetch + auto-select is done in ChatPanel, after equipe conversations are loaded,
+//  so we know whether to show tabs or fall back to the single-conversation layout.)
 onMounted(async () => {
-  if (userStore.hasRole(Role.Member) && !chatStore.currentConversationId) {
-    try {
-      const conversations = await conversationService.getConversations()
-      chatStore.setConversations(conversations)
-      if (conversations.length > 0) {
-        chatStore.openConversation(conversations[0].id)
-      }
-    } catch {
-      // API failed — show empty state
-    }
-  }
   if (chatStore.currentConversationId) {
+    await loadMessages()
+  }
+})
+
+// React to the member's conversation being selected (e.g., from ChatPanel's init).
+watch(() => chatStore.currentConversationId, async (id) => {
+  if (id) {
     await loadMessages()
   }
 })

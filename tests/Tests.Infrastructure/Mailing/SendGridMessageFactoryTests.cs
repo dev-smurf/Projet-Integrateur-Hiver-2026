@@ -24,8 +24,8 @@ public class SendGridMessageFactoryTests
         _webHostEnvironment = new Mock<IWebHostEnvironment>();
         var mailingSettings = new MailingSettings
         {
-            FromAddress = AnyEmail,
-            FromName = AnyName,
+            FromAddress = new Dictionary<string, string> { { "fr", AnyEmail } },
+            FromName = new Dictionary<string, string> { { "fr", AnyName } },
             ToAddressForDevelopment = AnyEmail
         };
         var mailingSettingsOptions = new Mock<IOptions<MailingSettings>>();

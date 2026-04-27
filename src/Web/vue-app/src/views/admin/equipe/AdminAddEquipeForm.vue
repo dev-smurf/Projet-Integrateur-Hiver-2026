@@ -20,7 +20,7 @@
                 <div>
                     <div class="flex items-center justify-between gap-3 mb-2">
                         <label class="text-sm font-medium text-gray-700">
-                            {{ $t("Form_Add_Equipe.fields.addMembers") || "Ajouter des membres" }}
+                            {{ $t("Form_Add_Equipe.fields.addMembers") }}
                         </label>
                         <div class="relative w-64">
                             <input v-model="memberSearch"
@@ -61,7 +61,7 @@
                     </div>
 
                     <p class="mt-2 text-xs text-gray-500">
-                        {{ $t("Form_Add_Equipe.help.membersHint") || "Sélectionnez les membres à assigner à l'équipe lors de la création." }}
+                        {{ $t("Form_Add_Equipe.help.membersHint") }}
                     </p>
                 </div>
 

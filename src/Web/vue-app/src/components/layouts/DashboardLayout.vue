@@ -175,7 +175,7 @@
     import { useI18n } from "vue3-i18n";
     import Cookies from "universal-cookie";
     import {
-        LayoutDashboard, BookOpen, Shield, LogOut, Languages,
+        LayoutDashboard, BookOpen, Shield, LogOut, Languages, Bell,
         CheckCircle2, XCircle, X, Users, Layers, UsersRound,
         ClipboardCheck,Brain,Calendar
     } from "lucide-vue-next";
@@ -187,6 +187,7 @@
     import { useSignalR } from "@/composables/useSignalR";
     import { Role } from "@/types/enums";
     import { LOCALES } from "@/locales";
+    import { hasUnreadMemberAdminNote, MEMBER_ADMIN_NOTE_READ_EVENT } from "@/utils/memberAdminNotes";
 
     const router = useRouter();
     const i18nInstance = useI18n();
@@ -201,12 +202,24 @@
 
     const langOpen = ref(false);
     const currentLocale = ref(i18nInstance.getLocale());
+    const noteReadVersion = ref(0);
 
     const initials = computed(() => {
         const first = personStore.person.firstName || "";
         const last = personStore.person.lastName || "";
         return ((first[0] || "") + (last[0] || "")).toUpperCase();
     });
+
+    const memberNotificationCount = computed(() => {
+        noteReadVersion.value;
+        if (!userStore.hasRole(Role.Member)) return 0;
+        const memberIdentifier = userStore.user.email || userStore.username || "";
+        return hasUnreadMemberAdminNote(memberIdentifier, personStore.person.visibleAdminNotes) ? 1 : 0;
+    });
+
+    function onMemberNoteRead() {
+        noteReadVersion.value += 1;
+    }
 
     function isActive(routePrefix: string): boolean {
         const name = router.currentRoute.value.name as string || "";
@@ -238,6 +251,7 @@
 
     onMounted(async () => {
         document.addEventListener("click", handleClickOutside);
+        window.addEventListener(MEMBER_ADMIN_NOTE_READ_EVENT, onMemberNoteRead);
         try {
             if (userStore.hasRole(Role.Admin)) {
                 const admin = await adminService.getAuthenticated();
@@ -262,6 +276,7 @@
 
     onUnmounted(async () => {
         document.removeEventListener("click", handleClickOutside);
+        window.removeEventListener(MEMBER_ADMIN_NOTE_READ_EVENT, onMemberNoteRead);
         await disconnectSignalR();
     });
 </script>

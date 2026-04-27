@@ -31,6 +31,7 @@ import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
 
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
 import MemberModuleView from "@/views/member/MemberModuleView.vue";
+import MemberNotifications from "@/views/member/MemberNotifications.vue";
 import QuizList from "@/views/member/quiz/QuizList.vue";
 import QuizResults from "@/views/member/quiz/QuizResults.vue";
 import QuizTake from "@/views/member/quiz/QuizTake.vue";
@@ -106,6 +107,15 @@ export function getRouter(): Router {
         component: Account,
         meta: {
           title: "routes.account.name",
+        },
+      },
+      {
+        path: "/notifications",
+        name: "member.notifications",
+        component: MemberNotifications,
+        meta: {
+          requiredRole: Role.Member,
+          title: "Notifications",
         },
       },
       {
@@ -221,6 +231,7 @@ export function getRouter(): Router {
           },
           {
             path: ":moduleId",
+            name: "member.modules.view",
             component: MemberModuleView,
             props: true,
           },
@@ -273,20 +284,16 @@ export function getRouter(): Router {
     const userStore = useUserStore();
     const isAuthenticated = !!userStore.user.email;
 
-  // Handle root path redirect
-  if (to.path === "/") {
-    if (!isAuthenticated) return { name: "login" };
-    return userStore.hasRole(Role.Admin)
-      ? { name: "dashboard" }
-      : { name: "dashboard" };
-  }
+    // Handle root path redirect
+    if (to.path === "/") {
+      if (!isAuthenticated) return { name: "login" };
+      return { name: "dashboard" };
+    }
 
-  // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
-  if (to.meta.guest && isAuthenticated) {
-    return userStore.hasRole(Role.Admin)
-      ? { name: "dashboard" }
-      : { name: "dashboard" };
-  }
+    // Logged-in users cannot access guest-only pages (login, forgot password, etc.)
+    if (to.meta.guest && isAuthenticated) {
+      return { name: "dashboard" };
+    }
 
     if (!to.meta.guest && !isAuthenticated) {
       return { name: "login" };
@@ -296,18 +303,22 @@ export function getRouter(): Router {
       return;
     }
 
-  const isRoleArray = Array.isArray(to.meta.requiredRole);
-  const doesNotHaveGivenRole =
-    !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
-  const hasNoRoleAmongRoleList =
-    isRoleArray &&
-    !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
-  if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
+    // Les admins ont accès à toutes les routes, peu importe le requiredRole
+    // (ex: quiz.take qui requiert Role.Member — l'admin y accède en mode aperçu)
     if (userStore.hasRole(Role.Admin)) {
+      return;
+    }
+
+    const isRoleArray = Array.isArray(to.meta.requiredRole);
+    const doesNotHaveGivenRole =
+      !isRoleArray && !userStore.hasRole(to.meta.requiredRole as Role);
+    const hasNoRoleAmongRoleList =
+      isRoleArray &&
+      !userStore.hasOneOfTheseRoles(to.meta.requiredRole as Role[]);
+
+    if (doesNotHaveGivenRole || hasNoRoleAmongRoleList) {
       return { name: "dashboard" };
     }
-    return { name: "dashboard" };
-  }
   });
 
   return routerInstance;
