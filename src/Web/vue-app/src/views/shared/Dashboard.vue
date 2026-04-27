@@ -40,11 +40,11 @@
       </div>
     </section>
 
-    <!-- ─── MAIN GRID (2 colonnes: 1/3 gauche + 2/3 droite) ─────── -->
+    <!-- ─── MAIN GRID (2 colonnes: 2/3 gauche + 1/3 droite) ─────── -->
     <div v-if="isAdmin" class="grid gap-6 lg:grid-cols-3">
 
-      <!-- ══ Colonne gauche : Membres + Actions rapides ═══════════ -->
-      <div class="lg:col-span-1 flex flex-col gap-4">
+      <!-- ══ Colonne gauche : Membres (Principale) ══════════════ -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
 
         <!-- Nouveaux membres ce mois -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
@@ -54,16 +54,26 @@
                 <UserPlus class="h-4 w-4" />
               </div>
               <div>
-                <h2 class="text-sm font-semibold text-slate-800">Nouveaux membres</h2>
+                <h2 class="text-sm font-semibold text-slate-800">Membres récents</h2>
                 <p class="text-xs text-slate-400">{{ newMembersLabel }}</p>
               </div>
             </div>
-            <router-link
-              :to="{ name: 'admin.children.members.index' }"
-              class="text-xs font-medium text-brand-600 hover:text-brand-700 transition"
-            >
-              Voir tous →
-            </router-link>
+            <div class="flex items-center gap-3">
+              <div class="relative hidden sm:block">
+                <input
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Rechercher..."
+                  class="w-40 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-xs focus:border-brand-400 focus:outline-none focus:bg-white transition-all"
+                />
+              </div>
+              <router-link
+                :to="{ name: 'admin.children.members.index' }"
+                class="text-xs font-medium text-brand-600 hover:text-brand-700 transition"
+              >
+                Voir tous →
+              </router-link>
+            </div>
           </div>
 
           <div class="max-h-72 overflow-y-auto divide-y divide-slate-100">
@@ -79,87 +89,33 @@
               Aucun nouveau membre ce mois.
             </div>
 
-            <router-link
+            <div
               v-else
               v-for="member in newMembersThisMonth"
               :key="member.id"
-              :to="{ name: 'admin.children.members.details', params: { id: member.id } }"
-              class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition"
+              @click="selectedMemberId = member.id"
+              class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition cursor-pointer border-r-4"
+              :class="selectedMemberId === member.id ? 'bg-brand-50/50 border-brand-500' : 'border-transparent'"
             >
-              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-xs font-bold text-brand-700">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-slate-200 text-xs font-bold text-brand-700 shadow-sm">
                 {{ member.initials }}
               </div>
-              <div class="min-w-0">
-                <p class="truncate text-sm font-semibold text-slate-800">{{ member.displayName }}</p>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <p class="truncate text-sm font-semibold text-slate-800">{{ member.displayName }}</p>
+                  <router-link 
+                    :to="{ name: 'admin.children.members.details', params: { id: member.id } }"
+                    @click.stop
+                    class="text-[10px] text-brand-600 hover:underline font-medium"
+                  >
+                    Détails
+                  </router-link>
+                </div>
                 <p class="truncate text-xs text-slate-400">{{ member.email || 'Email non disponible' }}</p>
               </div>
-              <span class="ml-auto shrink-0 text-xs text-slate-300">→</span>
-            </router-link>
+            </div>
           </div>
         </div>
-
-        <!-- Actions rapides -->
-        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
-              <ArrowUpRight class="h-4 w-4" />
-            </div>
-            <h2 class="text-sm font-semibold text-slate-800">Actions rapides</h2>
-          </div>
-          <div class="divide-y divide-slate-100">
-            <router-link
-              v-for="action in quickActions"
-              :key="action.label"
-              :to="action.to"
-              class="flex items-center justify-between px-5 py-3 text-sm text-slate-700 hover:bg-slate-50 transition group"
-            >
-              <div class="flex items-center gap-3">
-                <component :is="action.icon" class="h-4 w-4 text-brand-500 group-hover:text-brand-700" />
-                <span>{{ action.label }}</span>
-              </div>
-              <span class="text-xs text-slate-300 group-hover:text-brand-500 transition">→</span>
-            </router-link>
-          </div>
-        </div>
-
-        <!-- Associer un module (dans la colonne gauche) -->
-        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
-              <TrendingUp class="h-4 w-4" />
-            </div>
-            <h2 class="text-sm font-semibold text-slate-800">Assigner un module</h2>
-          </div>
-          <div class="px-5 py-4">
-            <div class="flex flex-col gap-3">
-              <select
-                v-model="selectedModuleId"
-                class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
-              >
-                <option value="">Choisir un module…</option>
-                <option v-for="module in availableModules" :key="module.id" :value="module.id">
-                  {{ module.name || 'Module' }}
-                </option>
-              </select>
-              <button
-                type="button"
-                class="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
-                :disabled="!selectedMemberId || !selectedModuleId"
-                @click="assignModuleToMember"
-              >
-                Ajouter
-              </button>
-            </div>
-            <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500 italic">
-              ⚠ Cliquez d'abord sur un membre dans la liste ci-dessus.
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ══ Colonne droite : Modules du membre ═════════════════ -->
-      <div class="lg:col-span-2 flex flex-col gap-4">
 
         <!-- Liste des modules -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
@@ -197,7 +153,7 @@
               class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
             >
               <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                   <p class="font-semibold text-sm text-slate-800 truncate">{{ module.title }}</p>
                   <p class="text-xs text-slate-400 mt-0.5 truncate">{{ module.subtitle }}</p>
                 </div>
@@ -225,6 +181,70 @@
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ Colonne droite : Modules + Actions ══════════════════ -->
+      <div class="lg:col-span-1 flex flex-col gap-4">
+
+
+        <!-- Actions rapides -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+              <ArrowUpRight class="h-4 w-4" />
+            </div>
+            <h2 class="text-sm font-semibold text-slate-800">Actions rapides</h2>
+          </div>
+          <div class="divide-y divide-slate-100">
+            <router-link
+              v-for="action in quickActions"
+              :key="action.label"
+              :to="action.to"
+              class="flex items-center justify-between px-5 py-3 text-sm text-slate-700 hover:bg-slate-50 transition group"
+            >
+              <div class="flex items-center gap-3">
+                <component :is="action.icon" class="h-4 w-4 text-brand-500 group-hover:text-brand-700" />
+                <span>{{ action.label }}</span>
+              </div>
+              <span class="text-xs text-slate-300 group-hover:text-brand-500 transition">→</span>
+            </router-link>
+          </div>
+        </div>
+
+        <!-- Associer un module -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <TrendingUp class="h-4 w-4" />
+            </div>
+            <h2 class="text-sm font-semibold text-slate-800">Assigner un module</h2>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex flex-col gap-3">
+              <select
+                v-model="selectedModuleId"
+                class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
+              >
+                <option value="">Choisir un module…</option>
+                <option v-for="module in availableModules" :key="module.id" :value="module.id">
+                  {{ module.name || 'Module' }}
+                </option>
+              </select>
+              <button
+                type="button"
+                class="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                :disabled="!selectedMemberId || !selectedModuleId"
+                @click="assignModuleToMember"
+              >
+                Ajouter
+              </button>
+            </div>
+            <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500 italic">
+              ⚠ Cliquez d'abord sur un membre dans la liste ci-dessus.
+            </p>
           </div>
         </div>
 
@@ -274,6 +294,7 @@ const members = ref<Member[]>([]);
 const isLoadingMembers = ref(false);
 const memberError = ref("");
 const selectedMemberId = ref<string>("");
+const searchQuery = ref("");
 
 const memberModules = ref<MemberModuleDto[]>([]);
 const isLoadingModules = ref(false);
@@ -290,10 +311,22 @@ function isInCurrentMonth(value?: string) {
 }
 
 const newMembersThisMonth = computed(() => {
-  const sorted = [...members.value]
-    .filter(m => !!m.id && isInCurrentMonth(m.created))
+  let filtered = [...members.value]
+    .filter(m => !!m.id && isInCurrentMonth(m.created));
+
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(m => 
+      (m.fullName?.toLowerCase().includes(q)) || 
+      (m.email?.toLowerCase().includes(q)) ||
+      (m.firstName?.toLowerCase().includes(q)) ||
+      (m.lastName?.toLowerCase().includes(q))
+    );
+  }
+
+  const sorted = filtered
     .sort((a, b) => new Date(b.created ?? 0).getTime() - new Date(a.created ?? 0).getTime())
-    .slice(0, 4);
+    .slice(0, 10);
 
   return sorted.map(member => {
     const fullName = (member.fullName || `${member.firstName ?? ""} ${member.lastName ?? ""}`).trim();
