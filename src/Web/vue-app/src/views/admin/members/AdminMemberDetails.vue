@@ -196,8 +196,8 @@
             >
               <div class="flex items-center justify-between gap-3">
                 <div>
-                  <div class="text-sm font-semibold text-gray-900">{{ item.nameFr || item.nameEn || "Module" }}</div>
-                  <div class="text-xs text-gray-500">{{ item.sujetFr || item.sujetEn || "Sujet" }}</div>
+                  <div class="text-sm font-semibold text-gray-900">{{ item.name || item.nameFr || item.nameEn || "Module" }}</div>
+                  <div class="text-xs text-gray-500">{{ item.subject || item.sujetFr || item.sujetEn || "Sujet" }}</div>
                 </div>
                 <span
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
@@ -243,24 +243,17 @@
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold text-gray-900">Notes internes</h2>
-          <button
-            @click="saveNotes"
-            :disabled="savingNotes"
-            class="px-3 py-1.5 text-xs font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Notes internes</h2>
+            <p class="text-sm text-gray-500 mt-1">Il y a {{ memberNotesCount }} note(s) associée(s) à ce membre.</p>
+          </div>
+          <router-link
+            :to="{ name: 'admin.children.notes.index', query: { memberId: memberId } }"
+            class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
           >
-            {{ savingNotes ? "Enregistrement..." : "Enregistrer" }}
-          </button>
+            Consulter et ajouter des notes
+          </router-link>
         </div>
-        <textarea
-          v-model="notesText"
-          rows="5"
-          placeholder="Ajouter des notes confidentielles sur ce membre..."
-          class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
-        />
-        <p class="mt-2 text-xs text-gray-500">
-          Notes sauvegardees localement pour cet appareil.
-        </p>
       </div>
     </div>
   </div>
@@ -270,7 +263,7 @@
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useNotification} from "@kyvg/vue3-notification";
-import {useEquipesService, useMemberService, useModulesService} from "@/inversify.config";
+import {useEquipesService, useMemberService, useModulesService, useNotesService} from "@/inversify.config";
 import type {Equipe, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
 
 const route = useRoute();
@@ -278,6 +271,7 @@ const {notify} = useNotification();
 const equipeService = useEquipesService();
 const memberService = useMemberService();
 const modulesService = useModulesService();
+const notesService = useNotesService();
 
 const member = ref<Member | null>(null);
 const equipes = ref<Equipe[]>([]);
@@ -290,8 +284,7 @@ const addingModule = ref(false);
 const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
 const removingModule = ref<Record<string, boolean>>({});
-const notesText = ref("");
-const savingNotes = ref(false);
+const memberNotesCount = ref(0);
 
 const memberId = computed(() => String(route.params.id || ""));
 
@@ -366,8 +359,8 @@ const filteredModules = computed(() => {
 });
 
 function moduleLabel(mod: ModuleDto) {
-  const name = mod.nameFr || mod.nameEn || "Module";
-  const subject = mod.sujetFr || mod.sujetEn || "";
+  const name = mod.name || mod.nameFr || mod.nameEn || "Module";
+  const subject = mod.subject || mod.sujetFr || mod.sujetEn || "";
   return subject ? `${name} - ${subject}` : name;
 }
 
@@ -388,8 +381,9 @@ async function loadData() {
     nextEdits[item.moduleId] = item.progressPercent;
   });
   progressEdits.value = nextEdits;
-  const stored = localStorage.getItem(`admin-member-notes:${memberId.value}`);
-  notesText.value = stored ?? "";
+  const notes = await notesService.getAllNotes();
+  memberNotesCount.value = notes.filter(n => n.memberId === memberId.value).length;
+
   loading.value = false;
 }
 
@@ -432,12 +426,7 @@ async function removeModule(item: MemberModuleDto) {
   removingModule.value = {...removingModule.value, [item.moduleId]: false};
 }
 
-function saveNotes() {
-  savingNotes.value = true;
-  localStorage.setItem(`admin-member-notes:${memberId.value}`, notesText.value);
-  notify({type: "success", text: "Notes enregistrees localement."});
-  savingNotes.value = false;
-}
+
 
 onMounted(loadData);
 </script>

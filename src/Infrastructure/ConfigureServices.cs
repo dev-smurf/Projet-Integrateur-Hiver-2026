@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Application.Interfaces.FileStorage;
 using Application.Interfaces.Services;
 using Domain.Entities.Identity;
@@ -70,7 +70,9 @@ public static class ConfigureServices
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IMemberNoteRepository, MemberNoteRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
+        services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

@@ -15,20 +15,6 @@
                        placeholder="Search users by name or email..."
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
 
-<<<<<<< HEAD
-          <!-- Assigned -->
-          <div class="col-span-5 border rounded-lg p-3 bg-gray-50">
-            <h4 class="text-sm font-semibold mb-2">Assignés</h4>
-            <div class="space-y-2 max-h-64 overflow-y-auto">
-              <label v-for="user in filteredAssigned" :key="user.id" class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition">
-                <input type="checkbox" :value="(user as any).userId ?? (user as any).id ?? ''" v-model="rightSelected" class="w-4 h-4 text-blue-600 rounded focus:ring-2" />
-                <div class="ml-3">
-                  <p class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</p>
-                  <p class="text-xs text-gray-500">{{ user.email }}</p>
-                </div>
-              </label>
-              <div v-if="filteredAssigned.length === 0" class="text-xs text-gray-500 italic text-center py-3">Aucun utilisateur</div>
-=======
                 <div v-if="loading" class="space-y-2">
                     <div v-for="n in 3" :key="n" class="h-12 bg-gray-200 rounded animate-pulse"></div>
                 </div>
@@ -76,7 +62,6 @@
                         class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50">
                     {{ assigning ? 'Updating...' : 'Apply (' + changesCount + ')' }}
                 </button>
->>>>>>> f2275918c8744a541552b58180420f4ba28976b2
             </div>
         </div>
     </div>
