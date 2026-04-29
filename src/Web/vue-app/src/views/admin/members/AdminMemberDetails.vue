@@ -40,32 +40,7 @@
           </div>
         </div>
 
-        <div class="mt-6 flex items-center gap-5">
-          <div class="relative w-28 h-28">
-            <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" class="progress-track" />
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                class="progress-ring"
-                :style="{
-                  strokeDasharray: `${circumference}`,
-                  strokeDashoffset: `${progressOffset}`
-                }"
-              />
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="text-xl font-semibold text-gray-900">{{ progressPercent }}%</div>
-              <div class="text-xs text-gray-500">Progression</div>
-            </div>
-          </div>
-          <div class="text-sm text-gray-600">
-            <div class="font-medium text-gray-900">Resume</div>
-            <div>{{ memberModules.length }} module(s) assignes</div>
-            <div>{{ completedModules }} termine(s)</div>
-          </div>
-        </div>
+
       </div>
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 animate-fade-up delay-1">
@@ -331,19 +306,7 @@ const memberEquipes = computed(() => {
     });
 });
 
-const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
 
-const progressPercent = computed(() => {
-  if (!memberModules.value.length) return 0;
-  const total = memberModules.value.reduce((sum, item) => sum + (item.progressPercent || 0), 0);
-  return Math.max(0, Math.min(100, Math.round(total / memberModules.value.length)));
-});
-
-const radius = 42;
-const circumference = 2 * Math.PI * radius;
-const progressOffset = computed(() => {
-  return circumference - (progressPercent.value / 100) * circumference;
-});
 
 const filteredModules = computed(() => {
   const search = moduleSearch.value.toLowerCase().trim();
@@ -416,7 +379,7 @@ async function saveProgress(item: MemberModuleDto) {
 
 async function removeModule(item: MemberModuleDto) {
   removingModule.value = {...removingModule.value, [item.moduleId]: true};
-  const response = await memberService.removeMemberModule(memberId.value, item.moduleId);
+  const response = await memberService.removeModuleFromMember(memberId.value, item.moduleId);
   if (response.succeeded) {
     notify({type: "success", text: "Module retire."});
     memberModules.value = await memberService.getMemberModules(memberId.value);
@@ -432,19 +395,7 @@ onMounted(loadData);
 </script>
 
 <style scoped>
-.progress-track {
-  fill: none;
-  stroke: #e5e7eb;
-  stroke-width: 10;
-}
 
-.progress-ring {
-  fill: none;
-  stroke: #4f46e5;
-  stroke-width: 10;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.8s ease;
-}
 
 .animate-fade-up {
   animation: fade-up 0.6s ease both;
