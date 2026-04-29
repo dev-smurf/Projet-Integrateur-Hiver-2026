@@ -148,8 +148,8 @@ export interface IQuizService {
   delete(id: string): Promise<void>
   getAssignedQuizzes(): Promise<any[]>
   submitResponse(response: any): Promise<any>
-    assignQuiz(quizId: string, userIds: string[], availableAt?: Date, dueDate?: Date): Promise<void>
-    getAssignments(quizId: string): Promise<{ id: string; userId: string; version: number; availableAt?: string; dueDate?: string; completedAt?: string }[]>
+    assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date): Promise<void>
+    getAssignments(quizId: string): Promise<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[]>
   unassignQuiz(quizId: string, userIds: string[]): Promise<void>
     getUserResponses(quizAssignmentId: string): Promise<any>
     completeQuiz(quizAssignmentId: string): Promise<void>

@@ -35,6 +35,7 @@ public class GetQuizAssignmentsEndpoint : EndpointWithoutRequest<List<QuizAssign
             Id = a.Id.ToString(),
             UserId = a.UserId.ToString(),
             Version = a.Version,
+            FollowUpLabel = a.FollowUpLabel,
             AvailableAt = a.AvailableAt,
             DueDate = a.DueDate,
             CompletedAt = a.CompletedAt
@@ -47,6 +48,7 @@ public class QuizAssignedUserDto
     public string Id { get; set; } = null!;
     public string UserId { get; set; } = null!;
     public int Version { get; set; }
+    public string? FollowUpLabel { get; set; }
     public DateTime? AvailableAt { get; set; }
     public DateTime? DueDate { get; set; }
     public DateTime? CompletedAt { get; set; }

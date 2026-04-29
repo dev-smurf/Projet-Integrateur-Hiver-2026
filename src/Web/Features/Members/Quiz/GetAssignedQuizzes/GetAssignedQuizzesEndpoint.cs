@@ -35,6 +35,7 @@ public class GetAssignedQuizzesEndpoint : Endpoint<EmptyRequest, List<AssignedQu
                 Id = a.Id,
                 QuizId = a.QuizId,
                 Version = a.Version,
+                FollowUpLabel = a.FollowUpLabel,
                 Titre = a.Quiz.Titre,
                 Description = a.Quiz.Description,
                 ImageUrl = a.Quiz.ImageUrl,

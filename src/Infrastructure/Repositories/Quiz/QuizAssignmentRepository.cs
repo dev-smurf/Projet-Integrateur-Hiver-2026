@@ -67,22 +67,22 @@ public class QuizAssignmentRepository : IQuizAssignmentRepository
                 && (!x.AvailableAt.HasValue || x.AvailableAt <= DateTime.UtcNow));
     }
 
-    public async Task<Dictionary<Guid, int>> GetNextVersionsAsync(Guid quizId, IEnumerable<Guid> userIds)
+    public async Task<Dictionary<Guid, int>> GetNextFollowUpOrdersAsync(Guid quizId, IEnumerable<Guid> userIds)
     {
         var userIdList = userIds.Distinct().ToList();
-        var latestVersions = await _context.QuizAssignments
+        var latestFollowUps = await _context.QuizAssignments
             .AsNoTracking()
             .Where(x => x.QuizId == quizId && userIdList.Contains(x.UserId))
             .GroupBy(x => x.UserId)
             .Select(x => new { UserId = x.Key, Version = x.Max(a => a.Version) })
             .ToListAsync();
 
-        var versionByUserId = latestVersions.ToDictionary(x => x.UserId, x => x.Version + 1);
+        var followUpOrderByUserId = latestFollowUps.ToDictionary(x => x.UserId, x => x.Version + 1);
 
-        foreach (var userId in userIdList.Where(x => !versionByUserId.ContainsKey(x)))
-            versionByUserId[userId] = 1;
+        foreach (var userId in userIdList.Where(x => !followUpOrderByUserId.ContainsKey(x)))
+            followUpOrderByUserId[userId] = 1;
 
-        return versionByUserId;
+        return followUpOrderByUserId;
     }
 
     public async Task CreateAsync(QuizAssignment assignment)

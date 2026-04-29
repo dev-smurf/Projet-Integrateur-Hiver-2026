@@ -40,7 +40,7 @@
             <!-- Status Badge -->
             <div class="mb-4">
               <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full mr-2">
-                {{ $t('quiz.version') }} {{ quiz.version }}
+                {{ quiz.followUpLabel || `${$t('quiz.followUpPoint')} ${quiz.version}` }}
               </span>
               <span 
                 v-if="quiz.isCompleted"

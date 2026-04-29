@@ -32,14 +32,15 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
         if (quiz == null)
             throw new KeyNotFoundException($"Quiz with ID {req.QuizId} not found");
 
-        var nextVersions = await _assignmentRepository.GetNextVersionsAsync(req.QuizId, req.UserIds);
+        var nextFollowUpOrders = await _assignmentRepository.GetNextFollowUpOrdersAsync(req.QuizId, req.UserIds);
 
         var assignments = req.UserIds
             .Select(userId => new QuizAssignment
             {
                 QuizId = req.QuizId,
                 UserId = userId,
-                Version = nextVersions[userId],
+                Version = nextFollowUpOrders[userId],
+                FollowUpLabel = string.IsNullOrWhiteSpace(req.FollowUpLabel) ? null : req.FollowUpLabel.Trim(),
                 AssignedAt = DateTime.UtcNow,
                 AvailableAt = req.AvailableAt,
                 DueDate = req.DueDate

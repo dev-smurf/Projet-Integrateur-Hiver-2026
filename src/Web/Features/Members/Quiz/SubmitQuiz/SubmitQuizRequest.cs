@@ -8,7 +8,7 @@ public class SubmitQuizRequest
     public Guid QuizQuestionId { get; set; }
     public int? SelectedScore { get; set; }
     public Guid? SelectedResponseId { get; set; }
-    public List<Guid> SelectedResponseIds { get; set; } = [];
+    public List<Guid>? SelectedResponseIds { get; set; }
     public string? SelectedTextResponse { get; set; }
 }
 

@@ -20,5 +20,9 @@ public class AssignQuizValidator : AbstractValidator<AssignQuizRequest>
             .GreaterThanOrEqualTo(x => x.AvailableAt)
             .When(x => x.DueDate.HasValue && x.AvailableAt.HasValue)
             .WithMessage("La date limite doit etre apres la date de disponibilite | Due date must be after the availability date");
+
+        RuleFor(x => x.FollowUpLabel)
+            .MaximumLength(100)
+            .WithMessage("Le nom du point de suivi doit contenir 100 caracteres ou moins | Follow-up label must be 100 characters or fewer");
     }
 }

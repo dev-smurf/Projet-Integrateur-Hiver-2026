@@ -51,7 +51,6 @@ public class UserQuizResponseRepository : IUserQuizResponseRepository
     {
         return await _context.UserQuizResponses
             .AsNoTracking()
-            .Include(x => x.Question)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.QuizQuestionId == questionId);
     }
 
@@ -59,7 +58,6 @@ public class UserQuizResponseRepository : IUserQuizResponseRepository
     {
         return await _context.UserQuizResponses
             .AsNoTracking()
-            .Include(x => x.Question)
             .FirstOrDefaultAsync(x =>
                 x.UserId == userId
                 && x.QuizAssignmentId == assignmentId

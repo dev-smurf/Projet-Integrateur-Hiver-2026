@@ -9,7 +9,7 @@ public interface IQuizAssignmentRepository
     Task<List<QuizAssignment>> GetByQuizIdAsync(Guid quizId);
     Task<QuizAssignment?> GetByUserIdAndQuizAsync(Guid userId, Guid quizId);
     Task<QuizAssignment?> GetAvailableByIdForUserAsync(Guid assignmentId, Guid userId);
-    Task<Dictionary<Guid, int>> GetNextVersionsAsync(Guid quizId, IEnumerable<Guid> userIds);
+    Task<Dictionary<Guid, int>> GetNextFollowUpOrdersAsync(Guid quizId, IEnumerable<Guid> userIds);
     Task CreateAsync(QuizAssignment assignment);
     Task CreateRangeAsync(IEnumerable<QuizAssignment> assignments);
     Task UpdateAsync(QuizAssignment assignment);

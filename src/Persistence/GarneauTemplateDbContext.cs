@@ -141,6 +141,10 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
                .HasForeignKey(r => r.QuizAssignmentId)
                .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Entity<QuizAssignment>()
+               .Property(a => a.FollowUpLabel)
+               .HasMaxLength(100);
+
         // =========================
         // ✅ Soft delete filter
         // =========================

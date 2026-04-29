@@ -77,6 +77,8 @@ public class SubmitQuizResponseEndpoint : Endpoint<SubmitQuizRequest, SubmitQuiz
 
     private void ValidateResponse(SubmitQuizRequest req, QuizQuestion question)
     {
+        var selectedResponseIds = NormalizeSelectedResponseIds(req.SelectedResponseIds);
+
         switch (question.QuestionType)
         {
             case QuizQuestionType.Scale1To10:
@@ -93,11 +95,11 @@ public class SubmitQuizResponseEndpoint : Endpoint<SubmitQuizRequest, SubmitQuiz
                 break;
 
             case QuizQuestionType.MultipleSelection:
-                if (req.SelectedResponseIds.Count == 0)
+                if (selectedResponseIds.Count == 0)
                     throw new InvalidOperationException("At least one response selection is required for multiple selection question");
 
                 var validResponseIds = question.Responses.Select(r => r.Id).ToHashSet();
-                if (req.SelectedResponseIds.Distinct().Any(id => !validResponseIds.Contains(id)))
+                if (selectedResponseIds.Any(id => !validResponseIds.Contains(id)))
                     throw new InvalidOperationException("One or more selected responses are not valid for this question");
                 break;
 
@@ -127,11 +129,19 @@ public class SubmitQuizResponseEndpoint : Endpoint<SubmitQuizRequest, SubmitQuiz
                 userResponse.SelectedResponseId = req.SelectedResponseId;
                 break;
             case QuizQuestionType.MultipleSelection:
-                userResponse.SelectedResponseIds = string.Join(",", req.SelectedResponseIds.Distinct());
+                userResponse.SelectedResponseIds = string.Join(",", NormalizeSelectedResponseIds(req.SelectedResponseIds));
                 break;
             case QuizQuestionType.TextInput:
                 userResponse.SelectedTextResponse = req.SelectedTextResponse;
                 break;
         }
+    }
+
+    private static List<Guid> NormalizeSelectedResponseIds(List<Guid>? selectedResponseIds)
+    {
+        return selectedResponseIds?
+            .Where(id => id != Guid.Empty)
+            .Distinct()
+            .ToList() ?? [];
     }
 }
