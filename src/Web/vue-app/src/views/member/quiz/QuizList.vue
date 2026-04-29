@@ -16,11 +16,33 @@
 
       <!-- Quiz Cards Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         <div 
           v-for="quiz in assignedQuizzes" 
           :key="quiz.id"
-          class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+          :class="[
+            'rounded-lg shadow-md transition-shadow overflow-hidden',
+            isAvailable(quiz)
+              ? 'bg-white hover:shadow-lg'
+              : 'bg-gray-100 opacity-60 cursor-not-allowed'
+          ]"
         >
+          <!-- Overdue banner -->
+          <div 
+            v-if="!quiz.isCompleted && quiz.dueDate && quiz.dueDate <= new Date()"
+            class="bg-red-500 text-white text-xs font-bold px-3 py-1 text-center"
+          >
+            ⚠️ {{ $t('quiz.overdue') }}
+          </div>
+
+          <!-- Not yet available banner -->
+          <div 
+            v-if="!isAvailable(quiz)"
+            class="bg-gray-400 text-white text-xs font-bold px-3 py-1 text-center"
+          >
+            🔒 {{ $t('quiz.notYetAvailable') }}
+          </div>
+
           <!-- Quiz Image -->
           <div class="relative h-48 bg-gradient-to-br from-blue-400 to-purple-500 overflow-hidden">
             <img 
@@ -67,12 +89,17 @@
             <!-- Action Button -->
             <button
               v-if="!quiz.isCompleted"
-              @click="startQuiz(quiz)"
-              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors"
+              @click="isAvailable(quiz) && startQuiz(quiz)"
+              :disabled="!isAvailable(quiz)"
+              :class="[
+                'w-full font-bold py-2 px-4 rounded transition-colors',
+                isAvailable(quiz)
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ]"
             >
               {{ $t('quiz.startQuiz') }}
-            </button>
-            <button
+            </button>            <button
               v-else
               @click="viewResults(quiz)"
               class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors"
@@ -94,6 +121,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuizService } from '@/inversify.config'
 import type { AssignedQuiz } from '@/services/quizService'
+import { DateTime } from 'luxon'
 
 const router = useRouter()
 const route = useRoute()
@@ -120,6 +148,11 @@ const formatDate = (date: Date | string): string => {
 const formatDateTime = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date
   return d.toLocaleString()
+}
+
+const isAvailable = (quiz: AssignedQuiz): boolean => {
+  if (!quiz.dueDate) return true
+  return quiz.dueDate <= new Date()
 }
 
 const startQuiz = (quiz: AssignedQuiz) => {
