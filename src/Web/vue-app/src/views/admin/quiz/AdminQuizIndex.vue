@@ -44,8 +44,24 @@
           <p v-if="quiz.description" class="text-sm text-gray-600 mb-3">{{ quiz.description }}</p>
 
           <!-- Question Count -->
-          <div class="text-xs text-gray-500 mb-4">
+          <div class="text-xs text-gray-500 mb-3">
             {{ quiz.questions.length }} {{ $t('global.questions') }}
+          </div>
+
+          <!-- Due Date / Coming Soon -->
+          <div class="mb-4">
+            <span
+              v-if="!quiz.dueDate || quiz.dueDate > new Date()"
+              class="inline-block bg-gray-900 text-white text-xs font-bold px-3 py-1 rounded-full"
+            >
+              🕐 {{ $t('quiz.comingSoon') }}
+            </span>
+            <span
+              v-else
+              class="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full"
+            >
+              📅 {{ $t('quiz.dueDate') }}: {{ formatDate(quiz.dueDate) }}
+            </span>
           </div>
 
           <!-- Action Buttons -->
@@ -163,6 +179,11 @@ const showAssignModal = ref(false)
 const selectedQuizForAssignment = ref<Quiz | null>(null)
 const successMessage = ref('')
 
+const formatDate = (date: Date | string): string => {
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleDateString()
+}
+
 async function loadQuizzes() {
   loading.value = true
   try {
@@ -211,12 +232,10 @@ function handleAssignmentComplete() {
   selectedQuizForAssignment.value = null
   successMessage.value = 'Quiz assigned successfully!'
 
-  // Clear success message after 3 seconds
   setTimeout(() => {
     successMessage.value = ''
   }, 3000)
 
-  // Reload quizzes to show updated assignment count
   loadQuizzes()
 }
 
@@ -224,7 +243,6 @@ onMounted(() => {
   loadQuizzes()
 })
 
-// Watch for route changes to reload quizzes when returning to this page
 watch(
   () => route.name,
   (newName) => {
