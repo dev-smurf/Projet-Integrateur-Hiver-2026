@@ -174,13 +174,78 @@ const equipeOptions = computed(() =>
   })).filter((option) => option.value && option.label),
 );
 
-onMounted(async () => {
-  equipes.value = await equipeService.getAllEquipes();
-  const data = await memberService.getMember(route.params.id as string);
-  Object.assign(member, data);
-  member.equipeIds = data.equipeIds ?? [];
-  loadingMember.value = false;
-});
+onMounted(loadMemberData);
+
+type MemberApiResponse = Partial<Member> & {
+  Id?: string;
+  UserId?: string;
+  Created?: string;
+  Active?: boolean;
+  AccountActivated?: boolean;
+  FirstName?: string;
+  LastName?: string;
+  FullName?: string;
+  Email?: string;
+  PhoneNumber?: string;
+  PhoneExtension?: number;
+  Apartment?: number;
+  Street?: string;
+  City?: string;
+  ZipCode?: string;
+  AdminNotes?: string;
+  AdminNotesVisibleToMember?: boolean;
+  Roles?: string[];
+  EquipeIds?: string[];
+};
+
+async function loadMemberData() {
+  loadingMember.value = true;
+  apiErrors.value = [];
+
+  try {
+    const memberId = String(route.params.id ?? "");
+    const [equipesData, data] = await Promise.all([
+      equipeService.getAllEquipes(),
+      memberService.getMember(memberId),
+    ]);
+
+    const payload = data as MemberApiResponse;
+    const resolvedId = payload.id ?? payload.Id;
+    if (!resolvedId) {
+      throw new Error("Member payload is missing its identifier.");
+    }
+
+    equipes.value = equipesData;
+    hydrateMember(payload, memberId);
+  } catch (error) {
+    console.error("Erreur lors du chargement du membre:", error);
+    apiErrors.value = ["Impossible de charger les donnees du membre."];
+  } finally {
+    loadingMember.value = false;
+  }
+}
+
+function hydrateMember(data: MemberApiResponse, fallbackId: string) {
+  member.id = data.id ?? data.Id ?? fallbackId;
+  member.userId = data.userId ?? data.UserId;
+  member.created = data.created ?? data.Created;
+  member.active = data.active ?? data.Active;
+  member.accountActivated = data.accountActivated ?? data.AccountActivated;
+  member.firstName = data.firstName ?? data.FirstName ?? "";
+  member.lastName = data.lastName ?? data.LastName ?? "";
+  member.fullName = data.fullName ?? data.FullName ?? "";
+  member.email = data.email ?? data.Email ?? "";
+  member.phoneNumber = data.phoneNumber ?? data.PhoneNumber ?? "";
+  member.phoneExtension = data.phoneExtension ?? data.PhoneExtension;
+  member.apartment = data.apartment ?? data.Apartment;
+  member.street = data.street ?? data.Street ?? "";
+  member.city = data.city ?? data.City ?? "";
+  member.zipCode = data.zipCode ?? data.ZipCode ?? "";
+  member.adminNotes = data.adminNotes ?? data.AdminNotes;
+  member.adminNotesVisibleToMember = data.adminNotesVisibleToMember ?? data.AdminNotesVisibleToMember;
+  member.roles = data.roles ?? data.Roles ?? [];
+  member.equipeIds = (data.equipeIds ?? data.EquipeIds ?? []).map(String);
+}
 
 function validateField(field: string, value: string, rules: Rule[]) {
   const result = validate(value, rules);
