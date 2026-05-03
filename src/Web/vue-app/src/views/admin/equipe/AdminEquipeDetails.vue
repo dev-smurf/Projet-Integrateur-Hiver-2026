@@ -3,6 +3,11 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">{{ equipe?.nameFr || equipe?.nameEn || "Équipe" }}</h1>
+                <span v-if="equipe?.parentEquipeId"
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                    <GitBranch class="w-3 h-3" />
+                    Sous-équipe
+                </span>
                 <p class="text-sm text-gray-500">{{ $t('pages.equipeDetails.subtitle') }}</p>
             </div>
             <div class="flex items-center gap-2">
@@ -40,6 +45,51 @@
                         <CheckCircle2 class="h-5 w-5 text-emerald-600" />
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ availableMembersCount }}</p>
+                </div>
+            </div>
+
+            <!-- Sous-équipes -->
+            <div v-if="equipe?.sousEquipes?.length" class="bg-white border border-gray-200 rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-gray-900 mb-4">
+                    Sous-équipes ({{ equipe.sousEquipes.length }})
+                </h2>
+                <div class="space-y-2">
+                    <div v-for="sousEquipe in equipe.sousEquipes" :key="sousEquipe.id"
+                         class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <div class="flex items-center gap-3">
+                            <Users class="w-4 h-4 text-brand-500" />
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ sousEquipe.nameFr || sousEquipe.nameEn }}
+                            </span>
+                        </div>
+                        <router-link :to="{ name: 'admin.children.equipes.details', params: { id: sousEquipe.id } }"
+                                     class="text-xs text-brand-600 hover:underline">
+                            {{ $t('global.view') }}
+                        </router-link>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Équipe parente -->
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-gray-900 mb-4">Équipe parente</h2>
+                <div class="flex items-end gap-3">
+                    <div class="flex-1">
+                        <select v-model="selectedParentEquipeId"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                            <option :value="undefined">— Aucune (équipe principale) —</option>
+                            <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
+                                {{ e.nameFr || e.nameEn }}
+                            </option>
+                        </select>
+                    </div>
+                    <button @click="saveParentEquipe"
+                            :disabled="savingParent"
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Loader2 v-if="savingParent" class="w-4 h-4 animate-spin" />
+                        <Save v-else class="w-4 h-4" />
+                        {{ $t('global.save') }}
+                    </button>
                 </div>
             </div>
 
@@ -109,9 +159,9 @@
     import { useRoute } from "vue-router";
     import { useI18n } from "vue3-i18n";
     import { useNotification } from "@kyvg/vue3-notification";
-    import { Users, CheckCircle2, UsersRound, Trash2 } from "lucide-vue-next";
+    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
-    import type { Member } from "@/types/entities";
+    import type { Member, Equipe } from "@/types/entities";
 
     const { t } = useI18n();
     const route = useRoute();
@@ -120,9 +170,12 @@
     const memberService = useMemberService();
 
     const equipe = ref<any>(null);
+    const parentEquipes = ref<Equipe[]>([]);
     const equipeMembers = ref<any[]>([]);
     const allMembers = ref<Member[]>([]);
     const loading = ref(true);
+    const savingParent = ref(false);
+    const selectedParentEquipeId = ref<string | undefined>(undefined);
     const memberSearch = ref("");
     const selectedMemberId = ref("");
     const addingMember = ref(false);
@@ -152,10 +205,20 @@
         return ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
     }
 
+    async function loadParentEquipes() {
+        try {
+            const result = await equipesService.getAllEquipes();
+            parentEquipes.value = (result || []).filter(e => e.id !== equipeId.value && !e.parentEquipeId);
+        } catch {
+            parentEquipes.value = [];
+        }
+    }
+
     async function loadData() {
         loading.value = true;
         try {
             equipe.value = await equipesService.getEquipe(equipeId.value);
+            selectedParentEquipeId.value = equipe.value?.parentEquipeId ?? undefined;
 
             const membersResponse = await equipesService.getEquipeMembers(equipeId.value);
             equipeMembers.value = membersResponse?.members || [];
@@ -166,6 +229,29 @@
             notify({ type: "error", text: t("pages.equipeDetails.notify.loadError") });
         } finally {
             loading.value = false;
+        }
+    }
+
+    async function saveParentEquipe() {
+        savingParent.value = true;
+        try {
+            const response = await equipesService.updateEquipe(equipeId.value, {
+                nameFr: equipe.value.nameFr,
+                nameEn: equipe.value.nameEn,
+                memberIds: equipeMembers.value.map(m => m.memberId),
+                parentEquipeId: selectedParentEquipeId.value,
+            });
+
+            if (response?.succeeded) {
+                equipe.value.parentEquipeId = selectedParentEquipeId.value;
+                notify({ type: "success", text: t("pages.equipes.edit.successMessage") });
+            } else {
+                notify({ type: "error", text: response.errors?.join(", ") || t("pages.equipes.edit.failedMessage") });
+            }
+        } catch {
+            notify({ type: "error", text: t("pages.equipes.edit.failedMessage") });
+        } finally {
+            savingParent.value = false;
         }
     }
 
@@ -209,5 +295,7 @@
         }
     }
 
-    onMounted(loadData);
+    onMounted(async () => {
+        await Promise.all([loadData(), loadParentEquipes()]);
+    });
 </script>

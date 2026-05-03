@@ -8,4 +8,5 @@ public class EditEquipeRequest : IEditEquipeRequest
     public string NameFr { get; set; } = null!;
     public string NameEn { get; set; } = null!;
     public List<string> MemberIds { get; set; } = new();
+    public string? ParentEquipeId { get; set; }
 }

@@ -27,12 +27,7 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
     {
         req.Sanitize();
 
-        var newEquipe = new Equipe
-        {
-            NameFr = req.NameFr,
-            NameEn = req.NameEn ?? string.Empty
-        };
-
+        var newEquipe = new Equipe(req.NameFr!, req.NameEn ?? string.Empty, req.ParentEquipeId);
         newEquipe.SanitazeForSaving();
 
         await _equipeRepository.CreateEquipe(newEquipe);

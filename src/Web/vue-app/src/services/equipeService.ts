@@ -135,26 +135,12 @@ export class EquipeService extends ApiService implements IEquipesService {
       return await this.getEquipe(id);
     } catch {
       try {
-        const list = await this.getAllEquipes();
-        const found = list.find((m: Equipe) => {
-          const ids = [
-            m.Id,
-            (m as any).id,
-            (m as any).IdString,
-            (m as any).Id && (m as any).Id.toString && (m as any).Id.toString(),
-          ];
-          return ids.some((x: any) => x === id);
-        });
+          const list = await this.getAllEquipes();
+          const found = list.find((m: Equipe) => m.id === id);
         if (found) return found;
-
-        const num = Number(id);
-        if (!isNaN(num)) {
-          if (num > 0 && num <= list.length) return list[num - 1];
-          if (num >= 0 && num < list.length) return list[num];
-        }
         return null;
       } catch (e) {
-        console.error("Erreur lors du fallback getAllModules:", e);
+        console.error("Erreur lors du fallback getAllEquipes:", e);
         return null;
       }
     }

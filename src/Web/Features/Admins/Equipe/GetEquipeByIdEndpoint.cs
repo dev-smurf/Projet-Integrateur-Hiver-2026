@@ -33,7 +33,7 @@ public class GetEquipeByIdEndpoint : EndpointWithoutRequest<EquipeDto>
             return;
         }
 
-        var entity = await _repository.FindByIdWithMembers(guidId);
+        var entity = await _repository.FindByIdWithMembersAndSousEquipes(guidId);
 
         if (entity is null)
         {
@@ -47,7 +47,15 @@ public class GetEquipeByIdEndpoint : EndpointWithoutRequest<EquipeDto>
             Id = entity.Id.ToString(),
             NameFr = entity.NameFr,
             NameEn = entity.NameEn,
-            MemberIds = entity.Membres.Select(u => u.Id.ToString()).ToList()
+            ParentEquipeId = entity.ParentEquipeId?.ToString(),
+            MemberUserIds = entity.Membres.Select(u => u.Id.ToString()).ToList(),
+            SousEquipes = entity.SousEquipes.Select(s => new EquipeDto
+            {
+                Id = s.Id.ToString(),
+                NameFr = s.NameFr,
+                NameEn = s.NameEn,
+                ParentEquipeId = s.ParentEquipeId?.ToString()
+            }).ToList()
         };
     }
 }

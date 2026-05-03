@@ -16,6 +16,18 @@
                        type="text"
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Équipe parente (optionnel)
+                </label>
+                <select v-model="_equipe.parentEquipeId"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                    <option :value="undefined">— Aucune (équipe principale) —</option>
+                    <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
+                        {{ e.nameFr || e.nameEn }}
+                    </option>
+                </select>
+            </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -136,6 +148,7 @@
                 nameFr: equipe.nameFr || "",
                 nameEn: equipe.nameEn || "",
                 memberIds: (equipe as any).memberIds ?? [],
+                parentEquipeId: equipe.parentEquipeId,
             };
             selectedMemberIds.value = (equipe as any).memberIds ?? [];
         } catch {
@@ -156,6 +169,15 @@
             allMembers.value = [];
         } finally {
             loadingMembers.value = false;
+        }
+    }
+    async function loadParentEquipes() {
+        try {
+            const result = await equipesService.getAllEquipes();
+            // Exclure l'équipe courante et ses sous-équipes
+            parentEquipes.value = (result || []).filter(e => e.id !== id && !e.parentEquipeId);
+        } catch {
+            parentEquipes.value = [];
         }
     }
 
@@ -198,8 +220,8 @@
             submitting.value = false;
         }
     }
-
+    
     onMounted(async () => {
-        await Promise.all([fetchEquipe(), fetchMembers()]);
+        await Promise.all([fetchEquipe(), fetchMembers(), loadingMembers()]);
     });
 </script>
