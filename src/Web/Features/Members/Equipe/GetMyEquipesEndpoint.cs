@@ -41,7 +41,10 @@ public class GetMyEquipesEndpoint : EndpointWithoutRequest<List<EquipeDto>>
             {
                 Id = e.Id.ToString(),
                 NameFr = e.NameFr,
-                NameEn = e.NameEn
+                NameEn = e.NameEn,
+                ParentEquipeId = e.ParentEquipeId?.ToString(),
+                ParentEquipeNameFr = e.ParentEquipe?.NameFr,
+                ParentEquipeNameEn = e.ParentEquipe?.NameEn
             })
             .ToList();
 

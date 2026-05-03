@@ -11,9 +11,15 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_MemberEquipes_MemberId",
-                table: "MemberEquipes");
+            migrationBuilder.Sql(@"
+IF EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'IX_MemberEquipes_MemberId'
+      AND object_id = OBJECT_ID(N'[dbo].[MemberEquipes]')
+)
+    DROP INDEX [IX_MemberEquipes_MemberId] ON [dbo].[MemberEquipes];
+");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ParentEquipeId",
@@ -21,11 +27,16 @@ namespace Persistence.Migrations
                 type: "uniqueidentifier",
                 nullable: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberEquipes_MemberId_EquipeId",
-                table: "MemberEquipes",
-                columns: new[] { "MemberId", "EquipeId" },
-                unique: true);
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[dbo].[MemberEquipes]', N'U') IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'IX_MemberEquipes_MemberId_EquipeId'
+      AND object_id = OBJECT_ID(N'[dbo].[MemberEquipes]')
+)
+    CREATE UNIQUE INDEX [IX_MemberEquipes_MemberId_EquipeId] ON [dbo].[MemberEquipes]([MemberId], [EquipeId]);
+");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Equipes_ParentEquipeId",
@@ -48,9 +59,16 @@ namespace Persistence.Migrations
                 name: "FK_Equipes_Equipes_ParentEquipeId",
                 table: "Equipes");
 
-            migrationBuilder.DropIndex(
-                name: "IX_MemberEquipes_MemberId_EquipeId",
-                table: "MemberEquipes");
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[dbo].[MemberEquipes]', N'U') IS NOT NULL
+AND EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'IX_MemberEquipes_MemberId_EquipeId'
+      AND object_id = OBJECT_ID(N'[dbo].[MemberEquipes]')
+)
+    DROP INDEX [IX_MemberEquipes_MemberId_EquipeId] ON [dbo].[MemberEquipes];
+");
 
             migrationBuilder.DropIndex(
                 name: "IX_Equipes_ParentEquipeId",
@@ -60,10 +78,15 @@ namespace Persistence.Migrations
                 name: "ParentEquipeId",
                 table: "Equipes");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberEquipes_MemberId",
-                table: "MemberEquipes",
-                column: "MemberId");
+            migrationBuilder.Sql(@"
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'IX_MemberEquipes_MemberId'
+      AND object_id = OBJECT_ID(N'[dbo].[MemberEquipes]')
+)
+    CREATE INDEX [IX_MemberEquipes_MemberId] ON [dbo].[MemberEquipes]([MemberId]);
+");
         }
     }
 }

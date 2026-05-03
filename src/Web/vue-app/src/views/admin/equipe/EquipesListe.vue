@@ -64,7 +64,13 @@
                 :key="equipe.id"
                 class="hover:bg-gray-50 transition cursor-pointer">
                 <td class="px-4 py-3 text-sm text-gray-900">
-                        {{ equipe.nameFr || equipe.nameEn }}
+                        <div class="font-medium text-gray-900">
+                          {{ equipe.nameFr || equipe.nameEn }}
+                        </div>
+                        <div v-if="getParentEquipeLabel(equipe)"
+                             class="mt-1 text-xs text-gray-500">
+                          Équipe parente : {{ getParentEquipeLabel(equipe) }}
+                        </div>
                 </td>
 
                 <td class="px-4 py-3 text-right">
@@ -194,6 +200,28 @@ function goToEquipeDetails(equipe: Equipe) {
             params: { id: equipe.id },
         });
 }
+
+function getEquipeId(equipe: Equipe): string {
+  return String(equipe.id ?? equipe.Id ?? "");
+}
+
+function getEquipeName(equipe: Equipe): string {
+  return String(equipe.nameFr ?? equipe.nameEn ?? "");
+}
+
+function getParentEquipeLabel(equipe: Equipe): string | null {
+  if (!equipe.parentEquipeId) {
+    return null;
+  }
+
+  const parent = allEquipes.value.find((item) => getEquipeId(item) === equipe.parentEquipeId);
+  if (!parent) {
+    return null;
+  }
+
+  return getEquipeName(parent) || null;
+}
+
 async function fetchEquipes() {
   loading.value = true;
   try {

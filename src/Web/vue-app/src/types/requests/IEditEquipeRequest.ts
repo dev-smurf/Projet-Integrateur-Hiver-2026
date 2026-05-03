@@ -3,4 +3,5 @@ export interface IEditEquipeRequest {
   nameFr?: string;
   nameEn?: string;
   memberIds?: string[];
+  parentEquipeId?: string;
 }

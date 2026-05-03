@@ -18,6 +18,7 @@ public class MemberEquipeRepository : IMemberEquipeRepository
     {
         return await _context.MemberEquipes
             .Include(me => me.Equipe)
+                .ThenInclude(e => e.ParentEquipe)
             .Where(me => me.MemberId == memberId && me.Deleted == null)
             .ToListAsync();
     }

@@ -12,6 +12,7 @@ public interface IEquipeRepository
     Task ReplaceUserEquipes(Domain.Entities.Identity.User user, IEnumerable<Guid> ids);
     Task<Equipe?> FindById(Guid id);
     Task<Equipe?> FindByIdWithMembers(Guid id);
+    Task<Equipe?> FindByIdWithMembersAndSousEquipes(Guid id);
     Task CreateEquipe(Equipe equipe);
     Task UpdateEquipe(Equipe equipe);
     Task DeleteEquipeWithId(Guid id);

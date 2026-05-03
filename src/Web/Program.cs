@@ -57,6 +57,7 @@ builder.Services.AddScoped<IModuleService, ModuleService>();
 builder.Services.AddScoped<IEquipeRepository, EquipeRepository>();
 builder.Services.AddScoped<IEquipeService, EquipeService>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IEquipeConversationRepository, EquipeConversationRepository>();
 builder.Services.AddScoped<IQuizRepository, Infrastructure.Repositories.Quiz.QuizRepository>();
 builder.Services.AddScoped<IQuizAssignmentRepository, Infrastructure.Repositories.Quiz.QuizAssignmentRepository>();
 builder.Services.AddScoped<IUserQuizResponseRepository, Infrastructure.Repositories.Quiz.UserQuizResponseRepository>();

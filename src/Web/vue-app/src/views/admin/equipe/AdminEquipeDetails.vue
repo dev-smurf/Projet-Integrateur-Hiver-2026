@@ -75,13 +75,12 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Équipe parente</h2>
                 <div class="flex items-end gap-3">
                     <div class="flex-1">
-                        <select v-model="selectedParentEquipeId"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
-                            <option :value="undefined">— Aucune (équipe principale) —</option>
-                            <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
-                                {{ e.nameFr || e.nameEn }}
-                            </option>
-                        </select>
+                        <Select2Single v-model="selectedParentEquipeId"
+                                       :options="parentEquipeOptions"
+                                       clear-label="— Aucune (équipe principale) —"
+                                       placeholder="Choisir une équipe parente"
+                                       search-placeholder="Rechercher une équipe"
+                                       empty-text="Aucune équipe trouvée" />
                     </div>
                     <button @click="saveParentEquipe"
                             :disabled="savingParent"
@@ -161,6 +160,7 @@
     import { useNotification } from "@kyvg/vue3-notification";
     import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
+    import Select2Single from "@/components/forms/Select2Single.vue";
     import type { Member, Equipe } from "@/types/entities";
 
     const { t } = useI18n();
@@ -188,6 +188,15 @@
         return allMembers.value.filter(m => !assignedIds.has(m.id)).length;
     });
 
+    const parentEquipeOptions = computed(() =>
+        parentEquipes.value
+            .map(e => ({
+                value: String(e.id ?? e.Id ?? ""),
+                label: String(e.nameFr ?? e.nameEn ?? ""),
+            }))
+            .filter(option => option.value && option.label),
+    );
+
     const filteredAvailableMembers = computed(() => {
         const q = memberSearch.value.toLowerCase().trim();
         const assignedIds = new Set(equipeMembers.value.map(m => m.memberId));
@@ -208,7 +217,7 @@
     async function loadParentEquipes() {
         try {
             const result = await equipesService.getAllEquipes();
-            parentEquipes.value = (result || []).filter(e => e.id !== equipeId.value && !e.parentEquipeId);
+            parentEquipes.value = (result || []).filter(e => (e.id ?? e.Id) !== equipeId.value && !e.parentEquipeId);
         } catch {
             parentEquipes.value = [];
         }

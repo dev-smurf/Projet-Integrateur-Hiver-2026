@@ -8,6 +8,10 @@ namespace Domain.Entities
     {
         public string NameFr { get; set; } = null!;
         public string NameEn { get; set; } = null!;
+        public Guid? ParentEquipeId { get; private set; }
+        public Equipe? ParentEquipe { get; private set; }
+        public ICollection<Equipe> SousEquipes { get; private set; } = new List<Equipe>();
+        public ICollection<MemberEquipe> MemberEquipes { get; private set; } = new List<MemberEquipe>();
 
         public ICollection<User> Membres { get; private set; } = new List<User>();
 
@@ -23,6 +27,18 @@ namespace Domain.Entities
         {
             NameFr = nameFr;
             NameEn = nameEn;
+        }
+
+        public Equipe(string nameFr, string nameEn, Guid? parentEquipeId)
+        {
+            NameFr = nameFr;
+            NameEn = nameEn;
+            ParentEquipeId = parentEquipeId;
+        }
+
+        public void SetParentEquipe(Guid? parentEquipeId)
+        {
+            ParentEquipeId = parentEquipeId;
         }
     }
 }
