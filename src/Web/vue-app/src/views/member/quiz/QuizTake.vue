@@ -46,28 +46,24 @@
           <div class="mb-4">
             <label class="text-sm text-gray-600">{{ $t('quiz.rate') }} 1-10</label>
           </div>
-          <div class="space-y-2 mb-4">
-            <!-- Display all scale labels if available -->
-            <div class="flex gap-2 text-xs text-gray-500 font-semibold">
-              <div v-for="score in 10" :key="`label-${score}`" class="flex-1 text-center">
-                {{ currentQuestion.scaleLabels && currentQuestion.scaleLabels[score - 1] ? currentQuestion.scaleLabels[score - 1] : '' }}
+          <div class="mb-4 overflow-x-auto">
+            <div class="grid grid-cols-10 gap-2 min-w-[640px]">
+              <div v-for="score in 10" :key="score" class="flex flex-col items-stretch">
+                <div class="h-10 mb-1 text-xs leading-tight text-gray-500 font-semibold text-center break-words flex items-end justify-center">
+                  {{ currentQuestion.scaleLabels && currentQuestion.scaleLabels[score - 1] ? currentQuestion.scaleLabels[score - 1] : '' }}
+                </div>
+                <button
+                  @click="selectScore(score)"
+                  :class="[
+                    'h-10 rounded font-bold transition-all',
+                    responses[currentQuestion.id]?.selectedScore === score
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  ]"
+                >
+                  {{ score }}
+                </button>
               </div>
-            </div>
-            <!-- Score buttons -->
-            <div class="flex gap-2">
-              <button
-                v-for="score in 10"
-                :key="score"
-                @click="selectScore(score)"
-                :class="[
-                  'flex-1 py-2 px-3 rounded font-bold transition-all',
-                  responses[currentQuestion.id]?.selectedScore === score
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                ]"
-              >
-                {{ score }}
-              </button>
             </div>
           </div>
         </div>

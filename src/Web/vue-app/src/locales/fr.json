@@ -705,7 +705,7 @@
     "description": "Description",
     "imageUrl": "URL de l'image",
     "questions": "Questions",
-    "addQuestion": "+ Ajouter une question",
+    "addQuestion": " Ajouter une question",
     "questionText": "Texte de la question",
     "questionType": "Type de question",
     "placeholder": "Espace réservé",
@@ -802,7 +802,7 @@
     "completionMessage": "Quiz complete avec succes.",
     "yourAnswers": "Vos reponses",
     "yourAnswer": "Votre reponse",
-    "backToList": "Retour a la liste",
+    "backToList": "Retour aux quiz",
     "assign": {
       "unassigned": "Non assignés",
       "assigned": "Assignés",

@@ -684,7 +684,7 @@
     "description": "Description",
     "imageUrl": "Image URL",
     "questions": "Questions",
-    "addQuestion": "+ Add Question",
+    "addQuestion": " Add Question",
     "questionText": "Question Text",
     "questionType": "Question Type",
     "placeholder": "Placeholder",
@@ -803,7 +803,7 @@
     "completionMessage": "Quiz completed successfully.",
     "yourAnswers": "Your answers",
     "yourAnswer": "Your answer",
-    "backToList": "Back to list",
+    "backToList": "Back to quizzes",
     "move": {
       "toTop": "Move to top",
       "up": "Move up",

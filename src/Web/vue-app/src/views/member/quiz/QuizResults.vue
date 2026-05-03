@@ -51,28 +51,25 @@
 
             <!-- Scale Answer -->
             <div v-if="response.questionType === 'Scale1To10'" class="space-y-4">
-              <!-- Labels Row for each option -->
-              <div class="flex gap-2 justify-between text-xs font-semibold text-gray-600 px-1 mb-2">
-                <div v-for="option in response.scaleOptions" :key="`label-${option.value}`" class="flex-1 text-center truncate">
-                  {{ option.label || '' }}
+              <div class="overflow-x-auto">
+                <div class="grid grid-cols-10 gap-2 min-w-[640px]">
+                  <div v-for="option in response.scaleOptions" :key="option.value" class="flex flex-col items-stretch">
+                    <div class="h-10 mb-1 text-xs leading-tight font-semibold text-gray-600 text-center break-words flex items-end justify-center">
+                      {{ option.label || '' }}
+                    </div>
+                    <button
+                      :class="[
+                        'h-10 rounded font-bold transition-all text-sm',
+                        option.isSelected
+                          ? 'bg-blue-500 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ]"
+                      disabled
+                    >
+                      {{ option.value }}
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <!-- Scale Buttons -->
-              <div class="flex gap-2 justify-between">
-                <button
-                  v-for="option in response.scaleOptions"
-                  :key="option.value"
-                  :class="[
-                    'flex-1 py-3 rounded font-bold transition-all text-sm',
-                    option.isSelected
-                      ? 'bg-blue-500 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  ]"
-                  disabled
-                >
-                  {{ option.value }}
-                </button>
               </div>
 
               <!-- Answer Display -->
@@ -223,6 +220,6 @@ const getResponseText = (question: any, responseId: string): string => {
 }
 
 const goBack = () => {
-  router.push({ name: 'quiz' })
+  router.push({ name: 'quiz.list' })
 }
 </script>
