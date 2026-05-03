@@ -39,6 +39,7 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
         }
 
         var members = equipe.MemberEquipes
+            .Where(me => me.Member != null && me.Member.User != null)
             .Select(me => new GetEquipeMemberDto
             {
                 MemberId = me.MemberId.ToString(),
@@ -48,6 +49,23 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
                 Email = me.Member.Email
             })
             .ToList();
+
+        if (members.Count == 0 && equipe.Membres.Count > 0)
+        {
+            members = equipe.Membres
+                .Select(user => _memberRepository.FindByUserId(user.Id))
+                .Where(member => member != null)
+                .Select(member => new GetEquipeMemberDto
+                {
+                    MemberId = member!.Id.ToString(),
+                    UserId = member.User.Id.ToString(),
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    Email = member.Email
+                })
+                .DistinctBy(member => member.MemberId)
+                .ToList();
+        }
 
         var response = new GetEquipeMembersResponse
         {

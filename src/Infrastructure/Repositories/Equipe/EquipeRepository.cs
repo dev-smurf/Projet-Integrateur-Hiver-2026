@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Repositories;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -111,95 +112,145 @@ public class EquipeRepository : IEquipeRepository
 
     public async Task<Equipe?> FindByIdWithMembers(Guid id)
     {
-        return await _context.Equipes
-            .Include(e => e.Membres)
-            .Include(e => e.MemberEquipes)
-                .ThenInclude(me => me.Member)
-                    .ThenInclude(m => m.User)
-            .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        try
+        {
+            return await _context.Equipes
+                .Include(e => e.Membres)
+                .Include(e => e.MemberEquipes)
+                    .ThenInclude(me => me.Member)
+                        .ThenInclude(m => m.User)
+                .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        }
+        catch (SqlException ex) when (ex.Number == 208)
+        {
+            return await _context.Equipes
+                .Include(e => e.Membres)
+                .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        }
     }
 
     public async Task<Equipe?> FindByIdWithMembersAndSousEquipes(Guid id)
     {
-        return await _context.Equipes
-            .Include(e => e.Membres)
-            .Include(e => e.MemberEquipes)
-                .ThenInclude(me => me.Member)
-                    .ThenInclude(m => m.User)
-            .Include(e => e.SousEquipes)
-            .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        try
+        {
+            return await _context.Equipes
+                .Include(e => e.Membres)
+                .Include(e => e.MemberEquipes)
+                    .ThenInclude(me => me.Member)
+                        .ThenInclude(m => m.User)
+                .Include(e => e.SousEquipes)
+                .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        }
+        catch (SqlException ex) when (ex.Number == 208)
+        {
+            return await _context.Equipes
+                .Include(e => e.Membres)
+                .Include(e => e.SousEquipes)
+                .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+        }
     }
 
     public async Task SetEquipeMembers(Guid equipeId, IEnumerable<Guid> userIds)
     {
-        var equipe = await _context.Equipes
-            .Include(e => e.Membres)
-            .Include(e => e.MemberEquipes)
-            .FirstOrDefaultAsync(e => e.Id == equipeId && e.Deleted == null);
-
-        if (equipe == null)
-            return;
-
-        var targetMemberIds = userIds
-            .Where(id => id != Guid.Empty)
-            .Distinct()
-            .ToHashSet();
-
-        var currentMemberAssignments = await _context.MemberEquipes
-            .Include(me => me.Member)
-                .ThenInclude(m => m.User)
-            .Where(me => me.EquipeId == equipeId && me.Deleted == null)
-            .ToListAsync();
-
-        var toRemoveAssignments = currentMemberAssignments
-            .Where(me => !targetMemberIds.Contains(me.MemberId))
-            .ToList();
-
-        foreach (var assignment in toRemoveAssignments)
+        try
         {
-            assignment.SoftDelete();
-            _context.MemberEquipes.Update(assignment);
-        }
+            var equipe = await _context.Equipes
+                .Include(e => e.Membres)
+                .Include(e => e.MemberEquipes)
+                .FirstOrDefaultAsync(e => e.Id == equipeId && e.Deleted == null);
 
-        var existingMemberIds = currentMemberAssignments
-            .Select(me => me.MemberId)
-            .ToHashSet();
+            if (equipe == null)
+                return;
 
-        var toAddMemberIds = targetMemberIds
-            .Where(id => !existingMemberIds.Contains(id))
-            .ToList();
+            var targetMemberIds = userIds
+                .Where(id => id != Guid.Empty)
+                .Distinct()
+                .ToHashSet();
 
-        if (toAddMemberIds.Count > 0)
-        {
-            foreach (var memberId in toAddMemberIds)
+            var currentMemberAssignments = await _context.MemberEquipes
+                .Include(me => me.Member)
+                    .ThenInclude(m => m.User)
+                .Where(me => me.EquipeId == equipeId && me.Deleted == null)
+                .ToListAsync();
+
+            var toRemoveAssignments = currentMemberAssignments
+                .Where(me => !targetMemberIds.Contains(me.MemberId))
+                .ToList();
+
+            foreach (var assignment in toRemoveAssignments)
             {
-                _context.MemberEquipes.Add(new MemberEquipe(memberId, equipeId));
+                assignment.SoftDelete();
+                _context.MemberEquipes.Update(assignment);
             }
+
+            var existingMemberIds = currentMemberAssignments
+                .Select(me => me.MemberId)
+                .ToHashSet();
+
+            var toAddMemberIds = targetMemberIds
+                .Where(id => !existingMemberIds.Contains(id))
+                .ToList();
+
+            if (toAddMemberIds.Count > 0)
+            {
+                foreach (var memberId in toAddMemberIds)
+                {
+                    _context.MemberEquipes.Add(new MemberEquipe(memberId, equipeId));
+                }
+            }
+
+            var activeAssignments = currentMemberAssignments
+                .Where(me => !toRemoveAssignments.Any(removed => removed.Id == me.Id))
+                .ToList();
+
+            var allAssignedMemberIds = activeAssignments
+                .Select(me => me.MemberId)
+                .Concat(toAddMemberIds)
+                .Distinct()
+                .ToList();
+
+            var assignedUsers = await _context.Members
+                .Include(m => m.User)
+                .Where(m => allAssignedMemberIds.Contains(m.Id) && m.Deleted == null)
+                .Select(m => m.User)
+                .ToListAsync();
+
+            equipe.Membres.Clear();
+            foreach (var user in assignedUsers)
+            {
+                equipe.Membres.Add(user);
+            }
+
+            await _context.SaveChangesAsync();
         }
-
-        var activeAssignments = currentMemberAssignments
-            .Where(me => !toRemoveAssignments.Any(removed => removed.Id == me.Id))
-            .ToList();
-
-        var allAssignedMemberIds = activeAssignments
-            .Select(me => me.MemberId)
-            .Concat(toAddMemberIds)
-            .Distinct()
-            .ToList();
-
-        var assignedUsers = await _context.Members
-            .Include(m => m.User)
-            .Where(m => allAssignedMemberIds.Contains(m.Id) && m.Deleted == null)
-            .Select(m => m.User)
-            .ToListAsync();
-
-        equipe.Membres.Clear();
-        foreach (var user in assignedUsers)
+        catch (SqlException ex) when (ex.Number == 208)
         {
-            equipe.Membres.Add(user);
-        }
+            var equipe = await _context.Equipes
+                .Include(e => e.Membres)
+                .FirstOrDefaultAsync(e => e.Id == equipeId && e.Deleted == null);
 
-        await _context.SaveChangesAsync();
+            if (equipe == null)
+                return;
+
+            var targetMemberIds = userIds
+                .Where(id => id != Guid.Empty)
+                .Distinct()
+                .ToList();
+
+            var assignedUsers = await _context.Members
+                .Include(m => m.User)
+                .Where(m => targetMemberIds.Contains(m.Id) && m.Deleted == null)
+                .Select(m => m.User)
+                .ToListAsync();
+
+            equipe.Membres.Clear();
+            foreach (var user in assignedUsers)
+            {
+                equipe.Membres.Add(user);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task CreateEquipe(Equipe equipe)

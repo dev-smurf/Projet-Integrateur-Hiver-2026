@@ -10,6 +10,7 @@ public class EquipeDto
     public string? ParentEquipeNameFr { get; set; }
     public string? ParentEquipeNameEn { get; set; }
 
+    public List<string> MemberIds { get; set; } = new();
     public List<string> MemberUserIds { get; set; } = new();
     public List<EquipeDto> SousEquipes { get; set; } = new();
 }

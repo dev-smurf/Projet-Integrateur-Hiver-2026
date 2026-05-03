@@ -126,6 +126,15 @@
     const memberSearch = ref("");
     const selectedMemberIds = ref<string[]>([]);
 
+    type EquipeApiResponse = Partial<Equipe> & {
+        Id?: string;
+        NameFr?: string;
+        NameEn?: string;
+        MemberIds?: string[];
+        MemberUserIds?: string[];
+        ParentEquipeId?: string;
+    };
+
     const filteredMembers = computed(() => {
         const q = memberSearch.value.trim().toLowerCase();
         if (!q) return allMembers.value;
@@ -153,14 +162,16 @@
 
     async function fetchEquipe() {
         try {
-            const equipe = await equipesService.getEquipe(id);
+            const equipe = await equipesService.getEquipe(id) as EquipeApiResponse;
+            const memberIds = (equipe.memberIds ?? equipe.MemberIds ?? []).map(String);
+
             _equipe.value = {
-                nameFr: equipe.nameFr || "",
-                nameEn: equipe.nameEn || "",
-                memberIds: (equipe as any).memberIds ?? [],
-                parentEquipeId: equipe.parentEquipeId,
+                nameFr: equipe.nameFr ?? equipe.NameFr ?? "",
+                nameEn: equipe.nameEn ?? equipe.NameEn ?? "",
+                memberIds,
+                parentEquipeId: equipe.parentEquipeId ?? equipe.ParentEquipeId,
             };
-            selectedMemberIds.value = (equipe as any).memberIds ?? [];
+            selectedMemberIds.value = memberIds;
         } catch {
             notify({
                 type: "error",
@@ -185,7 +196,7 @@
         try {
             const result = await equipesService.getAllEquipes();
             // Exclure l'équipe courante et ses sous-équipes
-            parentEquipes.value = (result || []).filter(e => e.id !== id && !e.parentEquipeId);
+            parentEquipes.value = (result || []).filter(e => (e.id ?? e.Id) !== id && !(e.parentEquipeId ?? e.ParentEquipeId));
         } catch {
             parentEquipes.value = [];
         }

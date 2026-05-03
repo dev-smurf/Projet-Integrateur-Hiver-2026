@@ -230,6 +230,22 @@
         "notStarted": "Not started"
       }
     },
+    "equipeDetails": {
+      "subtitle": "Review this team and manage its members.",
+      "memberCount": "Assigned members",
+      "availableMembers": "Available members",
+      "memberManagement": "Member management",
+      "searchMember": "Search member",
+      "searchPlaceholder": "Name or email",
+      "selectMember": "Select member",
+      "chooseMember": "Choose a member",
+      "adding": "Adding...",
+      "assignedMembers": "Assigned members",
+      "noMembersAssigned": "No members assigned to this team.",
+      "notify": {
+        "addError": "Error while adding the member."
+      }
+    },
     "equipes": {
       "create": {
         "validation": {

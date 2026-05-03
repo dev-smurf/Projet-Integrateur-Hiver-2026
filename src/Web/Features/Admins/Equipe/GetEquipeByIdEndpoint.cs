@@ -42,13 +42,34 @@ public class GetEquipeByIdEndpoint : EndpointWithoutRequest<EquipeDto>
             return;
         }
 
+        var memberIds = entity.MemberEquipes
+            .Where(me => me.Member != null)
+            .Select(me => me.MemberId.ToString())
+            .Distinct()
+            .ToList();
+
+        var memberUserIds = entity.MemberEquipes
+            .Where(me => me.Member?.User != null)
+            .Select(me => me.Member.User.Id.ToString())
+            .Distinct()
+            .ToList();
+
+        if (memberUserIds.Count == 0)
+        {
+            memberUserIds = entity.Membres
+                .Select(u => u.Id.ToString())
+                .Distinct()
+                .ToList();
+        }
+
         Response = new EquipeDto
         {
             Id = entity.Id.ToString(),
             NameFr = entity.NameFr,
             NameEn = entity.NameEn,
             ParentEquipeId = entity.ParentEquipeId?.ToString(),
-            MemberUserIds = entity.Membres.Select(u => u.Id.ToString()).ToList(),
+            MemberIds = memberIds,
+            MemberUserIds = memberUserIds,
             SousEquipes = entity.SousEquipes.Select(s => new EquipeDto
             {
                 Id = s.Id.ToString(),

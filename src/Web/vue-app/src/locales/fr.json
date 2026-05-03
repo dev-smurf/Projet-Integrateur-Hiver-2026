@@ -238,6 +238,22 @@
         "notStarted": "Non commencé"
       }
     },
+    "equipeDetails": {
+      "subtitle": "Consultez la composition de l'équipe et gérez ses membres.",
+      "memberCount": "Membres assignés",
+      "availableMembers": "Membres disponibles",
+      "memberManagement": "Gestion des membres",
+      "searchMember": "Rechercher un membre",
+      "searchPlaceholder": "Nom ou courriel",
+      "selectMember": "Sélectionner un membre",
+      "chooseMember": "Choisir un membre",
+      "adding": "Ajout...",
+      "assignedMembers": "Membres assignés",
+      "noMembersAssigned": "Aucun membre assigné à cette équipe.",
+      "notify": {
+        "addError": "Erreur lors de l'ajout du membre."
+      }
+    },
     "equipes": {
       "create": {
         "validation": {
