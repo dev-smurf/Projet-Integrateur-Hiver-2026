@@ -65,6 +65,7 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<QuizQuestionResponse> QuizQuestionResponses { get; set; } = null!;
     public DbSet<UserQuizResponse> UserQuizResponses { get; set; } = null!;
     public DbSet<QuizAssignment> QuizAssignments { get; set; } = null!;
+    public DbSet<MemberEquipe> MemberEquipes { get; set; } = null!;
 
     public GarneauTemplateDbContext()
     {

@@ -16,6 +16,19 @@
                            type="text"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition" />
                 </div>
+                <!-- Équipe parente -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Équipe parente (optionnel)
+                    </label>
+                    <select v-model="_equipe.parentEquipeId"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                        <option :value="undefined">— Aucune (équipe principale) —</option>
+                        <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
+                            {{ e.nameFr || e.nameEn }}
+                        </option>
+                    </select>
+                </div>
 
                 <div>
                     <div class="flex items-center justify-between gap-3 mb-2">
@@ -129,6 +142,15 @@
             loadingMembers.value = false;
         }
     }
+    async function loadParentEquipes() {
+        try {
+            const result = await equipesService.getAllEquipes();
+            // Seulement les équipes sans parent (pour éviter les sous-sous-équipes)
+            parentEquipes.value = (result || []).filter(e => !e.parentEquipeId);
+        } catch {
+            parentEquipes.value = [];
+        }
+    }
 
     async function handleSubmit() {
         if (!_equipe.value.nameFr?.trim()) {
@@ -146,6 +168,7 @@
                 nameFr: _equipe.value.nameFr,
                 nameEn: (_equipe.value as any).nameEn ?? "",
                 memberIds: selectedMemberIds.value,
+                parentEquipeId: _equipe.value.parentEquipeId,
             };
 
             const response = await equipesService.createEquipe(payload);
@@ -173,6 +196,6 @@
     }
 
     onMounted(async () => {
-        await loadMembers();
+        await loadMembers(), loadParentEquipes();
     });
 </script>

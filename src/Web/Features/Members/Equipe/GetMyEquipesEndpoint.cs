@@ -1,0 +1,50 @@
+using Application.Interfaces.Services.Equipe.Dto;
+using Application.Interfaces.Services.Members;
+using Domain.Repositories;
+using FastEndpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+namespace Web.Features.Members.Equipe;
+
+public class GetMyEquipesEndpoint : EndpointWithoutRequest<List<EquipeDto>>
+{
+    private readonly IAuthenticatedMemberService _authenticatedMemberService;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
+
+    public GetMyEquipesEndpoint(
+        IAuthenticatedMemberService authenticatedMemberService,
+        IMemberEquipeRepository memberEquipeRepository)
+    {
+        _authenticatedMemberService = authenticatedMemberService;
+        _memberEquipeRepository = memberEquipeRepository;
+    }
+
+    public override void Configure()
+    {
+        Get("members/me/equipes");
+        Roles(Domain.Constants.User.Roles.MEMBER);
+        AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
+        DontCatchExceptions();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var member = _authenticatedMemberService.GetAuthenticatedMember();
+
+        var assignments = await _memberEquipeRepository.GetByMemberIdAsync(member.Id);
+
+        var equipes = assignments
+            .Select(a => a.Equipe)
+            .Where(e => e != null)
+            .DistinctBy(e => e.Id)
+            .Select(e => new EquipeDto
+            {
+                Id = e.Id.ToString(),
+                NameFr = e.NameFr,
+                NameEn = e.NameEn
+            })
+            .ToList();
+
+        await Send.OkAsync(equipes, cancellation: ct);
+    }
+}
