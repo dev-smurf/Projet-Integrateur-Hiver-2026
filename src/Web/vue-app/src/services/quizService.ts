@@ -203,13 +203,14 @@ export class QuizService extends ApiService implements IQuizService {
     }
   }
 
-  public async assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date): Promise<void> {
+  public async assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date, equipeIds: string[] = []): Promise<void> {
     try {
       await this
         ._httpClient
         .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/assign`, {
           quizId,
           userIds,
+          equipeIds,
           followUpLabel,
           availableAt,
           dueDate
