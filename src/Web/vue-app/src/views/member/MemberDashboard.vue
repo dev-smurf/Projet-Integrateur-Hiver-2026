@@ -51,13 +51,11 @@
         <!-- Modules + Sidebar -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-
             <div class="lg:col-span-2 space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-gray-900">{{ $t("pages.memberDashboard.modulesTitle") }}</h2>
                     <span class="text-sm text-gray-500">{{ totalModules }} {{ $t("pages.memberDashboard.modulesCount") }}</span>
                 </div>
-
 
                 <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div v-for="n in 4" :key="n" class="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
@@ -68,12 +66,12 @@
                     </div>
                 </div>
 
-                <div v-else-if="!moduleCards.length" class="text-center py-10 text-gray-500">
+                <div v-else-if="!pendingModuleCards.length" class="text-center py-10 text-gray-500">
                     {{ $t("pages.memberDashboard.emptyModules") }}
                  </div>
  
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <router-link v-for="mod in moduleCards"
+                    <router-link v-for="mod in pendingModuleCards"
                          :key="mod.id"
                          :to="'/mes-modules/' + mod.id"
                          class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition cursor-pointer">
@@ -174,32 +172,116 @@
                                      @mouseover="e => e.currentTarget.style.color='#98ff98'"
                                      @mouseleave="e => e.currentTarget.style.color='#4c6367'">
                             {{ $t("pages.memberDashboard.viewAllQuizzes") }}
+
                             <ArrowRight class="h-4 w-4" />
                         </router-link>
                     </div>
                 </div>
+
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-semibold text-gray-900">Notes de l'administration</h3>
+                        <FileText class="h-4 w-4" style="color: #4c6367;" />
+                    </div>
+                    <div v-if="notesLoading" class="space-y-2">
+                        <div v-for="n in 2" :key="n" class="h-16 bg-gray-100 rounded animate-pulse" />
+                    </div>
+                    <div v-else-if="!myNotes.length" class="text-sm text-gray-500 italic">
+                        Aucune note publique disponible.
+                    </div>
+                    <div v-else class="space-y-3 pr-1">
+                        <div v-for="note in myNotes.slice(0, 3)" :key="note.id" class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-semibold text-gray-700">{{ note.createdByAdminName }}</span>
+                                <span class="text-[10px] text-gray-400">{{ formatDate(note.created) }}</span>
+                            </div>
+                            <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ note.content }}</p>
+                        </div>
+                        
+                        <button v-if="myNotes.length > 3" 
+                                @click="showNotesModal = true"
+                                class="w-full mt-2 text-sm font-medium transition flex items-center justify-center gap-1 p-2 rounded-lg"
+                                style="color: #4c6367; background-color: rgba(76, 99, 103, 0.05);"
+                                @mouseover="e => e.currentTarget.style.backgroundColor='rgba(76, 99, 103, 0.1)'"
+                                @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(76, 99, 103, 0.05)'">
+                            Voir plus ({{ myNotes.length }}) <ArrowRight class="h-4 w-4" />
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- Notes Modal -->
+        <div v-if="showNotesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click.self="showNotesModal = false">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+                <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">Toutes les notes ({{ filteredNotes.length }})</h2>
+                    <button @click="showNotesModal = false" class="text-gray-400 hover:text-gray-600 transition">
+                        <span class="text-2xl leading-none">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row gap-4 bg-gray-50">
+                    <div class="flex-1">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Rechercher</label>
+                        <input type="text" v-model="notesSearchQuery" placeholder="Mots-clés dans le contenu..." class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par date</label>
+                        <input type="date" v-model="notesDateFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
+                    </div>
+                </div>
+                
+                <div class="p-5 overflow-y-auto flex-1 space-y-4" style="background-color: #fcfcfc;">
+                    <div v-if="filteredNotes.length === 0" class="text-center text-sm text-gray-500 py-10 italic">
+                        Aucune note ne correspond aux critères de recherche.
+                    </div>
+                    <div v-for="note in filteredNotes" :key="note.id" class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
+                        <div class="flex items-center justify-between gap-2 mb-3 border-b border-gray-50 pb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 text-xs font-bold">
+                                    {{ note.createdByAdminName.substring(0, 2).toUpperCase() }}
+                                </div>
+                                <span class="text-sm font-semibold text-gray-800">{{ note.createdByAdminName }}</span>
+                            </div>
+                            <span class="text-xs font-medium px-2 py-1 rounded-md" style="background-color: rgba(76, 99, 103, 0.1); color: #4c6367;">
+                                {{ formatDate(note.created) }}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ note.content }}</p>
+                    </div>
+                </div>
+                
+                <div class="p-4 border-t border-gray-100 flex justify-end bg-gray-50">
+                    <button @click="showNotesModal = false" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
  <script lang="ts" setup>
- import {computed, onMounted, ref} from "vue";
+ import {computed, onMounted, onUnmounted, ref} from "vue";
  import {useI18n} from "vue3-i18n";
  import {useRouter} from "vue-router";
- import {ArrowRight, BookOpen, CheckCircle, ClipboardList, Layers} from "lucide-vue-next";
- import {useMemberService, useQuizService} from "@/inversify.config";
+ import {ArrowRight, BookOpen, CheckCircle, ClipboardList, Layers, FileText} from "lucide-vue-next";
+ import {useMemberService, useQuizService, useNotesService} from "@/inversify.config";
  import {usePersonStore} from "@/stores/personStore";
  import {useUserStore} from "@/stores/userStore";
+ import {notifySuccess} from "@/notify";
  import type {MemberModuleDto} from "@/types/entities";
  import type {AssignedQuiz} from "@/services/quizService";
+ import type {NoteDto} from "@/services/NotesService";
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
 
- const {locale, t} = useI18n();
+ const {getLocale, t} = useI18n();
  const router = useRouter();
  const memberService = useMemberService();
  const quizService = useQuizService();
+ const notesService = useNotesService();
  const personStore = usePersonStore();
  const userStore = useUserStore();
 
@@ -207,6 +289,11 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
  const modules = ref<MemberModuleDto[]>([]);
  const quizzesLoading = ref(true);
  const assignedQuizzes = ref<AssignedQuiz[]>([]);
+ const notesLoading = ref(true);
+ const myNotes = ref<NoteDto[]>([]);
+ const showNotesModal = ref(false);
+ const notesSearchQuery = ref("");
+ const notesDateFilter = ref("");
 
 const displayName = computed(() => {
   return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
@@ -226,7 +313,7 @@ function imageUrl(path?: string): string | undefined {
 
 const moduleCards = computed(() => {
   return modules.value.map((mod) => {
-    const isFrench = locale.value === "fr";
+    const isFrench = getLocale() === "fr";
     const name =
       mod.name ||
       (isFrench
@@ -257,8 +344,17 @@ const moduleCards = computed(() => {
   });
 });
 
+const filteredNotes = computed(() => {
+    return myNotes.value.filter(note => {
+        const matchContent = note.content.toLowerCase().includes(notesSearchQuery.value.toLowerCase());
+        const matchDate = !notesDateFilter.value || note.created.startsWith(notesDateFilter.value);
+        return matchContent && matchDate;
+    });
+});
+
  const totalModules = computed(() => moduleCards.value.length);
  const completedModules = computed(() => moduleCards.value.filter((mod) => mod.isCompleted).length);
+ const pendingModuleCards = computed(() => moduleCards.value.filter(mod => !mod.isCompleted));
 
  const pendingQuizzes = computed(() => assignedQuizzes.value.filter(q => !q.isCompleted));
 
@@ -293,7 +389,51 @@ const moduleCards = computed(() => {
    }
  }
 
+ async function fetchNotes() {
+   notesLoading.value = true;
+   try {
+     const notes = await notesService.getMyNotes();
+     notes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+     myNotes.value = notes;
+   } catch {
+     myNotes.value = [];
+   } finally {
+     notesLoading.value = false;
+   }
+ }
+
+ let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
  onMounted(async () => {
-   await Promise.all([fetchModules(), fetchQuizzes()]);
+   await Promise.all([fetchModules(), fetchQuizzes(), fetchNotes()]);
+   
+   pollingInterval = setInterval(async () => {
+     if (!notesLoading.value) {
+       const oldNotesCount = myNotes.value.length;
+       const oldLatestNoteId = oldNotesCount > 0 ? myNotes.value[0].id : null;
+       
+       try {
+         const newNotes = await notesService.getMyNotes();
+         newNotes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+         
+         if (newNotes.length > 0) {
+           const currentLatestNote = newNotes[0];
+           const isNewFirstNote = oldNotesCount === 0;
+           const isDifferentTopNote = oldNotesCount > 0 && currentLatestNote.id !== oldLatestNoteId;
+           
+           if (isNewFirstNote || isDifferentTopNote) {
+             notifySuccess("Une nouvelle note administrative a été publiée !");
+           }
+         }
+         myNotes.value = newNotes;
+       } catch {
+         // Silently ignore polling errors
+       }
+     }
+   }, 10000); // 10 secondes
+ });
+ 
+ onUnmounted(() => {
+   if (pollingInterval) clearInterval(pollingInterval);
  });
 </script>

@@ -24,6 +24,7 @@ export interface INotesService {
   createNote(request: CreateNoteRequest): Promise<NoteDto | null>;
   updateNote(id: string, request: { content: string; isPrivate: boolean }): Promise<NoteDto | null>;
   deleteNote(id: string): Promise<boolean>;
+  getMyNotes(): Promise<NoteDto[]>;
 }
 
 @injectable()
@@ -71,6 +72,16 @@ export class NotesService implements INotesService {
     } catch (error) {
       console.error("Failed to delete note", error);
       return false;
+    }
+  }
+
+  async getMyNotes(): Promise<NoteDto[]> {
+    try {
+      const response = await this._axios.get<NoteDto[]>("/api/members/me/notes");
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch my notes", error);
+      return [];
     }
   }
 }
