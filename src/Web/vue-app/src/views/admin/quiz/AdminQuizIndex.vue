@@ -18,18 +18,37 @@
 
     <!-- Grid of Quiz Cards -->
     <div v-if="!loading && quizzes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+      <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition relative">
+
+        <!-- NOT YET AVAILABLE stamp overlay -->
+        <div
+          v-if="isNotYetAvailable(quiz)"
+          class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
+        >
+          <div
+            class="rotate-[-15deg] border-[5px] border-red-600 rounded-sm px-5 py-3 text-center"
+            style="box-shadow: inset 0 0 10px rgba(180,0,0,0.15); background: rgba(255,255,255,0.05);"
+          >
+            <p
+              class="text-red-600 font-black text-xl leading-tight tracking-widest uppercase"
+              style="font-family: 'Arial Black', Impact, sans-serif; text-shadow: 2px 2px 0 rgba(180,0,0,0.2); opacity: 0.85;"
+            >
+              NOT YET<br/>AVAILABLE
+            </p>
+          </div>
+        </div>
+
         <!-- Quiz Image or Placeholder -->
-          <div class="h-40 bg-gray-200 relative overflow-hidden group">
-            <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
+        <div class="h-40 bg-gray-200 relative overflow-hidden group" :class="{ 'opacity-60': isNotYetAvailable(quiz) }">
+          <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
           <div v-else class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
             <BookOpen class="w-16 h-16 text-white opacity-50" />
           </div>
 
           <!-- Test Quiz Button Overlay -->
           <router-link
-            :to="{ name: 'admin.children.quiz.edit', params: { id: quiz.id } }"
-            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"
+            :to="{ name: 'quiz.take', params: { quizId: quiz.id } }"
+            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
               <Play class="w-8 h-8 text-white" />
@@ -39,29 +58,18 @@
         </div>
 
         <!-- Quiz Info -->
-        <div class="p-4">
+        <div class="p-4" :class="{ 'opacity-60': isNotYetAvailable(quiz) }">
           <h2 class="text-lg font-bold text-gray-900 mb-2">{{ quiz.titre }}</h2>
           <p v-if="quiz.description" class="text-sm text-gray-600 mb-3">{{ quiz.description }}</p>
 
           <!-- Question Count -->
-          <div class="text-xs text-gray-500 mb-3">
+          <div class="text-xs text-gray-500 mb-4">
             {{ quiz.questions.length }} {{ $t('global.questions') }}
           </div>
 
-          <!-- Due Date / Coming Soon -->
-          <div class="mb-4">
-            <span
-              v-if="!quiz.dueDate || quiz.dueDate > new Date()"
-              class="inline-block bg-gray-900 text-white text-xs font-bold px-3 py-1 rounded-full"
-            >
-              🕐 {{ $t('quiz.comingSoon') }}
-            </span>
-            <span
-              v-else
-              class="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full"
-            >
-              📅 {{ $t('quiz.dueDate') }}: {{ formatDate(quiz.dueDate) }}
-            </span>
+          <!-- Available At info -->
+          <div v-if="(quiz as any).availableAt" class="text-xs text-orange-500 mb-3 font-medium">
+            🕐 {{ $t('quiz.availableAt') }}: {{ formatDateTime((quiz as any).availableAt) }}
           </div>
 
           <!-- Action Buttons -->
@@ -118,6 +126,15 @@
       </router-link>
     </div>
 
+    <!-- Assign Quiz Modal -->
+    <AssignQuizModal
+      v-if="showAssignModal && selectedQuizForAssignment"
+      :quiz-id="selectedQuizForAssignment.id"
+      :quiz-title="selectedQuizForAssignment.titre"
+      @close="showAssignModal = false; selectedQuizForAssignment = null"
+      @assigned="onAssigned"
+    />
+
     <!-- Delete Confirmation Modal -->
     <div v-if="quizToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
@@ -143,14 +160,6 @@
       </div>
     </div>
 
-    <!-- Assign Quiz Modal -->
-    <AssignQuizModal
-      v-if="showAssignModal && selectedQuizForAssignment"
-      :quiz-id="selectedQuizForAssignment.id"
-      :quiz-title="selectedQuizForAssignment.titre"
-      @close="showAssignModal = false"
-      @assigned="handleAssignmentComplete"
-    />
   </div>
 </template>
 
@@ -158,9 +167,9 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Plus, Pencil, Trash2, BookOpen, Play, Users } from 'lucide-vue-next'
+import AssignQuizModal from './AssignQuizModal.vue'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
-import AssignQuizModal from './AssignQuizModal.vue'
 import type { Quiz } from '@/services/quizService'
 
 let quizService: any
@@ -179,9 +188,21 @@ const showAssignModal = ref(false)
 const selectedQuizForAssignment = ref<Quiz | null>(null)
 const successMessage = ref('')
 
-const formatDate = (date: Date | string): string => {
-  const d = typeof date === 'string' ? new Date(date) : date
-  return d.toLocaleDateString()
+function isNotYetAvailable(quiz: Quiz): boolean {
+  const availableAt = (quiz as any).availableAt
+  if (!availableAt) return false
+  return new Date(availableAt) > new Date()
+}
+
+function formatDateTime(dateStr: string): string {
+  const date = new Date(dateStr)
+  return date.toLocaleString('fr-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
 
 async function loadQuizzes() {
@@ -222,20 +243,13 @@ async function deleteQuiz() {
 }
 
 function openAssignModal(quiz: Quiz) {
-  console.log('openAssignModal', quiz)
   selectedQuizForAssignment.value = quiz
   showAssignModal.value = true
 }
 
-function handleAssignmentComplete() {
+function onAssigned() {
   showAssignModal.value = false
   selectedQuizForAssignment.value = null
-  successMessage.value = 'Quiz assigned successfully!'
-
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
-
   loadQuizzes()
 }
 

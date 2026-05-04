@@ -19,6 +19,7 @@ export interface Quiz {
   titre: string
   description?: string
   imageUrl?: string
+  dueDate?: Date
   questions: QuizQuestion[]
 }
 
