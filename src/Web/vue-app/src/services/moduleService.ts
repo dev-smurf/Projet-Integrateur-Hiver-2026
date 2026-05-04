@@ -197,7 +197,9 @@ export class ModulesApiService extends ApiService implements IModulesService {
 
     public async markSectionRead(moduleId: string, sectionId: string): Promise<void> {
         await this._httpClient.post(
-            `${import.meta.env.VITE_API_BASE_URL}/member/modules/${moduleId}/sections/${sectionId}/read`
+            `${import.meta.env.VITE_API_BASE_URL}/member/modules/${moduleId}/sections/${sectionId}/read`,
+            {},
+            this.headersWithJsonContentType()
         );
     }
 

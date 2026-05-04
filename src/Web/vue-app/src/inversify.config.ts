@@ -13,6 +13,7 @@ import {
   IModulesService,
   IUserService,
   IConversationService,
+  IEquipeConversationService,
   IAppointmentService,
   IQuizService
 } from "@/injection/interfaces";
@@ -24,6 +25,7 @@ import {
   ModulesApiService,
   UserService,
   ConversationService,
+  EquipeConversationService,
   AppointmentService,
   QuizService
 } from "@/services";
@@ -41,6 +43,7 @@ dependencyInjection.bind<IMemberService>(TYPES.IMemberService).to(MemberService)
 dependencyInjection.bind<IModulesService>(TYPES.IModulesService).to(ModulesApiService).inSingletonScope()
 dependencyInjection.bind<IUserService>(TYPES.IUserService).to(UserService).inSingletonScope()
 dependencyInjection.bind<IConversationService>(TYPES.IConversationService).to(ConversationService).inSingletonScope()
+dependencyInjection.bind<IEquipeConversationService>(TYPES.IEquipeConversationService).to(EquipeConversationService).inSingletonScope()
 dependencyInjection.bind<IAppointmentService>(TYPES.IAppointmentService).to(AppointmentService).inSingletonScope()
 dependencyInjection
   .bind<IEquipesService>(TYPES.IEquipesService)
@@ -85,6 +88,10 @@ function useConversationService() {
   return dependencyInjection.get<IConversationService>(TYPES.IConversationService);
 }
 
+function useEquipeConversationService() {
+  return dependencyInjection.get<IEquipeConversationService>(TYPES.IEquipeConversationService);
+}
+
 function useAppointmentService() {
   return dependencyInjection.get<IAppointmentService>(TYPES.IAppointmentService);
 }
@@ -106,6 +113,7 @@ export {
   useModulesService,
   useUserService,
   useConversationService,
+  useEquipeConversationService,
   useAppointmentService,
   useEquipesService,
   useQuizService,

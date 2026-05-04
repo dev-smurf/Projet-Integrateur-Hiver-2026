@@ -39,8 +39,17 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
             .Select(a => a.UserId)
             .ToHashSet();
 
-        var assignments = req.UserIds
+        var newUserIds = req.UserIds
             .Where(userId => !alreadyAssignedUserIds.Contains(userId))
+            .ToList();
+
+        if (newUserIds.Count == 0)
+        {
+            await Send.NoContentAsync(ct);
+            return;
+        }
+
+        var assignments = newUserIds
             .Select(userId => new QuizAssignment
             {
                 QuizId = req.QuizId,

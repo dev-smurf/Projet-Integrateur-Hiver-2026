@@ -75,6 +75,8 @@
       <!-- Sections -->
       <ModuleSectionList
         :sections="sections"
+        :initialPageId="initialPageId"
+        :initialSectionId="initialSectionId"
         @update:sections="onSectionsUpdate"
       />
 
@@ -110,8 +112,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import { Loader2, Upload, Check, Eye } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
@@ -124,8 +126,13 @@ import ModuleAssignmentPanel from "@/components/module/ModuleAssignmentPanel.vue
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 const props = defineProps<{ id: string }>();
 const router = useRouter();
+const route = useRoute();
 const { notify } = useNotification();
 const modulesService = useModulesService();
+
+// Deep-link target from the preview's quick-edit popup.
+const initialPageId = computed(() => (route.query.pageId as string) || null);
+const initialSectionId = computed(() => (route.query.sectionId as string) || null);
 
 const formData = ref<IEditModuleRequest>({
   id: props.id,

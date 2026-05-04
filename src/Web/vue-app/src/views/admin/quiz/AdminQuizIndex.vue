@@ -29,7 +29,7 @@
           <!-- Test Quiz Button Overlay -->
           <router-link
             :to="{ name: 'quiz.take', params: { quizId: quiz.id } }"
-            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"
+            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
               <Play class="w-8 h-8 text-white" />
@@ -102,6 +102,15 @@
       </router-link>
     </div>
 
+    <!-- Assign Quiz Modal -->
+    <AssignQuizModal
+      v-if="showAssignModal && selectedQuizForAssignment"
+      :quiz-id="selectedQuizForAssignment.id"
+      :quiz-title="selectedQuizForAssignment.titre"
+      @close="showAssignModal = false; selectedQuizForAssignment = null"
+      @assigned="onAssigned"
+    />
+
     <!-- Delete Confirmation Modal -->
     <div v-if="quizToDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
@@ -127,14 +136,6 @@
       </div>
     </div>
 
-    <!-- Assign Quiz Modal -->
-    <AssignQuizModal
-      v-if="showAssignModal && selectedQuizForAssignment"
-      :quiz-id="selectedQuizForAssignment.id"
-      :quiz-title="selectedQuizForAssignment.titre"
-      @close="showAssignModal = false"
-      @assigned="handleAssignmentComplete"
-    />
   </div>
 </template>
 
@@ -142,9 +143,9 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Plus, Pencil, Trash2, BookOpen, Play, Users } from 'lucide-vue-next'
+import AssignQuizModal from './AssignQuizModal.vue'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
-import AssignQuizModal from './AssignQuizModal.vue'
 import type { Quiz } from '@/services/quizService'
 
 let quizService: any
@@ -201,22 +202,13 @@ async function deleteQuiz() {
 }
 
 function openAssignModal(quiz: Quiz) {
-  console.log('openAssignModal', quiz)
   selectedQuizForAssignment.value = quiz
   showAssignModal.value = true
 }
 
-function handleAssignmentComplete() {
+function onAssigned() {
   showAssignModal.value = false
   selectedQuizForAssignment.value = null
-  successMessage.value = 'Quiz assigned successfully!'
-
-  // Clear success message after 3 seconds
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
-
-  // Reload quizzes to show updated assignment count
   loadQuizzes()
 }
 
