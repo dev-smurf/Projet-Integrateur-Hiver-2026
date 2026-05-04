@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Extensions;
 using Domain.ValueObjects;
@@ -22,6 +22,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public User User { get; private set; } = null!;
 
     public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
+    public ICollection<MemberNote> Notes { get; private set; } = new List<MemberNote>();
     public bool Active { get; private set; }
 
     public Member() {}

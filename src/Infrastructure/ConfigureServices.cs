@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Application.Interfaces.FileStorage;
 using Application.Interfaces.Services;
 using Domain.Entities.Identity;
@@ -14,6 +14,7 @@ using Infrastructure.Repositories.Availability;
 using Infrastructure.Repositories.Books;
 using Infrastructure.Repositories.Conversations;
 using Infrastructure.Repositories.Members;
+using Infrastructure.Repositories.Equipe;
 using Infrastructure.Repositories.Module;
 using Infrastructure.Repositories.Users;
 using Infrastructure.Services;
@@ -70,7 +71,9 @@ public static class ConfigureServices
         services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IEquipeConversationRepository, EquipeConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IMemberNoteRepository, MemberNoteRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
+        services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
@@ -83,6 +86,9 @@ public static class ConfigureServices
         services.AddScoped<IFileStorageApiConsumer, AzureBlobApiConsumer>();
         services.AddScoped<IAzureApiHttpClient, AzureApiHttpClient>();
         services.AddScoped<IAzureBlobWrapper, AzureBlobWrapper>();
+
+        // Ajout du repository manquant
+        services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
     }
 
     private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)

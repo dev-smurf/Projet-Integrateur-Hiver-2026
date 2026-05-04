@@ -41,31 +41,23 @@
         </div>
 
         <div class="mt-6 flex items-center gap-5">
-          <div class="relative w-28 h-28">
-            <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" class="progress-track" />
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                class="progress-ring"
-                :style="{
-                  strokeDasharray: `${circumference}`,
-                  strokeDashoffset: `${progressOffset}`
-                }"
-              />
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="text-xl font-semibold text-gray-900">{{ progressPercent }}%</div>
-              <div class="text-xs text-gray-500">{{ $t('pages.memberDetails.progression') }}</div>
+          <div class="flex-1 grid grid-cols-2 gap-3">
+            <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Notes Partagées</div>
+              <div class="text-xl font-bold text-emerald-600">{{ sharedNotesCount }}</div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Notes Privées</div>
+              <div class="text-xl font-bold text-amber-600">{{ privateNotesCount }}</div>
             </div>
           </div>
-          <div class="text-sm text-gray-600">
+          <div class="text-sm text-gray-600 shrink-0">
             <div class="font-medium text-gray-900">{{ $t('pages.memberDetails.summary') }}</div>
             <div>{{ memberModules.length }} {{ $t('pages.memberDetails.modulesAssigned') }}</div>
             <div>{{ completedModules }} {{ $t('pages.memberDetails.modulesCompleted') }}</div>
           </div>
         </div>
+
       </div>
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 animate-fade-up delay-1">
@@ -193,9 +185,18 @@
                   <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-2">{{ $t('pages.memberDetails.subject') }}</div>
                   <div class="text-[11px] font-medium text-gray-600">{{ item.sujetFr || $t('pages.memberDetails.general') }}</div>
                 </div>
-                <span class="px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest" :class="item.isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'">
-                  {{ item.isCompleted ? $t('pages.memberDetails.active') : $t('pages.memberDetails.inProgress') }}
-                </span>
+                <div class="flex flex-col items-end gap-2">
+                  <span class="px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest" :class="item.isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'">
+                    {{ item.isCompleted ? $t('pages.memberDetails.active') : $t('pages.memberDetails.inProgress') }}
+                  </span>
+                  <button
+                    @click="removeModule(item)"
+                    :disabled="removingModule[item.moduleId]"
+                    class="px-2 py-1 text-[10px] font-bold text-rose-600 hover:bg-rose-50 rounded border border-rose-100 transition disabled:opacity-50"
+                  >
+                    {{ removingModule[item.moduleId] ? "..." : $t('global.delete') }}
+                  </button>
+                </div>
               </div>
 
               <div class="space-y-3">
@@ -217,40 +218,29 @@
 
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold text-gray-900">{{ $t('pages.memberDetails.notes.title') }}</h2>
-          <button @click="saveNotes" :disabled="savingNotes" class="px-3 py-1.5 text-xs font-medium bg-gray-900 text-white rounded-lg">
-            {{ savingNotes ? $t('pages.memberDetails.notes.saving') : $t('pages.memberDetails.notes.save') }}
-          </button>
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Notes administratives</h2>
+            <p class="text-sm text-gray-500 mt-1">Gérez les notes publiques et privées pour ce membre.</p>
+          </div>
+          <router-link
+            :to="{ name: 'admin.children.notes.index', query: { memberId: memberId } }"
+            class="px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
+          >
+            Consulter et ajouter des notes
+          </router-link>
         </div>
-        <textarea
-          v-model="notesText"
-          rows="5"
-          :placeholder="$t('pages.memberDetails.notes.placeholder')"
-          class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
-        />
-        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
-          <input
-            v-model="notesVisibleToMember"
-            type="checkbox"
-            class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
-          />
-          {{ $t('pages.memberDetails.notes.visibleToMember') }}
-        </label>
-        <p class="mt-2 text-xs text-gray-500">
-          {{ $t('pages.memberDetails.notes.hint') }}
-        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import { useI18n } from "vue3-i18n";
-import { useNotification } from "@kyvg/vue3-notification";
-import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
-import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
+import {computed, onMounted, ref} from "vue";
+import {useRoute} from "vue-router";
+import {useI18n} from "vue3-i18n";
+import {useNotification} from "@kyvg/vue3-notification";
+import {useEquipesService, useMemberService, useModulesService, useNotesService} from "@/inversify.config";
+import type {Equipe, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -258,6 +248,7 @@ const { notify } = useNotification();
 const memberService = useMemberService();
 const modulesService = useModulesService();
 const equipeService = useEquipesService();
+const notesService = useNotesService();
 
 const member = ref<Member | null>(null);
 const memberModules = ref<MemberModuleDto[]>([]);
@@ -267,9 +258,10 @@ const loading = ref(true);
 
 const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
-const notesText = ref("");
-const notesVisibleToMember = ref(false);
-const savingNotes = ref(false);
+const removingModule = ref<Record<string, boolean>>({});
+
+const sharedNotesCount = ref(0);
+const privateNotesCount = ref(0);
 
 const selectedModuleIds = ref<string[]>([]);
 const assignSearch = ref("");
@@ -294,38 +286,25 @@ const createdAt = computed(() => {
   return new Date(member.value.created).toLocaleDateString();
 });
 
-const addressLine = computed(() => {
-  const street = member.value?.street || "";
-  const apt = member.value?.apartment ? `#${member.value.apartment}` : "";
-  const zip = member.value?.zipCode || "";
-  return [street, apt, zip].filter(Boolean).join(" ") || t("pages.memberDetails.na");
-});
-
 const memberEquipes = computed(() => {
   const equipeIds = member.value?.equipeIds ?? [];
   if (!equipeIds.length) return [];
 
   return equipes.value
     .filter(equipe => {
-      const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
-      return equipeIds.includes(equipeId);
+      const eId = String((equipe as any).id ?? equipe.Id ?? "");
+      return equipeIds.includes(eId);
     })
     .map(equipe => {
-      const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
+      const item = equipe as any;
       return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
     });
 });
 
-const completedModules = computed(() => memberModules.value.filter(x => x.isCompleted).length);
+const completedModules = computed(() => 
+  memberModules.value.filter(mod => mod.isCompleted || mod.progressPercent >= 100).length
+);
 
-const progressPercent = computed(() => {
-  if (!memberModules.value.length) return 0;
-  const total = memberModules.value.reduce((sum, item) => sum + (item.progressPercent || 0), 0);
-  return Math.round(total / memberModules.value.length);
-});
-
-const circumference = 2 * Math.PI * 42;
-const progressOffset = computed(() => circumference - (progressPercent.value / 100) * circumference);
 
 const filteredAvailableModules = computed(() => {
   const search = assignSearch.value.toLowerCase().trim();
@@ -355,8 +334,13 @@ async function loadData() {
       nextEdits[item.moduleId] = item.progressPercent;
     });
     progressEdits.value = nextEdits;
-    notesText.value = member.value?.adminNotes ?? "";
-    notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
+
+    const allNotes = await notesService.getAllNotes();
+    const memberNotes = allNotes.filter(n => n.memberId === memberId.value);
+    sharedNotesCount.value = memberNotes.filter(n => n.isPublic).length;
+    privateNotesCount.value = memberNotes.filter(n => !n.isPublic).length;
+  } catch (err) {
+    console.error("Error loading member details", err);
   } finally {
     loading.value = false;
   }
@@ -388,35 +372,49 @@ async function saveProgress(item: MemberModuleDto) {
   savingProgress.value[item.moduleId] = false;
 }
 
-async function saveNotes() {
-  if (!member.value?.id) return;
-  savingNotes.value = true;
-  const response = await memberService.updateMember({
-    ...member.value,
-    adminNotes: notesText.value.trim() || undefined,
-    adminNotesVisibleToMember: notesVisibleToMember.value
-  });
-  if (response.succeeded) {
-    member.value = await memberService.getMember(memberId.value);
-    notesText.value = member.value?.adminNotes ?? "";
-    notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
-    notify({type: "success", text: t("pages.memberDetails.notify.notesSaved")});
-  } else {
-    notify({type: "error", text: t("pages.memberDetails.notify.notesError")});
+async function removeModule(item: MemberModuleDto) {
+  if (!confirm(t('global.confirmDelete'))) return;
+  removingModule.value = {...removingModule.value, [item.moduleId]: true};
+  try {
+    const response = await memberService.removeModuleFromMember(memberId.value, item.moduleId);
+    if (response.succeeded) {
+      notify({type: "success", text: "Module retiré."});
+      await loadData();
+    } else {
+      notify({type: "error", text: "Impossible de retirer le module."});
+    }
+  } finally {
+    removingModule.value = {...removingModule.value, [item.moduleId]: false};
   }
-  savingNotes.value = false;
 }
 
 onMounted(loadData);
 </script>
 
 <style scoped>
-.progress-track { fill: none; stroke: #e5e7eb; stroke-width: 10; }
-.progress-ring { fill: none; stroke: #4f46e5; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
-.animate-fade-up { animation: fade-up 0.6s ease both; }
-@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-up {
+  animation: fade-up 0.6s ease both;
+}
 
-/* Style pour le slider range pour qu'il soit plus fin et propre */
+.animate-fade-up.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.animate-fade-up.delay-2 {
+  animation-delay: 0.16s;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 18px;

@@ -31,6 +31,7 @@ import {
 } from "@/services";
 import { AdministratorService } from "@/services/administratorService";
 import { EquipeService } from "./services/equipeService";
+import { NotesService, type INotesService } from "@/services/NotesService";
 
 const dependencyInjection = new Container();
 dependencyInjection.bind<AxiosInstance>(TYPES.AxiosInstance).toConstantValue(axios.create({ withCredentials: true }))
@@ -48,7 +49,8 @@ dependencyInjection
   .bind<IEquipesService>(TYPES.IEquipesService)
   .to(EquipeService)
   .inSingletonScope();
-dependencyInjection.bind<IQuizService>(TYPES.IQuizService).to(QuizService).inSingletonScope()
+dependencyInjection.bind<IQuizService>(TYPES.IQuizService).to(QuizService).inSingletonScope();
+dependencyInjection.bind<INotesService>(TYPES.INotesService).to(NotesService).inSingletonScope();
 
 function useAdministratorService() {
   return dependencyInjection.get<IAdministratorService>(
@@ -98,6 +100,10 @@ function useQuizService() {
   return dependencyInjection.get<IQuizService>(TYPES.IQuizService);
 }
 
+function useNotesService() {
+  return dependencyInjection.get<INotesService>(TYPES.INotesService);
+}
+
 export {
   dependencyInjection,
   useAdministratorService,
@@ -110,5 +116,6 @@ export {
   useEquipeConversationService,
   useAppointmentService,
   useEquipesService,
-  useQuizService
+  useQuizService,
+  useNotesService
 };

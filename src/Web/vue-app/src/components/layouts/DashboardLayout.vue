@@ -80,6 +80,13 @@
                     <Brain class="w-4 h-4 shrink-0" />
                     {{ $t('routes.admin.children.members.quiz.name') }}
                 </router-link>
+                <router-link v-if="userStore.hasRole(Role.Admin)"
+                             :to="{ name: 'admin.children.notes.index' }"
+                             class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
+                             :class="isActive('admin.children.notes') ? 'active-link' : 'inactive-link'">
+                    <FileText class="w-4 h-4 shrink-0" />
+                    Notes
+                </router-link>
             </div>
 
             <div class="border-t px-3 py-4 flex flex-col gap-1" style="border-color: #907288;">
@@ -177,7 +184,7 @@
     import {
         LayoutDashboard, BookOpen, Shield, LogOut, Languages, Bell,
         CheckCircle2, XCircle, X, Users, Layers, UsersRound,
-        ClipboardCheck,Brain,Calendar
+        ClipboardCheck,Brain,Calendar, FileText
     } from "lucide-vue-next";
     import { useUserStore } from "@/stores/userStore";
     import { usePersonStore } from "@/stores/personStore";

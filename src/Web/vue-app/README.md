@@ -26,7 +26,7 @@ npm run build:check  # Type-check and build
 [Vue 3 i18n](https://github.com/webkong/vue3-i18n) pour la gestion des langues.
 
 [vite-svg-loader](https://github.com/jpkleemans/vite-svg-loader) pour ajouter des icônes .svg dans nos components.
-*Si vous devez utiliser des svgs dans les .scss, transformé les en .png. -> Le loader les targets & les rends impossible à afficher.*
+*Si vous devez utiliser des svgs dans les .scss, transformé les en .png. -> Le loader les targets & les rends impossible à afficher*
 
 [Vue WindowSize Plugin](https://github.com/mya-ake/vue-window-size/tree/master) pour avoir la grandeur de la fenêtre partout et faire des affichages conditionnels aux mediaqueries.
 

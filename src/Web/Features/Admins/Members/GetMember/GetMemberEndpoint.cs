@@ -57,7 +57,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             AdminNotes = member.AdminNotes,
             AdminNotesVisibleToMember = member.AdminNotesVisibleToMember,
             Roles = roles,
-            EquipeIds = equipeIds
+            EquipeIds = equipeIds.ToList()
         };
     }
 }

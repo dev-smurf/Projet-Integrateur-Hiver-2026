@@ -65,6 +65,7 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<QuizQuestionResponse> QuizQuestionResponses { get; set; } = null!;
     public DbSet<UserQuizResponse> UserQuizResponses { get; set; } = null!;
     public DbSet<QuizAssignment> QuizAssignments { get; set; } = null!;
+    public DbSet<MemberNote> MemberNotes { get; set; } = null!;
 
     public GarneauTemplateDbContext()
     {
@@ -137,6 +138,21 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
         builder.Entity<Book>()
                .Property(b => b.Price)
                .HasColumnType("decimal(18,2)");
+
+        // =========================
+        // ✅ MemberNote fix (no cascade)
+        // =========================
+        builder.Entity<MemberNote>()
+            .HasOne(m => m.CreatedByAdmin)
+            .WithMany()
+            .HasForeignKey(m => m.CreatedByAdminId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<MemberNote>()
+            .HasOne(m => m.Member)
+            .WithMany(m => m.Notes)
+            .HasForeignKey(m => m.MemberId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // =========================
         // ✅ Soft delete filter

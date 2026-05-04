@@ -17,6 +17,12 @@
     </svg>
     Mes modules
   </RouterLink>
+  <RouterLink :to="t('routes.equipe.path')" class="nav-link">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M7 20H2v-2a4 4 0 013-3.87m12 3.87v2M7 20v-2a4 4 0 013-3.87m4 3.87v2M9 7a4 4 0 108 0 4 4 0 00-8 0zm-6 1a3 3 0 106 0 3 3 0 00-6 0zm18 0a3 3 0 10-6 0 3 3 0 006 0z" />
+    </svg>
+    {{ t('routes.equipe.name') }}
+  </RouterLink>
 </template>
 
 <script lang="ts" setup>

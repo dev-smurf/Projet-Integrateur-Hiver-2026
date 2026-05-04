@@ -11,6 +11,7 @@ import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
 import MemberDashboard from "@/views/member/MemberDashboard.vue";
+import MemberEquipe from "@/views/member/Equipe.vue";
 
 import Admin from "@/views/admin/Admin.vue";
 import AdminAvailability from "@/views/admin/AdminAvailability.vue";
@@ -28,6 +29,7 @@ import AdminModulePreview from "@/views/admin/members/AdminModulePreview.vue";
 import AdminAddQuiz from "@/views/admin/quiz/AdminAddQuiz.vue";
 import AdminEditQuiz from "@/views/admin/quiz/AdminEditQuiz.vue";
 import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
+import AdminNotesList from "@/views/admin/notes/AdminNotesList.vue";
 
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
 import MemberModuleView from "@/views/member/MemberModuleView.vue";
@@ -213,6 +215,11 @@ export function getRouter(): Router {
             name: "admin.children.quiz.edit",
             component: AdminEditQuiz,
             props: true,
+          },
+          {
+            path: "notes",
+            name: "admin.children.notes.index",
+            component: AdminNotesList,
           },
         ],
       },

@@ -111,7 +111,7 @@ export class MemberService extends ApiService implements IMemberService {
       ._httpClient
       .put<any, AxiosResponse<SucceededOrNotResponse>>(
         `${import.meta.env.VITE_API_BASE_URL}/members/${memberId}/modules/${moduleId}/progress`,
-        { progressPercent },
+        { memberId, moduleId, progressPercent },
         this.headersWithJsonContentType())
       .catch(function (error: AxiosError): AxiosResponse<SucceededOrNotResponse> {
         return error.response as AxiosResponse<SucceededOrNotResponse>

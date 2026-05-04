@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(GarneauTemplateDbContext))]
-    [Migration("20260413153643_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260428165227_AddMemberNotes")]
+    partial class AddMemberNotes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -741,6 +741,52 @@ namespace Persistence.Migrations
                     b.ToTable("MemberModuleSectionProgress");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MemberNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CreatedByAdminId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByAdminId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("MemberNotes");
+                });
+
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1065,6 +1111,10 @@ namespace Persistence.Migrations
 
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ScaleLabels")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ScaleMaxLabel")
                         .IsRequired()
@@ -1506,6 +1556,25 @@ namespace Persistence.Migrations
                     b.Navigation("ModuleSection");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MemberNote", b =>
+                {
+                    b.HasOne("Domain.Entities.Administrator", "CreatedByAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatedByAdminId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Member", "Member")
+                        .WithMany("Notes")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByAdmin");
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.HasOne("Domain.Entities.Appointment", "Appointment")
@@ -1686,6 +1755,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Member", b =>
                 {
                     b.Navigation("MemberModules");
+
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Domain.Entities.MemberModule", b =>

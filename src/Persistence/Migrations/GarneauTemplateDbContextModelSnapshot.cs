@@ -445,7 +445,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipe", (string)null);
+                    b.ToTable("Equipes");
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>
@@ -851,6 +851,52 @@ namespace Persistence.Migrations
                         .HasFilter("Deleted IS NULL");
 
                     b.ToTable("MemberModuleSectionProgress");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MemberNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CreatedByAdminId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByAdminId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("MemberNotes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
@@ -1671,6 +1717,25 @@ namespace Persistence.Migrations
                     b.Navigation("ModuleSection");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MemberNote", b =>
+                {
+                    b.HasOne("Domain.Entities.Administrator", "CreatedByAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatedByAdminId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Member", "Member")
+                        .WithMany("Notes")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByAdmin");
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.HasOne("Domain.Entities.Appointment", "Appointment")
@@ -1861,6 +1926,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Member", b =>
                 {
                     b.Navigation("MemberModules");
+
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Domain.Entities.MemberModule", b =>

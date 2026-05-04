@@ -11,5 +11,6 @@ export const TYPES = {
   IConversationService: Symbol.for("IConversationService"),
   IEquipeConversationService: Symbol.for("IEquipeConversationService"),
   IAppointmentService: Symbol.for("IAppointmentService"),
-  IQuizService: Symbol.for("IQuizService")
+  IQuizService: Symbol.for("IQuizService"),
+  INotesService: Symbol.for("INotesService")
 };
