@@ -19,7 +19,7 @@
         <div class="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm text-slate-200 shrink-0">
           <Clock class="h-4 w-4 text-brand-300" />
           <span>{{ todayLabel }}</span>
-        </div>
+        </div> 
       </div>
     </section>
 
