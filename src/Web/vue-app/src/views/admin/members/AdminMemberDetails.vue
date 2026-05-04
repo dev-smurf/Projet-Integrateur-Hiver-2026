@@ -184,24 +184,16 @@
               <div class="mt-3">
                 <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
                   <span>Progression</span>
-                  <span>{{ progressEdits[item.moduleId] ?? item.progressPercent }}%</span>
+                  <span>{{ item.progressPercent }}%</span>
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  v-model.number="progressEdits[item.moduleId]"
-                  class="w-full accent-brand-600"
-                />
-                <div class="mt-3 flex items-center justify-between gap-2">
-                  <button
-                    @click="saveProgress(item)"
-                    :disabled="savingProgress[item.moduleId]"
-                    class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {{ savingProgress[item.moduleId] ? "Enregistrement..." : "Enregistrer" }}
-                  </button>
+                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    class="h-full rounded-full transition-all duration-500"
+                    :class="item.isCompleted ? 'bg-emerald-500' : 'bg-brand-500'"
+                    :style="{ width: item.progressPercent + '%' }"
+                  ></div>
+                </div>
+                <div class="mt-3 flex items-center justify-end gap-2">
                   <button
                     @click="removeModule(item)"
                     :disabled="removingModule[item.moduleId]"
@@ -256,8 +248,6 @@ const loading = ref(true);
 const moduleSearch = ref("");
 const selectedModuleId = ref("");
 const addingModule = ref(false);
-const progressEdits = ref<Record<string, number>>({});
-const savingProgress = ref<Record<string, boolean>>({});
 const removingModule = ref<Record<string, boolean>>({});
 const memberNotesCount = ref(0);
 
@@ -322,8 +312,8 @@ const filteredModules = computed(() => {
 });
 
 function moduleLabel(mod: ModuleDto) {
-  const name = mod.name || mod.nameFr || mod.nameEn || "Module";
-  const subject = mod.subject || mod.sujetFr || mod.sujetEn || "";
+  const name = mod.name || (mod as any).Name || mod.nameFr || (mod as any).NameFr || "Module";
+  const subject = mod.subject || (mod as any).Subject || mod.sujetFr || (mod as any).SujetFr || "";
   return subject ? `${name} - ${subject}` : name;
 }
 
@@ -339,11 +329,6 @@ async function loadData() {
   memberModules.value = memberModulesData;
   allModules.value = modulesData;
   equipes.value = equipesData;
-  const nextEdits: Record<string, number> = {};
-  memberModules.value.forEach(item => {
-    nextEdits[item.moduleId] = item.progressPercent;
-  });
-  progressEdits.value = nextEdits;
   const notes = await notesService.getAllNotes();
   memberNotesCount.value = notes.filter(n => n.memberId === memberId.value).length;
 
@@ -362,19 +347,6 @@ async function addModule() {
     notify({type: "error", text: "Impossible d'ajouter le module."});
   }
   addingModule.value = false;
-}
-
-async function saveProgress(item: MemberModuleDto) {
-  const value = progressEdits.value[item.moduleId] ?? item.progressPercent;
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: true};
-  const response = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, value);
-  if (response.succeeded) {
-    notify({type: "success", text: "Progression mise a jour."});
-    memberModules.value = await memberService.getMemberModules(memberId.value);
-  } else {
-    notify({type: "error", text: "Impossible de mettre a jour la progression."});
-  }
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: false};
 }
 
 async function removeModule(item: MemberModuleDto) {

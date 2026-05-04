@@ -86,7 +86,7 @@
             </div>
 
             <div v-else-if="newMembersThisMonth.length === 0" class="p-6 text-center text-sm text-slate-400 italic">
-              Aucun nouveau membre ce mois.
+              Aucun membre récent.
             </div>
 
             <div
@@ -311,8 +311,7 @@ function isInCurrentMonth(value?: string) {
 }
 
 const newMembersThisMonth = computed(() => {
-  let filtered = [...members.value]
-    .filter(m => !!m.id && isInCurrentMonth(m.created));
+  let filtered = [...members.value].filter(m => !!m.id);
 
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase();
@@ -326,7 +325,7 @@ const newMembersThisMonth = computed(() => {
 
   const sorted = filtered
     .sort((a, b) => new Date(b.created ?? 0).getTime() - new Date(a.created ?? 0).getTime())
-    .slice(0, 10);
+    .slice(0, 3);
 
   return sorted.map(member => {
     const fullName = (member.fullName || `${member.firstName ?? ""} ${member.lastName ?? ""}`).trim();
@@ -342,8 +341,8 @@ const newMembersThisMonth = computed(() => {
 
 const newMembersLabel = computed(() => {
   const count = newMembersThisMonth.value.length;
-  if (count === 0) return "Aucun nouveau membre ce mois";
-  return `${count} nouveau(x) membre(s) ce mois`;
+  if (count === 0) return "Aucun membre récent";
+  return `Les ${count} derniers inscrits`;
 });
 
 const kpis = computed(() => {
