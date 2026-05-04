@@ -92,12 +92,6 @@
             <!-- Dates -->
             <div class="text-xs text-gray-500 mb-4 space-y-1">
               <p>{{ $t('quiz.assignedOn') }}: {{ formatDate(quiz.assignedAt) }}</p>
-              <p v-if="quiz.availableAt">
-                {{ $t('quiz.availableOn') }}:
-                <span :class="{ 'text-orange-500 font-semibold': !isAvailable(quiz) }">
-                  {{ formatDateTime(quiz.availableAt) }}
-                </span>
-              </p>
               <p v-if="quiz.dueDate">{{ $t('quiz.dueDate') }}: {{ formatDate(quiz.dueDate) }}</p>
               <p v-if="quiz.completedAt">{{ $t('quiz.completedOn') }}: {{ formatDate(quiz.completedAt) }}</p>
             </div>
