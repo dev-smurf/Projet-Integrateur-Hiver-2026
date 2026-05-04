@@ -18,29 +18,11 @@
 
     <!-- Grid of Quiz Cards -->
     <div v-if="!loading && quizzes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition relative">
-
-        <!-- NOT YET AVAILABLE stamp overlay -->
-        <div
-          v-if="isNotYetAvailable(quiz)"
-          class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
-        >
-          <div
-            class="rotate-[-15deg] border-[5px] border-red-600 rounded-sm px-5 py-3 text-center"
-            style="box-shadow: inset 0 0 10px rgba(180,0,0,0.15); background: rgba(255,255,255,0.05);"
-          >
-            <p
-              class="text-red-600 font-black text-xl leading-tight tracking-widest uppercase"
-              style="font-family: 'Arial Black', Impact, sans-serif; text-shadow: 2px 2px 0 rgba(180,0,0,0.2); opacity: 0.85;"
-            >
-              NOT YET<br/>AVAILABLE
-            </p>
-          </div>
-        </div>
-
+      <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+        <div v-if="quiz"></div>
         <!-- Quiz Image or Placeholder -->
-        <div class="h-40 bg-gray-200 relative overflow-hidden group" :class="{ 'opacity-60': isNotYetAvailable(quiz) }">
-          <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
+          <div class="h-40 bg-gray-200 relative overflow-hidden group">
+            <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
           <div v-else class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
             <BookOpen class="w-16 h-16 text-white opacity-50" />
           </div>
@@ -58,18 +40,13 @@
         </div>
 
         <!-- Quiz Info -->
-        <div class="p-4" :class="{ 'opacity-60': isNotYetAvailable(quiz) }">
+        <div class="p-4">
           <h2 class="text-lg font-bold text-gray-900 mb-2">{{ quiz.titre }}</h2>
           <p v-if="quiz.description" class="text-sm text-gray-600 mb-3">{{ quiz.description }}</p>
 
           <!-- Question Count -->
           <div class="text-xs text-gray-500 mb-4">
             {{ quiz.questions.length }} {{ $t('global.questions') }}
-          </div>
-
-          <!-- Available At info -->
-          <div v-if="(quiz as any).availableAt" class="text-xs text-orange-500 mb-3 font-medium">
-            🕐 {{ $t('quiz.availableAt') }}: {{ formatDateTime((quiz as any).availableAt) }}
           </div>
 
           <!-- Action Buttons -->
@@ -188,23 +165,6 @@ const showAssignModal = ref(false)
 const selectedQuizForAssignment = ref<Quiz | null>(null)
 const successMessage = ref('')
 
-function isNotYetAvailable(quiz: Quiz): boolean {
-  const availableAt = (quiz as any).availableAt
-  if (!availableAt) return false
-  return new Date(availableAt) > new Date()
-}
-
-function formatDateTime(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleString('fr-CA', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
 async function loadQuizzes() {
   loading.value = true
   try {
@@ -257,6 +217,7 @@ onMounted(() => {
   loadQuizzes()
 })
 
+// Watch for route changes to reload quizzes when returning to this page
 watch(
   () => route.name,
   (newName) => {
