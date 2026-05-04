@@ -91,10 +91,9 @@
                                 <span class="text-xs font-medium px-2 py-1 rounded-full"
                                       :style="mod.isCompleted
                                       ? 'background-color: rgba(152,255,152,0.15); color: #2d8f4e;'
-                                      : mod.progressPercent>
-                                    0
-                                    ? 'background-color: rgba(144,114,136,0.15); color: #907288;'
-                                    : 'background-color: #f3f4f6; color: #6b7280;'"
+                                      : mod.progressPercent > 0
+                                      ? 'background-color: rgba(144,114,136,0.15); color: #907288;'
+                                      : 'background-color: #f3f4f6; color: #6b7280;'"
                                     >
                                     {{ mod.statusLabel }}
                                 </span>
@@ -262,9 +261,8 @@
     </div>
 </template>
 
-<<<<<<< HEAD
  <script lang="ts" setup>
- import {computed, onMounted, onUnmounted, ref} from "vue";
+ import {computed, onMounted, onUnmounted, onActivated, ref} from "vue";
  import {useI18n} from "vue3-i18n";
  import {useRouter} from "vue-router";
  import {ArrowRight, BookOpen, CheckCircle, ClipboardList, Layers, FileText} from "lucide-vue-next";
@@ -286,228 +284,149 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
  const personStore = usePersonStore();
  const userStore = useUserStore();
 
- const loading = ref(true);
- const modules = ref<MemberModuleDto[]>([]);
- const quizzesLoading = ref(true);
- const assignedQuizzes = ref<AssignedQuiz[]>([]);
- const notesLoading = ref(true);
- const myNotes = ref<NoteDto[]>([]);
- const showNotesModal = ref(false);
- const notesSearchQuery = ref("");
- const notesDateFilter = ref("");
-=======
-<script lang="ts" setup>
-import {computed, onActivated, onMounted, ref} from "vue";
-import {useI18n} from "vue3-i18n";
-import {BookOpen, CheckCircle, ClipboardCheck, Layers} from "lucide-vue-next";
-import {useMemberService, useQuizService} from "@/inversify.config";
-import {usePersonStore} from "@/stores/personStore";
-import {useUserStore} from "@/stores/userStore";
-import type {MemberModuleDto} from "@/types/entities";
-import type {AssignedQuiz} from "@/services/quizService";
+  const loading = ref(true);
+  const modules = ref<MemberModuleDto[]>([]);
+  const quizzesLoading = ref(true);
+  const assignedQuizzes = ref<AssignedQuiz[]>([]);
+  const notesLoading = ref(true);
+  const myNotes = ref<NoteDto[]>([]);
+  const showNotesModal = ref(false);
+  const notesSearchQuery = ref("");
+  const notesDateFilter = ref("");
 
-const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
+ const displayName = computed(() => {
+   return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
+ });
 
-const {locale, t} = useI18n();
-const memberService = useMemberService();
-const quizService = useQuizService();
-const personStore = usePersonStore();
-const userStore = useUserStore();
+ function imageUrl(path?: string): string | undefined {
+   if (!path) return undefined;
+   if (path.startsWith("http")) return path;
+   return backendUrl + path;
+ }
 
-const loading = ref(true);
-const modules = ref<MemberModuleDto[]>([]);
-const assignedQuizzes = ref<AssignedQuiz[]>([]);
->>>>>>> 0f54ce170b5f271e28afb9ef3679bcc5f316c7ee
+ const moduleCards = computed(() => {
+   return modules.value.map((mod) => {
+     const isFrench = getLocale() === "fr";
+     const name =
+       mod.name ||
+       (isFrench
+         ? (mod.nameFr || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
+         : (mod.nameEn || mod.nameFr || t("pages.memberDashboard.unnamedModule")));
+     const subject =
+       mod.subject ||
+       (isFrench
+         ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
+         : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject")));
+     const progressPercent = mod.progressPercent ?? 0;
+     const isCompleted = mod.isCompleted || progressPercent >= 100;
+     const statusLabel = isCompleted
+       ? t("pages.memberDashboard.status.completed")
+       : progressPercent > 0
+         ? t("pages.memberDashboard.status.inProgress")
+         : t("pages.memberDashboard.status.notStarted");
 
-const displayName = computed(() => {
-  return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
-});
+     return {
+       id: mod.moduleId,
+       name,
+       subject,
+       imageUrl: imageUrl(mod.cardImageUrl),
+       progressPercent,
+       isCompleted,
+       statusLabel
+     };
+   });
+ });
 
-function imageUrl(path?: string): string | undefined {
-  if (!path) return undefined;
-  if (path.startsWith("http")) return path;
-  return backendUrl + path;
-}
+ const filteredNotes = computed(() => {
+     return myNotes.value.filter(note => {
+         const matchContent = note.content.toLowerCase().includes(notesSearchQuery.value.toLowerCase());
+         const matchDate = !notesDateFilter.value || note.created.startsWith(notesDateFilter.value);
+         return matchContent && matchDate;
+     });
+ });
 
-const moduleCards = computed(() => {
-<<<<<<< HEAD
-  return modules.value.map((mod) => {
-    const isFrench = getLocale() === "fr";
-    const name =
-      mod.name ||
-      (isFrench
-        ? (mod.nameFr || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
-        : (mod.nameEn || mod.nameFr || t("pages.memberDashboard.unnamedModule")));
-    const subject =
-      mod.subject ||
-      (isFrench
-        ? (mod.sujetFr || mod.sujetEn || t("pages.memberDashboard.noSubject"))
-        : (mod.sujetEn || mod.sujetFr || t("pages.memberDashboard.noSubject")));
-=======
-  return modules.value
-    .filter((mod) => !(mod.isCompleted || (mod.progressPercent ?? 0) >= 100))
-    .sort((a, b) => {
-      const left = a.assignedAt ? new Date(a.assignedAt).getTime() : 0;
-      const right = b.assignedAt ? new Date(b.assignedAt).getTime() : 0;
-      return right - left;
-    })
-    .map((mod) => {
-    const isFrench = locale === "fr";
-    const name = isFrench
-      ? (mod.nameFr || mod.name || mod.nameEn || t("pages.memberDashboard.unnamedModule"))
-      : (mod.nameEn || mod.name || mod.nameFr || t("pages.memberDashboard.unnamedModule"));
-    const subject = isFrench
-      ? (mod.sujetFr || mod.subject || mod.sujetEn || t("pages.memberDashboard.noSubject"))
-      : (mod.sujetEn || mod.subject || mod.sujetFr || t("pages.memberDashboard.noSubject"));
->>>>>>> 0f54ce170b5f271e28afb9ef3679bcc5f316c7ee
-    const progressPercent = mod.progressPercent ?? 0;
-    const isCompleted = mod.isCompleted || progressPercent >= 100;
-    const statusLabel = isCompleted
-      ? t("pages.memberDashboard.status.completed")
-      : progressPercent > 0
-        ? t("pages.memberDashboard.status.inProgress")
-        : t("pages.memberDashboard.status.notStarted");
+  const totalModules = computed(() => modules.value.length);
+  const completedModules = computed(() => modules.value.filter((mod) => mod.isCompleted || (mod.progressPercent ?? 0) >= 100).length);
+  const pendingModuleCards = computed(() => moduleCards.value.filter(mod => !mod.isCompleted));
 
-    return {
-      id: mod.moduleId,
-      name,
-      subject,
-      imageUrl: imageUrl(mod.cardImageUrl),
-      assignedAt: mod.assignedAt,
-      progressPercent,
-      isCompleted,
-      statusLabel
-    };
-  });
-});
+  const pendingQuizzes = computed(() => assignedQuizzes.value.filter(q => !q.isCompleted));
 
-<<<<<<< HEAD
-const filteredNotes = computed(() => {
-    return myNotes.value.filter(note => {
-        const matchContent = note.content.toLowerCase().includes(notesSearchQuery.value.toLowerCase());
-        const matchDate = !notesDateFilter.value || note.created.startsWith(notesDateFilter.value);
-        return matchContent && matchDate;
-    });
-});
+  const formatDate = (date: Date | string): string => {
+    const d = typeof date === "string" ? new Date(date) : date;
+    return d.toLocaleDateString();
+  };
 
- const totalModules = computed(() => moduleCards.value.length);
- const completedModules = computed(() => moduleCards.value.filter((mod) => mod.isCompleted).length);
- const pendingModuleCards = computed(() => moduleCards.value.filter(mod => !mod.isCompleted));
+  const startQuiz = (quizId: string) => {
+    router.push({ name: "quiz.take", params: { quizId } });
+  };
 
- const pendingQuizzes = computed(() => assignedQuizzes.value.filter(q => !q.isCompleted));
-
- const formatDate = (date: Date | string): string => {
-   const d = typeof date === "string" ? new Date(date) : date;
-   return d.toLocaleDateString();
- };
-
- const startQuiz = (quizId: string) => {
-   router.push({ name: "quiz.take", params: { quizId } });
- };
-
- async function fetchModules() {
-   loading.value = true;
-   try {
-     modules.value = await memberService.getMyModules();
-=======
-const totalModules = computed(() => moduleCards.value.length);
-const completedModules = computed(() => modules.value.filter((mod) => mod.isCompleted || (mod.progressPercent ?? 0) >= 100).length);
-function formatAssignedAt(value?: string) {
-  if (!value) return t("pages.memberDashboard.lastUpdate");
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return t("pages.memberDashboard.lastUpdate");
-  return `Assigne le ${date.toLocaleDateString()}`;
-}
-
-async function fetchModules() {
-  loading.value = true;
-  try {
-    if (!personStore.person.firstName || typeof personStore.person.visibleAdminNotes === "undefined") {
-      try {
-        const authenticatedMember = await memberService.getAuthenticated();
-        if (authenticatedMember) {
-          personStore.setPerson(authenticatedMember);
-        }
-      } catch {
-        // Ignore profile refresh failures and keep module loading available.
+  async function fetchAll() {
+    loading.value = true;
+    quizzesLoading.value = true;
+    notesLoading.value = true;
+    
+    try {
+      // Refresh profile if needed
+      if (!personStore.person.firstName) {
+        const profile = await memberService.getAuthenticated();
+        if (profile) personStore.setPerson(profile);
       }
+
+      const [modData, quizData, noteData] = await Promise.all([
+        memberService.getMyModules(),
+        quizService.getAssignedQuizzes(),
+        notesService.getMyNotes()
+      ]);
+
+      modules.value = modData;
+      assignedQuizzes.value = quizData;
+      
+      noteData.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      myNotes.value = noteData;
+
+    } catch (err) {
+      console.error("Error fetching dashboard data", err);
+    } finally {
+      loading.value = false;
+      quizzesLoading.value = false;
+      notesLoading.value = false;
     }
-    const [memberModules, quizzes] = await Promise.all([
-      memberService.getMyModules(),
-      quizService.getAssignedQuizzes().catch(() => [])
-    ]);
-    modules.value = memberModules;
-    assignedQuizzes.value = quizzes;
->>>>>>> 0f54ce170b5f271e28afb9ef3679bcc5f316c7ee
-  } catch {
-    modules.value = [];
-    assignedQuizzes.value = [];
-  } finally {
-     loading.value = false;
-   }
- }
+  }
 
-<<<<<<< HEAD
- async function fetchQuizzes() {
-   quizzesLoading.value = true;
-   try {
-     assignedQuizzes.value = await quizService.getAssignedQuizzes();
-   } catch {
-     assignedQuizzes.value = [];
-   } finally {
-     quizzesLoading.value = false;
-   }
- }
+  let pollingInterval: ReturnType<typeof setInterval> | null = null;
 
- async function fetchNotes() {
-   notesLoading.value = true;
-   try {
-     const notes = await notesService.getMyNotes();
-     notes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-     myNotes.value = notes;
-   } catch {
-     myNotes.value = [];
-   } finally {
-     notesLoading.value = false;
-   }
- }
+  onMounted(async () => {
+    await fetchAll();
+    
+    pollingInterval = setInterval(async () => {
+      if (!notesLoading.value) {
+        const oldNotesCount = myNotes.value.length;
+        const oldLatestNoteId = oldNotesCount > 0 ? myNotes.value[0].id : null;
+        
+        try {
+          const newNotes = await notesService.getMyNotes();
+          newNotes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+          
+          if (newNotes.length > 0) {
+            const currentLatestNote = newNotes[0];
+            const isNewFirstNote = oldNotesCount === 0;
+            const isDifferentTopNote = oldNotesCount > 0 && currentLatestNote.id !== oldLatestNoteId;
+            
+            if (isNewFirstNote || isDifferentTopNote) {
+              notifySuccess("Une nouvelle note administrative a été publiée !");
+            }
+          }
+          myNotes.value = newNotes;
+        } catch {
+          // Silently ignore polling errors
+        }
+      }
+    }, 10000); // 10 secondes
+  });
 
- let pollingInterval: ReturnType<typeof setInterval> | null = null;
-
- onMounted(async () => {
-   await Promise.all([fetchModules(), fetchQuizzes(), fetchNotes()]);
-   
-   pollingInterval = setInterval(async () => {
-     if (!notesLoading.value) {
-       const oldNotesCount = myNotes.value.length;
-       const oldLatestNoteId = oldNotesCount > 0 ? myNotes.value[0].id : null;
-       
-       try {
-         const newNotes = await notesService.getMyNotes();
-         newNotes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-         
-         if (newNotes.length > 0) {
-           const currentLatestNote = newNotes[0];
-           const isNewFirstNote = oldNotesCount === 0;
-           const isDifferentTopNote = oldNotesCount > 0 && currentLatestNote.id !== oldLatestNoteId;
-           
-           if (isNewFirstNote || isDifferentTopNote) {
-             notifySuccess("Une nouvelle note administrative a été publiée !");
-           }
-         }
-         myNotes.value = newNotes;
-       } catch {
-         // Silently ignore polling errors
-       }
-     }
-   }, 10000); // 10 secondes
- });
- 
- onUnmounted(() => {
-   if (pollingInterval) clearInterval(pollingInterval);
- });
-=======
-onMounted(fetchModules);
-onActivated(fetchModules);
->>>>>>> 0f54ce170b5f271e28afb9ef3679bcc5f316c7ee
-</script>
+  onActivated(fetchAll);
+  
+  onUnmounted(() => {
+    if (pollingInterval) clearInterval(pollingInterval);
+  });
+ </script>

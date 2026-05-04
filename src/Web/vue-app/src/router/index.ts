@@ -112,22 +112,12 @@ export function getRouter(): Router {
         },
       },
       {
-<<<<<<< HEAD
-        path: i18n.t("routes.equipe.path"),
-        alias: getLocalizedRoutes("routes.equipe.path"),
-        name: "equipe",
-        component: MemberEquipe,
-        meta: {
-          requiredRole: Role.Member,
-          title: "routes.equipe.name",
-=======
         path: "/notifications",
         name: "member.notifications",
         component: MemberNotifications,
         meta: {
           requiredRole: Role.Member,
           title: "Notifications",
->>>>>>> 0f54ce170b5f271e28afb9ef3679bcc5f316c7ee
         },
       },
       {
