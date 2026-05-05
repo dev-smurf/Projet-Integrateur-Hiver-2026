@@ -29,6 +29,54 @@
                   style="background-color: rgba(144,114,136,0.2);" />
          </section>
 
+        <!-- Login notifications banner -->
+        <section v-if="hasNewAssignments"
+                 class="relative rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/40 p-5 shadow-sm">
+            <div class="flex items-start gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <Sparkles class="h-5 w-5" />
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-sm font-semibold text-emerald-900">
+                        {{ $t("pages.loginNotifications.title") }}
+                    </h3>
+                    <p class="mt-0.5 text-xs text-emerald-700/80">
+                        {{ $t("pages.loginNotifications.subtitle") }}
+                    </p>
+
+                    <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+                        <li v-for="q in loginNotifications.quizzes" :key="`q-${q.assignmentId}`"
+                            class="flex items-start gap-2 rounded-lg border border-emerald-100 bg-white/70 px-3 py-2">
+                            <ClipboardList class="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                            <div class="min-w-0">
+                                <p class="text-xs font-medium uppercase tracking-wide text-emerald-600">
+                                    {{ $t("pages.loginNotifications.newQuiz") }}
+                                </p>
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ q.titre }}</p>
+                                <p v-if="q.followUpLabel" class="text-xs text-gray-500 truncate">{{ q.followUpLabel }}</p>
+                            </div>
+                        </li>
+                        <li v-for="m in loginNotifications.modules" :key="`m-${m.moduleId}`"
+                            class="flex items-start gap-2 rounded-lg border border-emerald-100 bg-white/70 px-3 py-2">
+                            <BookOpen class="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                            <div class="min-w-0">
+                                <p class="text-xs font-medium uppercase tracking-wide text-emerald-600">
+                                    {{ $t("pages.loginNotifications.newModule") }}
+                                </p>
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ m.name }}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button"
+                        class="text-emerald-600 hover:text-emerald-800 transition shrink-0 rounded-md p-1 hover:bg-emerald-100"
+                        :aria-label="$t('pages.loginNotifications.dismiss')"
+                        @click="dismissLoginNotifications">
+                    <X class="h-4 w-4" />
+                </button>
+            </div>
+        </section>
+
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             <div class="bg-white border border-gray-200 rounded-xl p-4">
                 <div class="flex items-center justify-between">
@@ -265,10 +313,12 @@
  import {computed, onMounted, onUnmounted, onActivated, ref} from "vue";
  import {useI18n} from "vue3-i18n";
  import {useRouter} from "vue-router";
- import {ArrowRight, BookOpen, CheckCircle, ClipboardList, Layers, FileText} from "lucide-vue-next";
+ import {ArrowRight, BookOpen, CheckCircle, ClipboardList, Layers, FileText, Sparkles, X} from "lucide-vue-next";
  import {useMemberService, useQuizService, useNotesService} from "@/inversify.config";
+ import type {LoginNotifications} from "@/injection/interfaces";
  import {usePersonStore} from "@/stores/personStore";
  import {useUserStore} from "@/stores/userStore";
+ import {Role} from "@/types/enums";
  import {notifySuccess} from "@/notify";
  import type {MemberModuleDto} from "@/types/entities";
  import type {AssignedQuiz} from "@/services/quizService";
@@ -290,6 +340,30 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
   const assignedQuizzes = ref<AssignedQuiz[]>([]);
   const notesLoading = ref(true);
   const myNotes = ref<NoteDto[]>([]);
+  const loginNotifications = ref<LoginNotifications>({quizzes: [], modules: []});
+  const hasNewAssignments = computed(() =>
+    loginNotifications.value.quizzes.length + loginNotifications.value.modules.length > 0
+  );
+
+  async function fetchLoginNotifications() {
+    if (!userStore.hasRole(Role.Member)) return;
+    try {
+      loginNotifications.value = await memberService.getLoginNotifications();
+    } catch {
+      // Best-effort — banner stays hidden if the API is unreachable.
+    }
+  }
+
+  async function dismissLoginNotifications() {
+    const previous = loginNotifications.value;
+    loginNotifications.value = {quizzes: [], modules: []};
+    try {
+      await memberService.dismissLoginNotifications();
+    } catch {
+      // Restore the banner if the dismiss call failed so the athlete can retry.
+      loginNotifications.value = previous;
+    }
+  }
   const showNotesModal = ref(false);
   const notesSearchQuery = ref("");
   const notesDateFilter = ref("");
@@ -377,6 +451,8 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
         quizService.getAssignedQuizzes(),
         notesService.getMyNotes()
       ]);
+
+      void fetchLoginNotifications();
 
       modules.value = modData;
       assignedQuizzes.value = quizData;

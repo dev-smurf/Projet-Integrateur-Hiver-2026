@@ -46,8 +46,31 @@ export interface IAuthenticationService {
   logout(): Promise<SucceededOrNotResponse>;
 }
 
+export interface LoginNotificationQuiz {
+  assignmentId: string;
+  quizId: string;
+  titre: string;
+  followUpLabel?: string | null;
+  assignedAt: string;
+}
+
+export interface LoginNotificationModule {
+  moduleId: string;
+  name?: string | null;
+  assignedAt: string;
+}
+
+export interface LoginNotifications {
+  quizzes: LoginNotificationQuiz[];
+  modules: LoginNotificationModule[];
+}
+
 export interface IMemberService {
   getAuthenticated(): Promise<Member | undefined>;
+
+  getLoginNotifications(): Promise<LoginNotifications>;
+  dismissLoginNotifications(): Promise<void>;
+
 
   search(
     pageIndex: number,

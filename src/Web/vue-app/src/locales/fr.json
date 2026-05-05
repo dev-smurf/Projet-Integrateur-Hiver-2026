@@ -354,6 +354,13 @@
       "updateSuccess": "Profil mis à jour avec succès.",
       "updateError": "Une erreur est survenue lors de la mise à jour du profil."
     },
+    "loginNotifications": {
+      "title": "Du nouveau pour toi",
+      "subtitle": "Voici ce qui a été assigné depuis ta dernière connexion.",
+      "newQuiz": "Nouveau quiz",
+      "newModule": "Nouveau module",
+      "dismiss": "Fermer"
+    },
     "login": {
       "username": "Nom d'utilisateur",
       "password": "Mot de passe",

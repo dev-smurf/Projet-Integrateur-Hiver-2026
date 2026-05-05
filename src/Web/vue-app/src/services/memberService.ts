@@ -3,7 +3,7 @@ import {injectable} from "inversify"
 
 import "@/extensions/date.extensions"
 import {ApiService} from "@/services/apiService"
-import {IMemberService} from "@/injection/interfaces"
+import {IMemberService, LoginNotifications} from "@/injection/interfaces"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses";
 import {DashboardSummaryDto, Member, MemberModuleDto} from "@/types/entities";
 import {Guid} from "@/types";
@@ -19,6 +19,21 @@ export class MemberService extends ApiService implements IMemberService {
     } catch (error) {
       return Promise.reject(error)
     }
+  }
+
+  public async getLoginNotifications(): Promise<LoginNotifications> {
+    const response = await this
+      ._httpClient
+      .get<LoginNotifications, AxiosResponse<LoginNotifications>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/login-notifications`
+      )
+    return response.data
+  }
+
+  public async dismissLoginNotifications(): Promise<void> {
+    await this
+      ._httpClient
+      .post(`${import.meta.env.VITE_API_BASE_URL}/members/me/login-notifications/dismiss`)
   }
 
   public async search(pageIndex: number, pageSize: number, searchValue: string): Promise<PaginatedResponse<Member>> {

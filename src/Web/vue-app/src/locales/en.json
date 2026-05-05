@@ -348,6 +348,13 @@
       "updateSuccess": "Profile updated successfully.",
       "updateError": "An error occurred while updating your profile."
     },
+    "loginNotifications": {
+      "title": "What's new for you",
+      "subtitle": "Here's what's been assigned since you last logged in.",
+      "newQuiz": "New quiz",
+      "newModule": "New module",
+      "dismiss": "Dismiss"
+    },
     "login": {
       "submit": "Log in",
       "forgotPassword": "Forgot password?",
