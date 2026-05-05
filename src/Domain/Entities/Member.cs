@@ -1,7 +1,9 @@
 using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Extensions;
+using Domain.Helpers;
 using Domain.ValueObjects;
+using NodaTime;
 
 namespace Domain.Entities;
 
@@ -19,6 +21,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public string? ZipCode { get; private set; }
     public string? AdminNotes { get; private set; }
     public bool AdminNotesVisibleToMember { get; private set; }
+    public Instant? LastNotificationsSeenAt { get; private set; }
     public User User { get; private set; } = null!;
 
     public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
@@ -49,6 +52,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public void SetZipCode(string? zipCode) => ZipCode = zipCode;
     public void SetAdminNotes(string? adminNotes) => AdminNotes = adminNotes;
     public void SetAdminNotesVisibleToMember(bool visible) => AdminNotesVisibleToMember = visible;
+    public void MarkNotificationsSeen() => LastNotificationsSeenAt = InstantHelper.GetLocalNow();
     public void SetUser(User user) => User = user;
 
     public void OnCreated(User user)
