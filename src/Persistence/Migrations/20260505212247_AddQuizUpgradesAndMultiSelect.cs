@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,16 +6,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    [Migration("20260427183000_AddQuizAssignmentVersionsAndScheduling")]
-    public partial class AddQuizAssignmentVersionsAndScheduling : Migration
+    public partial class AddQuizUpgradesAndMultiSelect : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<Guid>(
+                name: "QuizAssignmentId",
+                table: "UserQuizResponses",
+                type: "uniqueidentifier",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "SelectedResponseIds",
+                table: "UserQuizResponses",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "AvailableAt",
                 table: "QuizAssignments",
                 type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "FollowUpLabel",
+                table: "QuizAssignments",
+                type: "nvarchar(100)",
+                maxLength: 100,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -23,13 +41,7 @@ namespace Persistence.Migrations
                 table: "QuizAssignments",
                 type: "int",
                 nullable: false,
-                defaultValue: 1);
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "QuizAssignmentId",
-                table: "UserQuizResponses",
-                type: "uniqueidentifier",
-                nullable: true);
+                defaultValue: 0);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserQuizResponses_QuizAssignmentId",
@@ -57,16 +69,24 @@ namespace Persistence.Migrations
                 table: "UserQuizResponses");
 
             migrationBuilder.DropColumn(
+                name: "QuizAssignmentId",
+                table: "UserQuizResponses");
+
+            migrationBuilder.DropColumn(
+                name: "SelectedResponseIds",
+                table: "UserQuizResponses");
+
+            migrationBuilder.DropColumn(
                 name: "AvailableAt",
+                table: "QuizAssignments");
+
+            migrationBuilder.DropColumn(
+                name: "FollowUpLabel",
                 table: "QuizAssignments");
 
             migrationBuilder.DropColumn(
                 name: "Version",
                 table: "QuizAssignments");
-
-            migrationBuilder.DropColumn(
-                name: "QuizAssignmentId",
-                table: "UserQuizResponses");
         }
     }
 }
