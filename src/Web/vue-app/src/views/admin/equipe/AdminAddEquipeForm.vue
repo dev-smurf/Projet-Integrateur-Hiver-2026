@@ -31,7 +31,6 @@
                         Équipe parente
                         <span v-if="!isSousEquipe" class="text-gray-400 font-normal">(optionnel)</span>
                     </label>
-
                     <!-- Lecture seule si vient de la page détails -->
                     <div v-if="isSousEquipe"
                          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-700 flex items-center gap-2">
@@ -41,14 +40,13 @@
                     </div>
 
                     <!-- Sélectable si création libre -->
-                    <select v-else
-                            v-model="_equipe.parentEquipeId"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
-                        <option :value="undefined">— Aucune (équipe principale) —</option>
-                        <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
-                            {{ e.nameFr || e.nameEn }}
-                        </option>
-                    </select>
+                    <Select2Single v-else
+                                   v-model="_equipe.parentEquipeId"
+                                   :options="parentEquipeOptions"
+                                   clear-label="— Aucune (équipe principale) —"
+                                   placeholder="Choisir une équipe parente"
+                                   search-placeholder="Rechercher une équipe"
+                                   empty-text="Aucune équipe trouvée" />
                 </div>
 
                 <div>
@@ -124,9 +122,10 @@
     import { useNotification } from "@kyvg/vue3-notification";
     import { Loader2, Search, GitBranch, Users } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
+    import Select2Single from "@/components/forms/Select2Single.vue";
     import { useI18n } from "vue3-i18n";
     import type { ICreateEquipeRequest } from "@/types/requests/ICreateEquipeRequest";
-    import type { Member, Equipe } from "@/types/entities";
+    import type { Equipe, Member } from "@/types/entities";
 
     const router = useRouter();
     const route = useRoute();
@@ -147,10 +146,10 @@
 
     const submitting = ref(false);
     const allMembers = ref<Member[]>([]);
+    const parentEquipes = ref<Equipe[]>([]);
     const loadingMembers = ref(true);
     const memberSearch = ref("");
     const selectedMemberIds = ref<string[]>([]);
-    const parentEquipes = ref<Equipe[]>([]);
     const parentEquipeMembers = ref<string[]>([]);
     const parentEquipeName = ref<string>("");
 
@@ -171,6 +170,15 @@
             (m.email || "").toLowerCase().includes(q)
         );
     });
+
+    const parentEquipeOptions = computed(() =>
+        parentEquipes.value
+            .map(e => ({
+                value: String(e.id ?? e.Id ?? ""),
+                label: String(e.nameFr ?? e.nameEn ?? ""),
+            }))
+            .filter(option => option.value && option.label),
+    );
 
     async function loadMembers() {
         loadingMembers.value = true;

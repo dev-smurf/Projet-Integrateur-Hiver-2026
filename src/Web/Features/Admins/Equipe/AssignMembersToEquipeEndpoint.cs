@@ -8,12 +8,10 @@ namespace Web.Features.Admins.Equipe;
 public class AssignMembersToEquipeEndpoint : Endpoint<AssignMembersToEquipeRequest, SucceededOrNotResponse>
 {
     private readonly IEquipeRepository _equipeRepository;
-    private readonly IMemberRepository _memberRepository;
 
-    public AssignMembersToEquipeEndpoint(IEquipeRepository equipeRepository, IMemberRepository memberRepository)
+    public AssignMembersToEquipeEndpoint(IEquipeRepository equipeRepository)
     {
         _equipeRepository = equipeRepository;
-        _memberRepository = memberRepository;
     }
 
     public override void Configure()
@@ -44,14 +42,12 @@ public class AssignMembersToEquipeEndpoint : Endpoint<AssignMembersToEquipeReque
             return;
         }
 
-        var memberUserIds = req.MemberIds
+        var memberIds = req.MemberIds
             .Where(id => id != Guid.Empty)
-            .Distinct()
-            .Select(id => _memberRepository.FindById(id).User.Id)
             .Distinct()
             .ToList();
 
-        await _equipeRepository.SetEquipeMembers(equipeId, memberUserIds);
+        await _equipeRepository.SetEquipeMembers(equipeId, memberIds);
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 }

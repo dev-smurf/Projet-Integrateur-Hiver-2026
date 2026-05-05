@@ -10,11 +10,16 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
 {
     private readonly IMemberRepository _memberRepository;
     private readonly IMemberEquipeRepository _memberEquipeRepository;
+    private readonly IEquipeRepository _equipeRepository;
 
-    public GetMemberEndpoint(IMemberRepository memberRepository, IMemberEquipeRepository memberEquipeRepository)
+    public GetMemberEndpoint(
+        IMemberRepository memberRepository,
+        IMemberEquipeRepository memberEquipeRepository,
+        IEquipeRepository equipeRepository)
     {
         _memberRepository = memberRepository;
         _memberEquipeRepository = memberEquipeRepository;
+        _equipeRepository = equipeRepository;
     }
 
     public override void Configure()
@@ -36,7 +41,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
     private async Task<MemberDto> MapMember(Member member)
     {
         var roles = member.User.UserRoles.Select(r => r.Role.Name ?? string.Empty).Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
-        var equipeIds = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
+        var equipeIds = await GetEquipeIdsAsync(member);
         return new MemberDto
         {
             Id = member.Id,
@@ -59,5 +64,18 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             Roles = roles,
             EquipeIds = equipeIds.ToList()
         };
+    }
+
+    private async Task<List<Guid>> GetEquipeIdsAsync(Member member)
+    {
+        try
+        {
+            var ids = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
+            return ids.ToList();
+        }
+        catch
+        {
+            return await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
+        }
     }
 }

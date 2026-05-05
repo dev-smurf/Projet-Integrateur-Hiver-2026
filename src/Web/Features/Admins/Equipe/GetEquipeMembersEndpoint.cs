@@ -39,22 +39,17 @@ public class GetEquipeMembersEndpoint : Endpoint<GetEquipeMembersRequest, GetEqu
         }
 
         var members = equipe.Membres
-            .Select(user =>
+            .Select(user => _memberRepository.FindByUserId(user.Id))
+            .Where(member => member != null)
+            .Select(member => new GetEquipeMemberDto
             {
-                var member = _memberRepository.FindByUserId(user.Id);
-                return member == null
-                    ? null
-                    : new GetEquipeMemberDto
-                    {
-                        MemberId = member.Id.ToString(),
-                        UserId = user.Id.ToString(),
-                        FirstName = member.FirstName,
-                        LastName = member.LastName,
-                        Email = member.Email
-                    };
+                MemberId = member!.Id.ToString(),
+                UserId = member.User.Id.ToString(),
+                FirstName = member.FirstName,
+                LastName = member.LastName,
+                Email = member.Email
             })
-            .Where(m => m != null)
-            .Cast<GetEquipeMemberDto>()
+            .DistinctBy(member => member.MemberId)
             .ToList();
 
         var response = new GetEquipeMembersResponse

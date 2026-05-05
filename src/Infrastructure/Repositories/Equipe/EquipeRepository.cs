@@ -6,7 +6,7 @@ using Persistence;
 
 public class EquipeRepository : IEquipeRepository
 {
-     private readonly GarneauTemplateDbContext _context;
+    private readonly GarneauTemplateDbContext _context;
 
     public EquipeRepository(GarneauTemplateDbContext context)
     {
@@ -33,6 +33,7 @@ public class EquipeRepository : IEquipeRepository
         }
 
         return await _context.Equipes
+            .Include(e => e.ParentEquipe)
             .Include(e => e.Membres)
             .Where(e => e.Deleted == null && distinctIds.Contains(e.Id))
             .ToListAsync();
@@ -132,26 +133,21 @@ public class EquipeRepository : IEquipeRepository
         if (equipe == null)
             return;
 
-        var targetIds = userIds
+        var targetMemberIds = userIds
             .Where(id => id != Guid.Empty)
             .Distinct()
-            .ToHashSet();
+            .ToList();
 
-        var toRemove = equipe.Membres.Where(user => !targetIds.Contains(user.Id)).ToList();
-        foreach (var user in toRemove)
-        {
-            equipe.Membres.Remove(user);
-        }
+        var assignedUsers = await _context.Members
+            .Include(m => m.User)
+            .Where(m => targetMemberIds.Contains(m.Id) && m.Deleted == null)
+            .Select(m => m.User)
+            .ToListAsync();
 
-        var currentIds = equipe.Membres.Select(user => user.Id).ToHashSet();
-        var toAddIds = targetIds.Where(id => !currentIds.Contains(id)).ToList();
-        if (toAddIds.Count > 0)
+        equipe.Membres.Clear();
+        foreach (var user in assignedUsers)
         {
-            var users = await _context.Users.Where(user => toAddIds.Contains(user.Id)).ToListAsync();
-            foreach (var user in users)
-            {
-                equipe.Membres.Add(user);
-            }
+            equipe.Membres.Add(user);
         }
 
         await _context.SaveChangesAsync();

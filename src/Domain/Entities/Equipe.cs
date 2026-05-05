@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Extensions;
 
@@ -32,6 +32,13 @@ namespace Domain.Entities
             NameFr = nameFr;
             NameEn = nameEn;
             ParentEquipeId = Guid.TryParse(parentEquipeId, out var guid) ? guid : null;
+        }
+
+        public Equipe(string nameFr, string nameEn, Guid? parentEquipeId)
+        {
+            NameFr = nameFr;
+            NameEn = nameEn;
+            ParentEquipeId = parentEquipeId;
         }
     }
 }

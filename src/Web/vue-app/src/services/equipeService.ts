@@ -48,6 +48,9 @@ export interface MyEquipeListItem {
   id: string;
   nameFr?: string;
   nameEn?: string;
+  parentEquipeId?: string;
+  parentEquipeNameFr?: string;
+  parentEquipeNameEn?: string;
 }
 
 @injectable()

@@ -22,6 +22,7 @@ namespace Application.Services.Equipe
                 Id = e.Id.ToString(),
                 NameFr = e.NameFr,
                 NameEn = e.NameEn,
+                ParentEquipeId = e.ParentEquipeId?.ToString(),
             }).ToList();
         }
 
@@ -38,7 +39,8 @@ namespace Application.Services.Equipe
             {
                 Id = equipe.Id.ToString(),
                 NameFr = equipe.NameFr,
-                NameEn = equipe.NameEn
+                NameEn = equipe.NameEn,
+                ParentEquipeId = equipe.ParentEquipeId?.ToString(),
             };
         }
 
@@ -57,6 +59,7 @@ namespace Application.Services.Equipe
                 Id = equipe.Id.ToString(),
                 NameFr = equipe.NameFr,
                 NameEn = equipe.NameEn,
+                ParentEquipeId = equipe.ParentEquipeId?.ToString(),
             };
         }
 

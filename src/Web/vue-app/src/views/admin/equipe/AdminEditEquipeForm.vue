@@ -20,13 +20,12 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Équipe parente (optionnel)
                 </label>
-                <select v-model="_equipe.parentEquipeId"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
-                    <option :value="undefined">— Aucune (équipe principale) —</option>
-                    <option v-for="e in parentEquipes" :key="e.id" :value="e.id">
-                        {{ e.nameFr || e.nameEn }}
-                    </option>
-                </select>
+                <Select2Single v-model="_equipe.parentEquipeId"
+                               :options="parentEquipeOptions"
+                               clear-label="— Aucune (équipe principale) —"
+                               placeholder="Choisir une équipe parente"
+                               search-placeholder="Rechercher une équipe"
+                               empty-text="Aucune équipe trouvée" />
             </div>
 
             <div>
@@ -100,9 +99,10 @@
     import { useNotification } from "@kyvg/vue3-notification";
     import { Loader2, Search } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
+    import Select2Single from "@/components/forms/Select2Single.vue";
     import { useI18n } from "vue3-i18n";
     import type { IEditEquipeRequest } from "@/types/requests/IEditEquipeRequest";
-    import type { Member } from "@/types/entities";
+    import type { Equipe, Member } from "@/types/entities";
 
     const router = useRouter();
     const route = useRoute();
@@ -121,9 +121,19 @@
 
     const submitting = ref(false);
     const allMembers = ref<Member[]>([]);
+    const parentEquipes = ref<Equipe[]>([]);
     const loadingMembers = ref(true);
     const memberSearch = ref("");
     const selectedMemberIds = ref<string[]>([]);
+
+    type EquipeApiResponse = Partial<Equipe> & {
+        Id?: string;
+        NameFr?: string;
+        NameEn?: string;
+        MemberIds?: string[];
+        MemberUserIds?: string[];
+        ParentEquipeId?: string;
+    };
 
     const filteredMembers = computed(() => {
         const q = memberSearch.value.trim().toLowerCase();
@@ -135,6 +145,15 @@
         );
     });
 
+    const parentEquipeOptions = computed(() =>
+        parentEquipes.value
+            .map(e => ({
+                value: String(e.id ?? e.Id ?? ""),
+                label: String(e.nameFr ?? e.nameEn ?? ""),
+            }))
+            .filter(option => option.value && option.label),
+    );
+
     function getInitials(m: Member): string {
         const first = (m.firstName || m.fullName?.split(" ")[0] || "?")[0];
         const last = (m.lastName || m.fullName?.split(" ")[1] || "")[0] || "";
@@ -143,14 +162,16 @@
 
     async function fetchEquipe() {
         try {
-            const equipe = await equipesService.getEquipe(id);
+            const equipe = await equipesService.getEquipe(id) as EquipeApiResponse;
+            const memberIds = (equipe.memberIds ?? equipe.MemberIds ?? []).map(String);
+
             _equipe.value = {
-                nameFr: equipe.nameFr || "",
-                nameEn: equipe.nameEn || "",
-                memberIds: (equipe as any).memberIds ?? [],
-                parentEquipeId: equipe.parentEquipeId,
+                nameFr: equipe.nameFr ?? equipe.NameFr ?? "",
+                nameEn: equipe.nameEn ?? equipe.NameEn ?? "",
+                memberIds,
+                parentEquipeId: equipe.parentEquipeId ?? equipe.ParentEquipeId,
             };
-            selectedMemberIds.value = (equipe as any).memberIds ?? [];
+            selectedMemberIds.value = memberIds;
         } catch {
             notify({
                 type: "error",
@@ -175,7 +196,7 @@
         try {
             const result = await equipesService.getAllEquipes();
             // Exclure l'équipe courante et ses sous-équipes
-            parentEquipes.value = (result || []).filter(e => e.id !== id && !e.parentEquipeId);
+            parentEquipes.value = (result || []).filter(e => (e.id ?? e.Id) !== id && !(e.parentEquipeId ?? e.ParentEquipeId));
         } catch {
             parentEquipes.value = [];
         }
@@ -222,6 +243,6 @@
     }
     
     onMounted(async () => {
-        await Promise.all([fetchEquipe(), fetchMembers(), loadingMembers()]);
+        await Promise.all([fetchEquipe(), fetchMembers(), loadParentEquipes()]);
     });
 </script>
