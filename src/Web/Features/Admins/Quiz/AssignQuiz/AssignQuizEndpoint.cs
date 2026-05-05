@@ -9,13 +9,16 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
 {
     private readonly IQuizRepository _quizRepository;
     private readonly IQuizAssignmentRepository _assignmentRepository;
+    private readonly IEquipeRepository _equipeRepository;
 
     public AssignQuizEndpoint(
         IQuizRepository quizRepository,
-        IQuizAssignmentRepository assignmentRepository)
+        IQuizAssignmentRepository assignmentRepository,
+        IEquipeRepository equipeRepository)
     {
         _quizRepository = quizRepository;
         _assignmentRepository = assignmentRepository;
+        _equipeRepository = equipeRepository;
     }
 
     public override void Configure()
@@ -32,29 +35,39 @@ public class AssignQuizEndpoint : Endpoint<AssignQuizRequest, EmptyResponse>
         if (quiz == null)
             throw new KeyNotFoundException($"Quiz with ID {req.QuizId} not found");
 
-        // Get existing assignments to avoid duplicates
-        var existingAssignments = await _assignmentRepository.GetByQuizIdAsync(req.QuizId);
-        var alreadyAssignedUserIds = existingAssignments
-            .Where(a => !a.Deleted.HasValue)
-            .Select(a => a.UserId)
-            .ToHashSet();
+        var equipeUserIds = new List<Guid>();
+        if (req.EquipeIds.Count > 0)
+        {
+            var equipes = await _equipeRepository.GetByIds(req.EquipeIds);
+            equipeUserIds = equipes
+                .SelectMany(equipe => equipe.Membres)
+                .Select(user => user.Id)
+                .ToList();
+        }
 
-        var newUserIds = req.UserIds
-            .Where(userId => !alreadyAssignedUserIds.Contains(userId))
+        var userIds = req.UserIds
+            .Concat(equipeUserIds)
+            .Where(userId => userId != Guid.Empty)
+            .Distinct()
             .ToList();
 
-        if (newUserIds.Count == 0)
+        if (userIds.Count == 0)
         {
             await Send.NoContentAsync(ct);
             return;
         }
 
-        var assignments = newUserIds
+        var nextFollowUpOrders = await _assignmentRepository.GetNextFollowUpOrdersAsync(req.QuizId, userIds);
+
+        var assignments = userIds
             .Select(userId => new QuizAssignment
             {
                 QuizId = req.QuizId,
                 UserId = userId,
+                Version = nextFollowUpOrders[userId],
+                FollowUpLabel = string.IsNullOrWhiteSpace(req.FollowUpLabel) ? null : req.FollowUpLabel.Trim(),
                 AssignedAt = DateTime.UtcNow,
+                AvailableAt = req.AvailableAt,
                 DueDate = req.DueDate
             })
             .ToList();

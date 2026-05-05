@@ -155,6 +155,19 @@ export class ModulesApiService extends ApiService implements IModulesService {
         }
     }
 
+    public async assignModuleToEquipe(moduleId: string, equipeId: string): Promise<SucceededOrNotResponse> {
+        try {
+            const response = await this._httpClient.post<any>(
+                `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/assign-module`,
+                { moduleId },
+                this.headersWithJsonContentType()
+            );
+            return new SucceededOrNotResponse(response.data?.succeeded ?? true, response.data?.errors ?? []);
+        } catch (error: any) {
+            return new SucceededOrNotResponse(false, [error.response?.data?.errors?.[0] || "Erreur d'assignation de l'equipe."]);
+        }
+    }
+
     public async unassignModule(moduleId: string, memberId: string): Promise<SucceededOrNotResponse> {
         try {
             const response = await this._httpClient.delete<any>(

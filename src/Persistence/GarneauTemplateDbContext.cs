@@ -139,6 +139,16 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
                .Property(b => b.Price)
                .HasColumnType("decimal(18,2)");
 
+        builder.Entity<UserQuizResponse>()
+               .HasOne(r => r.QuizAssignment)
+               .WithMany(a => a.Responses)
+               .HasForeignKey(r => r.QuizAssignmentId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<QuizAssignment>()
+               .Property(a => a.FollowUpLabel)
+               .HasMaxLength(100);
+
         // =========================
         // ✅ MemberNote fix (no cascade)
         // =========================

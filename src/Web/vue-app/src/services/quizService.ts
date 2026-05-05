@@ -10,7 +10,8 @@ import {TYPES} from "@/injection/types"
 export enum QuizQuestionType {
   Scale1To10 = 0,
   MultipleChoice = 1,
-  TextInput = 2
+  TextInput = 2,
+  MultipleSelection = 3
 }
 
 export interface Quiz {
@@ -18,6 +19,7 @@ export interface Quiz {
   titre: string
   description?: string
   imageUrl?: string
+  dueDate?: Date
   questions: QuizQuestion[]
 }
 
@@ -40,19 +42,24 @@ export interface QuizResponse {
 export interface AssignedQuiz {
   id: string
   quizId: string
+  version: number
+  followUpLabel?: string
   titre: string
   description?: string
   imageUrl?: string
   assignedAt: Date
+  availableAt?: Date
   dueDate?: Date
   completedAt?: Date
   isCompleted: boolean
 }
 
 export interface SubmitQuizResponseRequest {
+  quizAssignmentId: string
   quizQuestionId: string
   selectedScore?: number
   selectedResponseId?: string
+  selectedResponseIds?: string[]
   selectedTextResponse?: string
 }
 
@@ -196,13 +203,16 @@ export class QuizService extends ApiService implements IQuizService {
     }
   }
 
-  public async assignQuiz(quizId: string, userIds: string[], dueDate?: Date): Promise<void> {
+  public async assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date, equipeIds: string[] = []): Promise<void> {
     try {
       await this
         ._httpClient
         .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/assign`, {
           quizId,
           userIds,
+          equipeIds,
+          followUpLabel,
+          availableAt,
           dueDate
         })
     } catch (error) {
@@ -212,9 +222,14 @@ export class QuizService extends ApiService implements IQuizService {
 
   public async submitResponse(response: SubmitQuizResponseRequest): Promise<SubmitQuizResponse> {
     try {
+      const payload = {
+        ...response,
+        selectedResponseIds: response.selectedResponseIds ?? []
+      }
+
       const result = await this
         ._httpClient
-        .post<SubmitQuizResponse, AxiosResponse<SubmitQuizResponse>>(`${import.meta.env.VITE_API_BASE_URL}/quiz/submit-response`, response)
+        .post<SubmitQuizResponse, AxiosResponse<SubmitQuizResponse>>(`${import.meta.env.VITE_API_BASE_URL}/quiz/submit-response`, payload)
       return result.data
     } catch (error) {
       return Promise.reject(error)
@@ -261,32 +276,32 @@ export class QuizService extends ApiService implements IQuizService {
     }
   }
 
-  public async getUserResponses(quizId: string): Promise<any> {
+  public async getUserResponses(quizAssignmentId: string): Promise<any> {
     try {
       const response = await this
         ._httpClient
-        .get(`${import.meta.env.VITE_API_BASE_URL}/quiz/responses/${quizId}`)
+        .get(`${import.meta.env.VITE_API_BASE_URL}/quiz/assignments/${quizAssignmentId}/responses`)
       return response.data
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
-  public async completeQuiz(quizId: string): Promise<void> {
+  public async completeQuiz(quizAssignmentId: string): Promise<void> {
     try {
       await this
         ._httpClient
-        .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/complete`, {})
+        .post(`${import.meta.env.VITE_API_BASE_URL}/quiz/assignments/${quizAssignmentId}/complete`, { quizAssignmentId })
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
-  public async getAssignments(quizId: string): Promise<{ id: string; userId: string }[]> {
+  public async getAssignments(quizId: string): Promise<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[]> {
     try {
       const response = await this
         ._httpClient
-        .get<{ id: string; userId: string }[], AxiosResponse<{ id: string; userId: string }[]>>(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/assignments`)
+        .get<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[], AxiosResponse<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[]>>(`${import.meta.env.VITE_API_BASE_URL}/quiz/${quizId}/assignments`)
       return response.data
     } catch (error) {
       return Promise.reject(error)

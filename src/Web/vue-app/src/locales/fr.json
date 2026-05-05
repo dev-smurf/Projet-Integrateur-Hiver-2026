@@ -31,16 +31,9 @@
       "name": "Tableau de bord admin"
     },
     "equipe": {
-      "path": "/equipes",
-      "fullPath": "/equipes",
-      "name": "Équipes",
-      "children": {
-        "myEquipe": {
-          "path": ":id/details",
-          "fullPath": "/equipes/:id/details",
-          "name": "Mon équipe"
-        }
-      }
+      "path": "/equipe",
+      "fullPath": "/equipe",
+      "name": "Équipe"
     },
     "progression": {
       "path": "/progression",
@@ -66,7 +59,7 @@
             "fullPath": "/administration/membres/ajouter",
             "name": "Ajouter un membre"
           },
-          "quiz":{
+          "quiz": {
             "path": "quiz",
             "fullPath": "/administration/quiz",
             "name": "Quiz",
@@ -116,7 +109,6 @@
           "path": "equipes",
           "fullPath": "/administration/equipes",
           "name": "Equipes",
-
           "add": {
             "path": "ajouter",
             "fullPath": "/administration/equipes/ajouter",
@@ -126,33 +118,6 @@
             "path": ":id/modifier",
             "fullPath": "/administration/equipes/:id/modifier",
             "name": "Modifier une equipe"
-          },
-          "sous-equipes": {
-            "path": "sous-equipes",
-            "fullPath": "/administration/equipes/sous-equipes",
-            "name": "Sous-équipes",
-            "children": {
-              "add": {
-                "path": "ajouter",
-                "fullPath": "/administration/equipes/sous-equipes/:id/ajouter",
-                "name": "Ajouter une sous-équipe"
-              },
-              "edit": {
-                "path": ":id/modifier",
-                "fullPath": "/administration/equipes/sous-equipes/:id/modifier",
-                "name": "Modifier une sous-équipe"
-              },
-              "details": {
-                "path": ":id/details",
-                "fullPath": "/administration/equipes/sous-equipes/:id/details",
-                "name": "Détails de la sous-équipe"
-              },
-              "delete": {
-                "path": ":id/supprimer",
-                "fullPath": "/administration/equipes/sous-equipes/:id/supprimer",
-                "name": "Supprimer une sous-équipe"
-              }
-            }
           }
         }
       }
@@ -180,13 +145,13 @@
       "name": "Mes quiz",
       "children": {
         "take": {
-          "path": ":quizId/faire",
-          "fullPath": "/quiz/:quizId/faire",
+          "path": ":assignmentId/faire",
+          "fullPath": "/quiz/:assignmentId/faire",
           "name": "Faire le quiz"
         },
         "results": {
-          "path": ":quizId/resultats",
-          "fullPath": "/quiz/:quizId/resultats",
+          "path": ":assignmentId/resultats",
+          "fullPath": "/quiz/:assignmentId/resultats",
           "name": "Resultats du quiz"
         }
       }
@@ -198,6 +163,55 @@
       "accountDesc": "Gérer votre profil et vos paramètres.",
       "membersDesc": "Voir et gérer les membres.",
       "booksDesc": "Parcourir et gérer les livres."
+    },
+    "adminDashboard": {
+      "title": "Admin Center",
+      "subtitle": "Tableau de bord pour piloter les membres, leurs parcours et les modules de preparation.",
+      "recentMembers": "Nouveaux membres (30 jours)",
+      "clickMemberHint": "Clique un membre pour afficher ses details.",
+      "searchMember": "Rechercher un membre",
+      "allRoles": "Tous les roles",
+      "roleAdmin": "Admin",
+      "roleMember": "Membre",
+      "roleUser": "Utilisateur",
+      "sortRecent": "Plus recents",
+      "viewAllMembers": "Voir tous les membres",
+      "noMembersMatch": "Aucun membre ne correspond aux filtres.",
+      "emailUnavailable": "Email non disponible",
+      "contact": "Contact",
+      "registration": "Inscription",
+      "progression": "Progression",
+      "modulesCompleted": "{completed} module(s) termines sur {total}",
+      "selectMemberHint": "Selectionne un membre pour afficher ses details.",
+      "memberModules": "Modules du membre",
+      "memberModulesHint": "Detail du parcours et progression par module.",
+      "loadingModules": "Chargement des modules...",
+      "noModulesForMember": "Aucun module associe a ce membre.",
+      "autoProgress": "Progression automatique par lecture",
+      "remove": "Retirer",
+      "quickActions": "Actions rapides",
+      "assignModule": "Associer un module",
+      "chooseModule": "Choisir un module",
+      "access": "Acceder",
+      "addMember": "Ajouter un membre",
+      "viewMembers": "Voir les membres",
+      "createModule": "Creer un module",
+      "viewModules": "Voir les modules",
+      "noNewMembers": "Aucun nouveau membre sur 30 jours",
+      "newMembersCount": "{count} nouveau(x) membre(s) sur 30 jours",
+      "kpiActiveMembers": "Membres actifs",
+      "kpiNewMembers": "Nouveaux (30 jours)",
+      "kpiModules": "Modules",
+      "kpiAverageProgress": "Progression moyenne",
+      "noPhone": "Telephone non renseigne",
+      "noName": "Nom non renseigne",
+      "noAddress": "Adresse non renseignee",
+      "unknownDate": "Date inconnue",
+      "accountActive": "Compte actif",
+      "pendingValidation": "En attente de validation",
+      "errorLoadMembers": "Impossible de charger les membres.",
+      "errorLoadMemberModules": "Impossible de charger les modules du membre.",
+      "completed": "Termine"
     },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
@@ -240,6 +254,47 @@
         "completed": "Termine"
       }
     },
+    "memberModules": {
+      "title": "Mes modules",
+      "subtitle": "Modules en cours et modules terminés.",
+      "searchPlaceholder": "Rechercher un module...",
+      "filterAll": "Tous",
+      "filterActive": "Non terminés",
+      "filterCompleted": "Terminés",
+      "noResults": "Aucun module ne correspond à la recherche.",
+      "activeTitle": "Modules non terminés",
+      "badgeTodo": "À faire",
+      "completedTitle": "Modules terminés",
+      "badgeCompleted": "Terminé",
+      "unknownAssignedDate": "Date d'affectation inconnue",
+      "assignedOn": "Assigné le {date}",
+      "progress": "Progression"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Messages transmis par l'administration.",
+      "empty": "Aucune notification",
+      "emptyHint": "Les messages visibles envoyés par l'administration apparaîtront ici.",
+      "sender": "Administration",
+      "badge": "Info",
+      "defaultTitle": "Message de l'administration"
+    },
+    "moduleAssignment": {
+      "title": "Assignation des membres",
+      "searchPlaceholder": "Rechercher un membre...",
+      "loading": "Chargement des membres...",
+      "allAssigned": "Tous les membres sont déjà assignés.",
+      "noneAssigned": "Aucun membre assigné.",
+      "assignError": "Erreur lors de l'assignation.",
+      "unassignError": "Erreur lors de la désassignation."
+    },
+    "memberForm": {
+      "teams": "Équipes",
+      "teamsPlaceholder": "Sélectionner une ou plusieurs équipes",
+      "teamsSearchPlaceholder": "Rechercher une équipe",
+      "teamsEmpty": "Aucune équipe trouvée",
+      "teamsOptional": "Optionnel"
+    },
     "equipe": {
       "myEquipe": "Mon équipe",
       "noEquipe": "Vous ne faites partie d'aucune équipe",
@@ -256,16 +311,6 @@
         "remove": "Supprimer des membres de l'équipe",
         "list": "Liste des membres de l'équipe",
         "noMembers": "Aucun membre dans cette équipe pour le moment."
-
-      },
-      "sous-equipes": {
-        "title": "Sous-équipes",
-        "noSousEquipes": "Aucune sous-équipe pour le moment.",
-        "add": "Ajouter une sous-équipe",
-        "remove": "Supprimer une sous-équipe",
-        "list": "Liste des sous-équipes",
-        "members": "{count} membre(s)",
-        "noMembersParentWarn": "Seuls les membres de l'équipe parente peuvent être ajoutés à cette sous-équipe.Aucun membre disponible dans l'équipe parente."
       },
       "modulesTitle": "Modules de l'équipe",
       "membersTitle": "Membres de l'équipe",
@@ -278,33 +323,18 @@
         "notStarted": "Non commencé"
       }
     },
-    "equipeDetails": {
-      "subtitle": "Consultez la composition de l'équipe et gérez ses membres.",
-      "memberCount": "Membres assignés",
-      "availableMembers": "Membres disponibles",
-      "memberManagement": "Gestion des membres",
-      "searchMember": "Rechercher un membre",
-      "searchPlaceholder": "Nom ou courriel",
-      "selectMember": "Sélectionner un membre",
-      "chooseMember": "Choisir un membre",
-      "adding": "Ajout...",
-      "assignedMembers": "Membres assignés",
-      "noMembersAssigned": "Aucun membre assigné à cette équipe.",
-      "notify": {
-        "addError": "Erreur lors de l'ajout du membre."
-      }
-    },
     "equipes": {
       "create": {
-        "successMessage": "L'équipe a été créée avec succès.",
-        "failedMessage": "Une erreur est survenue lors de la création de l'équipe."
+        "validation": {
+          "successMessage": "L'équipe a été créée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la création de l'équipe."
+        }
       },
-      "edit": {
-        "successMessage": "L'équipe a été modifiée avec succès.",
-        "failedMessage": "Une erreur est survenue lors de la modification de l'équipe."
-      },
-      "load": {
-        "failedMessage": "Impossible de charger l'équipe."
+      "update": {
+        "validation": {
+          "successMessage": "L'équipe a été modifiée avec succès.",
+          "failedMessage": "Une erreur est survenue lors de la modification de l'équipe."
+        }
       },
       "delete": {
         "confirmation": "Êtes-vous sûr de vouloir supprimer cette équipe?",
@@ -312,28 +342,6 @@
           "successMessage": "L'équipe a été supprimée avec succès.",
           "failedMessage": "Une erreur est survenue lors de la suppression de l'équipe."
         }
-      }
-    },
-    "equipeDetails": {
-      "subtitle": "Gestion de l'équipe",
-      "memberCount": "Membres",
-      "availableMembers": "Membres disponibles",
-      "memberManagement": "Gestion des membres",
-      "searchMember": "Rechercher",
-      "searchPlaceholder": "Nom, courriel...",
-      "selectMember": "Sélectionner un membre",
-      "chooseMember": "Choisir un membre...",
-      "assignedMembers": "Membres assignés",
-      "noMembersAssigned": "Aucun membre assigné.",
-      "adding": "Ajout...",
-      "notify": {
-        "loadError": "Impossible de charger les données.",
-        "memberAdded": "Membre ajouté avec succès.",
-        "memberAddError": "Erreur lors de l'ajout du membre.",
-        "addError": "Erreur lors de l'ajout.",
-        "memberRemoved": "Membre retiré avec succès.",
-        "memberRemoveError": "Erreur lors du retrait du membre.",
-        "removeError": "Erreur lors du retrait."
       }
     },
     "account": {
@@ -405,6 +413,83 @@
         "errorOccured": "Une erreur est survenue lors de la réinitialisation du mot de passe."
       }
     },
+    "equipeDetails": {
+      "subtitle": "Détails et gestion des membres",
+      "memberCount": "Nombre de membres",
+      "availableMembers": "Membres disponibles",
+      "memberManagement": "Gestion des membres",
+      "searchMember": "Rechercher un membre",
+      "searchPlaceholder": "Rechercher par nom ou email",
+      "selectMember": "Sélectionner un membre",
+      "chooseMember": "Choisir un membre...",
+      "adding": "Ajout...",
+      "assignedMembers": "Membres assignés",
+      "noMembersAssigned": "Aucun membre assigné à cette équipe.",
+      "notify": {
+        "loadError": "Erreur lors du chargement des données",
+        "memberAdded": "Membre ajouté avec succès",
+        "memberAddError": "Impossible d'ajouter le membre",
+        "addError": "Erreur lors de l'ajout",
+        "memberRemoved": "Membre retiré avec succès",
+        "memberRemoveError": "Impossible de retirer le membre",
+        "removeError": "Erreur lors du retrait"
+      }
+    },
+    "memberDetails": {
+      "subtitle": "Détails complets, progression et modules",
+      "na": "N/A",
+      "progression": "Progression",
+      "summary": "Résumé",
+      "modulesAssigned": "module(s) assignés",
+      "modulesCompleted": "terminé(s)",
+      "personalInfo": "Informations personnelles",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "createdAt": "Créé le",
+      "status": "Statut",
+      "accountActive": "Compte actif",
+      "pendingValidation": "En attente de validation",
+      "teams": "Equipes",
+      "contactAndAddress": "Contact et adresse",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "assignModules": "Assigner des modules",
+      "selectModulesToAdd": "Sélectionnez les modules à ajouter",
+      "filter": "Filtrer...",
+      "noModulesAvailable": "Aucun autre module disponible.",
+      "selected": "sélectionné(s)",
+      "assigning": "Assignation...",
+      "assignModulesBtn": "Assigner les modules",
+      "noModulesAssigned": "Aucun module assigné.",
+      "module": "Module",
+      "subject": "Sujet",
+      "general": "Général",
+      "active": "Actif",
+      "inProgress": "En cours",
+      "saving": "En cours...",
+      "updateBtn": "Mettre à jour",
+      "modulesProgress": "Progression des modules",
+      "assignedModules": "Modules assignés",
+      "notify": {
+        "modulesAssigned": "Modules assignés",
+        "updated": "Mis à jour",
+        "notesSaved": "Notes enregistrees.",
+        "notesError": "Impossible d'enregistrer les notes."
+      },
+      "notes": {
+        "title": "Notes internes",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "placeholder": "Ajouter des notes sur ce membre...",
+        "visibleToMember": "Rendre ces notes visibles par ce membre",
+        "hint": "Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir."
+      }
+    },
+    "memberIndex": {
+      "accountStatus": "Statut du compte",
+      "accountActive": "Compte actif",
+      "pendingValidation": "En attente de validation"
+    },
     "members": {
       "create": {
         "validation": {
@@ -464,460 +549,495 @@
       }
     }
   },
-      "products": {
-        "form": {
-          "image-card-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 2:1)",
-          "image-page-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 5:4).",
-          "image-card": "Image - Carte",
-          "image-page": "Image - Page",
-          "image-text-fr": "Bandeau sur l'image - FR",
-          "image-text-en": "Bandeau sur l'image - EN",
-          "description-fr": "Description - FR",
-          "description-en": "Description - EN",
-          "name-fr": "Nom - FR",
-          "name-en": "Nom - EN",
-          "price": "Prix",
-          "no-taxes": "(Hors taxes)",
-          "category": "Catégorie",
-          "fieldset-informations-book": "Informations sur le livre",
-          "fieldset-informations-default": "Informations sur le produit"
-        },
-        "book": "Livre"
+  "products": {
+    "form": {
+      "image-card-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 2:1)",
+      "image-page-tooltip": "Format recommandé : largeur supérieur à 700px (ratio 5:4).",
+      "image-card": "Image - Carte",
+      "image-page": "Image - Page",
+      "image-text-fr": "Bandeau sur l'image - FR",
+      "image-text-en": "Bandeau sur l'image - EN",
+      "description-fr": "Description - FR",
+      "description-en": "Description - EN",
+      "name-fr": "Nom - FR",
+      "name-en": "Nom - EN",
+      "price": "Prix",
+      "no-taxes": "(Hors taxes)",
+      "category": "Catégorie",
+      "fieldset-informations-book": "Informations sur le livre",
+      "fieldset-informations-default": "Informations sur le produit"
+    },
+    "book": "Livre"
+  },
+  "book": {
+    "info": "Informations du livre",
+    "title": "Titre",
+    "titleFr": "Titre - FR",
+    "titleEn": "Titre - EN",
+    "summary": "Résumé",
+    "summaryFr": "Résumé - FR",
+    "summaryEn": "Résumé - EN",
+    "isbn": "ISBN",
+    "author": "Auteur",
+    "editor": "Éditeur",
+    "yearOfPublication": "Année de publication",
+    "numberOfPages": "Nombre de pages"
+  },
+  "user": {
+    "roles": {
+      "admin": "Administrateur"
+    }
+  },
+  "global": {
+    "free": "Gratuit(e)",
+    "menu": "Menu",
+    "title": "Titre",
+    "date": "Date",
+    "at": "à",
+    "loading": "Chargement...",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "passwordConfirmation": "Confirmation du mot de passe",
+    "submit": "Soumettre",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "fullName": "Nom complet",
+    "equipeName": "Nom de l'équipe",
+    "email": "Courriel",
+    "phoneNumber": "Numéro de téléphone",
+    "phoneExtension": "Poste",
+    "apartment": "Numéro de bureau/suite",
+    "street": "Adresse",
+    "city": "Ville",
+    "zipCode": "Code postal",
+    "roles": "Rôles",
+    "name": "Nom",
+    "download": "Télécharger",
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "important": "Important",
+    "addFile": "Ajouter un document",
+    "addFiles": "Ajouter des documents",
+    "replaceFile": "Remplacer le document",
+    "replaceFiles": "Remplacer les documents",
+    "removeFile": "Retirer ce document",
+    "uploadZippedFolder-tooltip": "Si vous désirez transmettre plusieurs documents, veuillez uploader <strong>un dossier compressé.</strong>",
+    "update": "Modifier",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleted": "Supprimé(e)",
+    "save": "Sauvegarder",
+    "back": "Retour",
+    "yes": "Oui",
+    "no": "Non",
+    "search": "Rechercher",
+    "transfer": "Transférer",
+    "formErrorNotification": "Il y a des erreurs dans le formulaire.",
+    "quickLinks": "Liens rapides",
+    "undefined": "ND",
+    "logout": "Déconnexion",
+    "changeLanguage": "Changer de langue",
+    "test": "Tester",
+    "createFirst": "Créer le premier quiz",
+    "questions": "Questions",
+    "table": {
+      "of": "de",
+      "noData": "Aucune données disponibles",
+      "actions": "Actions"
+    },
+    "noQuizzesYet": "Aucun quiz pour le moment.",
+    "confirmation": "Confirmation",
+    "actions": {
+      "view": "Voir",
+      "download": "Télécharger",
+      "update": "Modifier",
+      "delete": "Supprimer"
+    }
+  },
+  "textEditorLinkPopup": {
+    "addLink": "Ajouter un lien",
+    "label": "Libellé",
+    "url": "Url",
+    "image": "Le lien sera ajouté sur l'image sélectionnée.",
+    "tooltip": "Pour éditer le lien sur une image, cliquer sur la bordure bleue autour de celle-ci."
+  },
+  "validation": {
+    "empty": "Veuillez renseigner ce champ.",
+    "email": "Veuillez entrer un adresse courriel valide.",
+    "min": "La valeur doit être d'au moins {min}.",
+    "max": "La valeur doit être plus petite ou égale à {max}.",
+    "fileMin": "Un minimum de {min} fichier{s} est requis.",
+    "fileMax": "Un maximum de {max} fichier{s} est permis.",
+    "fileType": "Les types de fichier permis sont: {type}",
+    "checked": "Veuillez cocher cette case.",
+    "select": "Veuillez sélectionner une option.",
+    "zipCode": "Le code postal doit respecter le format X0X X0X.",
+    "phoneNumber": "Le numéro de téléphone doit respecter le format 555-555-5555.",
+    "errorsInForm": "Il y a des erreurs dans le formulaire.",
+    "errorOccured": "Une erreur est survenue.",
+    "book": {
+      "add": {
+        "success": "Le livre a été créé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création du livre.",
+        "bookNotFoundException": "Le livre n'a pu être trouvé.",
+        "bookWithIsbnAlreadyExistsException": "Un livre avec le même ISBN existe déjà.",
+        "invalidFrenchName": "Le titre du livre en français est manquant.",
+        "invalidEnglishName": "Le titre du livre en anglais est manquant.",
+        "invalidFrenchDescription": "La description du livre en français est manquante.",
+        "invalidEnglishDescription": "La description du livre en anglais est manquante.",
+        "invalidIsbn": "L'ISBN doit être de 17 caractères et contenir quatre tirets.",
+        "invalidAuthor": "L'auteur du livre est manquant.",
+        "invalidEditor": "L'éditeur du livre est manquant.",
+        "invalidYearOfPublication": "L'année de publication doit être plus grande que zéro.",
+        "invalidNumberOfPages": "Le nombre de pages doit être plus grand que zéro.",
+        "invalidPrice": "Le prix du livre doit être plus grand que zéro."
       },
-      "book": {
-        "info": "Informations du livre",
-        "title": "Titre",
-        "titleFr": "Titre - FR",
-        "titleEn": "Titre - EN",
-        "summary": "Résumé",
-        "summaryFr": "Résumé - FR",
-        "summaryEn": "Résumé - EN",
-        "isbn": "ISBN",
-        "author": "Auteur",
-        "editor": "Éditeur",
-        "yearOfPublication": "Année de publication",
-        "numberOfPages": "Nombre de pages"
+      "edit": {
+        "success": "Le livre a été modifié avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification du livre.",
+        "bookNotFoundException": "Le livre n'a pu être trouvé.",
+        "bookWithIsbnAlreadyExistsException": "Un autre livre avec le même ISBN existe déjà.",
+        "emptyBookId": "L'id du livre est manquant.",
+        "invalidFrenchName": "Le titre du livre en français est manquant.",
+        "invalidEnglishName": "Le titre du livre en anglais est manquant.",
+        "invalidFrenchDescription": "La description du livre en français est manquante.",
+        "invalidEnglishDescription": "La description du livre en anglais est manquante.",
+        "invalidIsbn": "L'ISBN doit être de 17 caractères et contenir quatre tirets.",
+        "invalidAuthor": "L'auteur du livre est manquant.",
+        "invalidEditor": "L'éditeur du livre est manquant.",
+        "invalidYearOfPublication": "L'année de publication doit être plus grande que zéro.",
+        "invalidNumberOfPages": "Le nombre de pages doit être plus grand que zéro.",
+        "invalidPrice": "Le prix du livre doit être plus grand que zéro."
       },
-      "user": {
-        "roles": {
-          "admin": "Administrateur"
-        }
-      },
-      "global": {
-        "free": "Gratuit(e)",
-        "menu": "Menu",
-        "title": "Titre",
-        "date": "Date",
-        "at": "à",
-        "loading": "Chargement...",
-        "username": "Nom d'utilisateur",
-        "password": "Mot de passe",
-        "passwordConfirmation": "Confirmation du mot de passe",
-        "submit": "Soumettre",
-        "firstName": "Prénom",
-        "lastName": "Nom",
-        "fullName": "Nom complet",
-        "equipeName": "Nom de l'équipe",
-        "email": "Courriel",
-        "phoneNumber": "Numéro de téléphone",
-        "phoneExtension": "Poste",
-        "apartment": "Numéro de bureau/suite",
-        "street": "Adresse",
-        "city": "Ville",
-        "zipCode": "Code postal",
-        "roles": "Rôles",
-        "name": "Nom",
-        "download": "Télécharger",
-        "add": "Ajouter",
-        "cancel": "Annuler",
-        "important": "Important",
-        "addFile": "Ajouter un document",
-        "addFiles": "Ajouter des documents",
-        "replaceFile": "Remplacer le document",
-        "replaceFiles": "Remplacer les documents",
-        "removeFile": "Retirer ce document",
-        "uploadZippedFolder-tooltip": "Si vous désirez transmettre plusieurs documents, veuillez uploader <strong>un dossier compressé.</strong>",
-        "update": "Modifier",
-        "edit": "Modifier",
-        "delete": "Supprimer",
-        "deleted": "Supprimé(e)",
-        "save": "Sauvegarder",
-        "back": "Retour",
-        "yes": "Oui",
-        "no": "Non",
-        "search": "Rechercher",
-        "transfer": "Transférer",
-        "formErrorNotification": "Il y a des erreurs dans le formulaire.",
-        "quickLinks": "Liens rapides",
-        "undefined": "ND",
-        "logout": "Déconnexion",
-        "changeLanguage": "Changer de langue",
-        "username": "Nom d'utilisateur",
-        "password": "Mot de passe",
-        "test": "Tester",
-        "add": "Ajouter",
-        "createFirst": "Créer le premier",
-        "questions": "Questions",
-        "cancel": "Annuler",
-        "update": "Modifier",
-        "table": {
-          "noData": "Aucune donnée disponible",
-          "actions": "Actions"
-        },
-        "confirmation": "Confirmation",
-        "actions": {
-          "view": "Voir",
-          "download": "Télécharger",
-          "update": "Modifier",
-          "delete": "Supprimer"
-        }
-      },
-      "textEditorLinkPopup": {
-        "addLink": "Ajouter un lien",
-        "label": "Libellé",
-        "url": "Url",
-        "image": "Le lien sera ajouté sur l'image sélectionnée.",
-        "tooltip": "Pour éditer le lien sur une image, cliquer sur la bordure bleue autour de celle-ci."
-      },
-      "validation": {
-        "empty": "Veuillez renseigner ce champ.",
-        "email": "Veuillez entrer un adresse courriel valide.",
-        "min": "La valeur doit être d'au moins {min}.",
-        "max": "La valeur doit être plus petite ou égale à {max}.",
-        "fileMin": "Un minimum de {min} fichier{s} est requis.",
-        "fileMax": "Un maximum de {max} fichier{s} est permis.",
-        "fileType": "Les types de fichier permis sont: {type}",
-        "checked": "Veuillez cocher cette case.",
-        "select": "Veuillez sélectionner une option.",
-        "zipCode": "Le code postal doit respecter le format X0X X0X.",
-        "phoneNumber": "Le numéro de téléphone doit respecter le format 555-555-5555.",
-        "errorsInForm": "Il y a des erreurs dans le formulaire.",
-        "errorOccured": "Une erreur est survenue.",
-        "book": {
-          "add": {
-            "success": "Le livre a été créé avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la création du livre.",
-            "bookNotFoundException": "Le livre n'a pu être trouvé.",
-            "bookWithIsbnAlreadyExistsException": "Un livre avec le même ISBN existe déjà.",
-            "invalidFrenchName": "Le titre du livre en français est manquant.",
-            "invalidEnglishName": "Le titre du livre en anglais est manquant.",
-            "invalidFrenchDescription": "La description du livre en français est manquante.",
-            "invalidEnglishDescription": "La description du livre en anglais est manquante.",
-            "invalidIsbn": "L'ISBN doit être de 17 caractères et contenir quatre tirets.",
-            "invalidAuthor": "L'auteur du livre est manquant.",
-            "invalidEditor": "L'éditeur du livre est manquant.",
-            "invalidYearOfPublication": "L'année de publication doit être plus grande que zéro.",
-            "invalidNumberOfPages": "Le nombre de pages doit être plus grand que zéro.",
-            "invalidPrice": "Le prix du livre doit être plus grand que zéro."
-          },
-          "edit": {
-            "success": "Le livre a été modifié avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la modification du livre.",
-            "bookNotFoundException": "Le livre n'a pu être trouvé.",
-            "bookWithIsbnAlreadyExistsException": "Un autre livre avec le même ISBN existe déjà.",
-            "emptyBookId": "L'id du livre est manquant.",
-            "invalidFrenchName": "Le titre du livre en français est manquant.",
-            "invalidEnglishName": "Le titre du livre en anglais est manquant.",
-            "invalidFrenchDescription": "La description du livre en français est manquante.",
-            "invalidEnglishDescription": "La description du livre en anglais est manquante.",
-            "invalidIsbn": "L'ISBN doit être de 17 caractères et contenir quatre tirets.",
-            "invalidAuthor": "L'auteur du livre est manquant.",
-            "invalidEditor": "L'éditeur du livre est manquant.",
-            "invalidYearOfPublication": "L'année de publication doit être plus grande que zéro.",
-            "invalidNumberOfPages": "Le nombre de pages doit être plus grand que zéro.",
-            "invalidPrice": "Le prix du livre doit être plus grand que zéro."
-          },
-          "delete": {
-            "confirmation": "Êtes-vous sûr de vouloir supprimer ce livre ?",
-            "success": "Le livre a été supprimé avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la suppression du livre.",
-            "bookNotFoundException": "Le livre n'a pu être trouvé."
-          }
-        }
-      },
-      "Form_Add_Module": {
-        "fields": {
-          "name": "Nom",
-          "content": "Contenu",
-          "subject": "Sujet",
-          "image": "Image",
-          "imagePreview": "Aperçu de l'image",
-          "sections": "Pages",
-          "sectionTitle": "Titre de la page",
-          "addSection": "Ajouter une page",
-          "assignments": "Assignations"
-        }
-      },
-      "Form_Add_Equipe": {
-        "fields": {
-          "name": "Nom de l'équipe",
-          "members": "Membres",
-          "searchMembers": "Rechercher un membre...",
-          "noMembers": "Aucun membre disponible."
-        },
-        "validation": {
-          "nameRequired": "Le nom est obligatoire."
-        }
-      },
-      "errors": {
-        "module": {
-          "add": {
-            "success": "Module créé avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la création du module."
-          },
-          "edit": {
-            "success": "Module modifié avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la modification du module."
-          },
-          "sections": {
-            "saveError": "Erreur lors de la sauvegarde des sections."
-          },
-          "assignment": {
-            "assignError": "Erreur lors de l'assignation du module.",
-            "unassignError": "Erreur lors de la désassignation du module."
-          }
-        },
-        "equipe": {
-          "add": {
-            "success": "Équipe créée avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la création de l'équipe."
-          },
-          "edit": {
-            "success": "Équipe modifiée avec succès.",
-            "errorOccured": "Une erreur est survenue lors de la modification de l'équipe."
-          }
-        }
-      },
-      "member": {
-        "modules": {
-          "title": "Mes modules",
-          "noModules": "Aucun module assigné.",
-          "backToList": "Retour aux modules",
-          "noAccess": "Vous n'avez pas accès à ce module.",
-          "loadError": "Impossible de charger le module."
-        }
-      },
-      "modulePages": {
-        "title": "Pages",
-        "pageTitle": "Titre de la page",
-        "contentPlaceholder": "Contenu de la page...",
-        "addPage": "Ajouter une page",
-        "newPage": "Nouvelle page",
-        "noPages": "Aucune page. Ajoutez-en une pour commencer.",
-        "createFirstPage": "Créer la première page",
-        "pageOfTotal": "Page {current} / {total}",
-        "previous": "Précédent",
-        "next": "Suivant",
-        "deletePage": "Supprimer la page",
-        "confirmDelete": "Supprimer cette page ?",
-        "progress": "Progression",
-        "pagesRead": "{read} / {total} pages lues",
-        "noContent": "Cette page n'a pas encore de contenu.",
-        "sectionTitle": "Titre de la section",
-        "addSection": "Ajouter une section",
-        "deleteSection": "Supprimer la section",
-        "noSections": "Aucune section. Ajoutez-en une pour commencer.",
-        "dragSection": "Glisser pour réorganiser",
-        "edit": "Modifier",
-        "clickToEdit": "Cliquer pour modifier",
-        "editPageTitle": "Modifier le titre de la page",
-        "editSection": "Modifier cette section",
-        "moveToPosition": "Déplacer à la position",
-        "currentPosition": "Position actuelle",
-        "finish": "Terminer"
-      },
-      "common": {
-        "Ajouter": "Ajouter",
-        "cancel": "Annuler"
-      },
-      "routes.addModule": {
-        "name": "Ajouter un module"
-      },
-      "addEquipe": {
-        "name": "Ajouter une équipe"
-      },
-      "editEquipe": {
-        "name": "Modifier une équipe"
-      },
-      "chat": {
-        "title": "Messages",
-        "conversations": "Conversations",
-        "newConversation": "Nouvelle conversation",
-        "searchMember": "Rechercher un membre...",
-        "noConversations": "Aucune conversation",
-        "noMessages": "Aucun message. Dites bonjour!",
-        "typePlaceholder": "Écrire un message...",
-        "today": "Aujourd'hui",
-        "yesterday": "Hier",
-        "you": "Vous",
-        "startConversation": "Démarrer la conversation",
-        "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
-        "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf.",
-        "tabs": {
-          "members": "Membres",
-          "equipes": "Équipes",
-          "admin": "Admin",
-          "myEquipe": "Mon équipe"
-        },
-        "equipeMembersCount": "{count} membres",
-        "noEquipeConversations": "Aucune conversation d'équipe",
-        "searchEquipe": "Rechercher une équipe..."
-      },
-      "appointment": {
-        "requestBtn": "Prendre un RDV",
-        "modalTitle": "Demander un rendez-vous",
-        "selectDate": "Sélectionner une date",
-        "selectTime": "Sélectionner un créneau",
-        "motif": "Motif (optionnel)",
-        "motifPlaceholder": "Décrivez brièvement la raison du rendez-vous...",
-        "submit": "Envoyer la demande",
-        "cancel": "Annuler",
-        "noSlots": "Aucun créneau disponible pour cette date.",
-        "noSlotsWeek": "Aucun créneau disponible cette semaine.",
-        "requestSent": "Demande de RDV envoyée!",
-        "requestError": "Erreur lors de l'envoi de la demande.",
-        "conflict": "Ce créneau n'est plus disponible.",
-        "pending": "En attente",
-        "accepted": "Accepté",
-        "refused": "Refusé",
-        "requestMsg": "Demande de rendez-vous",
-        "responseMsg": "Réponse au rendez-vous",
-        "dateLabel": "Date",
-        "motifLabel": "Motif",
-        "statusLabel": "Statut",
-        "accept": "Accepter",
-        "refuse": "Refuser",
-        "refuseReason": "Raison du refus (optionnel)",
-        "refusePlaceholder": "Expliquez pourquoi vous refusez...",
-        "confirmRefuse": "Confirmer le refus",
-        "acceptSuccess": "Rendez-vous accepté.",
-        "refuseSuccess": "Rendez-vous refusé.",
-        "respondError": "Erreur lors de la réponse.",
-        "availability": "Disponibilités",
-        "recurring": "Horaire récurrent",
-        "overrides": "Exceptions",
-        "addSlot": "Ajouter un créneau",
-        "removeSlot": "Retirer",
-        "saveAvailability": "Sauvegarder",
-        "saveSuccess": "Disponibilités sauvegardées.",
-        "saveError": "Erreur lors de la sauvegarde.",
-        "blockDate": "Bloquer cette date",
-        "customHours": "Heures personnalisées",
-        "addOverride": "Ajouter une exception",
-        "deleteOverride": "Supprimer",
-        "days": {
-          "0": "Dimanche",
-          "1": "Lundi",
-          "2": "Mardi",
-          "3": "Mercredi",
-          "4": "Jeudi",
-          "5": "Vendredi",
-          "6": "Samedi"
-        }
-      },
-      "quiz": {
-        "info": "Informations du quiz",
-        "title": "Titre du quiz",
-        "description": "Description",
-        "imageUrl": "URL de l'image",
-        "questions": "Questions",
-        "addQuestion": "+ Ajouter une question",
-        "questionText": "Texte de la question",
-        "questionType": "Type de question",
-        "placeholder": "Espace réservé",
-        "responses": "Réponses",
-        "addResponse": "+ Ajouter une réponse",
-        "responseText": "Texte de la réponse",
-        "order": "Ordre",
-        "remove": "Supprimer",
-        "save": "Sauvegarder",
-        "cancel": "Annuler",
-        "assign": "Assigner",
-        "assign_button": "Assigner aux utilisateurs",
-        "assigning": "Attribution en cours...",
-        "assignToUsers": "Assigner à {count} utilisateur(s)",
-        "searchUsers": "Rechercher les utilisateurs par nom ou courriel...",
-        "selected": "{count} sélectionné(s)",
-        "noUsers": "Aucun utilisateur trouvé.",
-        "noUsersMatch": "Aucun utilisateur ne correspond à votre recherche.",
-        "noQuestions": "Aucune question ajoutée. Cliquez sur \"+ Ajouter une question\" pour commencer.",
-        "noResponses": "Aucune réponse ajoutée. Cliquez sur \"+ Ajouter une réponse\" pour commencer.",
-        "typeScale": "Échelle 1-10 (Jamais/Parfois/Toujours)",
-        "typeMultipleChoice": "Choix unique (Sélection simple)",
-        "typeTextInput": "Texte libre (Texte libre)",
-        "scaleLabels": "L'échelle utilisera ces étiquettes guides :",
-        "dragToReorder": "Faites glisser pour réorganiser",
-        "draggable": "Faites glisser pour réorganiser",
-        "question": "Question",
-        "scaleMinLabel": "Étiquette Min",
-        "scaleMidLabel": "Étiquette Mid",
-        "scaleMaxLabel": "Étiquette Max",
-        "scalePreview": "Aperçu:",
-        "possibleResponses": "Réponses Possibles",
-        "scaleLabels_title": "Étiquettes de l'Échelle",
-        "creating": "Création...",
-        "saving": "Enregistrement...",
-        "create": {
-          "validation": {
-            "successMessage": "Le quiz a été créé avec succès.",
-            "failedMessage": "Une erreur s'est produite lors de la création du quiz."
-          }
-        },
-        "update": {
-          "validation": {
-            "successMessage": "Le quiz a été modifié avec succès.",
-            "failedMessage": "Une erreur s'est produite lors de la modification du quiz."
-          }
-        },
-        "delete": {
-          "label": "Quiz",
-          "confirmation": "Êtes-vous sûr de vouloir supprimer ce quiz ?",
-          "validation": {
-            "successMessage": "Le quiz a été supprimé avec succès.",
-            "failedMessage": "Une erreur s'est produite lors de la suppression du quiz."
-          }
-        },
-        "assign_quiz": {
-          "validation": {
-            "successMessage": "Le quiz a été assigné avec succès.",
-            "failedMessage": "Une erreur s'est produite lors de l'assignation du quiz."
-          }
-        },
-        "myQuizzes": "Mes quiz",
-        "noAssignedQuizzes": "Aucun quiz assigne.",
-        "completed": "Complete",
-        "pending": "En attente",
-        "assignedOn": "Assigne le",
-        "dueDate": "Date limite",
-        "completedOn": "Complete le",
-        "startQuiz": "Commencer le quiz",
-        "viewResults": "Voir les resultats",
-        "quizNotFound": "Quiz introuvable.",
-        "question": "Question",
-        "of": "sur",
-        "rate": "Noter",
-        "never": "Jamais",
-        "sometimes": "Parfois",
-        "always": "Toujours",
-        "enterYourAnswer": "Entrez votre reponse",
-        "previous": "Precedent",
-        "answered": "repondues",
-        "next": "Suivant",
-        "submit": "Soumettre",
-        "results": "Resultats",
-        "completionMessage": "Quiz complete avec succes.",
-        "yourAnswers": "Vos reponses",
-        "yourAnswer": "Votre reponse",
-        "backToList": "Retour a la liste",
-        "move": {
-          "toTop": "Placer en haut",
-          "up": "Placer avant",
-          "down": "Placer après",
-          "toBottom": "Placer en bas"
-        },
-        "preview": {
-          "title": "Aperçu",
-          "textPlaceholder": "Entrée texte..."
-        }
+      "delete": {
+        "confirmation": "Êtes-vous sûr de vouloir supprimer ce livre ?",
+        "success": "Le livre a été supprimé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la suppression du livre.",
+        "bookNotFoundException": "Le livre n'a pu être trouvé."
       }
     }
+  },
+  "Form_Add_Module": {
+    "fields": {
+      "name": "Nom",
+      "content": "Contenu",
+      "subject": "Sujet",
+      "image": "Image",
+      "imagePreview": "Aperçu de l'image",
+      "sections": "Sections",
+      "sectionTitle": "Titre de la section",
+      "addSection": "Ajouter une section",
+      "assignments": "Assignations"
+    }
+  },
+  "Form_Add_Equipe": {
+    "fields": {
+      "name": "Nom de l'équipe",
+      "members": "Membres",
+      "searchMembers": "Rechercher un membre...",
+      "noMembers": "Aucun membre disponible.",
+      "addMembers": "Ajouter des membres"
+    },
+    "help": {
+      "membersHint": "Sélectionnez les membres à assigner à l'équipe lors de la création."
+    },
+    "validation": {
+      "nameRequired": "Le nom est obligatoire."
+    }
+  },
+  "errors": {
+    "module": {
+      "add": {
+        "success": "Module créé avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création du module."
+      },
+      "edit": {
+        "success": "Module modifié avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification du module."
+      },
+      "sections": {
+        "saveError": "Erreur lors de la sauvegarde des sections."
+      },
+      "assignment": {
+        "assignError": "Erreur lors de l'assignation du module.",
+        "unassignError": "Erreur lors de la désassignation du module."
+      }
+    },
+    "equipe": {
+      "add": {
+        "success": "Équipe créée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la création de l'équipe."
+      },
+      "edit": {
+        "success": "Équipe modifiée avec succès.",
+        "errorOccured": "Une erreur est survenue lors de la modification de l'équipe."
+      }
+    }
+  },
+  "member": {
+    "modules": {
+      "title": "Mes modules",
+      "noModules": "Aucun module assigné.",
+      "backToList": "Retour aux modules",
+      "noAccess": "Vous n'avez pas accès à ce module.",
+      "loadError": "Impossible de charger le module."
+    }
+  },
+  "modulePages": {
+    "title": "Pages",
+    "pageTitle": "Titre de la page",
+    "contentPlaceholder": "Contenu de la page...",
+    "addPage": "Ajouter une page",
+    "newPage": "Nouvelle page",
+    "noPages": "Aucune page. Ajoutez-en une pour commencer.",
+    "createFirstPage": "Créer la première page",
+    "pageOfTotal": "Page {current} / {total}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "deletePage": "Supprimer la page",
+    "confirmDelete": "Supprimer cette page ?",
+    "progress": "Progression",
+    "pagesRead": "{read} / {total} pages lues",
+    "noContent": "Cette page n'a pas encore de contenu.",
+    "sectionTitle": "Titre de la section",
+    "addSection": "Ajouter une section",
+    "deleteSection": "Supprimer la section",
+    "noSections": "Aucune section. Ajoutez-en une pour commencer.",
+    "dragSection": "Glisser pour réorganiser",
+    "edit": "Modifier",
+    "clickToEdit": "Cliquer pour modifier",
+    "editPageTitle": "Modifier le titre de la page",
+    "editSection": "Modifier cette section",
+    "moveToPosition": "Déplacer à la position",
+    "currentPosition": "Position actuelle",
+    "finish": "Terminer"
+  },
+  "common": {
+    "Ajouter": "Ajouter",
+    "cancel": "Annuler"
+  },
+  "routes.addModule": {
+    "name": "Ajouter un module"
+  },
+  "addEquipe": {
+    "name": "Ajouter une équipe"
+  },
+  "editEquipe": {
+    "name": "Modifier une équipe"
+  },
+  "chat": {
+    "title": "Messages",
+    "conversations": "Conversations",
+    "newConversation": "Nouvelle conversation",
+    "searchMember": "Rechercher un membre...",
+    "noConversations": "Aucune conversation",
+    "noMessages": "Aucun message. Dites bonjour!",
+    "typePlaceholder": "Écrire un message...",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "you": "Vous",
+    "startConversation": "Démarrer la conversation",
+    "fileTooLarge": "Le fichier est trop volumineux. La taille maximale est de 10 Mo.",
+    "unsupportedFileType": "Type de fichier non supporté. Formats acceptés : jpg, png, gif, webp, pdf.",
+    "tabs": {
+      "members": "Membres",
+      "equipes": "Équipes",
+      "admin": "Admin",
+      "myEquipe": "Mon équipe"
+    },
+    "equipeMembersCount": "{count} membres",
+    "noEquipeConversations": "Aucune conversation d'équipe",
+    "searchEquipe": "Rechercher une équipe..."
+  },
+  "appointment": {
+    "requestBtn": "Prendre un RDV",
+    "modalTitle": "Demander un rendez-vous",
+    "selectDate": "Sélectionner une date",
+    "selectTime": "Sélectionner un créneau",
+    "motif": "Motif (optionnel)",
+    "motifPlaceholder": "Décrivez brièvement la raison du rendez-vous...",
+    "submit": "Envoyer la demande",
+    "cancel": "Annuler",
+    "noSlots": "Aucun créneau disponible pour cette date.",
+    "noSlotsWeek": "Aucun créneau disponible cette semaine.",
+    "requestSent": "Demande de RDV envoyée!",
+    "requestError": "Erreur lors de l'envoi de la demande.",
+    "conflict": "Ce créneau n'est plus disponible.",
+    "pending": "En attente",
+    "accepted": "Accepté",
+    "refused": "Refusé",
+    "requestMsg": "Demande de rendez-vous",
+    "responseMsg": "Réponse au rendez-vous",
+    "dateLabel": "Date",
+    "motifLabel": "Motif",
+    "statusLabel": "Statut",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "refuseReason": "Raison du refus (optionnel)",
+    "refusePlaceholder": "Expliquez pourquoi vous refusez...",
+    "confirmRefuse": "Confirmer le refus",
+    "acceptSuccess": "Rendez-vous accepté.",
+    "refuseSuccess": "Rendez-vous refusé.",
+    "respondError": "Erreur lors de la réponse.",
+    "availability": "Disponibilités",
+    "recurring": "Horaire récurrent",
+    "overrides": "Exceptions",
+    "addSlot": "Ajouter un créneau",
+    "removeSlot": "Retirer",
+    "saveAvailability": "Sauvegarder",
+    "saveSuccess": "Disponibilités sauvegardées.",
+    "saveError": "Erreur lors de la sauvegarde.",
+    "blockDate": "Bloquer cette date",
+    "customHours": "Heures personnalisées",
+    "addOverride": "Ajouter une exception",
+    "deleteOverride": "Supprimer",
+    "days": {
+      "0": "Dimanche",
+      "1": "Lundi",
+      "2": "Mardi",
+      "3": "Mercredi",
+      "4": "Jeudi",
+      "5": "Vendredi",
+      "6": "Samedi"
+    }
+  },
+  "quiz": {
+    "info": "Informations du quiz",
+    "title": "Titre du quiz",
+    "description": "Description",
+    "imageUrl": "URL de l'image",
+    "questions": "Questions",
+    "addQuestion": " Ajouter une question",
+    "questionText": "Texte de la question",
+    "questionType": "Type de question",
+    "placeholder": "Espace réservé",
+    "responses": "Réponses",
+    "addResponse": "+ Ajouter une réponse",
+    "responseText": "Texte de la réponse",
+    "order": "Ordre",
+    "remove": "Supprimer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "assign": {
+      "unassigned": "Non assignés",
+      "assigned": "Assignés",
+      "none": "Aucun utilisateur",
+      "noneAssigned": "Aucun utilisateur assigné",
+      "searchPlaceholder": "Rechercher des utilisateurs par nom ou courriel...",
+      "applyChanges": "Appliquer les modifications ({count})",
+      "updating": "Mise à jour...",
+      "successMessage": "Assignations mises à jour avec succès!",
+      "failedMessage": "Échec de la mise à jour des assignations",
+      "neverAssigned": "Jamais assignes",
+      "alreadyAssigned": "Deja assignes",
+      "followUpsShort": "suivi(s)",
+      "createFollowUp": "Creer le point de suivi",
+      "initialMode": "Premiere assignation",
+      "followUpMode": "Nouveau point de suivi",
+      "initialHint": "Utilisez ce mode pour les joueurs qui n'ont jamais recu ce quiz.",
+      "followUpHint": "Utilisez ce mode pour renvoyer le meme quiz et comparer la progression dans le temps.",
+      "initialListTitle": "{count} joueur(s) n'ont jamais recu ce quiz",
+      "followUpListTitle": "{count} joueur(s) ont deja recu ce quiz",
+      "selectedCount": "{count} selectionne(s)",
+      "assignSelected": "Assigner ({count})",
+      "createFollowUpSelected": "Creer le point de suivi ({count})",
+      "emptyInitial": "Tous les joueurs ont deja recu ce quiz.",
+      "emptyFollowUp": "Aucun joueur n'a encore recu ce quiz."
+    },
+    "assign_button": "Assigner aux utilisateurs",
+    "assigning": "Attribution en cours...",
+    "assignToUsers": "Assigner à {count} utilisateur(s)",
+    "searchUsers": "Rechercher les utilisateurs par nom ou courriel...",
+    "selected": "{count} sélectionné(s)",
+    "noUsers": "Aucun utilisateur trouvé.",
+    "noUsersMatch": "Aucun utilisateur ne correspond à votre recherche.",
+    "noQuestions": "Aucune question ajoutée. Cliquez sur \"+ Ajouter une question\" pour commencer.",
+    "noResponses": "Aucune réponse ajoutée. Cliquez sur \"+ Ajouter une réponse\" pour commencer.",
+    "typeScale": "Échelle 1-10 (Jamais/Parfois/Toujours)",
+    "typeMultipleChoice": "Choix unique (Sélection simple)",
+    "typeTextInput": "Texte libre (Texte libre)",
+    "scaleLabels": "L'échelle utilisera ces étiquettes guides :",
+    "dragToReorder": "Faites glisser pour réorganiser",
+    "draggable": "Faites glisser pour réorganiser",
+    "question": "Question",
+    "scaleMinLabel": "Étiquette Min",
+    "scaleMidLabel": "Étiquette Mid",
+    "scaleMaxLabel": "Étiquette Max",
+    "scalePreview": "Aperçu:",
+    "possibleResponses": "Réponses Possibles",
+    "scaleLabels_title": "Étiquettes de l'Échelle",
+    "creating": "Création...",
+    "saving": "Enregistrement...",
+    "create": {
+      "validation": {
+        "successMessage": "Le quiz a été créé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la création du quiz."
+      }
+    },
+    "update": {
+      "validation": {
+        "successMessage": "Le quiz a été modifié avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la modification du quiz."
+      }
+    },
+    "delete": {
+      "label": "Quiz",
+      "confirmation": "Êtes-vous sûr de vouloir supprimer ce quiz ?",
+      "validation": {
+        "successMessage": "Le quiz a été supprimé avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de la suppression du quiz."
+      }
+    },
+    "assign_quiz": {
+      "validation": {
+        "successMessage": "Le quiz a été assigné avec succès.",
+        "failedMessage": "Une erreur s'est produite lors de l'assignation du quiz."
+      }
+    },
+    "myQuizzes": "Mes quiz",
+    "noAssignedQuizzes": "Aucun quiz assigne.",
+    "completed": "Complete",
+    "pending": "En attente",
+    "assignedOn": "Assigne le",
+    "dueDate": "Date limite",
+    "completedOn": "Complete le",
+    "startQuiz": "Commencer le quiz",
+    "viewResults": "Voir les resultats",
+    "quizNotFound": "Quiz introuvable.",
+    "of": "sur",
+    "rate": "Noter",
+    "never": "Jamais",
+    "sometimes": "Parfois",
+    "always": "Toujours",
+    "enterYourAnswer": "Entrez votre reponse",
+    "previous": "Precedent",
+    "answered": "repondues",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "results": "Resultats",
+    "completionMessage": "Quiz complete avec succes.",
+    "yourAnswers": "Vos reponses",
+    "yourAnswer": "Votre reponse",
+    "backToList": "Retour aux quiz",
+    "move": {
+      "toTop": "Placer en haut",
+      "up": "Placer avant",
+      "down": "Placer après",
+      "toBottom": "Placer en bas"
+    },
+    "preview": {
+      "title": "Aperçu",
+      "textPlaceholder": "Entrée texte..."
+    },
+    "typeMultipleSelection": "Choix multiples (Sélection multiple)",
+    "singleSelectionHint": "Le membre pourra sélectionner une seule réponse.",
+    "multipleSelectionHint": "Le membre pourra sélectionner plusieurs réponses.",
+    "availableOn": "Disponible le",
+    "followUpPoint": "Point de suivi",
+    "followUpLabel": "Nom du point de suivi",
+    "followUpPlaceholder": "Ex. Debut de session, Mi-session, Fin de session",
+    "createFollowUpPoint": "Creer un nouveau point de suivi pour les joueurs selectionnes",
+    "followUpSelectionHint": "Selectionnez, dans la colonne des joueurs deja assignes, seulement les joueurs qui doivent recevoir ce nouveau point de suivi.",
+    "availableAt": "Date et heure de disponibilite"
+  }
+}

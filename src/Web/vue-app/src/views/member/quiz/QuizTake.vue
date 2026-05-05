@@ -8,13 +8,6 @@
       >
         <span>← {{ $t('common.back') }}</span>
       </button>
-
-      <!-- Bannière mode aperçu admin -->
-      <div v-if="previewMode" class="mb-4 flex items-center gap-3 bg-amber-50 border border-amber-300 text-amber-800 rounded-lg px-4 py-3">
-        <Eye class="w-5 h-5 shrink-0" />
-        <span class="text-sm font-medium">Mode aperçu — les réponses ne seront pas soumises.</span>
-      </div>
-
       <h1 v-if="quiz" class="text-3xl font-bold">{{ quiz.titre }}</h1>
       <p v-if="quiz?.description" class="text-gray-600 mt-2">{{ quiz.description }}</p>
     </div>
@@ -53,26 +46,24 @@
           <div class="mb-4">
             <label class="text-sm text-gray-600">{{ $t('quiz.rate') }} 1-10</label>
           </div>
-          <div class="space-y-2 mb-4">
-            <div class="flex gap-2 text-xs text-gray-500 font-semibold">
-              <div v-for="score in 10" :key="`label-${score}`" class="flex-1 text-center">
-                {{ currentQuestion.scaleLabels && currentQuestion.scaleLabels[score - 1] ? currentQuestion.scaleLabels[score - 1] : '' }}
+          <div class="mb-4 overflow-x-auto">
+            <div class="grid grid-cols-10 gap-2 min-w-[640px]">
+              <div v-for="score in 10" :key="score" class="flex flex-col items-stretch">
+                <div class="h-10 mb-1 text-xs leading-tight text-gray-500 font-semibold text-center break-words flex items-end justify-center">
+                  {{ currentQuestion.scaleLabels && currentQuestion.scaleLabels[score - 1] ? currentQuestion.scaleLabels[score - 1] : '' }}
+                </div>
+                <button
+                  @click="selectScore(score)"
+                  :class="[
+                    'h-10 rounded font-bold transition-all',
+                    responses[currentQuestion.id]?.selectedScore === score
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  ]"
+                >
+                  {{ score }}
+                </button>
               </div>
-            </div>
-            <div class="flex gap-2">
-              <button
-                v-for="score in 10"
-                :key="score"
-                @click="selectScore(score)"
-                :class="[
-                  'flex-1 py-2 px-3 rounded font-bold transition-all',
-                  responses[currentQuestion.id]?.selectedScore === score
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                ]"
-              >
-                {{ score }}
-              </button>
             </div>
           </div>
         </div>
@@ -91,6 +82,35 @@
             ]"
           >
             {{ option.responseText }}
+          </button>
+        </div>
+
+        <!-- Multiple Selection Question -->
+        <div v-else-if="currentQuestion.questionType === 3" class="space-y-3">
+          <button
+            v-for="option in currentQuestion.responses"
+            :key="option.id"
+            @click="toggleResponse(option.id)"
+            :class="[
+              'w-full p-4 rounded-lg border-2 transition-all text-left',
+              responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)
+                ? 'border-blue-500 bg-blue-50 font-bold'
+                : 'border-gray-300 hover:border-blue-300'
+            ]"
+          >
+            <span class="inline-flex items-center gap-3">
+              <span
+                :class="[
+                  'w-5 h-5 rounded border-2 flex items-center justify-center',
+                  responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)
+                    ? 'border-blue-500 bg-blue-500 text-white'
+                    : 'border-gray-300'
+                ]"
+              >
+                <span v-if="responses[currentQuestion.id]?.selectedResponseIds?.includes(option.id)">&#10003;</span>
+              </span>
+              {{ option.responseText }}
+            </span>
           </button>
         </div>
 
@@ -125,7 +145,6 @@
           </div>
         </div>
 
-        <!-- Bouton Suivant (toutes questions sauf la dernière) -->
         <button
           v-if="currentQuestionIndex < quiz.questions.length - 1"
           @click="nextQuestion"
@@ -134,32 +153,19 @@
           {{ $t('quiz.next') }}
         </button>
 
-        <!-- Dernière question -->
-        <template v-else>
-          <!-- Mode aperçu admin : bouton désactivé avec icône -->
-          <div
-            v-if="previewMode"
-            class="flex items-center gap-2 px-6 py-2 rounded font-bold bg-amber-100 text-amber-600 border border-amber-300 cursor-not-allowed select-none"
-          >
-            <Eye class="w-4 h-4" />
-            <span>{{ $t('quiz.submit') }} (aperçu)</span>
-          </div>
-
-          <!-- Mode normal membre -->
-          <button
-            v-else
-            @click="submitQuiz"
-            :disabled="answeredCount !== quiz.questions.length"
-            :class="[
-              'px-6 py-2 rounded font-bold transition-all',
-              answeredCount === quiz.questions.length
-                ? 'bg-green-500 hover:bg-green-600 text-white'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            ]"
-          >
-            {{ $t('quiz.submit') }}
-          </button>
-        </template>
+        <button
+          v-else
+          @click="submitQuiz"
+          :disabled="answeredCount !== quiz.questions.length"
+          :class="[
+            'px-6 py-2 rounded font-bold transition-all',
+            answeredCount === quiz.questions.length
+              ? 'bg-green-500 hover:bg-green-600 text-white'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          ]"
+        >
+          {{ $t('quiz.submit') }}
+        </button>
       </div>
     </div>
   </div>
@@ -168,34 +174,36 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Eye } from 'lucide-vue-next'
 import { useQuizService } from '@/inversify.config'
-import { useUserStore } from '@/stores/userStore'
-import { Role } from '@/types/enums'
 import type { Quiz } from '@/services/quizService'
 
 const router = useRouter()
 const route = useRoute()
 const quizService = useQuizService()
-const userStore = useUserStore()
-
-// Mode aperçu si l'utilisateur est admin
-const previewMode = computed(() => userStore.hasRole(Role.Admin))
 
 const quiz = ref<Quiz | null>(null)
 const loading = ref(true)
 const currentQuestionIndex = ref(0)
 const responses = ref<Record<string, any>>({})
-
 onMounted(async () => {
   try {
-    const quizId = route.params.quizId as string
-    quiz.value = await quizService.getById(quizId)
+    const assignmentId = route.params.assignmentId as string
+    const assignedQuizzes = await quizService.getAssignedQuizzes()
+    const assignment = assignedQuizzes.find(q => q.id === assignmentId)
 
+    if (!assignment) {
+      quiz.value = null
+      return
+    }
+
+    quiz.value = await quizService.getById(assignment.quizId)
+
+    // Initialize responses object
     quiz.value?.questions.forEach(q => {
       responses.value[q.id] = {
         selectedScore: undefined,
         selectedResponseId: undefined,
+        selectedResponseIds: [],
         selectedTextResponse: ''
       }
     })
@@ -215,10 +223,16 @@ const answeredCount = computed(() => {
   return quiz.value.questions.filter(q => {
     const response = responses.value[q.id]
     switch (q.questionType) {
-      case 0: return response?.selectedScore !== undefined
-      case 1: return response?.selectedResponseId !== undefined
-      case 2: return response?.selectedTextResponse?.trim() !== ''
-      default: return false
+      case 0: // Scale1To10
+        return response?.selectedScore !== undefined
+      case 1: // MultipleChoice
+        return response?.selectedResponseId !== undefined
+      case 2: // TextInput
+        return response?.selectedTextResponse?.trim() !== ''
+      case 3: // MultipleSelection
+        return response?.selectedResponseIds?.length > 0
+      default:
+        return false
     }
   }).length
 })
@@ -235,6 +249,20 @@ const selectResponse = (responseId: string) => {
   }
 }
 
+const toggleResponse = (responseId: string) => {
+  if (!currentQuestion.value) return
+
+  const questionResponse = responses.value[currentQuestion.value.id]
+  const selectedResponseIds = questionResponse.selectedResponseIds as string[]
+  const existingIndex = selectedResponseIds.indexOf(responseId)
+
+  if (existingIndex >= 0) {
+    selectedResponseIds.splice(existingIndex, 1)
+  } else {
+    selectedResponseIds.push(responseId)
+  }
+}
+
 const nextQuestion = () => {
   if (currentQuestionIndex.value < quiz.value!.questions.length - 1) {
     currentQuestionIndex.value++
@@ -248,40 +276,35 @@ const previousQuestion = () => {
 }
 
 const goBack = () => {
-  // Admin retourne vers la liste admin, membre vers la liste membre
-  if (previewMode.value) {
-    router.push({ name: 'admin.children.quiz.index' })
-  } else {
-    router.push({ name: 'quiz.list' })
-  }
+  router.push({ name: 'quiz.list' })
 }
 
 const submitQuiz = async () => {
-  if (!quiz.value || previewMode.value) return
+  if (!quiz.value) return
 
   try {
     for (const question of quiz.value.questions) {
-      if (!question.id) {
-        console.error('Question ID is empty or null:', question)
-        throw new Error('Invalid question ID')
-      }
-
       const response = responses.value[question.id]
       await quizService.submitResponse({
+        quizAssignmentId: route.params.assignmentId as string,
         quizQuestionId: question.id,
-        selectedScore: response?.selectedScore,
-        selectedResponseId: response?.selectedResponseId,
-        selectedTextResponse: response?.selectedTextResponse
+        selectedScore: response.selectedScore,
+        selectedResponseId: response.selectedResponseId,
+        selectedResponseIds: response.selectedResponseIds,
+        selectedTextResponse: response.selectedTextResponse
       })
     }
 
+    // Mark quiz as completed before redirecting
     try {
-      await quizService.completeQuiz(quiz.value.id)
+      await quizService.completeQuiz(route.params.assignmentId as string)
     } catch (error) {
       console.error('Failed to mark quiz as completed:', error)
+      // Ne pas afficher d'erreur, la soumission est réussie
     }
 
-    router.push({ name: 'quiz.results', params: { quizId: quiz.value.id } })
+    // Redirect to results
+    router.push({ name: 'quiz.results', params: { assignmentId: route.params.assignmentId as string } })
   } catch (error) {
     console.error('Failed to submit quiz:', error)
     alert('Failed to submit quiz. Please try again.')

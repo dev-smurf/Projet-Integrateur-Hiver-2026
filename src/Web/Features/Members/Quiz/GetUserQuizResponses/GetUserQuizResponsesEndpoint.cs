@@ -7,20 +7,20 @@ namespace Web.Features.Members.Quiz.GetUserQuizResponses;
 
 public class GetUserQuizResponsesEndpoint : Endpoint<GetUserQuizResponsesRequest, GetUserQuizResponsesResponse>
 {
-    private readonly IQuizRepository _quizRepository;
     private readonly IUserQuizResponseRepository _userResponseRepository;
+    private readonly IQuizAssignmentRepository _assignmentRepository;
 
     public GetUserQuizResponsesEndpoint(
-        IQuizRepository quizRepository,
-        IUserQuizResponseRepository userResponseRepository)
+        IUserQuizResponseRepository userResponseRepository,
+        IQuizAssignmentRepository assignmentRepository)
     {
-        _quizRepository = quizRepository;
         _userResponseRepository = userResponseRepository;
+        _assignmentRepository = assignmentRepository;
     }
 
     public override void Configure()
     {
-        Get("quiz/responses/{quizId}");
+        Get("quiz/assignments/{quizAssignmentId}/responses");
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
@@ -31,14 +31,14 @@ public class GetUserQuizResponsesEndpoint : Endpoint<GetUserQuizResponsesRequest
             throw new UnauthorizedAccessException("Invalid or missing user identifier");
 
         // Récupérer le quiz
-        var quiz = _quizRepository.FindAll()
-            .FirstOrDefault(q => q.Id == req.QuizId);
+        var assignment = await _assignmentRepository.GetAvailableByIdForUserAsync(req.QuizAssignmentId, userId);
 
-        if (quiz == null)
-            throw new KeyNotFoundException($"Quiz with ID {req.QuizId} not found");
+        if (assignment == null)
+            throw new KeyNotFoundException($"Quiz assignment with ID {req.QuizAssignmentId} not found");
 
         // Récupérer les réponses de l'utilisateur
-        var userResponses = await _userResponseRepository.GetByUserIdAndQuizAsync(userId, req.QuizId);
+        var quiz = assignment.Quiz;
+        var userResponses = await _userResponseRepository.GetByAssignmentAsync(userId, req.QuizAssignmentId);
 
         // Mapper les réponses
         var responses = quiz.Questions
@@ -94,6 +94,23 @@ public class GetUserQuizResponsesEndpoint : Endpoint<GetUserQuizResponsesRequest
                 var selectedResponse = question.Responses.FirstOrDefault(r => r.Id == ur?.SelectedResponseId);
                 dto.SelectedResponseText = selectedResponse?.ResponseText;
             }
+            else if (question.QuestionType == Domain.Entities.QuizQuestionType.MultipleSelection)
+            {
+                var selectedResponseIds = ParseSelectedResponseIds(ur?.SelectedResponseIds);
+                dto.Options = question.Responses.Select(r => new MultipleChoiceOption
+                {
+                    Id = r.Id,
+                    Text = r.ResponseText,
+                    IsSelected = selectedResponseIds.Contains(r.Id)
+                }).ToList();
+
+                dto.SelectedResponseIds = selectedResponseIds.ToList();
+                dto.SelectedResponseTexts = question.Responses
+                    .Where(r => selectedResponseIds.Contains(r.Id))
+                    .Select(r => r.ResponseText)
+                    .ToList();
+                dto.SelectedResponseText = string.Join(", ", dto.SelectedResponseTexts);
+            }
             else if (question.QuestionType == Domain.Entities.QuizQuestionType.TextInput)
             {
                 dto.SelectedTextResponse = ur?.SelectedTextResponse;
@@ -104,7 +121,7 @@ public class GetUserQuizResponsesEndpoint : Endpoint<GetUserQuizResponsesRequest
 
         var response = new GetUserQuizResponsesResponse
         {
-            QuizId = req.QuizId,
+            QuizId = quiz.Id,
             QuizTitle = quiz.Titre ?? "Quiz",
             Responses = responses,
             TotalQuestions = quiz.Questions.Count,
@@ -113,5 +130,18 @@ public class GetUserQuizResponsesEndpoint : Endpoint<GetUserQuizResponsesRequest
         };
 
         await Send.OkAsync(response, cancellation: ct);
+    }
+
+    private static HashSet<Guid> ParseSelectedResponseIds(string? selectedResponseIds)
+    {
+        if (string.IsNullOrWhiteSpace(selectedResponseIds))
+            return [];
+
+        return selectedResponseIds
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(id => Guid.TryParse(id, out var parsed) ? parsed : (Guid?)null)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .ToHashSet();
     }
 }

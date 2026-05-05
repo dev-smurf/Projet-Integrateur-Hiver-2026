@@ -1,7 +1,6 @@
 using Domain.Repositories;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Claims;
 
 namespace Web.Features.Members.Quiz.CompleteQuiz;
 
@@ -16,7 +15,7 @@ public class CompleteQuizEndpoint : Endpoint<CompleteQuizRequest, EmptyResponse>
 
     public override void Configure()
     {
-        Post("quiz/{quizId}/complete");
+        Post("quiz/assignments/{quizAssignmentId}/complete");
         AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
@@ -26,13 +25,11 @@ public class CompleteQuizEndpoint : Endpoint<CompleteQuizRequest, EmptyResponse>
         if (string.IsNullOrWhiteSpace(userIdString) || !Guid.TryParse(userIdString, out var userId))
             throw new UnauthorizedAccessException("Invalid or missing user identifier");
 
-        // Récupérer l'assignation du quiz
-        var assignment = await _assignmentRepository.GetByUserIdAndQuizAsync(userId, req.QuizId);
+        var assignment = await _assignmentRepository.GetAvailableByIdForUserAsync(req.QuizAssignmentId, userId);
 
         if (assignment == null)
-            throw new KeyNotFoundException($"Quiz assignment not found");
+            throw new KeyNotFoundException("Quiz assignment not found");
 
-        // Marquer comme complété
         assignment.CompletedAt = DateTime.UtcNow;
         await _assignmentRepository.UpdateAsync(assignment);
 
@@ -42,5 +39,5 @@ public class CompleteQuizEndpoint : Endpoint<CompleteQuizRequest, EmptyResponse>
 
 public class CompleteQuizRequest
 {
-    public Guid QuizId { get; set; }
+    public Guid QuizAssignmentId { get; set; }
 }

@@ -93,25 +93,11 @@
           <div
             v-for="(question, qIdx) in form.questions"
             :key="qIdx"
-            draggable="true"
-            @dragstart="dragStart($event, qIdx)"
-            @dragover.prevent="dragOver($event, qIdx)"
-            @drop.prevent="dragDrop($event, qIdx)"
-            @dragend="dragEnd"
             class="border-2 border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
           >
-            <!-- Drag Handle -->
-            <div class="flex items-start gap-2 mb-3">
-              <div class="pt-1 text-gray-400 cursor-grab active:cursor-grabbing">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M7 2a2 2 0 11-4 0 2 2 0 014 0zM7 8a2 2 0 11-4 0 2 2 0 014 0zM7 14a2 2 0 11-4 0 2 2 0 014 0zM15 2a2 2 0 11-4 0 2 2 0 014 0zM15 8a2 2 0 11-4 0 2 2 0 014 0zM15 14a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-              </div>
-              <div class="flex-1">
                 <div class="flex justify-between items-start mb-3">
                   <div>
                     <h4 class="text-sm font-bold text-gray-900">{{ $t('quiz.question') }} {{ qIdx + 1 }}</h4>
-                    <p class="text-xs text-gray-500">{{ $t('quiz.dragToReorder') }}</p>
                   </div>
                   <div class="flex items-center gap-2">
                     <div class="flex gap-1">
@@ -147,12 +133,14 @@
                   <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('quiz.questionType') }} *</label>
                   <select
                     v-model.number="question.questionType"
+                    @change="ensureQuestionDefaults(question)"
                     required
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
                   >
                     <option :value="0">{{ $t('quiz.typeScale') }}</option>
                     <option :value="1">{{ $t('quiz.typeMultipleChoice') }}</option>
                     <option :value="2">{{ $t('quiz.typeTextInput') }}</option>
+                    <option :value="3">{{ $t('quiz.typeMultipleSelection') }}</option>
                   </select>
                 </div>
 
@@ -189,11 +177,12 @@
                     <div class="text-xs text-gray-500 mb-1 mt-2">{{ $t('quiz.scalePreview') }}</div>
                     <div class="mb-2">
                       <div class="overflow-x-auto">
-                        <div class="flex gap-3 px-2 items-start">
-                          <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="min-w-[64px] flex flex-col items-center">
-                            <div v-if="lbl" class="text-xs text-gray-600 mb-1 text-center break-words w-full">{{ lbl }}</div>
-                            <div v-else class="h-3 mb-1" />
-                            <div class="py-2 px-3 rounded font-bold text-center bg-gray-200 text-gray-800 w-full">{{ idx + 1 }}</div>
+                        <div class="grid grid-cols-10 gap-3 px-2 min-w-[720px]">
+                          <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="flex flex-col items-stretch">
+                            <div class="h-10 mb-1 text-xs leading-tight text-gray-600 text-center break-words flex items-end justify-center">
+                              {{ lbl || '' }}
+                            </div>
+                            <div class="h-10 rounded font-bold text-center bg-gray-200 text-gray-800 flex items-center justify-center">{{ idx + 1 }}</div>
                           </div>
                         </div>
                       </div>
@@ -202,9 +191,14 @@
                 </div>
 
                 <!-- Responses Section -->
-                <div v-if="question.questionType === 1" class="border-t border-gray-300 pt-3">
+                <div v-if="question.questionType === 1 || question.questionType === 3" class="border-t border-gray-300 pt-3">
                   <div class="flex justify-between items-center mb-2">
-                    <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                    <div>
+                      <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                      <p class="text-xs text-gray-500">
+                        {{ question.questionType === 3 ? $t('quiz.multipleSelectionHint') : $t('quiz.singleSelectionHint') }}
+                      </p>
+                    </div>
                     <button type="button" @click="addResponse(qIdx)" class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition">{{ $t('quiz.addResponse') }}</button>
                   </div>
 
@@ -212,14 +206,21 @@
                   <div class="space-y-2">
                     <div v-for="(response, rIdx) in question.responses" :key="rIdx" class="flex gap-2 items-center">
                       <span class="text-xs text-gray-500 font-medium min-w-fit">{{ rIdx + 1 }}.</span>
+                      <span
+                        :class="[
+                          'w-4 h-4 border-2 border-gray-400 flex items-center justify-center shrink-0',
+                          question.questionType === 3 ? 'rounded' : 'rounded-full'
+                        ]"
+                      >
+                        <span v-if="question.questionType === 1" class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        <span v-else class="text-[10px] leading-none text-gray-500">&#10003;</span>
+                      </span>
                       <input v-model="response.responseText" type="text" class="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" :placeholder="$t('quiz.responseText') + '...'" />
                       <button type="button" @click="removeResponse(qIdx, rIdx)" class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition">{{ $t('global.delete') }}</button>
                     </div>
                     <div v-if="question.responses.length === 0" class="text-center py-2 text-xs text-gray-400 italic">{{ $t('quiz.noResponses') }}</div>
                   </div>
                 </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -267,8 +268,6 @@ const error = ref('')
 const submitting = ref(false)
 const apiErrors = ref<string[]>([])
 const originalQuestionIds = ref<string[]>([])
-const draggedIndex = ref<number | null>(null)
-const dragOverIndex = ref<number | null>(null)
 const imagePreview = ref<string>('')
 const isDragging = ref(false)
 const quizFileInput = ref<HTMLInputElement>()
@@ -347,40 +346,6 @@ onMounted(async () => {
     loading.value = false
   }
 })
-
-function dragStart(event: DragEvent, index: number) {
-  draggedIndex.value = index
-  if (event.dataTransfer) {
-    event.dataTransfer.effectAllowed = 'move'
-  }
-}
-
-function dragOver(event: DragEvent, index: number) {
-  dragOverIndex.value = index
-  if (event.dataTransfer) {
-    event.dataTransfer.dropEffect = 'move'
-  }
-}
-
-function dragDrop(event: DragEvent, dropIndex: number) {
-  event.preventDefault()
-  if (draggedIndex.value !== null && draggedIndex.value !== dropIndex) {
-    const draggedQuestion = form.value.questions[draggedIndex.value]
-    form.value.questions.splice(draggedIndex.value, 1)
-    const newIndex = dropIndex > draggedIndex.value ? dropIndex - 1 : dropIndex
-    form.value.questions.splice(newIndex, 0, draggedQuestion)
-    form.value.questions.forEach((q, idx) => {
-      q.order = idx
-    })
-    draggedIndex.value = null
-  }
-  dragOverIndex.value = null
-}
-
-function dragEnd() {
-  draggedIndex.value = null
-  dragOverIndex.value = null
-}
 
 async function handleSubmit() {
   if (!quizService) {
@@ -491,8 +456,17 @@ function addQuestion() {
     scaleMinLabel: 'Jamais',
     scaleMidLabel: 'Parfois',
     scaleMaxLabel: 'Toujours',
-    scaleLabels: Array(10).fill(''),
+    scaleLabels: createDefaultScaleLabels(),
     responses: [{ id: '', responseText: '', order: 0 }]
+  })
+}
+
+function createDefaultScaleLabels() {
+  return Array.from({ length: 10 }, (_, i) => {
+    if (i === 0) return 'Jamais'
+    if (i === 4) return 'Parfois'
+    if (i === 9) return 'Toujours'
+    return ''
   })
 }
 
@@ -535,6 +509,20 @@ function addResponse(questionIndex: number) {
     responseText: '',
     order: responses.length
   })
+}
+
+function ensureQuestionDefaults(question: any) {
+  if (question.questionType === 0 && (!question.scaleLabels || question.scaleLabels.length !== 10)) {
+    question.scaleLabels = createDefaultScaleLabels()
+  }
+
+  if ((question.questionType === 1 || question.questionType === 3) && question.responses.length === 0) {
+    question.responses.push({
+      id: '',
+      responseText: '',
+      order: 0
+    })
+  }
 }
 
 function removeResponse(questionIndex: number, responseIndex: number) {

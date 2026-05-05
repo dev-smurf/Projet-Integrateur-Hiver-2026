@@ -114,12 +114,14 @@
               <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('quiz.questionType') }} *</label>
               <select
                 v-model.number="question.questionType"
+                @change="ensureQuestionDefaults(question)"
                 required
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
               >
                 <option :value="0">{{ $t('quiz.typeScale') }}</option>
                 <option :value="1">{{ $t('quiz.typeMultipleChoice') }}</option>
                 <option :value="2">{{ $t('quiz.typeTextInput') }}</option>
+                <option :value="3">{{ $t('quiz.typeMultipleSelection') }}</option>
               </select>
             </div>
 
@@ -150,11 +152,12 @@
                 <div class="text-xs text-gray-500 mb-1 mt-2">{{ $t('quiz.scalePreview') }}</div>
                 <div class="mb-2">
                   <div class="overflow-x-auto">
-                    <div class="flex gap-3 px-2 items-start">
-                      <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="min-w-[64px] flex flex-col items-center">
-                        <div v-if="lbl" class="text-xs text-gray-600 mb-1 text-center break-words w-full">{{ lbl }}</div>
-                        <div v-else class="h-3 mb-1" />
-                        <div class="py-2 px-3 rounded font-bold text-center bg-gray-200 text-gray-800 w-full">{{ idx + 1 }}</div>
+                    <div class="grid grid-cols-10 gap-3 px-2 min-w-[720px]">
+                      <div v-for="(lbl, idx) in (question.scaleLabels || [])" :key="idx" class="flex flex-col items-stretch">
+                        <div class="h-10 mb-1 text-xs leading-tight text-gray-600 text-center break-words flex items-end justify-center">
+                          {{ lbl || '' }}
+                        </div>
+                        <div class="h-10 rounded font-bold text-center bg-gray-200 text-gray-800 flex items-center justify-center">{{ idx + 1 }}</div>
                       </div>
                     </div>
                   </div>
@@ -163,9 +166,14 @@
             </div>
 
             <!-- Responses Section -->
-            <div v-if="question.questionType === 1" class="border-t border-gray-300 pt-3">
+            <div v-if="question.questionType === 1 || question.questionType === 3" class="border-t border-gray-300 pt-3">
               <div class="flex justify-between items-center mb-2">
-                <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                <div>
+                  <h5 class="text-xs font-semibold text-gray-700">{{ $t('quiz.possibleResponses') }}</h5>
+                  <p class="text-xs text-gray-500">
+                    {{ question.questionType === 3 ? $t('quiz.multipleSelectionHint') : $t('quiz.singleSelectionHint') }}
+                  </p>
+                </div>
                 <button type="button" @click="addResponse(qIdx)" class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition">{{ $t('quiz.addResponse') }}</button>
               </div>
 
@@ -173,6 +181,15 @@
               <div class="space-y-2">
                 <div v-for="(response, rIdx) in question.responses" :key="rIdx" class="flex gap-2 items-center">
                   <span class="text-xs text-gray-500 font-medium min-w-fit">{{ rIdx + 1 }}.</span>
+                  <span
+                    :class="[
+                      'w-4 h-4 border-2 border-gray-400 flex items-center justify-center shrink-0',
+                      question.questionType === 3 ? 'rounded' : 'rounded-full'
+                    ]"
+                  >
+                    <span v-if="question.questionType === 1" class="w-2 h-2 rounded-full bg-gray-400"></span>
+                    <span v-else class="text-[10px] leading-none text-gray-500">&#10003;</span>
+                  </span>
                   <input v-model="response.responseText" type="text" class="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" :placeholder="$t('quiz.responseText') + '...'" />
                   <button type="button" @click="removeResponse(qIdx, rIdx)" class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition">{{ $t('global.delete') }}</button>
                 </div>
@@ -314,6 +331,15 @@ function addQuestion() {
   })
 }
 
+function createDefaultScaleLabels() {
+  return Array.from({ length: 10 }, (_, i) => {
+    if (i === 0) return 'Jamais'
+    if (i === 4) return 'Parfois'
+    if (i === 9) return 'Toujours'
+    return ''
+  })
+}
+
 function moveQuestionUp(index: number) {
   if (index <= 0) return
   const q = form.value.questions.splice(index, 1)[0]
@@ -348,6 +374,19 @@ function addResponse(questionIndex: number) {
     responseText: '',
     order: responses.length
   })
+}
+
+function ensureQuestionDefaults(question: any) {
+  if (question.questionType === 0 && (!question.scaleLabels || question.scaleLabels.length !== 10)) {
+    question.scaleLabels = createDefaultScaleLabels()
+  }
+
+  if ((question.questionType === 1 || question.questionType === 3) && question.responses.length === 0) {
+    question.responses.push({
+      responseText: '',
+      order: 0
+    })
+  }
 }
 
 function removeResponse(questionIndex: number, responseIndex: number) {

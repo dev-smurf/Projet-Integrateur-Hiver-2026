@@ -19,6 +19,7 @@
     <!-- Grid of Quiz Cards -->
     <div v-if="!loading && quizzes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       <div v-for="quiz in quizzes" :key="quiz.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+        <div v-if="quiz"></div>
         <!-- Quiz Image or Placeholder -->
           <div class="h-40 bg-gray-200 relative overflow-hidden group">
             <img v-if="quiz.imageUrl" :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />

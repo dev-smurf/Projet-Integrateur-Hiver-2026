@@ -1373,6 +1373,9 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("SelectedResponseId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("SelectedResponseIds")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("SelectedScore")
                         .HasColumnType("int");
 
