@@ -138,6 +138,7 @@
         <!-- Contenu principal -->
         <div class="flex-1 min-w-0">
             <main class="w-full px-6 py-8">
+                <AppBreadcrumb />
                 <router-view />
             </main>
         </div>
@@ -188,6 +189,7 @@
     import { useSignalR } from "@/composables/useSignalR";
     import { Role } from "@/types/enums";
     import { LOCALES } from "@/locales";
+    import AppBreadcrumb from "@/views/shared/AppBreadcrumb.vue";
     import { hasUnreadMemberAdminNote, MEMBER_ADMIN_NOTE_READ_EVENT } from "@/utils/memberAdminNotes";
 
     const router = useRouter();

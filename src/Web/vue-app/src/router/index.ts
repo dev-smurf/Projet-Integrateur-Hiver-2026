@@ -188,6 +188,12 @@ export function getRouter(): Router {
             name: "admin.children.equipes.add",
             component: AdminAddEquipeForm,
           },
+            {
+                path: `${i18n.t("routes.admin.children.equipes.path")}/${i18n.t("routes.admin.children.equipes.sous-equipes.path")}/:parentEquipeId/${i18n.t("routes.admin.children.equipes.sous-equipes.children.add.path")}`,
+                name: "admin.children.equipes.sous-equipes.add",
+                component: AdminAddEquipeForm,
+                props: true,
+            },
           {
             path: `${i18n.t("routes.admin.children.equipes.path")}/${i18n.t("routes.admin.children.equipes.edit.path")}`,
             name: "admin.children.equipes.edit",

@@ -48,12 +48,20 @@
                 </div>
             </div>
 
-            <!-- Sous-équipes -->
-            <div v-if="equipe?.sousEquipes?.length" class="bg-white border border-gray-200 rounded-2xl p-6">
-                <h2 class="text-sm font-semibold text-gray-900 mb-4">
-                    Sous-équipes ({{ equipe.sousEquipes.length }})
-                </h2>
-                <div class="space-y-2">
+            <!-- Sous-équipes (seulement pour les équipes parentes) -->
+            <div v-if="!equipe?.parentEquipeId" class="bg-white border border-gray-200 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-semibold text-gray-900">
+                        Sous-équipes ({{ equipe?.sousEquipes?.length ?? 0 }})
+                    </h2>
+                    <router-link :to="{ name: 'admin.children.equipes.sous-equipes.add', params: { parentEquipeId: equipeId } }"
+                                 class="flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 transition">
+                        <Plus class="w-3 h-3" />
+                        Nouvelle sous-équipe
+                    </router-link>
+                </div>
+
+                <div v-if="equipe?.sousEquipes?.length" class="space-y-2">
                     <div v-for="sousEquipe in equipe.sousEquipes" :key="sousEquipe.id"
                          class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="flex items-center gap-3">
@@ -67,6 +75,9 @@
                             {{ $t('global.view') }}
                         </router-link>
                     </div>
+                </div>
+                <div v-else class="text-center py-6 text-gray-400 text-sm">
+                    Aucune sous-équipe pour le moment.
                 </div>
             </div>
 
@@ -96,6 +107,12 @@
             <!-- Gestion des membres -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('pages.equipeDetails.memberManagement') }}</h2>
+                <!-- Avertissement si sous-équipe sans parent chargé -->
+                <div v-if="equipe?.parentEquipeId && parentEquipeMembers.length === 0"
+                     class="flex items-center gap-2 mb-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">
+                    <GitBranch class="w-4 h-4 shrink-0" />
+                    <p>{{ $t('pages.equipe.sous-equipes.noMembersParentWarn')}}</p>
+                </div>
 
                 <div class="flex flex-wrap items-end gap-3 mb-4">
                     <div class="flex-1 min-w-[220px]">
@@ -106,7 +123,14 @@
                                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" />
                     </div>
                     <div class="flex-1 min-w-[220px]">
-                        <label class="text-xs font-medium text-gray-500">{{ $t('pages.equipeDetails.selectMember') }}</label>
+                        <label class="text-xs font-medium text-gray-500">
+                            {{ $t('pages.equipeDetails.selectMember') }}
+                            <!-- Indicateur de filtre actif -->
+                            <span v-if="equipe?.parentEquipeId"
+                                  class="ml-1 text-amber-600 font-normal">
+                                (membres de l'équipe parente uniquement)
+                            </span>
+                        </label>
                         <select v-model="selectedMemberId"
                                 class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm">
                             <option value="">{{ $t('pages.equipeDetails.chooseMember') }}</option>
@@ -159,7 +183,7 @@
     import { useRoute } from "vue-router";
     import { useI18n } from "vue3-i18n";
     import { useNotification } from "@kyvg/vue3-notification";
-    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save } from "lucide-vue-next";
+    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save, Plus } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
     import type { Member, Equipe } from "@/types/entities";
 
@@ -171,6 +195,7 @@
 
     const equipe = ref<any>(null);
     const parentEquipes = ref<Equipe[]>([]);
+    const parentEquipeMembers = ref<string[]>([]);
     const equipeMembers = ref<any[]>([]);
     const allMembers = ref<Member[]>([]);
     const loading = ref(true);
@@ -183,16 +208,21 @@
 
     const equipeId = computed(() => String(route.params.id || ""));
 
-    const availableMembersCount = computed(() => {
-        const assignedIds = new Set(equipeMembers.value.map(m => m.memberId));
-        return allMembers.value.filter(m => !assignedIds.has(m.id)).length;
-    });
+    const availableMembersCount = computed(() => filteredAvailableMembers.value.length);
 
     const filteredAvailableMembers = computed(() => {
         const q = memberSearch.value.toLowerCase().trim();
         const assignedIds = new Set(equipeMembers.value.map(m => m.memberId));
 
-        return allMembers.value
+        let candidates = allMembers.value;
+
+        // Si sous-équipe, restreindre aux membres du parent uniquement
+        if (equipe.value?.parentEquipeId && parentEquipeMembers.value.length > 0) {
+            const parentMemberIdSet = new Set(parentEquipeMembers.value);
+            candidates = candidates.filter(m => parentMemberIdSet.has(m.id!));
+        }
+
+        return candidates
             .filter(m => !assignedIds.has(m.id))
             .filter(m => {
                 if (!q) return true;
@@ -214,6 +244,15 @@
         }
     }
 
+    async function loadParentEquipeMembers(parentId: string) {
+        try {
+            const response = await equipesService.getEquipeMembers(parentId);
+            parentEquipeMembers.value = (response?.members || []).map(m => m.memberId);
+        } catch {
+            parentEquipeMembers.value = [];
+        }
+    }
+
     async function loadData() {
         loading.value = true;
         try {
@@ -225,12 +264,18 @@
 
             const allMembersResponse = await memberService.search(1, 9999, "");
             allMembers.value = allMembersResponse.items || [];
+
+            //Charger les membres du parent si sous-équipe
+            if (equipe.value?.parentEquipeId) {
+                await loadParentEquipeMembers(equipe.value.parentEquipeId);
+            }
         } catch (error) {
             notify({ type: "error", text: t("pages.equipeDetails.notify.loadError") });
         } finally {
             loading.value = false;
         }
     }
+
 
     async function saveParentEquipe() {
         savingParent.value = true;

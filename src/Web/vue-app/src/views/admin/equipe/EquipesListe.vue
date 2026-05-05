@@ -62,6 +62,7 @@
             </tr>
             <tr v-for="equipe in equipes"
                 :key="equipe.id"
+                @click="goToEquipeDetails(equipe)"
                 class="hover:bg-gray-50 transition cursor-pointer">
                 <td class="px-4 py-3 text-sm text-gray-900">
                         {{ equipe.nameFr || equipe.nameEn }}
@@ -76,7 +77,7 @@
                                      class="p-1.5 text-gray-400 hover:text-brand-600 transition">
                             <Pencil class="w-4 h-4" />
                         </router-link>
-                        <button @click="confirmDelete(equipe)"
+                        <button @click.stop="confirmDelete(equipe)"
                                 class="p-1.5 text-gray-400 hover:text-brand-600 transition">
                             <Trash2 class="w-4 h-4" />
                         </button>
@@ -167,14 +168,14 @@ const pageIndex = ref(1);
 const pageSize = 10;
 const equipeToDelete = ref<Equipe | null>(null);
 
-const filtered = computed(() => {
-  const q = searchValue.value.toLowerCase().trim();
-  if (!q) return allEquipes.value;
+    const filtered = computed(() => {
+        const q = searchValue.value.toLowerCase().trim();
+        if (!q) return allEquipes.value;
 
-  return allEquipes.value.filter((e) =>
-    (e.NameFr || e.NameEn || "").toLowerCase().includes(q),
-  );
-});
+        return allEquipes.value.filter((e) =>
+            (e.nameFr || e.nameEn || "").toLowerCase().includes(q),
+        );
+    });
 
 const totalItems = computed(() => filtered.value.length);
 
