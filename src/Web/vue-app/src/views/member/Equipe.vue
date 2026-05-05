@@ -128,8 +128,9 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed, onMounted, ref } from "vue";
+    import { computed, onMounted, ref, watch } from "vue";
     import { useI18n } from "vue3-i18n";
+    import { useRoute, useRouter } from "vue-router";
     import { Activity, BookOpen, Layers, UsersRound } from "lucide-vue-next";
     import { useEquipesService } from "@/inversify.config";
     import type { MyEquipeResponse, MyEquipeMember } from "@/services/equipeService";
@@ -137,10 +138,14 @@
     const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
 
     const { locale, t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
     const equipesService = useEquipesService();
 
     const loading = ref(true);
     const equipe = ref<MyEquipeResponse | null>(null);
+
+    const equipeId = computed(() => String(route.params.id || ""));
 
     const equipeName = computed(() => {
         if (!equipe.value) return "";
@@ -189,14 +194,22 @@
         return ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
     }
 
-    onMounted(async () => {
+    async function loadEquipe() {
+        if (!equipeId.value) {
+            await router.push({ name: "equipe" });
+            return;
+        }
+
         loading.value = true;
         try {
-            equipe.value = await (equipesService as any).getMyEquipe();
+            equipe.value = await equipesService.getMyEquipeDetails(equipeId.value);
         } catch {
             equipe.value = null;
         } finally {
             loading.value = false;
         }
-    });
+    }
+
+    onMounted(loadEquipe);
+    watch(() => route.params.id, loadEquipe);
 </script>

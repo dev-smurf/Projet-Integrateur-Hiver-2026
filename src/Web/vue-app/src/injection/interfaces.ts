@@ -11,6 +11,7 @@ import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
 import {Administrator, Book, ChatMessage, Conversation, EquipeConversation, EquipeMessage, Member, User,Equipe} from "@/types/entities"
 import {Guid} from "@/types";
 import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
+import type { MyEquipeListItem, MyEquipeResponse } from "@/services/equipeService";
 
 export interface IApiService {
   headersWithJsonContentType(): any;
@@ -115,6 +116,8 @@ export interface IEquipesService {
   getEquipeMembers(equipeId: string): Promise<any>;
   assignMembersToEquipe(equipeId: string, memberIds: string[]): Promise<SucceededOrNotResponse>;
   removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse>;
+  getMyEquipes(): Promise<MyEquipeListItem[]>;
+  getMyEquipeDetails(equipeId: string): Promise<MyEquipeResponse | null>;
 }
 
 export interface IUserService {

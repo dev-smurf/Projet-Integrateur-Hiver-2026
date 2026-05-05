@@ -9,12 +9,12 @@ namespace Web.Features.Admins.Members.GetMember;
 public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
 {
     private readonly IMemberRepository _memberRepository;
-    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberEquipeRepository _memberEquipeRepository;
 
-    public GetMemberEndpoint(IMemberRepository memberRepository, IEquipeRepository equipeRepository)
+    public GetMemberEndpoint(IMemberRepository memberRepository, IMemberEquipeRepository memberEquipeRepository)
     {
         _memberRepository = memberRepository;
-        _equipeRepository = equipeRepository;
+        _memberEquipeRepository = memberEquipeRepository;
     }
 
     public override void Configure()
@@ -36,7 +36,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
     private async Task<MemberDto> MapMember(Member member)
     {
         var roles = member.User.UserRoles.Select(r => r.Role.Name ?? string.Empty).Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
-        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(member.User.Id);
+        var equipeIds = await _memberEquipeRepository.GetEquipeIdsForMemberAsync(member.Id);
         return new MemberDto
         {
             Id = member.Id,

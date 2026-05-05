@@ -69,7 +69,6 @@ public static class ConfigureServices
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IConversationRepository, ConversationRepository>();
-        services.AddScoped<IEquipeConversationRepository, EquipeConversationRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IMemberNoteRepository, MemberNoteRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
@@ -86,9 +85,6 @@ public static class ConfigureServices
         services.AddScoped<IFileStorageApiConsumer, AzureBlobApiConsumer>();
         services.AddScoped<IAzureApiHttpClient, AzureApiHttpClient>();
         services.AddScoped<IAzureBlobWrapper, AzureBlobWrapper>();
-
-        // Ajout du repository manquant
-        services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
     }
 
     private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)

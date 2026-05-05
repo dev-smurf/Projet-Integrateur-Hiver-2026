@@ -115,6 +115,14 @@ public class EquipeRepository : IEquipeRepository
             .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
     }
 
+    public async Task<Equipe?> FindByIdWithMembersAndSousEquipes(Guid id)
+    {
+        return await _context.Equipes
+            .Include(e => e.Membres)
+            .Include(e => e.SousEquipes)
+            .FirstOrDefaultAsync(e => e.Id == id && e.Deleted == null);
+    }
+
     public async Task SetEquipeMembers(Guid equipeId, IEnumerable<Guid> userIds)
     {
         var equipe = await _context.Equipes

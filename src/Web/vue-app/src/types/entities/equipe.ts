@@ -1,13 +1,17 @@
 export interface IEquipes {
-  Id: string;
+  id: string;
   nameFr?: string;
   nameEn?: string;
-  memberUserIds?: string[];
+  memberIds?: string[];
+  parentEquipeId?: string;
+  sousEquipes?: IEquipes[];
 }
 
 export class Equipe implements IEquipes {
-  Id: string = "";
+  id: string = "";
   nameFr?: string;
   nameEn?: string;
-  memberUserIds?: string[];
+  memberIds?: string[];
+  parentEquipeId?: string;
+  sousEquipes?: Equipe[];
 }

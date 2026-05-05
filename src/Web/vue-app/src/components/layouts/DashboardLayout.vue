@@ -24,14 +24,14 @@
                     <BookOpen class="w-4 h-4 shrink-0" />
                     Mes modules
                 </router-link>
-
                 <router-link v-if="userStore.hasRole(Role.Member)"
-                             :to="{ name: 'equipe' }"
+                             :to="{ name: 'equipe.liste' }"
                              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
                              :class="isActive('equipe') ? 'active-link' : 'inactive-link'">
                     <UsersRound class="w-4 h-4 shrink-0" />
                     {{ $t('routes.equipe.name') }}
                 </router-link>
+
 
                 <router-link v-if="userStore.hasRole(Role.Member)"
                              :to="{ name: 'quiz.list' }"
@@ -40,6 +40,7 @@
                     <ClipboardCheck class="w-4 h-4 shrink-0" />
                     {{ $t('routes.quiz.name') }}
                 </router-link>
+
 
                 <div v-if="userStore.hasRole(Role.Admin)" class="my-2 border-t" style="border-color: #907288;" />
 
@@ -144,6 +145,7 @@
         <!-- Contenu principal -->
         <div class="flex-1 min-w-0">
             <main class="w-full px-6 py-8">
+                <AppBreadcrumb />
                 <router-view />
             </main>
         </div>
@@ -194,6 +196,7 @@
     import { useSignalR } from "@/composables/useSignalR";
     import { Role } from "@/types/enums";
     import { LOCALES } from "@/locales";
+    import AppBreadcrumb from "@/views/shared/AppBreadcrumb.vue";
     import { hasUnreadMemberAdminNote, MEMBER_ADMIN_NOTE_READ_EVENT } from "@/utils/memberAdminNotes";
 
     const router = useRouter();

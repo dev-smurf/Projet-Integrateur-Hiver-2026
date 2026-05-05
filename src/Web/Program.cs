@@ -10,6 +10,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure;
 using Infrastructure.Repositories.Conversations;
+using Infrastructure.Repositories.Equipe;
 using Infrastructure.Repositories.Module;
 using Microsoft.AspNetCore.Diagnostics;
 using Persistence;
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<IQuizRepository, Infrastructure.Repositories.Quiz.QuizRepository>();
 builder.Services.AddScoped<IQuizAssignmentRepository, Infrastructure.Repositories.Quiz.QuizAssignmentRepository>();
 builder.Services.AddScoped<IUserQuizResponseRepository, Infrastructure.Repositories.Quiz.UserQuizResponseRepository>();
+builder.Services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
 
 /*builder.Services.AddCors(options =>
 {

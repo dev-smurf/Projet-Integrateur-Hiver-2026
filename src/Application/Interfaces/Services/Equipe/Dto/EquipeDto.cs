@@ -8,4 +8,7 @@ public class EquipeDto
     public string NameEn { get; set; } = null!;
 
     public List<string> MemberUserIds { get; set; } = new();
+
+    public string? ParentEquipeId { get; set; }
+    public List<EquipeDto> SousEquipes { get; set; } = new();
 }

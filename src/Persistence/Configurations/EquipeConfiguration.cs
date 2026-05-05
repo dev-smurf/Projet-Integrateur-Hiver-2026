@@ -21,5 +21,10 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
         builder.HasMany(e => e.Membres)
             .WithMany()
             .UsingEntity(j => j.ToTable("EquipeMembres"));
+
+        builder.HasMany(e => e.SousEquipes)
+            .WithOne(e => e.ParentEquipe)
+            .HasForeignKey(e => e.ParentEquipeId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

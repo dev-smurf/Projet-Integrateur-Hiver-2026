@@ -11,7 +11,8 @@ import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
 import MemberDashboard from "@/views/member/MemberDashboard.vue";
-import MemberEquipe from "@/views/member/Equipe.vue";
+import Equipe from "@/views/member/Equipe.vue";
+import listeEquipes from "@/views/member/listeEquipe.vue";
 
 import Admin from "@/views/admin/Admin.vue";
 import AdminAvailability from "@/views/admin/AdminAvailability.vue";
@@ -188,6 +189,12 @@ export function getRouter(): Router {
             name: "admin.children.equipes.add",
             component: AdminAddEquipeForm,
           },
+            {
+                path: `${i18n.t("routes.admin.children.equipes.path")}/${i18n.t("routes.admin.children.equipes.sous-equipes.path")}/:parentEquipeId/${i18n.t("routes.admin.children.equipes.sous-equipes.children.add.path")}`,
+                name: "admin.children.equipes.sous-equipes.add",
+                component: AdminAddEquipeForm,
+                props: true,
+            },
           {
             path: `${i18n.t("routes.admin.children.equipes.path")}/${i18n.t("routes.admin.children.equipes.edit.path")}`,
             name: "admin.children.equipes.edit",
@@ -282,8 +289,40 @@ export function getRouter(): Router {
               title: "routes.quiz.children.results.name",
             },
           },
+
         ],
       },
+      {
+            path: i18n.t("routes.equipe.path"),
+            alias: getLocalizedRoutes("routes.equipe.path"),
+            name: "equipe",
+            component: { render: () => h(RouterView) },
+            meta: {
+                requiredRole: Role.Member,
+                title: "routes.equipe.name",
+            },
+            children: [
+                {
+                    path: "",
+                    name: "equipe.liste",
+                    component: listeEquipes,
+                    props: true,
+                    meta: {
+                        title: "routes.equipe.name",
+                    },
+                },
+                {
+                    path: i18n.t("routes.equipe.children.myEquipe.path"),
+                    alias: getLocalizedRoutes("routes.equipe.children.myEquipe.path"),
+                    name: "equipe.myEquipe",
+                    component: Equipe,
+                    props: true,
+                    meta: {
+                        title: "routes.equipe.children.myEquipe.name",
+                    },
+                }
+            ],
+        },
     ],
   });
 
