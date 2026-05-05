@@ -29,6 +29,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Profil -->
       <div class="bg-white border border-gray-200 rounded-2xl p-6 animate-fade-up">
         <div class="flex items-center gap-4">
           <div class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-700 text-lg font-semibold">
@@ -68,6 +69,7 @@
         </div>
       </div>
 
+      <!-- Infos -->
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 animate-fade-up delay-1">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -151,6 +153,93 @@
         </div>
       </div>
 
+      <!-- ===================== SECTION QUIZ ===================== -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-900">Quiz assignes</h2>
+            <p class="text-xs text-gray-500 mt-0.5">
+              {{ memberQuizzes.length }} quiz assigné(s) —
+              {{ memberQuizzes.filter(q => q.isCompleted).length }} complété(s)
+            </p>
+          </div>
+        </div>
+
+        <div v-if="loadingQuizzes" class="flex items-center gap-2 text-sm text-gray-500 py-4">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-600"></div>
+          Chargement des quiz...
+        </div>
+
+        <div v-else-if="!memberQuizzes.length" class="text-sm text-gray-500 py-2">
+          Aucun quiz assigne pour ce membre.
+        </div>
+
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div
+            v-for="quiz in memberQuizzes"
+            :key="quiz.id"
+            class="p-4 border border-gray-200 rounded-xl hover:border-brand-200 transition"
+          >
+            <!-- Image -->
+            <div
+              v-if="quiz.imageUrl"
+              class="h-28 rounded-lg overflow-hidden mb-3 bg-gradient-to-br from-brand-400 to-purple-500"
+            >
+              <img :src="quiz.imageUrl" :alt="quiz.titre" class="w-full h-full object-cover" />
+            </div>
+            <div
+              v-else
+              class="h-28 rounded-lg mb-3 bg-gradient-to-br from-brand-50 to-purple-50 flex items-center justify-center"
+            >
+              <svg class="w-8 h-8 text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+
+            <!-- Info -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <div>
+                <div class="text-sm font-semibold text-gray-900">{{ quiz.titre }}</div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  {{ quiz.followUpLabel || `Point de suivi ${quiz.version}` }}
+                </div>
+              </div>
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
+                :class="quiz.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+              >
+                {{ quiz.isCompleted ? "Termine" : "En cours" }}
+              </span>
+            </div>
+
+            <!-- Dates -->
+            <div class="text-xs text-gray-400 space-y-0.5 mb-3">
+              <div>Assigne le : {{ formatDate(quiz.assignedAt) }}</div>
+              <div v-if="quiz.dueDate">Echeance : {{ formatDate(quiz.dueDate) }}</div>
+              <div v-if="quiz.completedAt" class="text-emerald-600">Complété le : {{ formatDate(quiz.completedAt) }}</div>
+            </div>
+
+            <!-- Bouton -->
+            <button
+              v-if="quiz.isCompleted"
+              @click="viewQuizResults(quiz)"
+              class="w-full px-3 py-2 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
+            >
+              Consulter les reponses
+            </button>
+            <button
+              v-else
+              disabled
+              class="w-full px-3 py-2 text-xs font-medium border border-gray-200 text-gray-400 rounded-lg cursor-not-allowed bg-gray-50"
+            >
+              Quiz non complété
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- ===================== FIN SECTION QUIZ ===================== -->
+
+      <!-- Section Modules -->
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex flex-wrap items-end gap-4">
           <div class="flex-1 min-w-[220px]">
@@ -241,6 +330,7 @@
         </div>
       </div>
 
+      <!-- Notes internes -->
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
           <h2 class="text-sm font-semibold text-gray-900">Notes internes</h2>
@@ -267,14 +357,15 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
-import {useNotification} from "@kyvg/vue3-notification";
-import {useEquipesService, useMemberService, useModulesService} from "@/inversify.config";
-import type {Equipe, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useNotification } from "@kyvg/vue3-notification";
+import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
+import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
 const route = useRoute();
-const {notify} = useNotification();
+const router = useRouter();
+const { notify } = useNotification();
 const equipeService = useEquipesService();
 const memberService = useMemberService();
 const modulesService = useModulesService();
@@ -292,6 +383,24 @@ const savingProgress = ref<Record<string, boolean>>({});
 const removingModule = ref<Record<string, boolean>>({});
 const notesText = ref("");
 const savingNotes = ref(false);
+
+// Quiz
+interface MemberAssignedQuiz {
+  id: string;
+  quizId: string;
+  titre: string;
+  description?: string;
+  imageUrl?: string;
+  version: number;
+  followUpLabel?: string;
+  assignedAt: string;
+  availableAt?: string;
+  dueDate?: string;
+  completedAt?: string;
+  isCompleted: boolean;
+}
+const memberQuizzes = ref<MemberAssignedQuiz[]>([]);
+const loadingQuizzes = ref(false);
 
 const memberId = computed(() => String(route.params.id || ""));
 
@@ -326,7 +435,6 @@ const addressLine = computed(() => {
 const memberEquipes = computed(() => {
   const equipeIds = member.value?.equipeIds ?? [];
   if (!equipeIds.length) return [];
-
   return equipes.value
     .filter(equipe => {
       const equipeId = String((equipe as Equipe & { id?: string }).id ?? equipe.Id ?? "");
@@ -371,6 +479,35 @@ function moduleLabel(mod: ModuleDto) {
   return subject ? `${name} - ${subject}` : name;
 }
 
+function formatDate(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(d.getTime())) return "N/A";
+  return d.toLocaleDateString("fr-CA");
+}
+
+async function loadMemberQuizzes(userId: string) {
+  loadingQuizzes.value = true;
+  try {
+    const response = await fetch(`/api/admin/members/${userId}/assigned-quizzes`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token") ?? ""}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (response.ok) {
+      memberQuizzes.value = await response.json();
+    }
+  } catch (error) {
+    console.error("Failed to load member quizzes:", error);
+  } finally {
+    loadingQuizzes.value = false;
+  }
+}
+
+function viewQuizResults(quiz: MemberAssignedQuiz) {
+  router.push({ name: "quiz.results", params: { assignmentId: quiz.id } });
+}
+
 async function loadData() {
   loading.value = true;
   const [memberData, memberModulesData, modulesData, equipesData] = await Promise.all([
@@ -383,14 +520,21 @@ async function loadData() {
   memberModules.value = memberModulesData;
   allModules.value = modulesData;
   equipes.value = equipesData;
+
   const nextEdits: Record<string, number> = {};
   memberModules.value.forEach(item => {
     nextEdits[item.moduleId] = item.progressPercent;
   });
   progressEdits.value = nextEdits;
+
   const stored = localStorage.getItem(`admin-member-notes:${memberId.value}`);
   notesText.value = stored ?? "";
   loading.value = false;
+
+  // Charger les quiz avec le userId du membre
+  if (memberData?.userId) {
+    await loadMemberQuizzes(memberData.userId);
+  }
 }
 
 async function addModule() {
@@ -398,44 +542,44 @@ async function addModule() {
   addingModule.value = true;
   const response = await memberService.addModuleToMember(memberId.value, selectedModuleId.value);
   if (response.succeeded) {
-    notify({type: "success", text: "Module ajoute."});
+    notify({ type: "success", text: "Module ajoute." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
     selectedModuleId.value = "";
   } else {
-    notify({type: "error", text: "Impossible d'ajouter le module."});
+    notify({ type: "error", text: "Impossible d'ajouter le module." });
   }
   addingModule.value = false;
 }
 
 async function saveProgress(item: MemberModuleDto) {
   const value = progressEdits.value[item.moduleId] ?? item.progressPercent;
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: true};
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: true };
   const response = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, value);
   if (response.succeeded) {
-    notify({type: "success", text: "Progression mise a jour."});
+    notify({ type: "success", text: "Progression mise a jour." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({type: "error", text: "Impossible de mettre a jour la progression."});
+    notify({ type: "error", text: "Impossible de mettre a jour la progression." });
   }
-  savingProgress.value = {...savingProgress.value, [item.moduleId]: false};
+  savingProgress.value = { ...savingProgress.value, [item.moduleId]: false };
 }
 
 async function removeModule(item: MemberModuleDto) {
-  removingModule.value = {...removingModule.value, [item.moduleId]: true};
+  removingModule.value = { ...removingModule.value, [item.moduleId]: true };
   const response = await memberService.removeMemberModule(memberId.value, item.moduleId);
   if (response.succeeded) {
-    notify({type: "success", text: "Module retire."});
+    notify({ type: "success", text: "Module retire." });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({type: "error", text: "Impossible de retirer le module."});
+    notify({ type: "error", text: "Impossible de retirer le module." });
   }
-  removingModule.value = {...removingModule.value, [item.moduleId]: false};
+  removingModule.value = { ...removingModule.value, [item.moduleId]: false };
 }
 
 function saveNotes() {
   savingNotes.value = true;
   localStorage.setItem(`admin-member-notes:${memberId.value}`, notesText.value);
-  notify({type: "success", text: "Notes enregistrees localement."});
+  notify({ type: "success", text: "Notes enregistrees localement." });
   savingNotes.value = false;
 }
 
