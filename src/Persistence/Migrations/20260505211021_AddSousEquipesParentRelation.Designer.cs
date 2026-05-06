@@ -453,7 +453,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ParentEquipeId");
 
-                    b.ToTable("Equipes");
+                    b.ToTable("Equipe");
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>

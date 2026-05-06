@@ -31,7 +31,7 @@ namespace Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_EquipeConversations_Equipes_EquipeId",
                         column: x => x.EquipeId,
-                        principalTable: "Equipes",
+                        principalTable: "Equipe",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });

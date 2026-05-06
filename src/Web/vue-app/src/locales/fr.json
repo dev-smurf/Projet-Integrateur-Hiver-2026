@@ -33,7 +33,12 @@
     "equipe": {
       "path": "/equipe",
       "fullPath": "/equipe",
-      "name": "Équipe"
+      "name": "Équipe",
+      "children": {
+        "myEquipe": {
+          "path": "mon-equipe"
+        }
+      }
     },
     "progression": {
       "path": "/progression",
@@ -72,6 +77,11 @@
               "path": ":id/modifier",
               "fullPath": "/administration/quiz/:id/modifier",
               "name": "Modifier un quiz"
+            },
+            "preview": {
+              "path": ":id/apercu",
+              "fullPath": "/administration/quiz/:id/apercu",
+              "name": "Aperçu du quiz"
             }
           },
           "edit": {
@@ -82,7 +92,7 @@
           "details": {
             "path": ":id/details",
             "fullPath": "/administration/membres/:id/details",
-            "name": "Details membre"
+            "name": "Détails membre"
           }
         },
         "modules": {
@@ -108,16 +118,30 @@
         "equipes": {
           "path": "equipes",
           "fullPath": "/administration/equipes",
-          "name": "Equipes",
+          "name": "Équipes",
           "add": {
             "path": "ajouter",
             "fullPath": "/administration/equipes/ajouter",
-            "name": "Ajouter une equipe"
+            "name": "Ajouter une équipe"
           },
           "edit": {
             "path": ":id/modifier",
             "fullPath": "/administration/equipes/:id/modifier",
-            "name": "Modifier une equipe"
+            "name": "Modifier une équipe"
+          },
+          "sous-equipes": {
+            "path": "sous-equipes",
+            "children": {
+              "add": {
+                "path": "ajouter",
+                "name": "Ajouter une sous-équipe"
+              }
+            }
+          }
+        },
+        "quiz": {
+          "add": {
+            "name": "Ajouter un nouveau quiz"
           }
         }
       }
@@ -152,9 +176,13 @@
         "results": {
           "path": ":assignmentId/resultats",
           "fullPath": "/quiz/:assignmentId/resultats",
-          "name": "Resultats du quiz"
+          "name": "Résultats du quiz"
         }
       }
+    },
+    "addModule": {
+      "path": "ajouter-module",
+      "name": "Ajouter un module"
     }
   },
   "pages": {
@@ -166,36 +194,36 @@
     },
     "adminDashboard": {
       "title": "Admin Center",
-      "subtitle": "Tableau de bord pour piloter les membres, leurs parcours et les modules de preparation.",
+      "subtitle": "Tableau de bord pour piloter les membres, leurs parcours et les modules de préparation.",
       "recentMembers": "Nouveaux membres (30 jours)",
-      "clickMemberHint": "Clique un membre pour afficher ses details.",
+      "clickMemberHint": "Cliquez sur un membre pour afficher ses détails.",
       "searchMember": "Rechercher un membre",
-      "allRoles": "Tous les roles",
+      "allRoles": "Tous les rôles",
       "roleAdmin": "Admin",
       "roleMember": "Membre",
       "roleUser": "Utilisateur",
-      "sortRecent": "Plus recents",
+      "sortRecent": "Plus récents",
       "viewAllMembers": "Voir tous les membres",
       "noMembersMatch": "Aucun membre ne correspond aux filtres.",
       "emailUnavailable": "Email non disponible",
       "contact": "Contact",
       "registration": "Inscription",
       "progression": "Progression",
-      "modulesCompleted": "{completed} module(s) termines sur {total}",
-      "selectMemberHint": "Selectionne un membre pour afficher ses details.",
+      "modulesCompleted": "{completed} module(s) terminés sur {total}",
+      "selectMemberHint": "Sélectionnez un membre pour afficher ses détails.",
       "memberModules": "Modules du membre",
-      "memberModulesHint": "Detail du parcours et progression par module.",
+      "memberModulesHint": "Détail du parcours et progression par module.",
       "loadingModules": "Chargement des modules...",
-      "noModulesForMember": "Aucun module associe a ce membre.",
+      "noModulesForMember": "Aucun module associé à ce membre.",
       "autoProgress": "Progression automatique par lecture",
       "remove": "Retirer",
       "quickActions": "Actions rapides",
       "assignModule": "Associer un module",
       "chooseModule": "Choisir un module",
-      "access": "Acceder",
+      "access": "Accéder",
       "addMember": "Ajouter un membre",
       "viewMembers": "Voir les membres",
-      "createModule": "Creer un module",
+      "createModule": "Créer un module",
       "viewModules": "Voir les modules",
       "noNewMembers": "Aucun nouveau membre sur 30 jours",
       "newMembersCount": "{count} nouveau(x) membre(s) sur 30 jours",
@@ -203,55 +231,55 @@
       "kpiNewMembers": "Nouveaux (30 jours)",
       "kpiModules": "Modules",
       "kpiAverageProgress": "Progression moyenne",
-      "noPhone": "Telephone non renseigne",
-      "noName": "Nom non renseigne",
-      "noAddress": "Adresse non renseignee",
+      "noPhone": "Téléphone non renseigné",
+      "noName": "Nom non renseigné",
+      "noAddress": "Adresse non renseignée",
       "unknownDate": "Date inconnue",
       "accountActive": "Compte actif",
       "pendingValidation": "En attente de validation",
       "errorLoadMembers": "Impossible de charger les membres.",
       "errorLoadMemberModules": "Impossible de charger les modules du membre.",
-      "completed": "Termine"
+      "completed": "Terminé"
     },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
       "defaultName": "Membre",
-      "tagline": "Suivez vos modules, votre progression et les prochaines etapes.",
+      "tagline": "Suivez vos modules, votre progression et les prochaines étapes.",
       "viewBooks": "Mes livres",
       "viewModules": "Voir mes modules",
       "updateProfile": "Mon profil",
-      "quizzesTitle": "Quiz a faire",
-      "quizzesHint": "Les quiz qui te restent a completer.",
-      "quizzesEmpty": "Aucun quiz a faire pour le moment.",
+      "quizzesTitle": "Quiz à faire",
+      "quizzesHint": "Les quiz qu’il vous reste à compléter.",
+      "quizzesEmpty": "Aucun quiz à faire pour le moment.",
       "viewAllQuizzes": "Voir tous mes quiz",
-      "modulesTitle": "Modules ajoutes",
+      "modulesTitle": "Modules ajoutés",
       "modulesCount": "modules",
       "emptyModules": "Aucun module pour le moment.",
       "progressTitle": "Progression globale",
-      "progressHint": "La progression est calculee selon vos modules.",
+      "progressHint": "La progression est calculée selon vos modules.",
       "progressLabel": "Progression",
-      "lastUpdate": "Derniere mise a jour",
+      "lastUpdate": "Dernière mise à jour",
       "continue": "Continuer",
-      "manageProfile": "Gerer mon profil",
+      "manageProfile": "Gérer mon profil",
       "profileTitle": "Profil du membre",
-      "profileHint": "Mettez a jour vos informations pour completer votre profil.",
+      "profileHint": "Mettez à jour vos informations pour compléter votre profil.",
       "unnamedModule": "Module sans titre",
       "noSubject": "Aucun sujet disponible",
       "stats": {
         "modules": "Modules",
-        "modulesHint": "Modules assignes",
-        "completed": "Termines",
-        "completedHint": "Modules termines",
+        "modulesHint": "Modules assignés",
+        "completed": "Terminés",
+        "completedHint": "Modules terminés",
         "average": "Moyenne",
         "averageHint": "Progression moyenne",
         "next": "Prochain module",
-        "nextHint": "Etape suivante suggeree",
+        "nextHint": "Étape suivante suggérée",
         "nextEmpty": "Aucun module disponible"
       },
       "status": {
-        "notStarted": "Non commence",
+        "notStarted": "Non commencé",
         "inProgress": "En cours",
-        "completed": "Termine"
+        "completed": "Terminé"
       }
     },
     "memberModules": {
@@ -285,8 +313,30 @@
       "loading": "Chargement des membres...",
       "allAssigned": "Tous les membres sont déjà assignés.",
       "noneAssigned": "Aucun membre assigné.",
-      "assignError": "Erreur lors de l'assignation.",
-      "unassignError": "Erreur lors de la désassignation."
+      "assignError": "Erreur lors de l’assignation du module.",
+      "unassignError": "Erreur lors de la désassignation.",
+      "modalTitle": "Assigner le module",
+      "recipientsHint": "Sélectionnez des équipes ou des membres précis. Les membres déjà assignés sont exclus automatiquement.",
+      "recipients": "Destinataires",
+      "selectedCount": "{count} sélectionné(s)",
+      "teams": "Équipes",
+      "teamsSelectedCount": "{count} sélectionnée(s)",
+      "searchTeamPlaceholder": "Rechercher une équipe...",
+      "noTeamsAvailable": "Aucune équipe disponible.",
+      "eligibleMembersCount": "{count} membre(s) admissible(s)",
+      "unassignedMembers": "Membres non assignés",
+      "searchMembersPlaceholder": "Rechercher des membres...",
+      "allVisibleAssigned": "Tous les membres visibles sont déjà assignés.",
+      "alreadyAssignedMembers": "Membres déjà assignés",
+      "membersCount": "{count} membre(s)",
+      "assignedMemberFallback": "Membre assigné",
+      "noAssignedMembers": "Aucun membre assigné.",
+      "assignCount": "Assigner ({count})",
+      "assigning": "Assignation...",
+      "partialAssignError": "Certaines assignations ont échoué.",
+      "assignSuccess": "Module assigné avec succès.",
+      "loadRecipientsError": "Impossible de charger les destinataires.",
+      "teamFallback": "Équipe"
     },
     "memberForm": {
       "teams": "Équipes",
@@ -321,6 +371,9 @@
         "completed": "Terminé",
         "inProgress": "En cours",
         "notStarted": "Non commencé"
+      },
+      "sous-equipes": {
+        "noMembersParentWarn": "Ajoutez des membres à l’équipe parent avant de créer une sous-équipe."
       }
     },
     "equipes": {
@@ -328,7 +381,9 @@
         "validation": {
           "successMessage": "L'équipe a été créée avec succès.",
           "failedMessage": "Une erreur est survenue lors de la création de l'équipe."
-        }
+        },
+        "successMessage": "L’équipe a été créée avec succès.",
+        "failedMessage": "Une erreur est survenue lors de la création de l’équipe."
       },
       "update": {
         "validation": {
@@ -342,6 +397,13 @@
           "successMessage": "L'équipe a été supprimée avec succès.",
           "failedMessage": "Une erreur est survenue lors de la suppression de l'équipe."
         }
+      },
+      "edit": {
+        "successMessage": "L’équipe a été modifiée avec succès.",
+        "failedMessage": "Une erreur est survenue lors de la modification de l’équipe."
+      },
+      "load": {
+        "failedMessage": "Impossible de charger l’équipe."
       }
     },
     "account": {
@@ -352,7 +414,8 @@
       "edit": "Modifier le profil",
       "readOnly": "Ce champ ne peut pas être modifié.",
       "updateSuccess": "Profil mis à jour avec succès.",
-      "updateError": "Une erreur est survenue lors de la mise à jour du profil."
+      "updateError": "Une erreur est survenue lors de la mise à jour du profil.",
+      "loginInfos": "Informations de connexion"
     },
     "login": {
       "username": "Nom d'utilisateur",
@@ -377,9 +440,9 @@
       }
     },
     "forgotPassword": {
-      "tooltip": "Si le nom d'utilisateur est valide, un email sera envoyé à l'adresse indiquée avec un lien pour réinitialiser votre mot de passe",
+      "tooltip": "Si le nom d’utilisateur est valide, un courriel sera envoyé à l’adresse indiquée avec un lien pour réinitialiser votre mot de passe.",
       "validation": {
-        "success": "Courriel de réinitalisation du mot de passe envoyé.",
+        "success": "Courriel de réinitialisation du mot de passe envoyé.",
         "userNotFound": "Aucun compte n'est associé à cette adresse courriel.",
         "invalidUsername": "Le nom d'utilisateur est invalide.",
         "invalidResetPasswordRelativeUrl": "L'URL de réinitialisation du mot de passe est introuvable.",
@@ -388,19 +451,19 @@
     },
     "resetPassword": {
       "passwordRequirements": {
-        "title": "Votre mot de passe doit respecter les criteres suivants :",
-        "minLength": "Au moins 10 caracteres",
+        "title": "Votre mot de passe doit respecter les critères suivants :",
+        "minLength": "Au moins 10 caractères",
         "uppercase": "Au moins une lettre majuscule",
         "lowercase": "Au moins une lettre minuscule",
         "digit": "Au moins un chiffre",
-        "special": "Au moins un caractere special",
-        "uniqueChars": "Au moins 6 caracteres differents",
+        "special": "Au moins un caractère spécial",
+        "uniqueChars": "Au moins 6 caractères différents",
         "match": "La confirmation correspond au mot de passe"
       },
       "validation": {
-        "success": "Mot de passe réinitalisé avec succès. Vous serez redirigé à la page de connexion.",
+        "success": "Mot de passe réinitialisé avec succès. Vous serez redirigé vers la page de connexion.",
         "invalidUserId": "L'identifiant de l'utilisateur est invalide.",
-        "invalidToken": "Le token de réinitalisation du mot de passe est invalide.",
+        "invalidToken": "Le jeton de réinitialisation du mot de passe est invalide.",
         "invalidPassword": "Le mot de passe est invalide.",
         "invalidPasswordConfirmation": "La confirmation du mot de passe est invalide.",
         "passwordTooShort": "Doit contenir au moins 8 caractères.",
@@ -449,7 +512,7 @@
       "status": "Statut",
       "accountActive": "Compte actif",
       "pendingValidation": "En attente de validation",
-      "teams": "Equipes",
+      "teams": "Équipes",
       "contactAndAddress": "Contact et adresse",
       "phone": "Téléphone",
       "city": "Ville",
@@ -473,7 +536,7 @@
       "notify": {
         "modulesAssigned": "Modules assignés",
         "updated": "Mis à jour",
-        "notesSaved": "Notes enregistrees.",
+        "notesSaved": "Notes enregistrées.",
         "notesError": "Impossible d'enregistrer les notes."
       },
       "notes": {
@@ -482,7 +545,7 @@
         "saving": "Enregistrement...",
         "placeholder": "Ajouter des notes sur ce membre...",
         "visibleToMember": "Rendre ces notes visibles par ce membre",
-        "hint": "Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir."
+        "hint": "Ces notes sont sauvegardées sur le serveur. Cochez la case si le membre doit les voir."
       }
     },
     "memberIndex": {
@@ -642,7 +705,7 @@
     "questions": "Questions",
     "table": {
       "of": "de",
-      "noData": "Aucune données disponibles",
+      "noData": "Aucune donnée disponible",
       "actions": "Actions"
     },
     "noQuizzesYet": "Aucun quiz pour le moment.",
@@ -652,7 +715,8 @@
       "download": "Télécharger",
       "update": "Modifier",
       "delete": "Supprimer"
-    }
+    },
+    "view": "Voir"
   },
   "textEditorLinkPopup": {
     "addLink": "Ajouter un lien",
@@ -663,12 +727,12 @@
   },
   "validation": {
     "empty": "Veuillez renseigner ce champ.",
-    "email": "Veuillez entrer un adresse courriel valide.",
+    "email": "Veuillez entrer une adresse courriel valide.",
     "min": "La valeur doit être d'au moins {min}.",
     "max": "La valeur doit être plus petite ou égale à {max}.",
     "fileMin": "Un minimum de {min} fichier{s} est requis.",
     "fileMax": "Un maximum de {max} fichier{s} est permis.",
-    "fileType": "Les types de fichier permis sont: {type}",
+    "fileType": "Les types de fichier permis sont : {type}",
     "checked": "Veuillez cocher cette case.",
     "select": "Veuillez sélectionner une option.",
     "zipCode": "Le code postal doit respecter le format X0X X0X.",
@@ -715,7 +779,8 @@
         "errorOccured": "Une erreur est survenue lors de la suppression du livre.",
         "bookNotFoundException": "Le livre n'a pu être trouvé."
       }
-    }
+    },
+    "futureDate": "La date doit être dans le futur."
   },
   "Form_Add_Module": {
     "fields": {
@@ -813,8 +878,9 @@
     "finish": "Terminer"
   },
   "common": {
-    "Ajouter": "Ajouter",
-    "cancel": "Annuler"
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "back": "Retour"
   },
   "routes.addModule": {
     "name": "Ajouter un module"
@@ -831,7 +897,7 @@
     "newConversation": "Nouvelle conversation",
     "searchMember": "Rechercher un membre...",
     "noConversations": "Aucune conversation",
-    "noMessages": "Aucun message. Dites bonjour!",
+    "noMessages": "Aucun message. Dites bonjour !",
     "typePlaceholder": "Écrire un message...",
     "today": "Aujourd'hui",
     "yesterday": "Hier",
@@ -850,7 +916,7 @@
     "searchEquipe": "Rechercher une équipe..."
   },
   "appointment": {
-    "requestBtn": "Prendre un RDV",
+    "requestBtn": "Prendre un rendez-vous",
     "modalTitle": "Demander un rendez-vous",
     "selectDate": "Sélectionner une date",
     "selectTime": "Sélectionner un créneau",
@@ -860,7 +926,7 @@
     "cancel": "Annuler",
     "noSlots": "Aucun créneau disponible pour cette date.",
     "noSlotsWeek": "Aucun créneau disponible cette semaine.",
-    "requestSent": "Demande de RDV envoyée!",
+    "requestSent": "Demande de rendez-vous envoyée !",
     "requestError": "Erreur lors de l'envoi de la demande.",
     "conflict": "Ce créneau n'est plus disponible.",
     "pending": "En attente",
@@ -928,21 +994,21 @@
       "updating": "Mise à jour...",
       "successMessage": "Assignations mises à jour avec succès!",
       "failedMessage": "Échec de la mise à jour des assignations",
-      "neverAssigned": "Jamais assignes",
-      "alreadyAssigned": "Deja assignes",
+      "neverAssigned": "Jamais assignés",
+      "alreadyAssigned": "Déjà assignés",
       "followUpsShort": "suivi(s)",
-      "createFollowUp": "Creer le point de suivi",
-      "initialMode": "Premiere assignation",
+      "createFollowUp": "Créer le point de suivi",
+      "initialMode": "Première assignation",
       "followUpMode": "Nouveau point de suivi",
-      "initialHint": "Utilisez ce mode pour les joueurs qui n'ont jamais recu ce quiz.",
-      "followUpHint": "Utilisez ce mode pour renvoyer le meme quiz et comparer la progression dans le temps.",
-      "initialListTitle": "{count} joueur(s) n'ont jamais recu ce quiz",
-      "followUpListTitle": "{count} joueur(s) ont deja recu ce quiz",
-      "selectedCount": "{count} selectionne(s)",
+      "initialHint": "Utilisez ce mode pour les joueurs qui n’ont jamais reçu ce quiz.",
+      "followUpHint": "Utilisez ce mode pour renvoyer le même quiz et comparer la progression dans le temps.",
+      "initialListTitle": "{count} joueur(s) n’ont jamais reçu ce quiz",
+      "followUpListTitle": "{count} joueur(s) ont déjà reçu ce quiz",
+      "selectedCount": "{count} sélectionné(s)",
       "assignSelected": "Assigner ({count})",
-      "createFollowUpSelected": "Creer le point de suivi ({count})",
-      "emptyInitial": "Tous les joueurs ont deja recu ce quiz.",
-      "emptyFollowUp": "Aucun joueur n'a encore recu ce quiz."
+      "createFollowUpSelected": "Créer le point de suivi ({count})",
+      "emptyInitial": "Tous les joueurs ont déjà reçu ce quiz.",
+      "emptyFollowUp": "Aucun joueur n’a encore reçu ce quiz."
     },
     "assign_button": "Assigner aux utilisateurs",
     "assigning": "Attribution en cours...",
@@ -960,12 +1026,12 @@
     "dragToReorder": "Faites glisser pour réorganiser",
     "draggable": "Faites glisser pour réorganiser",
     "question": "Question",
-    "scaleMinLabel": "Étiquette Min",
-    "scaleMidLabel": "Étiquette Mid",
-    "scaleMaxLabel": "Étiquette Max",
-    "scalePreview": "Aperçu:",
-    "possibleResponses": "Réponses Possibles",
-    "scaleLabels_title": "Étiquettes de l'Échelle",
+    "scaleMinLabel": "Étiquette min.",
+    "scaleMidLabel": "Étiquette milieu",
+    "scaleMaxLabel": "Étiquette max.",
+    "scalePreview": "Aperçu :",
+    "possibleResponses": "Réponses possibles",
+    "scaleLabels_title": "Étiquettes de l’échelle",
     "creating": "Création...",
     "saving": "Enregistrement...",
     "create": {
@@ -995,29 +1061,29 @@
       }
     },
     "myQuizzes": "Mes quiz",
-    "noAssignedQuizzes": "Aucun quiz assigne.",
-    "completed": "Complete",
+    "noAssignedQuizzes": "Aucun quiz assigné.",
+    "completed": "Complété",
     "pending": "En attente",
-    "assignedOn": "Assigne le",
+    "assignedOn": "Assigné le",
     "dueDate": "Date limite",
-    "completedOn": "Complete le",
+    "completedOn": "Complété le",
     "startQuiz": "Commencer le quiz",
-    "viewResults": "Voir les resultats",
+    "viewResults": "Voir les résultats",
     "quizNotFound": "Quiz introuvable.",
     "of": "sur",
     "rate": "Noter",
     "never": "Jamais",
     "sometimes": "Parfois",
     "always": "Toujours",
-    "enterYourAnswer": "Entrez votre reponse",
-    "previous": "Precedent",
-    "answered": "repondues",
+    "enterYourAnswer": "Entrez votre réponse",
+    "previous": "Précédent",
+    "answered": "répondues",
     "next": "Suivant",
     "submit": "Soumettre",
-    "results": "Resultats",
-    "completionMessage": "Quiz complete avec succes.",
-    "yourAnswers": "Vos reponses",
-    "yourAnswer": "Votre reponse",
+    "results": "Résultats",
+    "completionMessage": "Quiz complété avec succès.",
+    "yourAnswers": "Vos réponses",
+    "yourAnswer": "Votre réponse",
     "backToList": "Retour aux quiz",
     "move": {
       "toTop": "Placer en haut",
@@ -1035,9 +1101,10 @@
     "availableOn": "Disponible le",
     "followUpPoint": "Point de suivi",
     "followUpLabel": "Nom du point de suivi",
-    "followUpPlaceholder": "Ex. Debut de session, Mi-session, Fin de session",
-    "createFollowUpPoint": "Creer un nouveau point de suivi pour les joueurs selectionnes",
-    "followUpSelectionHint": "Selectionnez, dans la colonne des joueurs deja assignes, seulement les joueurs qui doivent recevoir ce nouveau point de suivi.",
-    "availableAt": "Date et heure de disponibilite"
+    "followUpPlaceholder": "Ex. Début de session, mi-session, fin de session",
+    "createFollowUpPoint": "Créer un nouveau point de suivi pour les joueurs sélectionnés",
+    "followUpSelectionHint": "Sélectionnez, dans la colonne des joueurs déjà assignés, seulement les joueurs qui doivent recevoir ce nouveau point de suivi.",
+    "availableAt": "Date et heure de disponibilité",
+    "overdue": "En retard"
   }
 }

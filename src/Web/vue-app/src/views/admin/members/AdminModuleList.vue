@@ -30,22 +30,18 @@
     <!-- Skeleton loading -->
     <div
       v-if="loading"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
     >
       <div
-        v-for="n in 6"
+        v-for="n in 3"
         :key="n"
-        class="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse"
+        class="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
       >
-        <div class="h-44 bg-gray-200" />
-        <div class="p-4 space-y-3">
-          <div class="h-5 bg-gray-200 rounded w-3/4" />
-          <div class="h-3 bg-gray-200 rounded w-full" />
+        <div class="h-40 bg-gray-200" />
+        <div class="p-4">
+          <div class="h-4 bg-gray-200 rounded w-3/4 mb-3" />
+          <div class="h-3 bg-gray-200 rounded w-full mb-2" />
           <div class="h-3 bg-gray-200 rounded w-2/3" />
-        </div>
-        <div class="border-t border-gray-100 px-4 py-3 flex justify-around">
-          <div class="h-4 bg-gray-200 rounded w-16" />
-          <div class="h-4 bg-gray-200 rounded w-20" />
         </div>
       </div>
     </div>
@@ -56,59 +52,81 @@
     </div>
 
     <!-- Card grid -->
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       <div
         v-for="mod in paginatedModules"
         :key="mod.id"
-        class="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
       >
         <!-- Image / Fallback -->
-        <div
-          class="h-44 bg-gray-50 flex items-center justify-center overflow-hidden"
-        >
+        <div class="h-40 bg-gray-200 relative overflow-hidden group">
           <img
             v-if="mod.cardImageUrl"
             :src="imageUrl(mod.cardImageUrl)"
             :alt="mod.name"
             class="w-full h-full object-cover"
           />
-          <BookOpen v-else class="w-12 h-12 text-brand-400" />
+          <div v-else class="w-full h-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+            <BookOpen class="w-16 h-16 text-white opacity-50" />
+          </div>
+
+          <router-link
+            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
+            class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
+          >
+            <div class="flex flex-col items-center gap-2">
+              <Eye class="w-8 h-8 text-white" />
+              <span class="text-white font-medium">Apercu</span>
+            </div>
+          </router-link>
         </div>
 
         <!-- Content -->
-        <div class="p-4 flex flex-col flex-1">
-          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '---' }}</h3>
-          <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '---' }}</p>
-        </div>
+        <div class="p-4">
+          <h2 class="text-lg font-bold text-gray-900 mb-2">{{ mod.name || '---' }}</h2>
+          <p v-if="mod.subject || mod.content" class="text-sm text-gray-600 mb-3 line-clamp-2">
+            {{ mod.subject || plainText(mod.content) }}
+          </p>
 
-        <!-- Actions -->
-        <div
-          class="border-t border-gray-100 px-4 py-3 flex items-center justify-around"
-        >
-          <router-link
-            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
-            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
-          >
-            <Eye class="w-4 h-4" />
-            Apercu
-          </router-link>
-          <router-link
-            :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
-            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition"
-          >
-            <Pencil class="w-4 h-4" />
-            {{ $t("global.edit") }}
-          </router-link>
-          <button
-            @click="confirmDelete(mod)"
-            class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-brand-600 transition cursor-pointer"
-          >
-            <Trash2 class="w-4 h-4" />
-            {{ $t("global.delete") }}
-          </button>
+          <div class="text-xs text-gray-500 mb-4">
+            {{ mod.sections?.length || 0 }} {{ $t("Form_Add_Module.fields.sections") }}
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-2 flex-wrap">
+            <router-link
+              :to="{ name: 'admin.children.modules.edit', params: { id: mod.id } }"
+              class="flex-1 min-w-24 flex items-center justify-center gap-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 px-3 rounded text-sm font-medium transition"
+            >
+              <Pencil class="w-4 h-4" />
+              {{ $t("global.update") }}
+            </router-link>
+            <button
+              @click="openAssignModal(mod)"
+              class="flex-1 min-w-24 flex items-center justify-center gap-1 bg-green-50 text-green-600 hover:bg-green-100 py-2 px-3 rounded text-sm font-medium transition"
+            >
+              <Users class="w-4 h-4" />
+              Assigner
+            </button>
+            <button
+              @click="confirmDelete(mod)"
+              class="flex-1 min-w-24 flex items-center justify-center gap-1 bg-red-50 text-red-600 hover:bg-red-100 py-2 px-3 rounded text-sm font-medium transition"
+            >
+              <Trash2 class="w-4 h-4" />
+              {{ $t("global.delete") }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
+    <AssignModuleModal
+      v-if="showAssignModal && selectedModuleForAssignment"
+      :module-id="selectedModuleForAssignment.id"
+      :module-title="selectedModuleForAssignment.name || 'Module'"
+      @close="showAssignModal = false; selectedModuleForAssignment = null"
+      @assigned="onAssigned"
+    />
 
     <!-- Pagination -->
     <div
@@ -171,9 +189,10 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useNotification } from "@kyvg/vue3-notification";
-import { Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye } from "lucide-vue-next";
-import { useModulesService } from "@/inversify.config";
-import type { ModuleDto } from "@/types/entities";
+import { Plus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen, Eye, Users } from "lucide-vue-next";
+import { useModulesService } from "../../../inversify.config";
+import type { ModuleDto } from "../../../types/entities";
+import AssignModuleModal from "./AssignModuleModal.vue";
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(
   /\/api$/,
@@ -189,11 +208,18 @@ const searchValue = ref("");
 const pageIndex = ref(1);
 const pageSize = 9;
 const moduleToDelete = ref<ModuleDto | null>(null);
+const showAssignModal = ref(false);
+const selectedModuleForAssignment = ref<ModuleDto | null>(null);
 
 function imageUrl(path: string | undefined): string {
   if (!path) return "";
   if (path.startsWith("http")) return path;
   return backendUrl + path;
+}
+
+function plainText(value: string | undefined): string {
+  if (!value) return "---";
+  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || "---";
 }
 
 const filtered = computed(() => {
@@ -233,6 +259,17 @@ function changePage(page: number) {
 
 function confirmDelete(mod: ModuleDto) {
   moduleToDelete.value = mod;
+}
+
+function openAssignModal(mod: ModuleDto) {
+  selectedModuleForAssignment.value = mod;
+  showAssignModal.value = true;
+}
+
+async function onAssigned() {
+  showAssignModal.value = false;
+  selectedModuleForAssignment.value = null;
+  await fetchModules();
 }
 
 async function handleDelete() {

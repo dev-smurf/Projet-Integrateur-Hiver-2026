@@ -2,14 +2,21 @@
   <div class="flex gap-6">
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-3 mb-6">
-        <button
-          type="button"
-          @click="goBack"
+        <router-link
+          :to="{ name: 'admin.children.quiz.edit', params: { id: props.id } }"
           class="flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
         >
           <ArrowLeft class="w-4 h-4" />
-          {{ t('quiz.backToList') }}
-        </button>
+          Retour a l'edition
+        </router-link>
+        <span class="text-sm text-gray-400">|</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
+          <Eye class="w-3.5 h-3.5" />
+          Apercu
+        </span>
+        <span class="text-xs text-gray-400 italic">
+          Cliquer pour modifier
+        </span>
       </div>
 
       <div v-if="loading" class="animate-pulse space-y-4">
@@ -18,13 +25,20 @@
         <div class="h-48 bg-gray-200 rounded" />
       </div>
 
-      <div v-else-if="!quiz" class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p class="text-sm text-red-600">{{ t('quiz.quizNotFound') }}</p>
+      <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p class="text-sm text-red-600">{{ error }}</p>
       </div>
 
-      <div v-else class="space-y-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ quiz.titre }}</h1>
+      <div v-else-if="quiz" class="space-y-6">
+        <div
+          class="cursor-pointer group"
+          @click="goToEdit"
+          title="Modifier les informations du quiz"
+        >
+          <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            {{ quiz.titre }}
+            <Pencil class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" />
+          </h1>
           <p v-if="quiz.description" class="text-lg text-gray-600">{{ quiz.description }}</p>
         </div>
 
@@ -45,11 +59,16 @@
           </div>
 
           <div v-if="currentQuestion" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
+            <div
+              class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center gap-3 cursor-pointer hover:bg-amber-50 transition group"
+              @click.stop="goToEdit"
+              title="Modifier cette question"
+            >
               <span class="w-8 h-8 shrink-0 rounded-full bg-brand-100 text-brand-700 text-sm font-bold flex items-center justify-center">
                 {{ currentQuestionIndex + 1 }}
               </span>
               <h2 class="text-xl font-semibold text-gray-900 flex-1">{{ currentQuestion.questionText }}</h2>
+              <Pencil class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" />
             </div>
 
             <div class="p-6">
@@ -150,26 +169,19 @@
             </span>
 
             <button
-              v-if="currentQuestionIndex < sortedQuestions.length - 1"
               type="button"
               @click="goToQuestion(currentQuestionIndex + 1)"
-              class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition cursor-pointer"
+              :disabled="currentQuestionIndex >= sortedQuestions.length - 1"
+              class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {{ t('quiz.next') }}
               <ChevronRight class="w-4 h-4" />
             </button>
-
-            <button
-              v-else
-              type="button"
-              @click="submitQuiz"
-              :disabled="answeredCount !== sortedQuestions.length || submitting"
-              class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {{ submitting ? t('quiz.saving') : t('quiz.submit') }}
-              <Check class="w-4 h-4" />
-            </button>
           </div>
+        </div>
+
+        <div v-else class="bg-white rounded-xl border border-gray-200 p-6 text-sm text-gray-400 italic">
+          {{ t('quiz.noQuestions') }}
         </div>
       </div>
     </div>
@@ -188,14 +200,10 @@
                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
             >
               <span
-                :class="[
-                  'h-5 w-5 shrink-0 rounded-full border text-[11px] flex items-center justify-center font-semibold',
-                  idx === currentQuestionIndex ? 'border-brand-500 text-brand-700' : 'border-gray-300 text-gray-400',
-                  isAnswered(question.id) ? 'bg-brand-50' : ''
-                ]"
+                class="h-5 w-5 shrink-0 rounded-full border text-[11px] flex items-center justify-center font-semibold"
+                :class="idx === currentQuestionIndex ? 'border-brand-500 text-brand-700' : 'border-gray-300 text-gray-400'"
               >
-                <Check v-if="isAnswered(question.id)" class="w-3 h-3" />
-                <span v-else>{{ idx + 1 }}</span>
+                {{ idx + 1 }}
               </span>
               <span class="truncate">{{ question.questionText || `${t('quiz.question')} ${idx + 1}` }}</span>
             </button>
@@ -206,23 +214,23 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue3-i18n'
-import { ArrowLeft, Check, ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { useQuizService } from '@/inversify.config'
-import { QuizQuestionType, type AssignedQuiz, type Quiz, type QuizQuestion, type QuizResponse } from '@/services/quizService'
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Eye, Pencil } from 'lucide-vue-next'
+import { useQuizService } from '../../../inversify.config'
+import { QuizQuestionType, type Quiz, type QuizQuestion, type QuizResponse } from '../../../services/quizService'
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '')
+const props = defineProps<{ id: string }>()
 const router = useRouter()
-const route = useRoute()
 const { t } = useI18n()
 const quizService = useQuizService()
 
 const quiz = ref<Quiz | null>(null)
 const loading = ref(true)
-const submitting = ref(false)
+const error = ref<string | null>(null)
 const currentQuestionIndex = ref(0)
 const responses = ref<Record<string, {
   selectedScore?: number
@@ -238,7 +246,23 @@ const sortedQuestions = computed(() => {
 
 const currentQuestion = computed(() => sortedQuestions.value[currentQuestionIndex.value])
 
-const answeredCount = computed(() => sortedQuestions.value.filter(question => isAnswered(question.id)).length)
+const answeredCount = computed(() => sortedQuestions.value.filter(question => {
+  const response = responses.value[question.id]
+  if (!response) return false
+
+  switch (question.questionType) {
+    case QuizQuestionType.Scale1To10:
+      return response.selectedScore !== undefined
+    case QuizQuestionType.MultipleChoice:
+      return response.selectedResponseId !== undefined
+    case QuizQuestionType.TextInput:
+      return response.selectedTextResponse.trim() !== ''
+    case QuizQuestionType.MultipleSelection:
+      return response.selectedResponseIds.length > 0
+    default:
+      return false
+  }
+}).length)
 
 function imageUrl(path: string): string {
   if (path.startsWith('http') || path.startsWith('data:')) return path
@@ -253,29 +277,14 @@ function scaleLabel(question: QuizQuestion, score: number): string {
   return question.scaleLabels?.[score - 1] ?? ''
 }
 
-function isAnswered(questionId: string): boolean {
-  const question = sortedQuestions.value.find(q => q.id === questionId)
-  const response = responses.value[questionId]
-  if (!question || !response) return false
-
-  switch (question.questionType) {
-    case QuizQuestionType.Scale1To10:
-      return response.selectedScore !== undefined
-    case QuizQuestionType.MultipleChoice:
-      return response.selectedResponseId !== undefined
-    case QuizQuestionType.TextInput:
-      return response.selectedTextResponse.trim() !== ''
-    case QuizQuestionType.MultipleSelection:
-      return response.selectedResponseIds.length > 0
-    default:
-      return false
-  }
-}
-
 function goToQuestion(idx: number) {
   if (idx < 0 || idx >= sortedQuestions.value.length) return
   currentQuestionIndex.value = idx
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function goToEdit() {
+  router.push({ name: 'admin.children.quiz.edit', params: { id: props.id } })
 }
 
 function selectScore(score: number) {
@@ -300,50 +309,15 @@ function toggleResponse(responseId: string) {
   }
 }
 
-function goBack() {
-  router.push({ name: 'quiz.list' })
-}
-
-async function submitQuiz() {
-  if (!quiz.value || answeredCount.value !== sortedQuestions.value.length) return
-
-  submitting.value = true
-  try {
-    for (const question of sortedQuestions.value) {
-      const response = responses.value[question.id]
-      await quizService.submitResponse({
-        quizAssignmentId: route.params.assignmentId as string,
-        quizQuestionId: question.id,
-        selectedScore: response.selectedScore,
-        selectedResponseId: response.selectedResponseId,
-        selectedResponseIds: response.selectedResponseIds,
-        selectedTextResponse: response.selectedTextResponse
-      })
-    }
-
-    await quizService.completeQuiz(route.params.assignmentId as string)
-    router.push({ name: 'quiz.results', params: { assignmentId: route.params.assignmentId as string } })
-  } catch (error) {
-    console.error('Failed to submit quiz:', error)
-    alert('Failed to submit quiz. Please try again.')
-  } finally {
-    submitting.value = false
-  }
-}
-
 onMounted(async () => {
   try {
-    const assignmentId = route.params.assignmentId as string
-    const assignedQuizzes = await quizService.getAssignedQuizzes()
-    const assignment = assignedQuizzes.find((q: AssignedQuiz) => q.id === assignmentId)
-
-    if (!assignment) {
-      quiz.value = null
+    quiz.value = await quizService.getById(props.id)
+    if (!quiz.value) {
+      error.value = 'Quiz introuvable.'
       return
     }
 
-    quiz.value = await quizService.getById(assignment.quizId)
-    quiz.value?.questions.forEach(question => {
+    quiz.value.questions.forEach(question => {
       responses.value[question.id] = {
         selectedScore: undefined,
         selectedResponseId: undefined,
@@ -351,9 +325,8 @@ onMounted(async () => {
         selectedTextResponse: ''
       }
     })
-  } catch (error) {
-    console.error('Failed to load quiz:', error)
-    quiz.value = null
+  } catch {
+    error.value = 'Impossible de charger le quiz.'
   } finally {
     loading.value = false
   }

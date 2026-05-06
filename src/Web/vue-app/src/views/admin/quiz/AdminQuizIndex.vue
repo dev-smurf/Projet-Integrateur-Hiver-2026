@@ -29,12 +29,12 @@
 
           <!-- Test Quiz Button Overlay -->
           <router-link
-            :to="{ name: 'quiz.take', params: { quizId: quiz.id } }"
+            :to="{ name: 'admin.children.quiz.preview', params: { id: quiz.id } }"
             class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
-              <Play class="w-8 h-8 text-white" />
-              <span class="text-white font-medium">{{ $t('global.test') }}</span>
+              <Eye class="w-8 h-8 text-white" />
+              <span class="text-white font-medium">{{ $t('quiz.preview.title') }}</span>
             </div>
           </router-link>
         </div>
@@ -143,7 +143,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { Plus, Pencil, Trash2, BookOpen, Play, Users } from 'lucide-vue-next'
+import { Plus, Pencil, Trash2, BookOpen, Eye, Users } from 'lucide-vue-next'
 import AssignQuizModal from './AssignQuizModal.vue'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
