@@ -8,7 +8,7 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
 {
     public void Configure(EntityTypeBuilder<Equipe> builder)
     {
-        builder.ToTable("Equipe");
+        builder.ToTable("Equipes"); // ✅ Nom explicite aligné avec le DbSet
 
         builder.HasKey(e => e.Id);
 
@@ -24,6 +24,7 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
             .WithMany()
             .UsingEntity(j => j.ToTable("EquipeMembres"));
 
+        // ✅ Relation parent/sous-équipes
         builder.HasMany(e => e.SousEquipes)
             .WithOne(e => e.ParentEquipe)
             .HasForeignKey(e => e.ParentEquipeId)

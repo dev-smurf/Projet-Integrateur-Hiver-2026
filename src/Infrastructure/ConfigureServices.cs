@@ -90,17 +90,17 @@ public static class ConfigureServices
     private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
     {
         services.AddIdentityCore<User>(options =>
-            {
-                options.Stores.MaxLengthForKeys = 128;
-                options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
-                options.Password.RequiredLength = 10;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequiredUniqueChars = 6;
-            })
+        {
+            options.Stores.MaxLengthForKeys = 128;
+            options.User.RequireUniqueEmail = true;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.Password.RequiredLength = 10;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireDigit = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequiredUniqueChars = 6;
+        })
             .AddRoles<Role>()
             .AddRoleManager<RoleManager<Role>>()
             .AddDefaultTokenProviders()
@@ -118,10 +118,10 @@ public static class ConfigureServices
         var issuer = configuration.GetSection("JwtToken:Issuer").Value;
         var audience = configuration.GetSection("JwtToken:Audience").Value;
         services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+        {
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
             .AddJwtBearer(o =>
             {
                 o.TokenValidationParameters = new TokenValidationParameters

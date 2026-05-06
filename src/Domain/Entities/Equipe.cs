@@ -1,4 +1,4 @@
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Extensions;
 
