@@ -94,12 +94,9 @@
 
                 <div class="relative">
                     <button @click="langOpen = !langOpen"
-                            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium"
-                            style="color: #d1d5db;"
-                            @mouseover="e => e.currentTarget.style.color='#98ff98'"
-                            @mouseleave="e => e.currentTarget.style.color='#d1d5db'">
+                            class="language-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium">
                         <Languages class="h-4 w-4 shrink-0" />
-                        Langue
+                        {{ $t('global.changeLanguage') }}
                     </button>
                     <div v-if="langOpen"
                          class="absolute bottom-full left-0 mb-2 min-w-[120px] rounded-lg py-1 shadow-lg"
@@ -306,6 +303,15 @@
         }
 
     .logout-btn:hover {
+        color: #98ff98;
+        background-color: rgba(144, 114, 136, 0.2);
+    }
+
+    .language-btn {
+        color: #d1d5db;
+    }
+
+    .language-btn:hover {
         color: #98ff98;
         background-color: rgba(144, 114, 136, 0.2);
     }

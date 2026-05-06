@@ -21,20 +21,20 @@ namespace Persistence.Migrations
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ParentEquipeId",
-                table: "Equipes",
+                table: "Equipe",
                 type: "uniqueidentifier",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Equipes_ParentEquipeId",
-                table: "Equipes",
+                table: "Equipe",
                 column: "ParentEquipeId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Equipes_Equipes_ParentEquipeId",
-                table: "Equipes",
+                table: "Equipe",
                 column: "ParentEquipeId",
-                principalTable: "Equipes",
+                principalTable: "Equipe",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
@@ -60,7 +60,7 @@ namespace Persistence.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Equipes_Equipes_ParentEquipeId",
-                table: "Equipes");
+                table: "Equipe");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_MemberNotes_Administrators_CreatedByAdminId",
@@ -72,11 +72,11 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Equipes_ParentEquipeId",
-                table: "Equipes");
+                table: "Equipe");
 
             migrationBuilder.DropColumn(
                 name: "ParentEquipeId",
-                table: "Equipes");
+                table: "Equipe");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_MemberNotes_Administrators_CreatedByAdminId",

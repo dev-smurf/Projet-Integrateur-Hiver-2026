@@ -30,6 +30,7 @@ import AdminModulePreview from "@/views/admin/members/AdminModulePreview.vue";
 import AdminAddQuiz from "@/views/admin/quiz/AdminAddQuiz.vue";
 import AdminEditQuiz from "@/views/admin/quiz/AdminEditQuiz.vue";
 import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
+import AdminQuizPreview from "@/views/admin/quiz/AdminQuizPreview.vue";
 import AdminNotesList from "@/views/admin/notes/AdminNotesList.vue";
 
 import MemberModuleList from "@/views/member/MemberModuleList.vue";
@@ -221,6 +222,12 @@ export function getRouter(): Router {
             path: `${i18n.t("routes.admin.children.members.quiz.path")}/${i18n.t("routes.admin.children.members.quiz.edit.path")}`,
             name: "admin.children.quiz.edit",
             component: AdminEditQuiz,
+            props: true,
+          },
+          {
+            path: `${i18n.t("routes.admin.children.members.quiz.path")}/${i18n.t("routes.admin.children.members.quiz.preview.path")}`,
+            name: "admin.children.quiz.preview",
+            component: AdminQuizPreview,
             props: true,
           },
           {
