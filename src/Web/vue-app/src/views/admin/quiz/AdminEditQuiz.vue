@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.quiz.edit.name') }}</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ $t('routes.admin.children.members.quiz.edit.name') }}</h1>
 
     <!-- Loading State -->
     <div v-if="loading" class="bg-white rounded-xl border border-gray-200 p-6 space-y-4 animate-pulse">
@@ -238,6 +238,14 @@
         >
           {{ $t('quiz.cancel') }}
         </router-link>
+        <router-link
+          v-if="route.params.id"
+          :to="{ name: 'admin.children.quiz.preview', params: { id: route.params.id } }"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition"
+        >
+          <Eye class="w-4 h-4" />
+          Apercu
+        </router-link>
         <button type="submit" :disabled="submitting || form.questions.length === 0" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
           {{ submitting ? $t('quiz.saving') : $t('quiz.save') }}
         </button>
@@ -251,6 +259,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useNotification } from '@kyvg/vue3-notification'
 import { useQuizService } from '@/inversify.config'
+import { Eye } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()

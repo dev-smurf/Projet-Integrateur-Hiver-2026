@@ -448,7 +448,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipes");
+                    b.ToTable("Equipe");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.Role", b =>

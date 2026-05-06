@@ -33,12 +33,17 @@
     "equipe": {
       "path": "/teams",
       "fullPath": "/teams",
-      "name": "Teams"
+      "name": "Teams",
+      "children": {
+        "myEquipe": {
+          "path": "my-team"
+        }
+      }
     },
     "progression": {
       "path": "/progression",
       "fullPath": "/progression",
-      "name": "Progression"
+      "name": "Progress"
     },
     "account": {
       "path": "/my-account",
@@ -72,6 +77,11 @@
               "path": ":id/edit",
               "fullPath": "/administration/quiz/:id/edit",
               "name": "Edit Quiz"
+            },
+            "preview": {
+              "path": ":id/preview",
+              "fullPath": "/administration/quiz/:id/preview",
+              "name": "Quiz preview"
             }
           },
           "edit": {
@@ -118,6 +128,20 @@
             "path": ":id/edit",
             "fullPath": "/administration/equipes/:id/edit",
             "name": "Edit a team"
+          },
+          "sous-equipes": {
+            "path": "subteams",
+            "children": {
+              "add": {
+                "path": "add",
+                "name": "Add a subteam"
+              }
+            }
+          }
+        },
+        "quiz": {
+          "add": {
+            "name": "Add a new quiz"
           }
         }
       }
@@ -155,6 +179,10 @@
           "name": "Quiz results"
         }
       }
+    },
+    "addModule": {
+      "path": "add-module",
+      "name": "Add a module"
     }
   },
   "pages": {
@@ -285,8 +313,30 @@
       "loading": "Loading members...",
       "allAssigned": "All members are already assigned.",
       "noneAssigned": "No assigned members.",
-      "assignError": "Error during assignment.",
-      "unassignError": "Error during unassignment."
+      "assignError": "Error assigning module.",
+      "unassignError": "Error during unassignment.",
+      "modalTitle": "Assign module",
+      "recipientsHint": "Select teams or specific members. Members who are already assigned are automatically excluded.",
+      "recipients": "Recipients",
+      "selectedCount": "{count} selected",
+      "teams": "Teams",
+      "teamsSelectedCount": "{count} selected",
+      "searchTeamPlaceholder": "Search for a team...",
+      "noTeamsAvailable": "No team available.",
+      "eligibleMembersCount": "{count} eligible member(s)",
+      "unassignedMembers": "Unassigned members",
+      "searchMembersPlaceholder": "Search for members...",
+      "allVisibleAssigned": "All visible members are already assigned.",
+      "alreadyAssignedMembers": "Already assigned members",
+      "membersCount": "{count} member(s)",
+      "assignedMemberFallback": "Assigned member",
+      "noAssignedMembers": "No assigned members.",
+      "assignCount": "Assign ({count})",
+      "assigning": "Assigning...",
+      "partialAssignError": "Some assignments failed.",
+      "assignSuccess": "Module assigned successfully.",
+      "loadRecipientsError": "Unable to load recipients.",
+      "teamFallback": "Team"
     },
     "memberForm": {
       "teams": "Teams",
@@ -315,6 +365,15 @@
         "completed": "Completed",
         "inProgress": "In progress",
         "notStarted": "Not started"
+      },
+      "members": {
+        "add": "Add members to the team",
+        "remove": "Remove members from the team",
+        "list": "Team member list",
+        "noMembers": "No members in this team yet."
+      },
+      "sous-equipes": {
+        "noMembersParentWarn": "Add members to the parent team before creating a subteam."
       }
     },
     "equipes": {
@@ -322,7 +381,9 @@
         "validation": {
           "successMessage": "The team was successfully created.",
           "failedMessage": "An error occurred during team creation."
-        }
+        },
+        "successMessage": "The team was successfully created.",
+        "failedMessage": "An error occurred during team creation."
       },
       "update": {
         "validation": {
@@ -336,6 +397,13 @@
           "successMessage": "The team was successfully deleted.",
           "failedMessage": "An error occurred during team deletion."
         }
+      },
+      "edit": {
+        "successMessage": "The team was successfully updated.",
+        "failedMessage": "An error occurred during team update."
+      },
+      "load": {
+        "failedMessage": "Unable to load the team."
       }
     },
     "account": {
@@ -346,7 +414,8 @@
       "edit": "Edit profile",
       "readOnly": "This field cannot be modified.",
       "updateSuccess": "Profile updated successfully.",
-      "updateError": "An error occurred while updating your profile."
+      "updateError": "An error occurred while updating your profile.",
+      "loginInfos": "Login information"
     },
     "loginNotifications": {
       "title": "What's new for you",
@@ -363,9 +432,9 @@
         "memberApprobationRevoked": "Your approbation was revoked.",
         "errorOccured": "Username or password is not valid."
       },
-      "username": "Nom d'utilisateur",
-      "password": "Mot de passe",
-      "passwordConfirmation": "Confirmation du mot de passe"
+      "username": "Username",
+      "password": "Password",
+      "passwordConfirmation": "Password confirmation"
     },
     "twoFactor": {
       "code": "Code",
@@ -434,8 +503,8 @@
           "invalidEnterpriseNumberFormat": "The enterprise number format is invalid.",
           "invalidProvincialTaxNumberFormat": "The QST number format is invalid.",
           "invalidFederalTaxNumberFormat": "The GST number format is invalid.",
-          "memberNotFoundException": "No member with specified reference code was found.",
-          "userWithEmailAlreadyExistsException": "A user with this email already exists."
+          "userWithEmailAlreadyExistsException": "A user with this email already exists.",
+          "memberNotFound": "No member with specified reference code was found."
         }
       },
       "update": {
@@ -594,66 +663,67 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "loading": "Loading...",
-    "free": "Gratuit(e)",
+    "free": "Free",
     "menu": "Menu",
-    "title": "Titre",
+    "title": "Title",
     "date": "Date",
-    "at": "à",
-    "username": "Nom d'utilisateur",
-    "password": "Mot de passe",
-    "passwordConfirmation": "Confirmation du mot de passe",
-    "submit": "Soumettre",
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "fullName": "Nom complet",
-    "equipeName": "Nom de l'équipe",
-    "email": "Courriel",
-    "phoneNumber": "Numéro de téléphone",
-    "phoneExtension": "Poste",
-    "apartment": "Numéro de bureau/suite",
-    "street": "Adresse",
-    "city": "Ville",
-    "zipCode": "Code postal",
-    "roles": "Rôles",
-    "name": "Nom",
-    "download": "Télécharger",
-    "add": "Ajouter",
+    "at": "at",
+    "username": "Username",
+    "password": "Password",
+    "passwordConfirmation": "Password confirmation",
+    "submit": "Submit",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "fullName": "Full name",
+    "equipeName": "Team name",
+    "email": "Email",
+    "phoneNumber": "Phone number",
+    "phoneExtension": "Extension",
+    "apartment": "Office/suite number",
+    "street": "Address",
+    "city": "City",
+    "zipCode": "Postal code",
+    "roles": "Roles",
+    "name": "Name",
+    "download": "Download",
+    "add": "Add",
     "important": "Important",
-    "addFile": "Ajouter un document",
-    "addFiles": "Ajouter des documents",
-    "replaceFile": "Remplacer le document",
-    "replaceFiles": "Remplacer les documents",
-    "removeFile": "Retirer ce document",
-    "uploadZippedFolder-tooltip": "Si vous désirez transmettre plusieurs documents, veuillez uploader <strong>un dossier compressé.</strong>",
-    "update": "Modifier",
-    "edit": "Modifier",
-    "deleted": "Supprimé(e)",
-    "save": "Sauvegarder",
-    "back": "Retour",
-    "yes": "Oui",
-    "no": "Non",
-    "search": "Rechercher",
-    "transfer": "Transférer",
-    "formErrorNotification": "Il y a des erreurs dans le formulaire.",
-    "quickLinks": "Liens rapides",
-    "undefined": "ND",
-    "logout": "Déconnexion",
-    "changeLanguage": "Changer de langue",
-    "test": "Tester",
-    "createFirst": "Créer le premier quiz",
+    "addFile": "Add a document",
+    "addFiles": "Add documents",
+    "replaceFile": "Replace the document",
+    "replaceFiles": "Replace documents",
+    "removeFile": "Remove this document",
+    "uploadZippedFolder-tooltip": "If you want to upload multiple documents, please upload <strong>a compressed folder.</strong>",
+    "update": "Update",
+    "edit": "Edit",
+    "deleted": "Deleted",
+    "save": "Save",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "transfer": "Transfer",
+    "formErrorNotification": "There are errors in the form.",
+    "quickLinks": "Quick links",
+    "undefined": "N/A",
+    "logout": "Logout",
+    "changeLanguage": "Change language",
+    "test": "Test",
+    "createFirst": "Create the first quiz",
     "questions": "Questions",
     "table": {
-      "of": "de",
-      "noData": "Aucune donnée disponible",
+      "of": "of",
+      "noData": "No data available",
       "actions": "Actions"
     },
     "noQuizzesYet": "No quizzes yet.",
     "actions": {
-      "view": "Voir",
-      "download": "Télécharger",
-      "update": "Modifier",
-      "delete": "Supprimer"
-    }
+      "view": "View",
+      "download": "Download",
+      "update": "Update",
+      "delete": "Delete"
+    },
+    "view": "View"
   },
   "textEditorLinkPopup": {
     "addLink": "Add link",
@@ -716,7 +786,8 @@
         "errorOccured": "An error occurred while deleting the book.",
         "bookNotFoundException": "Could not find book."
       }
-    }
+    },
+    "futureDate": "The date must be in the future."
   },
   "Form_Add_Module": {
     "fields": {
@@ -814,8 +885,9 @@
     "finish": "Finish"
   },
   "common": {
-    "Ajouter": "Add",
-    "cancel": "Cancel"
+    "add": "Add",
+    "cancel": "Cancel",
+    "back": "Back"
   },
   "routes.addModule": {
     "name": "Add a module"
@@ -1039,6 +1111,7 @@
     "followUpPlaceholder": "Ex. Start of session, Mid-session, End of session",
     "createFollowUpPoint": "Create a new follow-up point for selected players",
     "followUpSelectionHint": "Select only the already assigned players who should receive this new follow-up point.",
-    "availableAt": "Availability date and time"
+    "availableAt": "Availability date and time",
+    "overdue": "Overdue"
   }
 }
