@@ -77,21 +77,21 @@
                     </div>
                 </div>
                 <div v-else class="text-center py-6 text-gray-400 text-sm">
-                    Aucune sous-équipe pour le moment.
+                    {{ t('pages.equipe.subteamsEmpty') }}
                 </div>
             </div>
 
-            <!-- Équipe parente -->
+            <!-- {{ t('pages.equipe.parentTeam') }} -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
-                <h2 class="text-sm font-semibold text-gray-900 mb-4">Équipe parente</h2>
+                <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ t('pages.equipe.parentTeam') }}</h2>
                 <div class="flex items-end gap-3">
                     <div class="flex-1">
                         <Select2Single v-model="selectedParentEquipeId"
                                        :options="parentEquipeOptions"
-                                       clear-label="— Aucune (équipe principale) —"
-                                       placeholder="Choisir une équipe parente"
-                                       search-placeholder="Rechercher une équipe"
-                                       empty-text="Aucune équipe trouvée" />
+                                       :clear-label="t('pages.equipe.noParentTeam')"
+                                       :placeholder="t('pages.equipe.chooseParentTeam')"
+                                       :search-placeholder="t('pages.moduleAssignment.searchTeamPlaceholder')"
+                                       :empty-text="t('pages.memberForm.teamsEmpty')" />
                     </div>
                     <button @click="saveParentEquipe"
                             :disabled="savingParent"

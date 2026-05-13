@@ -2,22 +2,22 @@
   <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Membre</h1>
-        <p class="text-sm text-gray-500">Details complets, progression et modules</p>
+        <h1 class="text-2xl font-bold text-gray-900">{{ t('pages.memberDetails.title') }}</h1>
+        <p class="text-sm text-gray-500">{{ t('pages.memberDetails.subtitle') }}</p>
       </div>
       <div class="flex items-center gap-2">
         <router-link
           :to="{ name: 'admin.children.members.index' }"
           class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          Retour
+          {{ t('global.back') }}
         </router-link>
         <router-link
           v-if="member?.id"
           :to="{ name: 'admin.children.members.edit', params: { id: member?.id } }"
           class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
         >
-          Modifier
+          {{ t('global.edit') }}
         </router-link>
       </div>
     </div>
@@ -37,7 +37,7 @@
           </div>
           <div>
             <div class="text-lg font-semibold text-gray-900">{{ fullName }}</div>
-            <div class="text-sm text-gray-500">{{ member?.email || "N/A" }}</div>
+            <div class="text-sm text-gray-500">{{ member?.email || t('global.undefined') }}</div>
           </div>
         </div>
 
@@ -58,13 +58,13 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
               <div class="text-xl font-semibold text-gray-900">{{ progressPercent }}%</div>
-              <div class="text-xs text-gray-500">Progression</div>
+              <div class="text-xs text-gray-500">{{ t('pages.memberDetails.progress') }}</div>
             </div>
           </div>
           <div class="text-sm text-gray-600">
-            <div class="font-medium text-gray-900">Resume</div>
-            <div>{{ memberModules.length }} module(s) assignes</div>
-            <div>{{ completedModules }} termine(s)</div>
+            <div class="font-medium text-gray-900">{{ t('pages.memberDetails.summary') }}</div>
+            <div>{{ memberModules.length }} {{ t('pages.memberDetails.modulesAssigned') }}</div>
+            <div>{{ completedModules }} {{ t('pages.memberDetails.completed') }}</div>
           </div>
         </div>
       </div>
@@ -73,33 +73,33 @@
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-2 animate-fade-up delay-1">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 class="text-sm font-semibold text-gray-900 mb-3">Informations personnelles</h2>
+            <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ t('pages.memberDetails.personalInfo') }}</h2>
             <dl class="space-y-2 text-sm text-gray-600">
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Prenom</dt>
-                <dd class="text-gray-900">{{ member?.firstName || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ t('global.firstName') }}</dt>
+                <dd class="text-gray-900">{{ member?.firstName || t('global.undefined') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Nom</dt>
-                <dd class="text-gray-900">{{ member?.lastName || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ t('global.lastName') }}</dt>
+                <dd class="text-gray-900">{{ member?.lastName || t('global.undefined') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Cree le</dt>
+                <dt class="text-gray-500">{{ t('pages.memberDetails.createdAt') }}</dt>
                 <dd class="text-gray-900">{{ createdAt }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Statut</dt>
+                <dt class="text-gray-500">{{ t('pages.memberDetails.status') }}</dt>
                 <dd>
                   <span
                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                     :class="member?.accountActivated ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                   >
-                    {{ member?.accountActivated ? "Compte actif" : "En attente de validation" }}
+                    {{ member?.accountActivated ? t('pages.memberDetails.accountActive') : t('pages.memberDetails.pendingValidation') }}
                   </span>
                 </dd>
               </div>
               <div class="flex justify-between gap-4 items-start">
-                <dt class="text-gray-500">Equipes</dt>
+                <dt class="text-gray-500">{{ t('pages.memberDetails.teams') }}</dt>
                 <dd class="text-right">
                   <div v-if="memberEquipes.length" class="flex flex-wrap justify-end gap-2">
                     <span
@@ -110,36 +110,36 @@
                       {{ equipe }}
                     </span>
                   </div>
-                  <span v-else class="text-gray-900">N/A</span>
+                  <span v-else class="text-gray-900">{{ t('global.undefined') }}</span>
                 </dd>
               </div>
             </dl>
           </div>
           <div>
-            <h2 class="text-sm font-semibold text-gray-900 mb-3">Contact et adresse</h2>
+            <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ t('pages.memberDetails.contactAndAddress') }}</h2>
             <dl class="space-y-2 text-sm text-gray-600">
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Email</dt>
-                <dd class="text-gray-900">{{ member?.email || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ t('global.email') }}</dt>
+                <dd class="text-gray-900">{{ member?.email || t('global.undefined') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Telephone</dt>
-                <dd class="text-gray-900">{{ member?.phoneNumber || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ t('pages.memberDetails.phone') }}</dt>
+                <dd class="text-gray-900">{{ member?.phoneNumber || t('global.undefined') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Adresse</dt>
+                <dt class="text-gray-500">{{ t('global.street') }}</dt>
                 <dd class="text-gray-900">{{ addressLine }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-gray-500">Ville</dt>
-                <dd class="text-gray-900">{{ member?.city || "N/A" }}</dd>
+                <dt class="text-gray-500">{{ t('global.city') }}</dt>
+                <dd class="text-gray-900">{{ member?.city || t('global.undefined') }}</dd>
               </div>
             </dl>
           </div>
         </div>
 
         <div class="mt-6">
-          <h2 class="text-sm font-semibold text-gray-900 mb-3">Roles</h2>
+          <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ t('global.roles') }}</h2>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="role in member?.roles || []"
@@ -148,7 +148,7 @@
             >
               {{ role }}
             </span>
-            <span v-if="!member?.roles?.length" class="text-sm text-gray-500">N/A</span>
+            <span v-if="!member?.roles?.length" class="text-sm text-gray-500">{{ t('global.undefined') }}</span>
           </div>
         </div>
       </div>
@@ -157,7 +157,7 @@
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h2 class="text-sm font-semibold text-gray-900">Quiz assignes</h2>
+            <h2 class="text-sm font-semibold text-gray-900">{{ t('pages.memberDetails.assignedQuizzes') }}</h2>
             <p class="text-xs text-gray-500 mt-0.5">
               {{ memberQuizzes.length }} quiz assigné(s) —
               {{ memberQuizzes.filter(q => q.isCompleted).length }} complété(s)
@@ -167,11 +167,11 @@
 
         <div v-if="loadingQuizzes" class="flex items-center gap-2 text-sm text-gray-500 py-4">
           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-600"></div>
-          Chargement des quiz...
+          {{ t('pages.memberDetails.loadingQuizzes') }}
         </div>
 
         <div v-else-if="!memberQuizzes.length" class="text-sm text-gray-500 py-2">
-          Aucun quiz assigne pour ce membre.
+          {{ t('pages.memberDetails.noAssignedQuizzes') }}
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -201,22 +201,22 @@
               <div>
                 <div class="text-sm font-semibold text-gray-900">{{ quiz.titre }}</div>
                 <div class="text-xs text-gray-500 mt-0.5">
-                  {{ quiz.followUpLabel || `Point de suivi ${quiz.version}` }}
+                  {{ quiz.followUpLabel || `${t('quiz.followUpPoint')} ${quiz.version}` }}
                 </div>
               </div>
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
                 :class="quiz.isCompleted ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
               >
-                {{ quiz.isCompleted ? "Termine" : "En cours" }}
+                {{ quiz.isCompleted ? t('quiz.completed') : t('quiz.pending') }}
               </span>
             </div>
 
             <!-- Dates -->
             <div class="text-xs text-gray-400 space-y-0.5 mb-3">
-              <div>Assigne le : {{ formatDate(quiz.assignedAt) }}</div>
-              <div v-if="quiz.dueDate">Echeance : {{ formatDate(quiz.dueDate) }}</div>
-              <div v-if="quiz.completedAt" class="text-emerald-600">Complété le : {{ formatDate(quiz.completedAt) }}</div>
+              <div>{{ t('quiz.assignedOn') }}: {{ formatDate(quiz.assignedAt) }}</div>
+              <div v-if="quiz.dueDate">{{ t('quiz.dueDate') }}: {{ formatDate(quiz.dueDate) }}</div>
+              <div v-if="quiz.completedAt" class="text-emerald-600">{{ t('quiz.completedOn') }}: {{ formatDate(quiz.completedAt) }}</div>
             </div>
 
             <!-- Bouton -->
@@ -225,14 +225,14 @@
               @click="viewQuizResults(quiz)"
               class="w-full px-3 py-2 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
             >
-              Consulter les reponses
+              {{ t('pages.memberDetails.viewAnswers') }}
             </button>
             <button
               v-else
               disabled
               class="w-full px-3 py-2 text-xs font-medium border border-gray-200 text-gray-400 rounded-lg cursor-not-allowed bg-gray-50"
             >
-              Quiz non complété
+              {{ t('pages.memberDetails.quizNotCompleted') }}
             </button>
           </div>
         </div>
@@ -243,21 +243,21 @@
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex flex-wrap items-end gap-4">
           <div class="flex-1 min-w-[220px]">
-            <label class="text-xs font-medium text-gray-500">Rechercher un module</label>
+            <label class="text-xs font-medium text-gray-500">{{ t('pages.memberDetails.searchModule') }}</label>
             <input
               v-model="moduleSearch"
               type="text"
-              placeholder="Rechercher par nom ou sujet"
+              :placeholder="t('pages.memberDetails.searchModulePlaceholder')"
               class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
             />
           </div>
           <div class="flex-1 min-w-[220px]">
-            <label class="text-xs font-medium text-gray-500">Selectionner un module</label>
+            <label class="text-xs font-medium text-gray-500">{{ t('pages.memberDetails.selectModule') }}</label>
             <select
               v-model="selectedModuleId"
               class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
             >
-              <option value="">Choisir un module</option>
+              <option value="">{{ t('pages.memberDetails.chooseModule') }}</option>
               <option v-for="mod in filteredModules" :key="mod.id" :value="mod.id">
                 {{ moduleLabel(mod) }}
               </option>
@@ -268,14 +268,14 @@
             :disabled="!selectedModuleId || addingModule"
             class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ addingModule ? "Ajout..." : "Ajouter le module" }}
+            {{ addingModule ? t('pages.memberDetails.adding') : t('pages.memberDetails.addModule') }}
           </button>
         </div>
 
         <div class="mt-6">
-          <h2 class="text-sm font-semibold text-gray-900 mb-3">Modules assignes</h2>
+          <h2 class="text-sm font-semibold text-gray-900 mb-3">{{ t('pages.memberDetails.assignedModules') }}</h2>
           <div v-if="!memberModules.length" class="text-sm text-gray-500">
-            Aucun module assigne pour ce membre.
+            {{ t('pages.memberDetails.noModulesAssigned') }}
           </div>
           <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
@@ -285,8 +285,8 @@
             >
               <div class="flex items-center justify-between gap-3">
                 <div>
-                  <div class="text-sm font-semibold text-gray-900">{{ item.nameFr || item.nameEn || "Module" }}</div>
-                  <div class="text-xs text-gray-500">{{ item.sujetFr || item.sujetEn || "Sujet" }}</div>
+                  <div class="text-sm font-semibold text-gray-900">{{ item.nameFr || item.nameEn || t('pages.memberDetails.module') }}</div>
+                  <div class="text-xs text-gray-500">{{ item.sujetFr || item.sujetEn || t('pages.memberDetails.subject') }}</div>
                 </div>
                 <span
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
@@ -297,7 +297,7 @@
               </div>
               <div class="mt-3">
                 <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Progression</span>
+                  <span>{{ t('pages.memberDetails.progress') }}</span>
                   <span>{{ progressEdits[item.moduleId] ?? item.progressPercent }}%</span>
                 </div>
                 <input
@@ -314,14 +314,14 @@
                     :disabled="savingProgress[item.moduleId]"
                     class="px-3 py-1.5 text-xs font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {{ savingProgress[item.moduleId] ? "Enregistrement..." : "Enregistrer" }}
+                    {{ savingProgress[item.moduleId] ? t('pages.memberDetails.saving') : t('global.save') }}
                   </button>
                   <button
                     @click="removeModule(item)"
                     :disabled="removingModule[item.moduleId]"
                     class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {{ removingModule[item.moduleId] ? "Retrait..." : "Retirer" }}
+                    {{ removingModule[item.moduleId] ? t('pages.memberDetails.removing') : t('pages.adminDashboard.remove') }}
                   </button>
                 </div>
               </div>
@@ -330,10 +330,10 @@
         </div>
       </div>
 
-      <!-- Notes internes -->
+      <!-- {{ t('pages.memberDetails.internalNotes') }} -->
       <div class="bg-white border border-gray-200 rounded-2xl p-6 lg:col-span-3 animate-fade-up delay-2">
         <div class="flex items-center justify-between">
-          <h2 class="text-sm font-semibold text-gray-900">Notes internes</h2>
+          <h2 class="text-sm font-semibold text-gray-900">{{ t('pages.memberDetails.internalNotes') }}</h2>
           <button
             @click="saveNotes"
             :disabled="savingNotes"
@@ -345,11 +345,11 @@
         <textarea
           v-model="notesText"
           rows="5"
-          placeholder="Ajouter des notes confidentielles sur ce membre..."
+          :placeholder="t('pages.memberDetails.notesPlaceholder')"
           class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
         />
         <p class="mt-2 text-xs text-gray-500">
-          Notes sauvegardees localement pour cet appareil.
+          {{ t('pages.memberDetails.localNotesHint') }}
         </p>
       </div>
     </div>
@@ -362,10 +362,12 @@ import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
 import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
+import { useI18n } from "vue3-i18n";
 
 const route = useRoute();
 const router = useRouter();
 const { notify } = useNotification();
+const { t } = useI18n();
 const equipeService = useEquipesService();
 const memberService = useMemberService();
 const modulesService = useModulesService();
@@ -408,20 +410,20 @@ const fullName = computed(() => {
   const first = member.value?.firstName || "";
   const last = member.value?.lastName || "";
   const full = `${first} ${last}`.trim();
-  return full || "Membre";
+  return full || t("pages.memberDetails.title");
 });
 
 const initials = computed(() => {
   const first = member.value?.firstName?.charAt(0) || "";
   const last = member.value?.lastName?.charAt(0) || "";
   const init = `${first}${last}`.toUpperCase();
-  return init || "M";
+  return init || t("pages.memberDetails.memberInitial");
 });
 
 const createdAt = computed(() => {
-  if (!member.value?.created) return "N/A";
+  if (!member.value?.created) return t("global.undefined");
   const date = new Date(member.value.created);
-  if (isNaN(date.getTime())) return "N/A";
+  if (isNaN(date.getTime())) return t("global.undefined");
   return date.toLocaleDateString();
 });
 
@@ -429,7 +431,7 @@ const addressLine = computed(() => {
   const street = member.value?.street || "";
   const zip = member.value?.zipCode || "";
   const joined = [street, zip].filter(Boolean).join(" ");
-  return joined || "N/A";
+  return joined || t("global.undefined");
 });
 
 const memberEquipes = computed(() => {
@@ -442,7 +444,7 @@ const memberEquipes = computed(() => {
     })
     .map(equipe => {
       const item = equipe as Equipe & { nameFr?: string; nameEn?: string; NameFr?: string; NameEn?: string };
-      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || "Equipe";
+      return item.nameFr || item.NameFr || item.nameEn || item.NameEn || t("pages.moduleAssignment.teamFallback");
     });
 });
 
@@ -474,14 +476,14 @@ const filteredModules = computed(() => {
 });
 
 function moduleLabel(mod: ModuleDto) {
-  const name = mod.nameFr || mod.nameEn || "Module";
+  const name = mod.nameFr || mod.nameEn || t("pages.memberDetails.module");
   const subject = mod.sujetFr || mod.sujetEn || "";
   return subject ? `${name} - ${subject}` : name;
 }
 
 function formatDate(date: string | Date): string {
   const d = typeof date === "string" ? new Date(date) : date;
-  if (isNaN(d.getTime())) return "N/A";
+  if (isNaN(d.getTime())) return t("global.undefined");
   return d.toLocaleDateString("fr-CA");
 }
 
@@ -498,7 +500,7 @@ async function loadMemberQuizzes(userId: string) {
       memberQuizzes.value = await response.json();
     }
   } catch (error) {
-    console.error("Failed to load member quizzes:", error);
+    console.error(t("pages.memberDetails.consoleLoadQuizzesError"), error);
   } finally {
     loadingQuizzes.value = false;
   }
@@ -542,11 +544,11 @@ async function addModule() {
   addingModule.value = true;
   const response = await memberService.addModuleToMember(memberId.value, selectedModuleId.value);
   if (response.succeeded) {
-    notify({ type: "success", text: "Module ajoute." });
+    notify({ type: "success", text: t("pages.memberDetails.notify.moduleAdded") });
     memberModules.value = await memberService.getMemberModules(memberId.value);
     selectedModuleId.value = "";
   } else {
-    notify({ type: "error", text: "Impossible d'ajouter le module." });
+    notify({ type: "error", text: t("pages.memberDetails.notify.moduleAddError") });
   }
   addingModule.value = false;
 }
@@ -556,10 +558,10 @@ async function saveProgress(item: MemberModuleDto) {
   savingProgress.value = { ...savingProgress.value, [item.moduleId]: true };
   const response = await memberService.updateMemberModuleProgress(memberId.value, item.moduleId, value);
   if (response.succeeded) {
-    notify({ type: "success", text: "Progression mise a jour." });
+    notify({ type: "success", text: t("pages.memberDetails.notify.progressUpdated") });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({ type: "error", text: "Impossible de mettre a jour la progression." });
+    notify({ type: "error", text: t("pages.memberDetails.notify.progressError") });
   }
   savingProgress.value = { ...savingProgress.value, [item.moduleId]: false };
 }
@@ -568,10 +570,10 @@ async function removeModule(item: MemberModuleDto) {
   removingModule.value = { ...removingModule.value, [item.moduleId]: true };
   const response = await memberService.removeMemberModule(memberId.value, item.moduleId);
   if (response.succeeded) {
-    notify({ type: "success", text: "Module retire." });
+    notify({ type: "success", text: t("pages.memberDetails.notify.moduleRemoved") });
     memberModules.value = await memberService.getMemberModules(memberId.value);
   } else {
-    notify({ type: "error", text: "Impossible de retirer le module." });
+    notify({ type: "error", text: t("pages.memberDetails.notify.moduleRemoveError") });
   }
   removingModule.value = { ...removingModule.value, [item.moduleId]: false };
 }
@@ -579,7 +581,7 @@ async function removeModule(item: MemberModuleDto) {
 function saveNotes() {
   savingNotes.value = true;
   localStorage.setItem(`admin-member-notes:${memberId.value}`, notesText.value);
-  notify({ type: "success", text: "Notes enregistrees localement." });
+  notify({ type: "success", text: t("pages.memberDetails.notify.notesSaved") });
   savingNotes.value = false;
 }
 

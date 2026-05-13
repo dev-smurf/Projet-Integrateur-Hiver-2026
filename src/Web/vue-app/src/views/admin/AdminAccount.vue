@@ -9,7 +9,7 @@
         <h2>{{t('pages.account.loginInfos')}}</h2>
       </div>
 <div>
-    <p> line ici : </p>
+    <p>{{ t('pages.account.lineHere') }}</p>
       <TextLink :path="{path: t('routes.addModule.path') }"
                   :text="t('routes.addModule.name')" />  
 </div>

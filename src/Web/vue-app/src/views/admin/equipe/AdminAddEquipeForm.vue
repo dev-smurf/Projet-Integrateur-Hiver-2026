@@ -2,13 +2,13 @@
     <div>
         <div class="max-w-2xl mx-auto">
             <h1 class="text-2xl font-bold text-gray-900 mb-6">
-                {{ isSousEquipe ? 'Ajouter une nouvelle sous-équipe' : $t("addEquipe.name") }}
+                {{ isSousEquipe ? t('pages.equipe.addSubteam') : $t("addEquipe.name") }}
             </h1>
 
             <div v-if="isSousEquipe"
                  class="mb-4 flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">
                 <GitBranch class="w-4 h-4 shrink-0" />
-                Sous-équipe de :
+                {{ t('pages.equipe.subteamOf') }}:
                 <span v-if="parentEquipeName" class="font-medium">{{ parentEquipeName }}</span>
                 <Loader2 v-else class="w-3 h-3 animate-spin" />
             </div>
@@ -29,14 +29,14 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Équipe parente
-                        <span v-if="!isSousEquipe" class="text-gray-400 font-normal">(optionnel)</span>
+                        <span v-if="!isSousEquipe" class="text-gray-400 font-normal">({{ t('pages.memberForm.teamsOptional') }})</span>
                     </label>
                     <!-- Lecture seule si vient de la page détails -->
                     <div v-if="isSousEquipe"
                          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-700 flex items-center gap-2">
                         <Users class="w-4 h-4 text-gray-400 shrink-0" />
                         {{ parentEquipeName || '...' }}
-                        <span class="ml-auto text-xs text-gray-400 italic">Présélectionné</span>
+                        <span class="ml-auto text-xs text-gray-400 italic">{{ t('pages.equipe.preselected') }}</span>
                     </div>
 
                     <!-- Sélectable si création libre -->

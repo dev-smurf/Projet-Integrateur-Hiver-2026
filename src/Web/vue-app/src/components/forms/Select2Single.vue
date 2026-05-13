@@ -10,7 +10,7 @@
         class="min-w-0 flex-1 truncate text-sm"
         :class="selectedOption ? 'text-gray-900' : 'text-gray-400'"
       >
-        {{ selectedOption?.label ?? placeholder }}
+        {{ selectedOption?.label ?? resolvedPlaceholder }}
       </span>
       <ChevronDown class="h-4 w-4 shrink-0 text-gray-400" :class="{ 'rotate-180': isOpen }" />
     </button>
@@ -22,7 +22,7 @@
       <input
         v-model="search"
         type="text"
-        :placeholder="searchPlaceholder"
+        :placeholder="resolvedSearchPlaceholder"
         class="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500"
       />
 
@@ -33,7 +33,7 @@
           class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition hover:bg-gray-50"
           @click="selectOption(undefined)"
         >
-          <span class="text-gray-700">{{ clearLabel }}</span>
+          <span class="text-gray-700">{{ resolvedClearLabel }}</span>
           <Check v-if="modelValue == null || modelValue === ''" class="h-4 w-4 text-brand-600" />
         </button>
 
@@ -49,7 +49,7 @@
         </button>
 
         <p v-if="!filteredOptions.length" class="px-3 py-2 text-sm text-gray-400">
-          {{ emptyText }}
+          {{ resolvedEmptyText }}
         </p>
       </div>
     </div>
@@ -59,6 +59,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { Check, ChevronDown } from "lucide-vue-next";
+import { useI18n } from "vue3-i18n";
 
 type SelectOption = {
   value: string;
@@ -77,14 +78,17 @@ const props = withDefaults(
     hasError?: boolean;
   }>(),
   {
-    placeholder: "Selectionner une equipe",
-    searchPlaceholder: "Rechercher une equipe",
-    emptyText: "Aucune equipe trouvee",
-    clearLabel: "Aucune (equipe principale)",
     clearable: true,
     hasError: false,
   },
 );
+
+const { t } = useI18n();
+
+const resolvedPlaceholder = computed(() => props.placeholder ?? t("pages.equipe.chooseParentTeam"));
+const resolvedSearchPlaceholder = computed(() => props.searchPlaceholder ?? t("pages.moduleAssignment.searchTeamPlaceholder"));
+const resolvedEmptyText = computed(() => props.emptyText ?? t("pages.memberForm.teamsEmpty"));
+const resolvedClearLabel = computed(() => props.clearLabel ?? t("pages.equipe.noParentTeam"));
 
 const emit = defineEmits<{
   "update:modelValue": [value: string | undefined];

@@ -13,10 +13,10 @@
         @change="updateType(($event.target as HTMLSelectElement).value)"
         class="callout-type-select"
       >
-        <option value="info">Info</option>
-        <option value="warning">Attention</option>
-        <option value="success">Succès</option>
-        <option value="error">Erreur</option>
+        <option value="info">{{ t('callout.info') }}</option>
+        <option value="warning">{{ t('callout.warning') }}</option>
+        <option value="success">{{ t('callout.success') }}</option>
+        <option value="error">{{ t('callout.error') }}</option>
       </select>
     </div>
     <node-view-content class="callout-content" />
@@ -26,7 +26,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { nodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/vue-3'
+import { useI18n } from 'vue3-i18n'
 
+const { t } = useI18n()
 const props = defineProps(nodeViewProps)
 
 const icon = computed(() => {

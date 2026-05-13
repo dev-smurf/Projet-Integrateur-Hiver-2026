@@ -227,14 +227,14 @@
 
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-semibold text-gray-900">Notes de l'administration</h3>
+                        <h3 class="font-semibold text-gray-900">{{ t('pages.memberDashboard.notes.title') }}</h3>
                         <FileText class="h-4 w-4" style="color: #4c6367;" />
                     </div>
                     <div v-if="notesLoading" class="space-y-2">
                         <div v-for="n in 2" :key="n" class="h-16 bg-gray-100 rounded animate-pulse" />
                     </div>
                     <div v-else-if="!myNotes.length" class="text-sm text-gray-500 italic">
-                        Aucune note publique disponible.
+                        {{ t('pages.memberDashboard.notes.empty') }}
                     </div>
                     <div v-else class="space-y-3 pr-1">
                         <div v-for="note in myNotes.slice(0, 3)" :key="note.id" class="border border-gray-200 rounded-lg p-3 bg-gray-50">
@@ -251,7 +251,7 @@
                                 style="color: #4c6367; background-color: rgba(76, 99, 103, 0.05);"
                                 @mouseover="e => e.currentTarget.style.backgroundColor='rgba(76, 99, 103, 0.1)'"
                                 @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(76, 99, 103, 0.05)'">
-                            Voir plus ({{ myNotes.length }}) <ArrowRight class="h-4 w-4" />
+                            {{ t('pages.memberDashboard.notes.viewMore').replace('{count}', myNotes.length.toString()) }} <ArrowRight class="h-4 w-4" />
                         </button>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
         <div v-if="showNotesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" @click.self="showNotesModal = false">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
                 <div class="p-5 border-b border-gray-100 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-gray-900">Toutes les notes ({{ filteredNotes.length }})</h2>
+                    <h2 class="text-lg font-semibold text-gray-900">{{ t('pages.memberDashboard.notes.allNotes').replace('{count}', filteredNotes.length.toString()) }}</h2>
                     <button @click="showNotesModal = false" class="text-gray-400 hover:text-gray-600 transition">
                         <span class="text-2xl leading-none">&times;</span>
                     </button>
@@ -270,18 +270,18 @@
                 
                 <div class="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row gap-4 bg-gray-50">
                     <div class="flex-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Rechercher</label>
-                        <input type="text" v-model="notesSearchQuery" placeholder="Mots-clés dans le contenu..." class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
+                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('global.search') }}</label>
+                        <input type="text" v-model="notesSearchQuery" :placeholder="t('pages.memberDashboard.notes.searchPlaceholder')" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
                     </div>
                     <div class="flex-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par date</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('pages.memberDashboard.notes.filterByDate') }}</label>
                         <input type="date" v-model="notesDateFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
                     </div>
                 </div>
                 
                 <div class="p-5 overflow-y-auto flex-1 space-y-4" style="background-color: #fcfcfc;">
                     <div v-if="filteredNotes.length === 0" class="text-center text-sm text-gray-500 py-10 italic">
-                        Aucune note ne correspond aux critères de recherche.
+                        {{ t('pages.memberDashboard.notes.noResults') }}
                     </div>
                     <div v-for="note in filteredNotes" :key="note.id" class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
                         <div class="flex items-center justify-between gap-2 mb-3 border-b border-gray-50 pb-2">
@@ -369,7 +369,9 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
   const notesDateFilter = ref("");
 
  const displayName = computed(() => {
-   return personStore.person.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
+   const fullName = personStore.person.fullName?.trim();
+   const composedName = `${personStore.person.firstName ?? ""} ${personStore.person.lastName ?? ""}`.trim();
+   return fullName || composedName || userStore.user.fullName || userStore.user.username || t("pages.memberDashboard.defaultName");
  });
 
  function imageUrl(path?: string): string | undefined {

@@ -2,27 +2,27 @@
   <div class="rounded-lg border border-gray-200 bg-white p-5">
     <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Assignation des membres</h3>
-        <p class="mt-1 text-sm text-gray-500">Assigner ce module a une equipe complete ou a des membres precis.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ t('pages.moduleAssignment.title') }}</h3>
+        <p class="mt-1 text-sm text-gray-500">{{ t('pages.moduleAssignment.subtitle') }}</p>
       </div>
       <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-        {{ assignments.length }} assigne(s)
+        {{ t('pages.moduleAssignment.assignedCount').replace('{count}', assignments.length.toString()) }}
       </span>
     </div>
 
     <div class="border-t border-gray-200 pt-4">
-      <h4 class="mb-3 text-sm font-semibold text-gray-900">Ajouter des destinataires</h4>
+      <h4 class="mb-3 text-sm font-semibold text-gray-900">{{ t('pages.moduleAssignment.addRecipients') }}</h4>
 
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section class="space-y-3">
           <div>
-            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Equipe</label>
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">{{ t('pages.moduleAssignment.team') }}</label>
             <div class="flex gap-2">
               <select
                 v-model="selectedEquipeId"
                 class="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500"
               >
-                <option value="">Choisir une equipe...</option>
+                <option value="">{{ t('pages.moduleAssignment.chooseTeam') }}</option>
                 <option v-for="equipe in equipes" :key="equipeIdOf(equipe)" :value="equipeIdOf(equipe)">
                   {{ equipeName(equipe) }}
                 </option>
@@ -33,30 +33,30 @@
                 :disabled="!selectedEquipeId || assigningEquipe"
                 class="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {{ assigningEquipe ? '...' : 'Assigner' }}
+                {{ assigningEquipe ? '...' : t('pages.moduleAssignment.assign') }}
               </button>
             </div>
           </div>
-          <p class="text-xs text-gray-500">Tous les membres actifs de l'equipe recevront le module. Les doublons sont ignores.</p>
+          <p class="text-xs text-gray-500">{{ t('pages.moduleAssignment.teamAssignHint') }}</p>
         </section>
 
         <section class="space-y-3">
           <div>
-            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Membre individuel</label>
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">{{ t('pages.moduleAssignment.individualMember') }}</label>
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Rechercher un membre..."
+              :placeholder="t('pages.moduleAssignment.searchPlaceholder')"
               class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500"
             />
           </div>
 
           <div v-if="!allMembers.length" class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500">
-            Chargement des membres...
+            {{ t('pages.moduleAssignment.loading') }}
           </div>
 
           <div v-else-if="availableMembers.length === 0" class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500">
-            Aucun membre disponible pour cette recherche.
+            {{ t('pages.moduleAssignment.noMembersForSearch') }}
           </div>
 
           <div v-else class="max-h-44 overflow-y-auto rounded-lg border border-gray-200">
@@ -71,7 +71,7 @@
                 <span class="block truncate font-medium text-gray-900">{{ member.fullName || `${member.firstName} ${member.lastName}` }}</span>
                 <span v-if="member.email" class="block truncate text-xs text-gray-500">{{ member.email }}</span>
               </span>
-              <span class="shrink-0 text-xs font-semibold text-brand-700">Ajouter</span>
+              <span class="shrink-0 text-xs font-semibold text-brand-700">{{ t('global.add') }}</span>
             </button>
           </div>
         </section>
@@ -80,12 +80,12 @@
 
     <div class="mt-5 border-t border-gray-200 pt-4">
       <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h4 class="text-sm font-semibold text-gray-900">Membres assignes</h4>
-        <span class="text-xs text-gray-500">{{ assignments.length }} membre(s)</span>
+        <h4 class="text-sm font-semibold text-gray-900">{{ t('pages.moduleAssignment.assignedMembers') }}</h4>
+        <span class="text-xs text-gray-500">{{ t('pages.moduleAssignment.membersCount').replace('{count}', assignments.length.toString()) }}</span>
       </div>
 
       <div v-if="!assignments.length" class="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
-        Aucun membre assigne.
+        {{ t('pages.moduleAssignment.noAssignedMembers') }}
       </div>
 
       <div v-else class="max-h-64 space-y-2 overflow-y-auto pr-1">
@@ -94,12 +94,12 @@
           :key="assignment.id"
           class="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2"
         >
-          <span class="min-w-0 truncate text-sm font-medium text-gray-800">{{ assignment.memberName || 'Membre assigne' }}</span>
+          <span class="min-w-0 truncate text-sm font-medium text-gray-800">{{ assignment.memberName || t('pages.moduleAssignment.assignedMemberFallback') }}</span>
           <button
             type="button"
             @click="unassign(assignment)"
             class="shrink-0 rounded p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
-            title="Retirer"
+            :title="t('pages.moduleAssignment.remove')"
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
@@ -113,6 +113,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useModulesService, useMemberService, useEquipesService } from '@/inversify.config';
 import { useNotification } from '@kyvg/vue3-notification';
+import { useI18n } from 'vue3-i18n';
 
 interface MemberModuleDto {
   id: string;
@@ -134,6 +135,7 @@ const props = defineProps<{
 }>();
 
 const { notify } = useNotification();
+const { t } = useI18n();
 const modulesService = useModulesService();
 const membersService = useMemberService();
 const equipesService = useEquipesService();
@@ -186,15 +188,15 @@ async function assign(member: MemberItem) {
   try {
     const response = await modulesService.assignModule(props.moduleId, member.id);
     if (!response.succeeded) {
-      notify({ type: 'error', text: 'Erreur lors de l\'assignation.' });
+      notify({ type: 'error', text: t('pages.moduleAssignment.assignError') });
       return;
     }
 
     searchQuery.value = '';
-    notify({ type: 'success', text: 'Membre assigne au module.' });
+    notify({ type: 'success', text: t('pages.moduleAssignment.memberAssignedSuccess') });
     await loadAssignments();
   } catch {
-    notify({ type: 'error', text: 'Erreur lors de l\'assignation.' });
+    notify({ type: 'error', text: t('pages.moduleAssignment.assignError') });
   }
 }
 
@@ -207,13 +209,13 @@ async function assignEquipe() {
     if (response.succeeded) {
       selectedEquipeId.value = '';
       searchQuery.value = '';
-      notify({ type: 'success', text: 'Module assigne a l\'equipe.' });
+      notify({ type: 'success', text: t('pages.moduleAssignment.teamAssignedSuccess') });
       await loadAssignments();
     } else {
-      notify({ type: 'error', text: 'Erreur lors de l\'assignation de l\'equipe.' });
+      notify({ type: 'error', text: t('pages.moduleAssignment.teamAssignError') });
     }
   } catch {
-    notify({ type: 'error', text: 'Erreur lors de l\'assignation de l\'equipe.' });
+    notify({ type: 'error', text: t('pages.moduleAssignment.teamAssignError') });
   } finally {
     assigningEquipe.value = false;
   }
@@ -224,16 +226,16 @@ function equipeIdOf(equipe: any): string {
 }
 
 function equipeName(equipe: any): string {
-  return equipe.nameFr || equipe.nameEn || equipe.NameFr || equipe.NameEn || 'Equipe';
+  return equipe.nameFr || equipe.nameEn || equipe.NameFr || equipe.NameEn || t('pages.moduleAssignment.teamFallback');
 }
 
 async function unassign(assignment: MemberModuleDto) {
   try {
     await modulesService.unassignModule(props.moduleId, assignment.memberId);
-    notify({ type: 'success', text: 'Membre retire du module.' });
+    notify({ type: 'success', text: t('pages.moduleAssignment.memberUnassignedSuccess') });
     await loadAssignments();
   } catch {
-    notify({ type: 'error', text: 'Erreur lors de la desassignation.' });
+    notify({ type: 'error', text: t('pages.moduleAssignment.unassignError') });
   }
 }
 

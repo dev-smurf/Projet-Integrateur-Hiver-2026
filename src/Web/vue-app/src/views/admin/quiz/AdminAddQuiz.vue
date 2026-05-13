@@ -28,7 +28,7 @@
           v-model="form.description"
           rows="3"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
-          :placeholder="$t('quiz.description') + ' (optional)'"
+          :placeholder="$t('quiz.description') + ' (' + $t('quiz.optional') + ')'"
         />
       </div>
 
@@ -53,7 +53,7 @@
           <svg v-if="!imagePreview" class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <img v-else :src="imagePreview" alt="Preview" class="max-w-xs max-h-48 mx-auto rounded-lg" />
+          <img v-else :src="imagePreview" :alt="$t('quiz.preview.title')" class="max-w-xs max-h-48 mx-auto rounded-lg" />
           <p v-if="!imagePreview" class="text-sm text-gray-500">{{ $t('quiz.imageUrl') }}</p>
           <p v-else class="text-sm text-gray-500 mt-2">{{ $t('quiz.imageUrl') }}</p>
         </div>
@@ -225,9 +225,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from '@kyvg/vue3-notification'
 import { useQuizService } from '@/inversify.config'
+import { useI18n } from 'vue3-i18n'
 
 const router = useRouter()
 const { notify } = useNotification()
+const { t } = useI18n()
 
 let quizService: any = null
 try {
@@ -251,17 +253,17 @@ const form = ref({
 
 async function handleSubmit() {
   if (!quizService) {
-    notify({ type: 'error', text: 'Service non disponible' })
+    notify({ type: 'error', text: t('quiz.validation.serviceUnavailable') })
     return
   }
 
   if (!form.value.titre.trim()) {
-    notify({ type: 'error', text: 'Le titre du quiz est requis' })
+    notify({ type: 'error', text: t('quiz.validation.titleRequired') })
     return
   }
 
   if (form.value.questions.length === 0) {
-    notify({ type: 'error', text: 'Le quiz doit avoir au moins une question' })
+    notify({ type: 'error', text: t('quiz.validation.questionRequired') })
     return
   }
 
@@ -287,9 +289,9 @@ async function handleSubmit() {
         questionType: q.questionType,
         order: idx,
         placeholder: q.placeholder || undefined,
-          scaleMinLabel: q.scaleMinLabel || (q.scaleLabels?.[0] ?? 'Jamais'),
-          scaleMidLabel: q.scaleMidLabel || (q.scaleLabels?.[4] ?? 'Parfois'),
-          scaleMaxLabel: q.scaleMaxLabel || (q.scaleLabels?.[9] ?? 'Toujours'),
+          scaleMinLabel: q.scaleMinLabel || (q.scaleLabels?.[0] ?? t('quiz.never')),
+          scaleMidLabel: q.scaleMidLabel || (q.scaleLabels?.[4] ?? t('quiz.sometimes')),
+          scaleMaxLabel: q.scaleMaxLabel || (q.scaleLabels?.[9] ?? t('quiz.always')),
           scaleLabels: q.scaleLabels || undefined,
         responses: q.responses.map((r: any, ridx: number) => ({
           responseText: r.responseText,
@@ -298,13 +300,13 @@ async function handleSubmit() {
       }))
     })
 
-    notify({ type: 'success', text: 'Quiz créé avec succès!' })
+    notify({ type: 'success', text: t('quiz.create.validation.successMessage') })
     setTimeout(() => {
       router.push({ name: 'admin.children.quiz.index' })
     }, 1500)
   } catch (err: any) {
-    console.error('Erreur lors de la création:', err)
-    const errorMsg = err.response?.data?.message || err.message || 'Erreur lors de la création du quiz'
+    console.error(t('quiz.validation.createConsoleError'), err)
+    const errorMsg = err.response?.data?.message || err.message || t('quiz.create.validation.failedMessage')
     apiErrors.value = [errorMsg]
     notify({ type: 'error', text: errorMsg })
   } finally {
@@ -317,14 +319,14 @@ function addQuestion() {
     questionText: '',
     questionType: 1,
     placeholder: '',
-    scaleMinLabel: 'Jamais',
-    scaleMidLabel: 'Parfois',
-    scaleMaxLabel: 'Toujours',
+    scaleMinLabel: t('quiz.never'),
+    scaleMidLabel: t('quiz.sometimes'),
+    scaleMaxLabel: t('quiz.always'),
     // local-only array to allow custom labels for each step 1..10
     scaleLabels: Array.from({ length: 10 }, (_, i) => {
-      if (i === 0) return 'Jamais'
-      if (i === 4) return 'Parfois'
-      if (i === 9) return 'Toujours'
+      if (i === 0) return t('quiz.never')
+      if (i === 4) return t('quiz.sometimes')
+      if (i === 9) return t('quiz.always')
       return ''
     }),
     responses: [{ responseText: '', order: 0 }]
@@ -333,9 +335,9 @@ function addQuestion() {
 
 function createDefaultScaleLabels() {
   return Array.from({ length: 10 }, (_, i) => {
-    if (i === 0) return 'Jamais'
-    if (i === 4) return 'Parfois'
-    if (i === 9) return 'Toujours'
+    if (i === 0) return t('quiz.never')
+    if (i === 4) return t('quiz.sometimes')
+    if (i === 9) return t('quiz.always')
     return ''
   })
 }

@@ -6,7 +6,7 @@
           <h2 class="text-xl font-bold">{{ $t('quiz.assign_button') }}</h2>
           <p class="mt-1 text-sm text-gray-600">{{ quizTitle }}</p>
         </div>
-        <button @click="$emit('close')" class="text-2xl font-bold leading-none text-gray-500 hover:text-gray-700">x</button>
+        <button @click="$emit('close')" class="text-2xl font-bold leading-none text-gray-500 hover:text-gray-700">{{ $t('pages.adminNotes.close') }}</button>
       </div>
 
       <div class="flex-1 space-y-4 overflow-y-auto p-4">
@@ -38,7 +38,7 @@
         <template v-else>
           <div class="space-y-3 rounded-lg border border-gray-200 p-4">
             <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-              <span class="font-semibold text-gray-800">Destinataires</span>
+              <span class="font-semibold text-gray-800">{{ $t('quiz.assign.recipients') }}</span>
               <span class="text-gray-500">
                 {{ $t('quiz.assign.selectedCount').replace('{count}', selectedAssignmentUserIds.length.toString()) }}
               </span>
@@ -47,19 +47,19 @@
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div class="space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-sm font-medium text-gray-700">Equipes</span>
-                  <span class="text-xs text-gray-500">{{ selectedEquipeIds.length }} selectionnee(s)</span>
+                  <span class="text-sm font-medium text-gray-700">{{ $t('quiz.assign.teams') }}</span>
+                  <span class="text-xs text-gray-500">{{ $t('quiz.assign.teamsSelectedCount').replace('{count}', selectedEquipeIds.length.toString()) }}</span>
                 </div>
 
                 <input
                   v-model="equipeSearchQuery"
                   type="text"
-                  placeholder="Rechercher une equipe..."
+                  :placeholder="$t('quiz.assign.searchTeamPlaceholder')"
                   class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
                 <div v-if="visibleEquipes.length === 0" class="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
-                  Aucune equipe disponible.
+                  {{ $t('quiz.assign.noTeamsAvailable') }}
                 </div>
 
                 <div v-else class="max-h-72 space-y-2 overflow-y-auto pr-1">
@@ -70,7 +70,7 @@
                   >
                     <span class="min-w-0">
                       <span class="block truncate text-sm font-medium text-gray-900">{{ equipeName(equipe) }}</span>
-                      <span class="text-xs text-gray-500">{{ eligibleEquipeUserIds(equipeIdOf(equipe)).length }} membre(s) admissible(s)</span>
+                      <span class="text-xs text-gray-500">{{ $t('quiz.assign.eligibleMembersCount').replace('{count}', eligibleEquipeUserIds(equipeIdOf(equipe)).length.toString()) }}</span>
                     </span>
                     <input
                       v-model="selectedEquipeIds"
@@ -136,7 +136,7 @@
           </div>
 
           <div class="space-y-3 rounded-lg border border-gray-200 p-4">
-            <span class="block text-sm font-semibold text-gray-800">Planification</span>
+            <span class="block text-sm font-semibold text-gray-800">{{ $t('quiz.assign.planning') }}</span>
 
             <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
               <label class="text-sm text-gray-700">
@@ -314,7 +314,7 @@ function equipeIdOf(equipe: any): string {
 }
 
 function equipeName(equipe: any): string {
-  return equipe.nameFr || equipe.nameEn || equipe.NameFr || equipe.NameEn || 'Equipe'
+  return equipe.nameFr || equipe.nameEn || equipe.NameFr || equipe.NameEn || t('quiz.assign.teamFallback')
 }
 
 function eligibleEquipeUserIds(equipeId: string): string[] {
@@ -377,7 +377,7 @@ async function loadUsers() {
     }
   } catch (err) {
     console.error('Failed to load users:', err)
-    notify({ type: 'error', text: 'Failed to load users' })
+    notify({ type: 'error', text: t('quiz.assign.loadUsersError') })
   } finally {
     loading.value = false
   }

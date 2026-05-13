@@ -71,12 +71,12 @@
           </div>
 
           <router-link
-            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id } }"
+            :to="{ name: 'admin.children.modules.preview', params: { id: mod.id }, query: { from: 'list' } }"
             class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
               <Eye class="w-8 h-8 text-white" />
-              <span class="text-white font-medium">Apercu</span>
+              <span class="text-white font-medium">{{ $t('quiz.preview.title') }}</span>
             </div>
           </router-link>
         </div>
@@ -106,7 +106,7 @@
               class="flex-1 min-w-24 flex items-center justify-center gap-1 bg-green-50 text-green-600 hover:bg-green-100 py-2 px-3 rounded text-sm font-medium transition"
             >
               <Users class="w-4 h-4" />
-              Assigner
+              {{ $t('pages.moduleAssignment.assign') }}
             </button>
             <button
               @click="confirmDelete(mod)"

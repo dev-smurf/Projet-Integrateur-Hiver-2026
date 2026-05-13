@@ -6,7 +6,7 @@
              style="background-color: #4c6367;">
 
             <div class="flex items-center h-16 px-6 border-b border-white/10">
-                <span class="font-semibold text-lg" style="color: #98ff98;">Mon App</span>
+                <span class="font-semibold text-lg" style="color: #98ff98;">{{ $t('global.appName') }}</span>
             </div>
 
             <div class="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-1">
@@ -22,7 +22,7 @@
                              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
                              :class="isActive('member.modules') ? 'active-link' : 'inactive-link'">
                     <BookOpen class="w-4 h-4 shrink-0" />
-                    Mes modules
+                    {{ $t('member.modules.title') }}
                 </router-link>
                 <router-link v-if="userStore.hasRole(Role.Member)"
                              :to="{ name: 'equipe.liste' }"
@@ -86,7 +86,7 @@
                              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition"
                              :class="isActive('admin.children.notes') ? 'active-link' : 'inactive-link'">
                     <FileText class="w-4 h-4 shrink-0" />
-                    Notes
+                    {{ $t('pages.adminNotes.title') }}
                 </router-link>
             </div>
 
@@ -143,7 +143,7 @@
         <div class="flex-1 min-w-0">
             <main class="w-full px-6 py-8">
                 <AppBreadcrumb />
-                <router-view />
+                <router-view :key="`${route.fullPath}-${currentLocale}`" />
             </main>
         </div>
 
@@ -177,7 +177,7 @@
 
 <script lang="ts" setup>
     import { computed, ref, onMounted, onUnmounted } from "vue";
-    import { useRouter } from "vue-router";
+    import { useRoute, useRouter } from "vue-router";
     import { useI18n } from "vue3-i18n";
     import Cookies from "universal-cookie";
     import {
@@ -197,6 +197,7 @@
     import { hasUnreadMemberAdminNote, MEMBER_ADMIN_NOTE_READ_EVENT } from "@/utils/memberAdminNotes";
 
     const router = useRouter();
+    const route = useRoute();
     const i18nInstance = useI18n();
     const userStore = useUserStore();
     const personStore = usePersonStore();

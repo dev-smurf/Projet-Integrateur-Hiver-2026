@@ -8,12 +8,12 @@
 
       <div class="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.2em] text-brand-300 font-medium">Admin Center</p>
+          <p class="text-xs uppercase tracking-[0.2em] text-brand-300 font-medium">{{ t('pages.adminDashboard.title') }}</p>
           <h1 class="mt-1 text-2xl font-bold">
             {{ t('pages.dashboard.welcome') }}, {{ personStore.person.fullName || userStore.user.fullName }}
           </h1>
           <p class="mt-1 max-w-lg text-sm text-slate-300">
-            Pilotez vos membres, leurs parcours et les modules de préparation.
+            {{ t('pages.adminDashboard.subtitle') }}
           </p>
         </div>
         <div class="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm text-slate-200 shrink-0">
@@ -54,7 +54,7 @@
                 <UserPlus class="h-4 w-4" />
               </div>
               <div>
-                <h2 class="text-sm font-semibold text-slate-800">Membres récents</h2>
+                <h2 class="text-sm font-semibold text-slate-800">{{ t('pages.adminDashboard.recentMembers') }}</h2>
                 <p class="text-xs text-slate-400">{{ newMembersLabel }}</p>
               </div>
             </div>
@@ -63,7 +63,7 @@
                 <input
                   v-model="searchQuery"
                   type="text"
-                  placeholder="Rechercher..."
+                  :placeholder="t('global.search')"
                   class="w-40 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-xs focus:border-brand-400 focus:outline-none focus:bg-white transition-all"
                 />
               </div>
@@ -71,7 +71,7 @@
                 :to="{ name: 'admin.children.members.index' }"
                 class="text-xs font-medium text-brand-600 hover:text-brand-700 transition"
               >
-                Voir tous →
+                {{ t('pages.adminDashboard.viewAllMembers') }} →
               </router-link>
             </div>
           </div>
@@ -86,7 +86,7 @@
             </div>
 
             <div v-else-if="newMembersThisMonth.length === 0" class="p-6 text-center text-sm text-slate-400 italic">
-              Aucun membre récent.
+              {{ t('pages.adminDashboard.noNewMembers') }}
             </div>
 
             <div
@@ -108,10 +108,10 @@
                     @click.stop
                     class="text-[10px] text-brand-600 hover:underline font-medium"
                   >
-                    Détails
+                    {{ t('routes.admin.children.members.details.name') }}
                   </router-link>
                 </div>
-                <p class="truncate text-xs text-slate-400">{{ member.email || 'Email non disponible' }}</p>
+                <p class="truncate text-xs text-slate-400">{{ member.email || t('pages.adminDashboard.emailUnavailable') }}</p>
               </div>
             </div>
           </div>
@@ -124,14 +124,14 @@
               <TrendingUp class="h-4 w-4" />
             </div>
             <div>
-              <h2 class="text-sm font-semibold text-slate-800">Modules du membre sélectionné</h2>
-              <p class="text-xs text-slate-400">Progression et gestion des modules assignés.</p>
+              <h2 class="text-sm font-semibold text-slate-800">{{ t('pages.adminDashboard.memberModules') }}</h2>
+              <p class="text-xs text-slate-400">{{ t('pages.adminDashboard.memberModulesHint') }}</p>
             </div>
           </div>
           <div class="px-5 py-4 space-y-3">
             <div v-if="!selectedMemberId" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
               <TrendingUp class="mx-auto h-8 w-8 text-slate-300 mb-2" />
-              <p class="text-sm text-slate-400">Choisissez un membre pour afficher ses modules.</p>
+              <p class="text-sm text-slate-400">{{ t('pages.adminDashboard.selectMemberHint') }}</p>
             </div>
 
             <div v-else-if="isLoadingModules" class="space-y-3">
@@ -143,7 +143,7 @@
             </div>
 
             <div v-else-if="memberModules.length === 0" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-400">
-              Aucun module associé à ce membre.
+              {{ t('pages.adminDashboard.noModulesForMember') }}
             </div>
 
             <div
@@ -162,14 +162,14 @@
                     class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                     :class="module.isCompleted ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'"
                   >
-                    {{ module.isCompleted ? '✓ Terminé' : module.progressPercent + '%' }}
+                    {{ module.isCompleted ? `✓ ${t('pages.adminDashboard.completed')}` : module.progressPercent + '%' }}
                   </span>
                   <button
                     type="button"
                     class="rounded-full border border-rose-200 px-2.5 py-0.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
                     @click="removeModule(module.moduleId)"
                   >
-                    Retirer
+                    {{ t('pages.adminDashboard.remove') }}
                   </button>
                 </div>
               </div>
@@ -196,7 +196,7 @@
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
               <ArrowUpRight class="h-4 w-4" />
             </div>
-            <h2 class="text-sm font-semibold text-slate-800">Actions rapides</h2>
+            <h2 class="text-sm font-semibold text-slate-800">{{ t('pages.adminDashboard.quickActions') }}</h2>
           </div>
           <div class="divide-y divide-slate-100">
             <router-link
@@ -220,7 +220,7 @@
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
               <TrendingUp class="h-4 w-4" />
             </div>
-            <h2 class="text-sm font-semibold text-slate-800">Assigner un module</h2>
+            <h2 class="text-sm font-semibold text-slate-800">{{ t('pages.adminDashboard.assignModule') }}</h2>
           </div>
           <div class="px-5 py-4">
             <div class="flex flex-col gap-3">
@@ -228,9 +228,9 @@
                 v-model="selectedModuleId"
                 class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
               >
-                <option value="">Choisir un module…</option>
+                <option value="">{{ t('pages.adminDashboard.chooseModule') }}</option>
                 <option v-for="module in availableModules" :key="module.id" :value="module.id">
-                  {{ module.name || 'Module' }}
+                  {{ module.name || t('pages.adminDashboard.moduleFallback') }}
                 </option>
               </select>
               <button
@@ -239,11 +239,11 @@
                 :disabled="!selectedMemberId || !selectedModuleId"
                 @click="assignModuleToMember"
               >
-                Ajouter
+                {{ t('global.add') }}
               </button>
             </div>
             <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500 italic">
-              ⚠ Cliquez d'abord sur un membre dans la liste ci-dessus.
+              {{ t('pages.adminDashboard.selectMemberWarning') }}
             </p>
           </div>
         </div>
@@ -265,6 +265,7 @@ import {useMemberService, useModulesService} from "@/inversify.config";
 import {
   ArrowUpRight,
   BookOpen,
+  ClipboardList,
   Clock,
   FolderPlus,
   TrendingUp,
@@ -283,12 +284,14 @@ const todayLabel = new Intl.DateTimeFormat("fr-CA", {dateStyle: "full"}).format(
 
 const dashboardSummary = ref<DashboardSummaryDto | null>(null);
 
-const quickActions = [
-  {label: "Ajouter un membre", to: {name: "admin.children.members.add"}, icon: UserPlus},
-  {label: "Voir les membres", to: {name: "admin.children.members.index"}, icon: Users},
-  {label: "Créer un module", to: {name: "admin.children.modules.add"}, icon: FolderPlus},
-  {label: "Voir les modules", to: {name: "admin.children.modules.index"}, icon: BookOpen},
-];
+const quickActions = computed(() => [
+  {label: t("pages.adminDashboard.addMember"), to: {name: "admin.children.members.add"}, icon: UserPlus},
+  {label: t("pages.adminDashboard.viewMembers"), to: {name: "admin.children.members.index"}, icon: Users},
+  {label: t("pages.adminDashboard.createModule"), to: {name: "admin.children.modules.add"}, icon: FolderPlus},
+  {label: t("pages.adminDashboard.viewModules"), to: {name: "admin.children.modules.index"}, icon: BookOpen},
+  {label: t("pages.adminDashboard.createQuiz"), to: {name: "admin.children.quiz.add"}, icon: ClipboardList},
+  {label: t("pages.adminDashboard.viewQuizzes"), to: {name: "admin.children.quiz.index"}, icon: ClipboardList},
+]);
 
 const members = ref<Member[]>([]);
 const isLoadingMembers = ref(false);
@@ -332,7 +335,7 @@ const newMembersThisMonth = computed(() => {
     const initials = ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
     return {
       id: member.id ?? "",
-      displayName: fullName || member.email || "Membre",
+      displayName: fullName || member.email || t("pages.memberDashboard.defaultName"),
       email: member.email ?? "",
       initials: initials || "?"
     };
@@ -341,15 +344,15 @@ const newMembersThisMonth = computed(() => {
 
 const newMembersLabel = computed(() => {
   const count = newMembersThisMonth.value.length;
-  if (count === 0) return "Aucun membre récent";
-  return `Les ${count} derniers inscrits`;
+  if (count === 0) return t("pages.adminDashboard.noNewMembers");
+  return t("pages.adminDashboard.lastRegistered").replace("{count}", count.toString());
 });
 
 const kpis = computed(() => {
   const summary = dashboardSummary.value;
   return [
-    {label: "Membres actifs", value: formatNumber(summary?.totalMembers ?? 0), icon: Users},
-    {label: "Modules", value: formatNumber(summary?.totalModules ?? 0), icon: BookOpen},
+    {label: t("pages.adminDashboard.kpiActiveMembers"), value: formatNumber(summary?.totalMembers ?? 0), icon: Users},
+    {label: t("pages.adminDashboard.kpiModules"), value: formatNumber(summary?.totalModules ?? 0), icon: BookOpen},
   ];
 });
 
@@ -378,7 +381,7 @@ async function loadMembers() {
       selectedMemberId.value = newMembersThisMonth.value[0].id;
   } catch (error) {
     members.value = [];
-    memberError.value = "Impossible de charger les membres.";
+    memberError.value = t("pages.adminDashboard.errorLoadMembers");
     selectedMemberId.value = "";
   } finally {
     isLoadingMembers.value = false;
@@ -393,7 +396,7 @@ async function loadMemberModules(memberId: string) {
     memberModules.value = await memberService.getMemberModules(memberId);
   } catch (error) {
     memberModules.value = [];
-    memberModulesError.value = "Impossible de charger les modules du membre.";
+    memberModulesError.value = t("pages.adminDashboard.errorLoadMemberModules");
   } finally {
     isLoadingModules.value = false;
   }
@@ -420,7 +423,7 @@ async function removeModule(moduleId: string) {
   await loadMemberModules(selectedMemberId.value);
 }
 
-const moduleTitle = (module: MemberModuleDto) => module.name || module.nameFr || module.nameEn || "Module";
+const moduleTitle = (module: MemberModuleDto) => module.name || module.nameFr || module.nameEn || t("pages.adminDashboard.moduleFallback");
 const moduleSubtitle = (module: MemberModuleDto) => module.subject || module.sujetFr || module.sujetEn || "";
 
 const formattedModules = computed(() =>
