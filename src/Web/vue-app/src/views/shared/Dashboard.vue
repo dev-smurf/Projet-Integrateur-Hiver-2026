@@ -55,7 +55,7 @@
               </div>
               <div>
                 <h2 class="text-sm font-semibold text-slate-800">Membres récents</h2>
-                <p class="text-xs text-slate-400">{{ newMembersLabel }}</p>
+                <p class="text-xs text-slate-400">{{ membersLabel }}</p>
               </div>
             </div>
             <div class="flex items-center gap-3">
@@ -85,18 +85,28 @@
               {{ memberError }}
             </div>
 
-            <div v-else-if="newMembersThisMonth.length === 0" class="p-6 text-center text-sm text-slate-400 italic">
-              Aucun membre récent.
+            <div v-else-if="filteredMembers.length === 0" class="p-6 text-center text-sm text-slate-400 italic">
+              {{ searchQuery ? "Aucun membre trouvé." : "Aucun membre récent." }}
             </div>
 
             <div
               v-else
-              v-for="member in newMembersThisMonth"
+              v-for="member in filteredMembers"
               :key="member.id"
-              @click="selectedMemberId = member.id"
-              class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 transition cursor-pointer border-r-4"
-              :class="selectedMemberId === member.id ? 'bg-brand-50/50 border-brand-500' : 'border-transparent'"
+              class="flex items-center gap-3 px-5 py-3 transition cursor-pointer border-r-4"
+              :class="selectedMemberId === member.id ? 'bg-brand-50/70 border-brand-600' : 'border-transparent hover:bg-slate-50'"
+              role="button"
+              tabindex="0"
+              @click="selectMember(member.id)"
+              @keydown.enter.prevent="selectMember(member.id)"
+              @keydown.space.prevent="selectMember(member.id)"
             >
+              <span
+                class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition"
+                :class="selectedMemberId === member.id ? 'border-brand-600 bg-brand-600' : 'border-slate-300 bg-white'"
+              >
+                <Check v-if="selectedMemberId === member.id" class="h-3 w-3 text-white" />
+              </span>
               <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-slate-200 text-xs font-bold text-brand-700 shadow-sm">
                 {{ member.initials }}
               </div>
@@ -113,6 +123,12 @@
                 </div>
                 <p class="truncate text-xs text-slate-400">{{ member.email || 'Email non disponible' }}</p>
               </div>
+              <span
+                v-if="selectedMemberId === member.id"
+                class="hidden shrink-0 rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white sm:inline-flex"
+              >
+                Sélectionné
+              </span>
             </div>
           </div>
         </div>
@@ -124,8 +140,11 @@
               <TrendingUp class="h-4 w-4" />
             </div>
             <div>
-              <h2 class="text-sm font-semibold text-slate-800">Modules du membre sélectionné</h2>
-              <p class="text-xs text-slate-400">Progression et gestion des modules assignés.</p>
+              <h2 class="text-sm font-semibold text-slate-800">
+                Modules du membre sélectionné
+                <span v-if="selectedMember" class="font-normal text-slate-500">— {{ selectedMember.displayName }}</span>
+              </h2>
+              <p class="text-xs text-slate-400">{{ selectedMember ? `${memberModules.length} module(s) assigné(s)` : "Progression et gestion des modules assignés." }}</p>
             </div>
           </div>
           <div class="px-5 py-4 space-y-3">
@@ -143,7 +162,7 @@
             </div>
 
             <div v-else-if="memberModules.length === 0" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-400">
-              Aucun module associé à ce membre.
+              Aucun module associé à {{ selectedMember?.displayName || "ce membre" }}.
             </div>
 
             <div
@@ -167,9 +186,10 @@
                   <button
                     type="button"
                     class="rounded-full border border-rose-200 px-2.5 py-0.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
+                    :disabled="removingModuleId === module.moduleId"
                     @click="removeModule(module.moduleId)"
                   >
-                    Retirer
+                    {{ removingModuleId === module.moduleId ? "..." : "Retirer" }}
                   </button>
                 </div>
               </div>
@@ -223,12 +243,16 @@
             <h2 class="text-sm font-semibold text-slate-800">Assigner un module</h2>
           </div>
           <div class="px-5 py-4">
+            <p v-if="selectedMember" class="mb-3 text-xs text-slate-500">
+              à {{ selectedMember.displayName }}
+            </p>
             <div class="flex flex-col gap-3">
               <select
                 v-model="selectedModuleId"
+                :disabled="!selectedMemberId || isLoadingAvailableModules"
                 class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-400 focus:outline-none shadow-sm"
               >
-                <option value="">Choisir un module…</option>
+                <option value="">{{ availableModulesPlaceholder }}</option>
                 <option v-for="module in availableModules" :key="module.id" :value="module.id">
                   {{ module.name || 'Module' }}
                 </option>
@@ -236,10 +260,10 @@
               <button
                 type="button"
                 class="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
-                :disabled="!selectedMemberId || !selectedModuleId"
+                :disabled="!selectedMemberId || !selectedModuleId || isAssigning"
                 @click="assignModuleToMember"
               >
-                Ajouter
+                {{ isAssigning ? "Ajout en cours..." : "Ajouter" }}
               </button>
             </div>
             <p v-if="!selectedMemberId" class="mt-2 text-xs text-amber-500 italic">
@@ -257,14 +281,16 @@
 <script lang="ts" setup>
 import {computed, onMounted, ref, watch} from "vue";
 import {useI18n} from "vue3-i18n";
+import {useNotification} from "@kyvg/vue3-notification";
 import {useUserStore} from "@/stores/userStore";
 import {usePersonStore} from "@/stores/personStore";
 import {Role} from "@/types/enums";
-import {DashboardSummaryDto, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
+import type {DashboardSummaryDto, Member, MemberModuleDto, ModuleDto} from "@/types/entities";
 import {useMemberService, useModulesService} from "@/inversify.config";
 import {
   ArrowUpRight,
   BookOpen,
+  Check,
   Clock,
   FolderPlus,
   TrendingUp,
@@ -277,6 +303,7 @@ const personStore = usePersonStore();
 const memberService = useMemberService();
 const modulesService = useModulesService();
 const {t} = useI18n();
+const {notify} = useNotification();
 
 const isAdmin = computed(() => userStore.hasRole(Role.Admin));
 const todayLabel = new Intl.DateTimeFormat("fr-CA", {dateStyle: "full"}).format(new Date());
@@ -299,22 +326,24 @@ const searchQuery = ref("");
 const memberModules = ref<MemberModuleDto[]>([]);
 const isLoadingModules = ref(false);
 const memberModulesError = ref("");
+const removingModuleId = ref("");
 const selectedModuleId = ref("");
 const allModules = ref<ModuleDto[]>([]);
+const isLoadingAvailableModules = ref(false);
+const isAssigning = ref(false);
 
-function isInCurrentMonth(value?: string) {
-  if (!value) return false;
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return false;
-  const now = new Date();
-  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+interface DashboardMember {
+  id: string;
+  displayName: string;
+  email: string;
+  initials: string;
 }
 
-const newMembersThisMonth = computed(() => {
+const filteredMembers = computed<DashboardMember[]>(() => {
   let filtered = [...members.value].filter(m => !!m.id);
 
   if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
+    const q = searchQuery.value.toLowerCase().trim();
     filtered = filtered.filter(m => 
       (m.fullName?.toLowerCase().includes(q)) || 
       (m.email?.toLowerCase().includes(q)) ||
@@ -325,24 +354,24 @@ const newMembersThisMonth = computed(() => {
 
   const sorted = filtered
     .sort((a, b) => new Date(b.created ?? 0).getTime() - new Date(a.created ?? 0).getTime())
-    .slice(0, 3);
+    .slice(0, 6);
 
-  return sorted.map(member => {
-    const fullName = (member.fullName || `${member.firstName ?? ""} ${member.lastName ?? ""}`).trim();
-    const initials = ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
-    return {
-      id: member.id ?? "",
-      displayName: fullName || member.email || "Membre",
-      email: member.email ?? "",
-      initials: initials || "?"
-    };
-  });
+  return sorted.map(toDashboardMember);
 });
 
-const newMembersLabel = computed(() => {
-  const count = newMembersThisMonth.value.length;
+const selectedMember = computed<DashboardMember | null>(() => {
+  if (!selectedMemberId.value) return null;
+  const visibleMember = filteredMembers.value.find(member => member.id === selectedMemberId.value);
+  if (visibleMember) return visibleMember;
+
+  const rawMember = members.value.find(member => member.id === selectedMemberId.value);
+  return rawMember ? toDashboardMember(rawMember) : null;
+});
+
+const membersLabel = computed(() => {
+  const count = filteredMembers.value.length;
   if (count === 0) return "Aucun membre récent";
-  return `Les ${count} derniers inscrits`;
+  return `${count} membre(s) affiché(s)`;
 });
 
 const kpis = computed(() => {
@@ -358,6 +387,13 @@ const availableModules = computed(() => {
   return allModules.value.filter(module => !assignedIds.has(module.id));
 });
 
+const availableModulesPlaceholder = computed(() => {
+  if (!selectedMemberId.value) return "Sélectionnez d'abord un membre...";
+  if (isLoadingAvailableModules.value) return "Chargement...";
+  if (availableModules.value.length === 0) return "Tous les modules sont assignés";
+  return "Choisir un module...";
+});
+
 watch(selectedMemberId, async (memberId) => {
   memberModulesError.value = "";
   selectedModuleId.value = "";
@@ -368,14 +404,29 @@ watch(selectedMemberId, async (memberId) => {
   await loadMemberModules(memberId);
 });
 
+function toDashboardMember(member: Member): DashboardMember {
+  const fullName = (member.fullName || `${member.firstName ?? ""} ${member.lastName ?? ""}`).trim();
+  const initials = ((member.firstName?.[0] || "") + (member.lastName?.[0] || "")).toUpperCase();
+  return {
+    id: member.id ?? "",
+    displayName: fullName || member.email || "Membre",
+    email: member.email ?? "",
+    initials: initials || "?"
+  };
+}
+
+function selectMember(memberId: string) {
+  selectedMemberId.value = memberId;
+}
+
 async function loadMembers() {
   if (!isAdmin.value) return;
   isLoadingMembers.value = true;
   memberError.value = "";
   try {
     members.value = await memberService.getRecentMembers(120, 200, "");
-    if (!selectedMemberId.value && newMembersThisMonth.value.length > 0)
-      selectedMemberId.value = newMembersThisMonth.value[0].id;
+    if (!selectedMemberId.value && filteredMembers.value.length > 0)
+      selectedMemberId.value = filteredMembers.value[0].id;
   } catch (error) {
     members.value = [];
     memberError.value = "Impossible de charger les membres.";
@@ -400,7 +451,12 @@ async function loadMemberModules(memberId: string) {
 }
 
 async function loadAllModules() {
-  allModules.value = await modulesService.getAllModules();
+  isLoadingAvailableModules.value = true;
+  try {
+    allModules.value = await modulesService.getAllModules();
+  } finally {
+    isLoadingAvailableModules.value = false;
+  }
 }
 
 async function loadDashboardSummary() {
@@ -409,15 +465,35 @@ async function loadDashboardSummary() {
 
 async function assignModuleToMember() {
   if (!selectedMemberId.value || !selectedModuleId.value) return;
-  await memberService.addModuleToMember(selectedMemberId.value, selectedModuleId.value);
-  selectedModuleId.value = "";
-  await loadMemberModules(selectedMemberId.value);
+  isAssigning.value = true;
+  try {
+    const response = await memberService.addModuleToMember(selectedMemberId.value, selectedModuleId.value);
+    if (response.succeeded) {
+      notify({type: "success", text: "Module assigné."});
+      selectedModuleId.value = "";
+      await loadMemberModules(selectedMemberId.value);
+    } else {
+      notify({type: "error", text: "Impossible d'assigner le module."});
+    }
+  } finally {
+    isAssigning.value = false;
+  }
 }
 
 async function removeModule(moduleId: string) {
   if (!selectedMemberId.value) return;
-  await memberService.removeModuleFromMember(selectedMemberId.value, moduleId);
-  await loadMemberModules(selectedMemberId.value);
+  removingModuleId.value = moduleId;
+  try {
+    const response = await memberService.removeModuleFromMember(selectedMemberId.value, moduleId);
+    if (response.succeeded) {
+      notify({type: "success", text: "Module retiré."});
+      await loadMemberModules(selectedMemberId.value);
+    } else {
+      notify({type: "error", text: "Impossible de retirer le module."});
+    }
+  } finally {
+    removingModuleId.value = "";
+  }
 }
 
 const moduleTitle = (module: MemberModuleDto) => module.name || module.nameFr || module.nameEn || "Module";
