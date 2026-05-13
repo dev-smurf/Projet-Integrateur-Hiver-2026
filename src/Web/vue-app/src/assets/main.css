@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-950: #0f0f0f;
-  --color-brand-900: #1a1a1a;
-  --color-brand-800: #262626;
-  --color-brand-700: #333333;
-  --color-brand-600: #c0392b;
-  --color-brand-500: #d44637;
-  --color-brand-400: #e05c4d;
-  --color-brand-300: #e88478;
-  --color-brand-200: #f0aaa2;
-  --color-brand-100: #f8d5d1;
-  --color-brand-50: #fdf2f1;
+  --color-brand-950: #062d20;
+  --color-brand-900: #0b3f2d;
+  --color-brand-800: #0d563a;
+  --color-brand-700: #006945;
+  --color-brand-600: #16824e;
+  --color-brand-500: #528965;
+  --color-brand-400: #7fba27;
+  --color-brand-300: #a4cf66;
+  --color-brand-200: #c8e2a4;
+  --color-brand-100: #e6f2d5;
+  --color-brand-50: #f4faec;
 }
 
 @layer base {
@@ -78,8 +78,8 @@
 
 /* Chat bubble pulse when new message arrives */
 @keyframes bubble-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(192, 57, 43, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 105, 69, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(0, 105, 69, 0); }
 }
 
 .bubble-pulse {

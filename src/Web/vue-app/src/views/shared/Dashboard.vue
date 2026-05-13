@@ -2,16 +2,16 @@
   <div class="space-y-6">
 
     <!-- ─── HERO ─────────────────────────────────────────────── -->
-    <header class="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 text-white shadow-sm">
+    <header class="rounded-2xl bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 px-6 py-6 text-white shadow-sm">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="min-w-0">
           <p class="text-[11px] font-medium uppercase tracking-[0.2em] text-brand-300">Admin Center</p>
           <h1 class="mt-1 truncate text-2xl font-bold">{{ welcomeGreeting }}</h1>
-          <p class="mt-1 max-w-xl text-sm text-slate-300">
+          <p class="mt-1 max-w-xl text-sm text-brand-100">
             Pilotez vos membres, leurs parcours et les modules de préparation.
           </p>
         </div>
-        <div class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white/10 px-3 py-2 text-sm text-slate-200 lg:self-auto">
+        <div class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white/15 px-3 py-2 text-sm text-brand-50 lg:self-auto">
           <Clock class="h-4 w-4 text-brand-300" />
           <span class="capitalize">{{ todayLabel }}</span>
         </div>
