@@ -12,5 +12,6 @@ public class GetMeResponse
     public string? City { get; set; }
     public string? ZipCode { get; set; }
     public string? VisibleAdminNotes { get; set; }
+    public DateTime? VisibleAdminNotesEditedAt { get; set; }
     public List<string> Roles { get; set; } = null!;
 }

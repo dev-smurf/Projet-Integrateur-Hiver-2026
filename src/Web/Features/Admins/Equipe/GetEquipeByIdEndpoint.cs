@@ -47,6 +47,7 @@ public class GetEquipeByIdEndpoint : EndpointWithoutRequest<EquipeDto>
             Id = entity.Id.ToString(),
             NameFr = entity.NameFr,
             NameEn = entity.NameEn,
+            ParentEquipeId = entity.ParentEquipeId?.ToString(),
             MemberUserIds = entity.Membres.Select(u => u.Id.ToString()).ToList()
         };
     }

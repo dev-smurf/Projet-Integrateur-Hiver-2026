@@ -18,6 +18,11 @@ public class EquipeConfiguration : IEntityTypeConfiguration<Equipe>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.HasOne(e => e.ParentEquipe)
+            .WithMany(e => e.ChildEquipes)
+            .HasForeignKey(e => e.ParentEquipeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasMany(e => e.Membres)
             .WithMany()
             .UsingEntity(j => j.ToTable("EquipeMembres"));

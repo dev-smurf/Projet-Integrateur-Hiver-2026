@@ -77,7 +77,15 @@
 
         <!-- Content -->
         <div class="p-4 flex flex-col flex-1">
-          <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">{{ mod.name || '---' }}</h3>
+          <div class="mb-2 flex items-start justify-between gap-2">
+            <h3 class="font-semibold text-gray-900 line-clamp-1">{{ mod.name || '---' }}</h3>
+            <span
+              class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+              :class="mod.isPublished ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+            >
+              {{ mod.isPublished ? 'Publié' : 'Brouillon' }}
+            </span>
+          </div>
           <p class="text-sm text-gray-500 line-clamp-3 flex-1">{{ mod.content || mod.subject || '---' }}</p>
         </div>
 

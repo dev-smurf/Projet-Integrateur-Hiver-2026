@@ -21,6 +21,7 @@ public class SaveModuleFullRequest
     public string? Name { get; set; }
     public string? Subject { get; set; }
     public string? Content { get; set; }
+    public bool? IsPublished { get; set; }
     public List<SectionPayload> Sections { get; set; } = new();
 }
 
@@ -71,6 +72,8 @@ public class SaveModuleFullEndpoint : Endpoint<SaveModuleFullRequest, SucceededO
             module.Subject = req.Subject;
         if (req.Content is not null)
             module.Content = req.Content;
+        if (req.IsPublished.HasValue)
+            module.IsPublished = req.IsPublished.Value;
 
         // Diff sections
         var existingSections = module.Sections.Where(s => s.Deleted == null).ToDictionary(s => s.Id);

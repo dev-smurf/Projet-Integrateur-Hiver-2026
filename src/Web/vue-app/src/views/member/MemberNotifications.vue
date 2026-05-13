@@ -53,6 +53,9 @@
         <p class="mt-4 whitespace-pre-line text-sm leading-6 text-gray-700">
           {{ notification.message }}
         </p>
+        <p v-if="notification.editedAtLabel" class="mt-3 text-xs font-medium text-gray-500">
+          Date édition de la note : {{ notification.editedAtLabel }}
+        </p>
       </article>
     </div>
   </div>
@@ -78,15 +81,27 @@ const notifications = computed(() => {
     {
       id: "admin-note",
       title: "Message de l'administration",
-      message
+      message,
+      editedAtLabel: formatNoteDate(personStore.person.visibleAdminNotesEditedAt)
     }
   ];
 });
 
 function markCurrentNoteAsRead() {
   const memberIdentifier = userStore.user.email || userStore.username || "";
-  markMemberAdminNoteAsRead(memberIdentifier, personStore.person.visibleAdminNotes);
+  markMemberAdminNoteAsRead(
+    memberIdentifier,
+    personStore.person.visibleAdminNotes,
+    personStore.person.visibleAdminNotesEditedAt
+  );
   window.dispatchEvent(new Event(MEMBER_ADMIN_NOTE_READ_EVENT));
+}
+
+function formatNoteDate(value?: string) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("fr-CA");
 }
 
 onMounted(async () => {

@@ -63,7 +63,7 @@ public class GetMyModuleDetailEndpoint : EndpointWithoutRequest<ModuleDto>
             .Include(m => m.Sections.Where(s => s.Deleted == null).OrderBy(s => s.SortOrder))
             .FirstOrDefaultAsync(m => m.Id == moduleId, ct);
 
-        if (module is null)
+        if (module is null || !module.IsPublished)
         {
             HttpContext.Response.StatusCode = 404;
             return;
@@ -76,6 +76,7 @@ public class GetMyModuleDetailEndpoint : EndpointWithoutRequest<ModuleDto>
             Subject = module.Subject,
             Content = module.Content,
             CardImageUrl = module.CardImageUrl,
+            IsPublished = module.IsPublished,
             Sections = module.Sections.Select(s => new ModuleSectionDto
             {
                 Id = s.Id.ToString(),

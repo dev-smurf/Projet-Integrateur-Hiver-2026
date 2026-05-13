@@ -211,7 +211,11 @@
         noteReadVersion.value;
         if (!userStore.hasRole(Role.Member)) return 0;
         const memberIdentifier = userStore.user.email || userStore.username || "";
-        return hasUnreadMemberAdminNote(memberIdentifier, personStore.person.visibleAdminNotes) ? 1 : 0;
+        return hasUnreadMemberAdminNote(
+            memberIdentifier,
+            personStore.person.visibleAdminNotes,
+            personStore.person.visibleAdminNotesEditedAt
+        ) ? 1 : 0;
     });
 
     function onMemberNoteRead() {

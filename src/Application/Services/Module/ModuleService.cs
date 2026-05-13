@@ -23,7 +23,8 @@ namespace Application.Services.Module
                 Name = m.Name,
                 Subject = m.Subject,
                 Content = m.Content,
-                CardImageUrl = m.CardImageUrl
+                CardImageUrl = m.CardImageUrl,
+                IsPublished = m.IsPublished
             }).ToList();
         }
 
@@ -42,7 +43,8 @@ namespace Application.Services.Module
                 Name = module.Name,
                 Subject = module.Subject,
                 Content = module.Content,
-                CardImageUrl = module.CardImageUrl
+                CardImageUrl = module.CardImageUrl,
+                IsPublished = module.IsPublished
             };
         }
 
@@ -53,7 +55,8 @@ namespace Application.Services.Module
                 Name = request.Name,
                 Subject = request.Subject,
                 Content = request.Content,
-                CardImageUrl = null
+                CardImageUrl = null,
+                IsPublished = false
             };
 
             await _moduleRepository.AddAsync(module);
@@ -64,7 +67,8 @@ namespace Application.Services.Module
                 Name = module.Name,
                 Subject = module.Subject,
                 Content = module.Content,
-                CardImageUrl = module.CardImageUrl
+                CardImageUrl = module.CardImageUrl,
+                IsPublished = module.IsPublished
             };
         }
 
@@ -80,6 +84,8 @@ namespace Application.Services.Module
             existingModule.Name = request.Name ?? existingModule.Name;
             existingModule.Subject = request.Subject ?? existingModule.Subject;
             existingModule.Content = request.Content ?? existingModule.Content;
+            if (request.IsPublished.HasValue)
+                existingModule.IsPublished = request.IsPublished.Value;
 
             if (!string.IsNullOrWhiteSpace(request.CardImageUrl))
                 existingModule.CardImageUrl = request.CardImageUrl;

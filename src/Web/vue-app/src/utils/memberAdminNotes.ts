@@ -8,27 +8,33 @@ function storageKey(memberIdentifier: string): string {
   return `member-admin-note-read:${memberIdentifier.toLowerCase()}`;
 }
 
-export function hasUnreadMemberAdminNote(memberIdentifier: string, note?: string): boolean {
-  const normalizedIdentifier = normalize(memberIdentifier);
+function noteSignature(note?: string, editedAt?: string): string {
   const normalizedNote = normalize(note);
-  if (!normalizedIdentifier || !normalizedNote) return false;
+  const normalizedDate = normalize(editedAt);
+  return normalizedDate ? `${normalizedDate}:${normalizedNote}` : normalizedNote;
+}
+
+export function hasUnreadMemberAdminNote(memberIdentifier: string, note?: string, editedAt?: string): boolean {
+  const normalizedIdentifier = normalize(memberIdentifier);
+  const signature = noteSignature(note, editedAt);
+  if (!normalizedIdentifier || !signature) return false;
 
   try {
     const readSignature = localStorage.getItem(storageKey(normalizedIdentifier)) ?? "";
-    return readSignature !== normalizedNote;
+    return readSignature !== signature;
   } catch {
     // If localStorage is unavailable, keep notification visible.
     return true;
   }
 }
 
-export function markMemberAdminNoteAsRead(memberIdentifier: string, note?: string): void {
+export function markMemberAdminNoteAsRead(memberIdentifier: string, note?: string, editedAt?: string): void {
   const normalizedIdentifier = normalize(memberIdentifier);
-  const normalizedNote = normalize(note);
-  if (!normalizedIdentifier || !normalizedNote) return;
+  const signature = noteSignature(note, editedAt);
+  if (!normalizedIdentifier || !signature) return;
 
   try {
-    localStorage.setItem(storageKey(normalizedIdentifier), normalizedNote);
+    localStorage.setItem(storageKey(normalizedIdentifier), signature);
   } catch {
     // Best-effort only.
   }

@@ -41,13 +41,16 @@ public class GetMyModulesEndpoint : EndpointWithoutRequest<List<ModuleDto>>
         }
 
         var assignments = await _memberModuleRepository.GetByMemberIdAsync(member.Id);
-        Response = assignments.Select(a => new ModuleDto
+        Response = assignments
+            .Where(a => a.Module.IsPublished)
+            .Select(a => new ModuleDto
         {
             Id = a.Module.Id.ToString(),
             Name = a.Module.Name,
             Subject = a.Module.Subject,
             Content = a.Module.Content,
-            CardImageUrl = a.Module.CardImageUrl
+            CardImageUrl = a.Module.CardImageUrl,
+            IsPublished = a.Module.IsPublished
         }).ToList();
     }
 }

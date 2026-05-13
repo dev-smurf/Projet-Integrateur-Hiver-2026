@@ -5,4 +5,5 @@ public interface IEditEquipeRequest
     public string Id { get; set; }
     public string NameFr { get; set; }
     public string NameEn { get; set; }
+    public string? ParentEquipeId { get; set; }
 }

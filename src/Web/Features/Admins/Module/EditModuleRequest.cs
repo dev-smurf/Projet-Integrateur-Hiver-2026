@@ -7,5 +7,6 @@ public class EditModuleRequest : IEditModuleRequest
     public string? Name { get; set; }
     public string? Subject { get; set; }
     public string? Content { get; set; }
+    public bool? IsPublished { get; set; }
     public IFormFile? CardImage { get; set; }
 }

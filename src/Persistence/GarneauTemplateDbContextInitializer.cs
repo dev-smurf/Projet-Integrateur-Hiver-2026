@@ -63,6 +63,8 @@ public class GarneauTemplateDbContextInitializer
             }
 
             await EnsureMemberAdminNotesColumnsAsync();
+            await EnsureEquipeHierarchyColumnsAsync();
+            await EnsureModulePublicationColumnsAsync();
         }
         catch (Exception ex)
         {
@@ -396,6 +398,37 @@ public class GarneauTemplateDbContextInitializer
             await _context.Database.ExecuteSqlRawAsync(
                 "ALTER TABLE [Members] ADD [AdminNotesVisibleToMember] bit NOT NULL CONSTRAINT [DF_Members_AdminNotesVisibleToMember] DEFAULT(0)");
             _logger.LogInformation("Added missing column Members.AdminNotesVisibleToMember");
+        }
+
+        if (!await ColumnExistsAsync("Members", "AdminNotesEditedAt"))
+        {
+            await _context.Database.ExecuteSqlRawAsync("ALTER TABLE [Members] ADD [AdminNotesEditedAt] datetime2 NULL");
+            _logger.LogInformation("Added missing column Members.AdminNotesEditedAt");
+        }
+    }
+
+    private async Task EnsureEquipeHierarchyColumnsAsync()
+    {
+        if (!await TableExistsAsync("Equipes"))
+            return;
+
+        if (!await ColumnExistsAsync("Equipes", "ParentEquipeId"))
+        {
+            await _context.Database.ExecuteSqlRawAsync("ALTER TABLE [Equipes] ADD [ParentEquipeId] uniqueidentifier NULL");
+            _logger.LogInformation("Added missing column Equipes.ParentEquipeId");
+        }
+    }
+
+    private async Task EnsureModulePublicationColumnsAsync()
+    {
+        if (!await TableExistsAsync("Modules"))
+            return;
+
+        if (!await ColumnExistsAsync("Modules", "IsPublished"))
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE [Modules] ADD [IsPublished] bit NOT NULL CONSTRAINT [DF_Modules_IsPublished] DEFAULT(1)");
+            _logger.LogInformation("Added missing column Modules.IsPublished");
         }
     }
 }

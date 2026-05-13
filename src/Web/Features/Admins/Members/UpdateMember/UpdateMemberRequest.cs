@@ -16,6 +16,7 @@ public class UpdateMemberRequest : ISanitizable
     public string ZipCode { get; set; } = null!;
     public string? AdminNotes { get; set; }
     public bool AdminNotesVisibleToMember { get; set; }
+    public DateTime? AdminNotesEditedAt { get; set; }
     public List<Guid> EquipeIds { get; set; } = [];
 
     public void Sanitize()

@@ -8,6 +8,7 @@ namespace Domain.Entities
         public string? Content { get; set; }
         public string? Subject { get; set; }
         public string? CardImageUrl { get; set; }
+        public bool IsPublished { get; set; }
         public ICollection<ModuleSection> Sections { get; set; } = new List<ModuleSection>();
         public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
     }

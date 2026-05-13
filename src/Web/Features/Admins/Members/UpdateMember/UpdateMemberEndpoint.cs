@@ -61,6 +61,9 @@ public class UpdateMemberEndpoint : EndpointWithSanitizedRequest<UpdateMemberReq
     private async Task UpdateMember(UpdateMemberRequest req, Member existingMember, User user)
     {
         existingMember = _mapper.Map(req, existingMember);
+        existingMember.SetAdminNotes(req.AdminNotes);
+        existingMember.SetAdminNotesVisibleToMember(req.AdminNotesVisibleToMember);
+        existingMember.SetAdminNotesEditedAt(req.AdminNotesEditedAt);
         existingMember.SetUser(_mapper.Map(req, user));
 
         await _memberRepository.Update(existingMember);

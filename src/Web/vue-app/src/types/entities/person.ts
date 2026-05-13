@@ -4,6 +4,7 @@ export interface IPerson {
   lastName?: string
   fullName?: string
   visibleAdminNotes?: string
+  visibleAdminNotesEditedAt?: string
   phoneNumber?: string
   phoneExtension?: number
   apartment?: number

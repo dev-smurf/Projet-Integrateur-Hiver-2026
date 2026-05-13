@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.members.name') }}</h1>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.members.name') }}</h1>
+        <p class="mt-1 text-sm text-gray-500">Cliquez sur un membre pour voir ses notes.</p>
+      </div>
       <router-link
         :to="{ name: 'admin.children.members.add' }"
         class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"

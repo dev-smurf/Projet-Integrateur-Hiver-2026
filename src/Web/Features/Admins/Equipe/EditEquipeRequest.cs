@@ -7,5 +7,6 @@ public class EditEquipeRequest : IEditEquipeRequest
     public string Id { get; set; } = null!;
     public string NameFr { get; set; } = null!;
     public string NameEn { get; set; } = null!;
+    public string? ParentEquipeId { get; set; }
     public List<string> MemberUserIds { get; set; } = new();
 }

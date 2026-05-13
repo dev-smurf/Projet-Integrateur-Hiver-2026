@@ -61,26 +61,39 @@
             </td>
           </tr>
           <tr
-            v-for="equipe in equipes"
-            :key="equipe.id"
+            v-for="row in equipes"
+            :key="row.id"
             class="hover:bg-gray-50 transition"
           >
             <td class="px-4 py-3 text-sm text-gray-900">
-              {{ equipe.nameFr || equipe.nameEn }}
+              <div class="flex items-center gap-2" :style="{ paddingLeft: `${row.depth * 24}px` }">
+                <span
+                  v-if="row.depth > 0"
+                  class="h-px w-4 bg-gray-300"
+                  aria-hidden="true"
+                ></span>
+                <span>{{ row.name }}</span>
+                <span
+                  v-if="row.depth > 0"
+                  class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-500"
+                >
+                  Équipe enfant
+                </span>
+              </div>
             </td>
             <td class="px-4 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
                 <router-link
                   :to="{
                     name: 'admin.children.equipes.edit',
-                    params: { id: equipe.id },
+                    params: { id: row.id },
                   }"
                   class="p-1.5 text-gray-400 hover:text-brand-600 transition"
                 >
                   <Pencil class="w-4 h-4" />
                 </router-link>
                 <button
-                  @click="confirmDelete(equipe)"
+                  @click="confirmDelete(row.equipe)"
                   class="p-1.5 text-gray-400 hover:text-brand-600 transition"
                 >
                   <Trash2 class="w-4 h-4" />
@@ -168,6 +181,13 @@ import {
 import { useEquipesService } from "@/inversify.config";
 import type { Equipe } from "@/types/entities";
 
+interface EquipeRow {
+  id: string;
+  name: string;
+  depth: number;
+  equipe: Equipe;
+}
+
 const { t } = useI18n();
 const { notify } = useNotification();
 const equipeService = useEquipesService();
@@ -179,20 +199,61 @@ const pageIndex = ref(1);
 const pageSize = 10;
 const equipeToDelete = ref<Equipe | null>(null);
 
+function equipeId(equipe: Equipe): string {
+  return String(equipe.id ?? equipe.Id ?? "");
+}
+
+function equipeName(equipe: Equipe): string {
+  return String(equipe.nameFr ?? equipe.nameEn ?? "");
+}
+
+function parentEquipeId(equipe: Equipe): string {
+  return String(equipe.parentEquipeId ?? "");
+}
+
 const filtered = computed(() => {
   const q = searchValue.value.toLowerCase().trim();
   if (!q) return allEquipes.value;
 
   return allEquipes.value.filter((e) =>
-    (e.NameFr || e.NameEn || "").toLowerCase().includes(q),
+    equipeName(e).toLowerCase().includes(q),
   );
 });
 
-const totalItems = computed(() => filtered.value.length);
+const hierarchicalRows = computed<EquipeRow[]>(() => {
+  const byId = new Map(filtered.value.map(equipe => [equipeId(equipe), equipe]));
+  const childrenByParent = new Map<string, Equipe[]>();
+
+  filtered.value.forEach(equipe => {
+    const parentId = parentEquipeId(equipe);
+    if (!parentId || !byId.has(parentId)) return;
+    const children = childrenByParent.get(parentId) ?? [];
+    children.push(equipe);
+    childrenByParent.set(parentId, children);
+  });
+
+  const rows: EquipeRow[] = [];
+  const append = (equipe: Equipe, depth: number) => {
+    const id = equipeId(equipe);
+    rows.push({ id, name: equipeName(equipe), depth, equipe });
+    (childrenByParent.get(id) ?? []).forEach(child => append(child, depth + 1));
+  };
+
+  filtered.value
+    .filter(equipe => {
+      const parentId = parentEquipeId(equipe);
+      return !parentId || !byId.has(parentId);
+    })
+    .forEach(equipe => append(equipe, 0));
+
+  return rows;
+});
+
+const totalItems = computed(() => hierarchicalRows.value.length);
 
 const equipes = computed(() => {
   const start = (pageIndex.value - 1) * pageSize;
-  return filtered.value.slice(start, start + pageSize);
+  return hierarchicalRows.value.slice(start, start + pageSize);
 });
 
 function onSearch() {

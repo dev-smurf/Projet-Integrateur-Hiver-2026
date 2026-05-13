@@ -21,6 +21,24 @@
         />
       </div>
 
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Équipe parente
+        </label>
+        <select
+          v-model="_equipe.parentEquipeId"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
+        >
+          <option value="">Aucune équipe parente</option>
+          <option v-for="equipe in equipeOptions" :key="equipe.value" :value="equipe.value">
+            {{ equipe.label }}
+          </option>
+        </select>
+        <p class="mt-1 text-xs text-gray-500">
+          Si choisie, cette équipe sera affichée sous son équipe parente.
+        </p>
+      </div>
+
       <!-- Member picker -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -107,7 +125,7 @@ import { Loader2, Search } from "lucide-vue-next";
 import { useEquipesService, useMemberService } from "@/inversify.config";
 import { useI18n } from "vue3-i18n";
 import type { IEditEquipeRequest } from "@/types/requests/IEditEquipeRequest";
-import type { Member } from "@/types/entities";
+import type { Equipe, Member } from "@/types/entities";
 
 const router = useRouter();
 const route = useRoute();
@@ -121,15 +139,27 @@ const id = route.params.id as string;
 const _equipe = ref<IEditEquipeRequest>({
   nameFr: "",
   nameEn: "",
+  parentEquipeId: "",
 });
 
 const loading = ref(true);
 const submitting = ref(false);
 
 const allMembers = ref<Member[]>([]);
+const allEquipes = ref<Equipe[]>([]);
 const loadingMembers = ref(true);
 const memberSearch = ref("");
 const selectedMemberIds = ref<string[]>([]);
+
+const equipeOptions = computed(() =>
+  allEquipes.value
+    .filter(equipe => String(equipe.id ?? equipe.Id ?? "") !== id)
+    .map(equipe => ({
+      value: String(equipe.id ?? equipe.Id ?? ""),
+      label: String(equipe.nameFr ?? equipe.nameEn ?? "Équipe"),
+    }))
+    .filter(equipe => !!equipe.value)
+);
 
 const filteredMembers = computed(() => {
   const q = memberSearch.value.trim().toLowerCase();
@@ -152,6 +182,7 @@ async function fetchEquipe() {
     _equipe.value = {
       nameFr: equipe.nameFr || "",
       nameEn: equipe.nameEn || "",
+      parentEquipeId: equipe.parentEquipeId || "",
     };
     selectedMemberIds.value = (equipe as any).memberUserIds ?? [];
   } catch {
@@ -168,10 +199,15 @@ async function fetchEquipe() {
 
 async function fetchMembers() {
   try {
-    const resp = await memberService.search(0, 1000, "");
+    const [resp, equipes] = await Promise.all([
+      memberService.search(0, 1000, ""),
+      equipesService.getAllEquipes(),
+    ]);
     allMembers.value = (resp.items || []).filter(m => !!m.userId);
+    allEquipes.value = equipes || [];
   } catch {
     allMembers.value = [];
+    allEquipes.value = [];
   } finally {
     loadingMembers.value = false;
   }
@@ -191,6 +227,7 @@ async function handleSubmit() {
   try {
     const response = await equipesService.updateEquipe(id, {
       ..._equipe.value,
+      parentEquipeId: _equipe.value.parentEquipeId || undefined,
       memberUserIds: selectedMemberIds.value,
     });
 

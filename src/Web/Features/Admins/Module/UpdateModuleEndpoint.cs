@@ -55,6 +55,9 @@ public class UpdateModuleEndpoint : Endpoint<EditModuleRequest, SucceededOrNotRe
         if (!string.IsNullOrWhiteSpace(req.Content))
             entity.Content = req.Content;
 
+        if (req.IsPublished.HasValue)
+            entity.IsPublished = req.IsPublished.Value;
+
         if (req.CardImage is not null)
         {
             entity.CardImageUrl = await SaveFile(req.CardImage);

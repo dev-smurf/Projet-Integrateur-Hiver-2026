@@ -50,6 +50,7 @@ public class GetModuleByIdEndpoint : EndpointWithoutRequest<ModuleDto>
             Subject = entity.Subject,
             Content = entity.Content,
             CardImageUrl = entity.CardImageUrl,
+            IsPublished = entity.IsPublished,
             Sections = entity.Sections.Select(s => new ModuleSectionDto
             {
                 Id = s.Id.ToString(),

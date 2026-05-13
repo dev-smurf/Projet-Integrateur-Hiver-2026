@@ -59,6 +59,10 @@ public class UpdateEquipeEndpoint : Endpoint<EditEquipeRequest, SucceededOrNotRe
             entity.NameEn = req.NameEn.Trim().CapitalizeFirstLetterOfEachWord()!;
         }
 
+        entity.ParentEquipeId = Guid.TryParse(req.ParentEquipeId, out var parentId) && parentId != guidId
+            ? parentId
+            : null;
+
         Logger.LogInformation("[UpdateEquipe] Mise à jour en base de données...");
         await _repository.UpdateEquipe(entity);
 

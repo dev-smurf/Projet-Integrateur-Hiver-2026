@@ -8,7 +8,7 @@ import {
   ITwoFactorRequest
 } from "@/types/requests"
 import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
-import {Administrator, Book, ChatMessage, Conversation, EquipeConversation, EquipeMessage, Member, User,Equipe} from "@/types/entities"
+import {Administrator, Book, ChatMessage, Conversation, DashboardSummaryDto, EquipeConversation, EquipeMessage, Member, MemberModuleDto, User,Equipe} from "@/types/entities"
 import {Guid} from "@/types";
 import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
 
@@ -55,6 +55,20 @@ export interface IMemberService {
   ): Promise<PaginatedResponse<Member>>;
 
   getMember(id: string): Promise<Member>;
+
+  getMemberModules(memberId: string): Promise<MemberModuleDto[]>;
+
+  getMyModules(): Promise<MemberModuleDto[]>;
+
+  getDashboardSummary(): Promise<DashboardSummaryDto | null>;
+
+  getRecentMembers(days?: number, pageSize?: number, searchValue?: string): Promise<Member[]>;
+
+  addModuleToMember(memberId: string, moduleId: string): Promise<SucceededOrNotResponse>;
+
+  updateMemberModuleProgress(memberId: string, moduleId: string, progressPercent: number): Promise<SucceededOrNotResponse>;
+
+  removeModuleFromMember(memberId: string, moduleId: string): Promise<SucceededOrNotResponse>;
 
   createMember(member: Member): Promise<SucceededOrNotResponse>;
 

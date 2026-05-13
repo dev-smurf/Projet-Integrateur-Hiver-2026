@@ -19,6 +19,7 @@ public class MemberDto
     public string ZipCode { get; set; } = null!;
     public string? AdminNotes { get; set; }
     public bool AdminNotesVisibleToMember { get; set; }
+    public DateTime? AdminNotesEditedAt { get; set; }
     public List<string> Roles { get; set; } = null!;
     public List<Guid> EquipeIds { get; set; } = [];
 }

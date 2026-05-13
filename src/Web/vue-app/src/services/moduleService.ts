@@ -220,6 +220,7 @@ export class ModulesApiService extends ApiService implements IModulesService {
         if (request.name) formData.append("Name", request.name);
         if (request.subject) formData.append("Subject", request.subject);
         if (request.content) formData.append("Content", request.content);
+        if (typeof request.isPublished === "boolean") formData.append("IsPublished", String(request.isPublished));
 
         if (request.cardImage) formData.append("CardImage", request.cardImage);
 

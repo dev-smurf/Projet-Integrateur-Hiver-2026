@@ -37,7 +37,8 @@ public class CreateModuleEndpoint : Endpoint<CreateModulesRequest, SucceededOrNo
             Name = req.Name,
             Content = req.Content,
             Subject = req.Subject,
-            CardImageUrl = cardImageUrl
+            CardImageUrl = cardImageUrl,
+            IsPublished = req.IsPublished
         };
 
         await _moduleService.Create(newModule);

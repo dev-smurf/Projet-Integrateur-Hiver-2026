@@ -22,6 +22,9 @@ namespace Persistence.Configurations
 
             builder.Property(m => m.CardImageUrl)
                 .HasMaxLength(1000);
+
+            builder.Property(m => m.IsPublished)
+                .HasDefaultValue(false);
         }
     }
 }

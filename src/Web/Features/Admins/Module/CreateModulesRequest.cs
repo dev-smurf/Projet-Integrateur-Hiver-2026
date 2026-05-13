@@ -6,6 +6,7 @@ public class CreateModulesRequest : ISanitizable
     public string? Name { get; set; }
     public string? Content { get; set; }
     public string? Subject { get; set; }
+    public bool IsPublished { get; set; }
 
     public IFormFile? CardImage { get; set; }
 

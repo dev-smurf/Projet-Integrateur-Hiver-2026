@@ -2,7 +2,15 @@
   <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-900">{{ $t('routes.admin.children.modules.edit.name') }}</h1>
-      <div v-if="!loading && !loadError" class="flex items-center gap-2 text-sm text-gray-500">
+      <div v-if="!loading && !loadError" class="flex items-center gap-3 text-sm text-gray-500">
+        <span
+          class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
+          :class="formData.isPublished ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+        >
+          <Globe2 v-if="formData.isPublished" class="w-3.5 h-3.5" />
+          <EyeOff v-else class="w-3.5 h-3.5" />
+          {{ formData.isPublished ? 'Publié' : 'Brouillon' }}
+        </span>
         <span v-if="autoSaving" class="flex items-center gap-1">
           <Loader2 class="w-3.5 h-3.5 animate-spin" />
           Sauvegarde...
@@ -96,8 +104,20 @@
           Aperçu
         </router-link>
         <button
+          type="button"
+          :disabled="submitting || publishing"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="formData.isPublished ? 'text-gray-700 border border-gray-300 hover:bg-gray-50' : 'text-white bg-emerald-600 hover:bg-emerald-700'"
+          @click="setPublished(!formData.isPublished)"
+        >
+          <Loader2 v-if="publishing" class="w-4 h-4 animate-spin" />
+          <Globe2 v-else-if="!formData.isPublished" class="w-4 h-4" />
+          <EyeOff v-else class="w-4 h-4" />
+          {{ formData.isPublished ? 'Dépublier' : 'Publier' }}
+        </button>
+        <button
           type="submit"
-          :disabled="submitting"
+          :disabled="submitting || publishing"
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
@@ -115,7 +135,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
-import { Loader2, Upload, Check, Eye } from "lucide-vue-next";
+import { Loader2, Upload, Check, Eye, EyeOff, Globe2 } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { IEditModuleRequest } from "@/types";
 import type { ModuleDto } from "@/types/entities";
@@ -139,6 +159,7 @@ const formData = ref<IEditModuleRequest>({
   name: "",
   subject: "",
   content: "",
+  isPublished: false,
   cardImage: null,
 });
 
@@ -147,6 +168,7 @@ const loading = ref(true);
 const loadError = ref<string | null>(null);
 const imagePreview = ref<string | null>(null);
 const submitting = ref(false);
+const publishing = ref(false);
 
 // Auto-save state
 const autoSaving = ref(false);
@@ -175,6 +197,7 @@ async function performAutoSave() {
       name: formData.value.name!,
       subject: formData.value.subject,
       content: formData.value.content,
+      isPublished: formData.value.isPublished ?? false,
       sections: sections.value,
     });
     lastSaved.value = true;
@@ -197,6 +220,7 @@ onMounted(async () => {
       name: mod.name ?? "",
       subject: mod.subject ?? "",
       content: mod.content ?? "",
+      isPublished: mod.isPublished ?? false,
       cardImage: null,
     };
     if (mod.cardImageUrl) {
@@ -257,6 +281,7 @@ async function handleSubmit() {
       name: formData.value.name!,
       subject: formData.value.subject,
       content: formData.value.content,
+      isPublished: formData.value.isPublished ?? false,
       sections: sections.value,
     });
 
@@ -270,5 +295,46 @@ async function handleSubmit() {
     notify({ type: "error", text: "Erreur lors de la modification du module." });
   }
   submitting.value = false;
+}
+
+async function setPublished(isPublished: boolean) {
+  if (!formData.value.name?.trim()) {
+    notify({ type: "error", text: "Le nom est requis." });
+    return;
+  }
+
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+
+  publishing.value = true;
+  try {
+    const updateResult = await modulesService.updateModule(formData.value.id || props.id, {
+      ...formData.value,
+      isPublished,
+    });
+    if (!updateResult.succeeded) {
+      notify({ type: "error", text: "Erreur lors de la modification du module." });
+      return;
+    }
+
+    const saveResult = await modulesService.saveModuleFull(formData.value.id || props.id, {
+      name: formData.value.name!,
+      subject: formData.value.subject,
+      content: formData.value.content,
+      isPublished,
+      sections: sections.value,
+    });
+
+    if (saveResult.succeeded) {
+      formData.value.isPublished = isPublished;
+      lastSaved.value = true;
+      notify({ type: "success", text: isPublished ? "Module publié." : "Module dépublié." });
+    } else {
+      notify({ type: "error", text: "Erreur lors de la sauvegarde des sections." });
+    }
+  } catch {
+    notify({ type: "error", text: "Erreur lors de la modification du module." });
+  } finally {
+    publishing.value = false;
+  }
 }
 </script>

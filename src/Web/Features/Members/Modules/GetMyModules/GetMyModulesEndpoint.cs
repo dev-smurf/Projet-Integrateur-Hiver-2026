@@ -32,7 +32,7 @@ public class GetMyModulesEndpoint : EndpointWithoutRequest<List<MemberModuleDto>
         var member = _authenticatedMemberService.GetAuthenticatedMember();
         var memberModules = await _memberRepository.GetMemberModules(member.Id);
 
-        var response = memberModules.Select(mm => new MemberModuleDto
+        var response = memberModules.Where(mm => mm.Module.IsPublished).Select(mm => new MemberModuleDto
         {
             ModuleId = mm.ModuleId.ToString(),
             Name = mm.Module.Name,

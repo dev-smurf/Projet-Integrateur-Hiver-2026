@@ -3,5 +3,6 @@ export interface IEditModuleRequest {
     name?: string;
     subject?: string;
     content?: string;
+    isPublished?: boolean;
     cardImage?: File | null;
 }

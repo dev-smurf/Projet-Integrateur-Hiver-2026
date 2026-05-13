@@ -28,7 +28,8 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
         var newEquipe = new Equipe
         {
             NameFr = req.NameFr,
-            NameEn = req.NameEn ?? string.Empty
+            NameEn = req.NameEn ?? string.Empty,
+            ParentEquipeId = Guid.TryParse(req.ParentEquipeId, out var parentId) ? parentId : null
         };
 
         newEquipe.SanitazeForSaving();
@@ -48,4 +49,3 @@ public class CreateEquipeEndpoint : Endpoint<CreateEquipeRequest, SucceededOrNot
         await Send.OkAsync(new SucceededOrNotResponse(true));
     }
 }
-

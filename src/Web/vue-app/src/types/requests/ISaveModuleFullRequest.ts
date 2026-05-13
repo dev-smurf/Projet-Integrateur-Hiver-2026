@@ -2,6 +2,7 @@ export interface ISaveModuleFullRequest {
     name: string;
     subject?: string;
     content?: string;
+    isPublished?: boolean;
     sections: ISectionPayload[];
 }
 

@@ -8,6 +8,9 @@ namespace Domain.Entities
     {
         public string NameFr { get; set; } = null!;
         public string NameEn { get; set; } = null!;
+        public Guid? ParentEquipeId { get; set; }
+        public Equipe? ParentEquipe { get; set; }
+        public ICollection<Equipe> ChildEquipes { get; private set; } = new List<Equipe>();
 
         public ICollection<User> Membres { get; private set; } = new List<User>();
 

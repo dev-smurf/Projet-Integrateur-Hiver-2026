@@ -19,6 +19,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public string? ZipCode { get; private set; }
     public string? AdminNotes { get; private set; }
     public bool AdminNotesVisibleToMember { get; private set; }
+    public DateTime? AdminNotesEditedAt { get; private set; }
     public User User { get; private set; } = null!;
 
     public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
@@ -48,6 +49,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
     public void SetZipCode(string? zipCode) => ZipCode = zipCode;
     public void SetAdminNotes(string? adminNotes) => AdminNotes = adminNotes;
     public void SetAdminNotesVisibleToMember(bool visible) => AdminNotesVisibleToMember = visible;
+    public void SetAdminNotesEditedAt(DateTime? editedAt) => AdminNotesEditedAt = editedAt;
     public void SetUser(User user) => User = user;
 
     public void OnCreated(User user)
@@ -83,5 +85,7 @@ public class Member : AuditableAndSoftDeletableEntity, ISanitizable
         City = City?.Trim().CapitalizeFirstLetterOfEachWord();
         ZipCode = ZipCode?.Trim().ToUpper();
         AdminNotes = string.IsNullOrWhiteSpace(AdminNotes) ? null : AdminNotes.Trim();
+        if (AdminNotes is null)
+            AdminNotesEditedAt = null;
     }
 }

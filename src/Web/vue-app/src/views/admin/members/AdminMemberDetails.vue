@@ -228,16 +228,39 @@
           placeholder="Ajouter des notes sur ce membre..."
           class="mt-3 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
         />
-        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
-          <input
-            v-model="notesVisibleToMember"
-            type="checkbox"
-            class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
-          />
-          Rendre ces notes visibles par ce membre
-        </label>
+        <div class="mt-3 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+          <label class="block text-sm text-gray-700">
+            <span class="mb-1 block font-medium">Date édition de la note</span>
+            <input
+              v-model="notesDate"
+              type="date"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500"
+            />
+          </label>
+          <div>
+            <span class="mb-1 block text-sm font-medium text-gray-700">Visibilité</span>
+            <div class="inline-flex rounded-lg border border-gray-300 bg-white p-1">
+              <button
+                type="button"
+                class="rounded-md px-3 py-1.5 text-xs font-semibold transition"
+                :class="!notesVisibleToMember ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'"
+                @click="notesVisibleToMember = false"
+              >
+                Privée
+              </button>
+              <button
+                type="button"
+                class="rounded-md px-3 py-1.5 text-xs font-semibold transition"
+                :class="notesVisibleToMember ? 'bg-brand-600 text-white' : 'text-gray-600 hover:bg-gray-50'"
+                @click="notesVisibleToMember = true"
+              >
+                Public
+              </button>
+            </div>
+          </div>
+        </div>
         <p class="mt-2 text-xs text-gray-500">
-          Ces notes sont sauvegardees sur le serveur. Active la case si le membre doit les voir.
+          Les notes privées restent côté administration. Les notes publiques sont visibles par le membre.
         </p>
       </div>
     </div>
@@ -267,6 +290,7 @@ const progressEdits = ref<Record<string, number>>({});
 const savingProgress = ref<Record<string, boolean>>({});
 const notesText = ref("");
 const notesVisibleToMember = ref(false);
+const notesDate = ref(todayDateInputValue());
 const savingNotes = ref(false);
 
 const selectedModuleIds = ref<string[]>([]);
@@ -330,7 +354,7 @@ const filteredAvailableModules = computed(() => {
   const assignedIds = new Set(memberModules.value.map(x => String(x.moduleId)));
   return allModules.value.filter(m =>
     !assignedIds.has(String(m.id)) &&
-    (!search || (m.nameFr || m.nameEn || m.name).toLowerCase().includes(search))
+    (!search || (m.nameFr || m.nameEn || m.name || "").toLowerCase().includes(search))
   );
 });
 
@@ -355,6 +379,7 @@ async function loadData() {
     progressEdits.value = nextEdits;
     notesText.value = member.value?.adminNotes ?? "";
     notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
+    notesDate.value = toDateInputValue(member.value?.adminNotesEditedAt) || todayDateInputValue();
   } finally {
     loading.value = false;
   }
@@ -392,17 +417,33 @@ async function saveNotes() {
   const response = await memberService.updateMember({
     ...member.value,
     adminNotes: notesText.value.trim() || undefined,
-    adminNotesVisibleToMember: notesVisibleToMember.value
+    adminNotesVisibleToMember: notesVisibleToMember.value,
+    adminNotesEditedAt: notesDate.value ? `${notesDate.value}T00:00:00` : undefined
   });
   if (response.succeeded) {
     member.value = await memberService.getMember(memberId.value);
     notesText.value = member.value?.adminNotes ?? "";
     notesVisibleToMember.value = member.value?.adminNotesVisibleToMember ?? false;
+    notesDate.value = toDateInputValue(member.value?.adminNotesEditedAt) || todayDateInputValue();
     notify({type: "success", text: "Notes enregistrees."});
   } else {
     notify({type: "error", text: "Impossible d'enregistrer les notes."});
   }
   savingNotes.value = false;
+}
+
+function todayDateInputValue() {
+  const date = new Date();
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return offsetDate.toISOString().slice(0, 10);
+}
+
+function toDateInputValue(value?: string) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return offsetDate.toISOString().slice(0, 10);
 }
 
 onMounted(loadData);

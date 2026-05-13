@@ -56,6 +56,7 @@ public class GetMemberEndpoint : Endpoint<GetMemberRequest, MemberDto>
             ZipCode = member.ZipCode ?? string.Empty,
             AdminNotes = member.AdminNotes,
             AdminNotesVisibleToMember = member.AdminNotesVisibleToMember,
+            AdminNotesEditedAt = member.AdminNotesEditedAt,
             Roles = roles,
             EquipeIds = equipeIds
         };

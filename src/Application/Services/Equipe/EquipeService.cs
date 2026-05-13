@@ -22,6 +22,7 @@ namespace Application.Services.Equipe
                 Id = e.Id.ToString(),
                 NameFr = e.NameFr,
                 NameEn = e.NameEn,
+                ParentEquipeId = e.ParentEquipeId?.ToString(),
             }).ToList();
         }
 
@@ -38,7 +39,8 @@ namespace Application.Services.Equipe
             {
                 Id = equipe.Id.ToString(),
                 NameFr = equipe.NameFr,
-                NameEn = equipe.NameEn
+                NameEn = equipe.NameEn,
+                ParentEquipeId = equipe.ParentEquipeId?.ToString()
             };
         }
 
@@ -48,6 +50,7 @@ namespace Application.Services.Equipe
             {
                 NameFr = request.NameFr,
                 NameEn = request.NameEn,
+                ParentEquipeId = Guid.TryParse(request.ParentEquipeId, out var parentId) ? parentId : null,
             };
 
             await _equipeRepository.CreateEquipe(equipe);
@@ -57,6 +60,7 @@ namespace Application.Services.Equipe
                 Id = equipe.Id.ToString(),
                 NameFr = equipe.NameFr,
                 NameEn = equipe.NameEn,
+                ParentEquipeId = equipe.ParentEquipeId?.ToString(),
             };
         }
 
@@ -71,6 +75,9 @@ namespace Application.Services.Equipe
 
             existingEquipe.NameFr = request.NameFr ?? existingEquipe.NameFr;
             existingEquipe.NameEn = request.NameEn ?? existingEquipe.NameEn;
+            existingEquipe.ParentEquipeId = Guid.TryParse(request.ParentEquipeId, out var parentId) && parentId != guidId
+                ? parentId
+                : null;
 
             await _equipeRepository.UpdateEquipe(existingEquipe);
             return true;
