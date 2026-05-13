@@ -32,7 +32,7 @@ public class CreateQuestionValidator : AbstractValidator<CreateQuestionRequest>
         RuleFor(x => x.Responses)
             .NotEmpty()
             .WithMessage("La question doit avoir au moins une réponse | Question must have at least one response")
-            .When(x => x.QuestionType != Domain.Entities.QuizQuestionType.TextInput);
+            .When(x => x.QuestionType == Domain.Entities.QuizQuestionType.MultipleChoice);
 
         RuleForEach(x => x.Responses)
             .SetValidator(new ResponseValidator());

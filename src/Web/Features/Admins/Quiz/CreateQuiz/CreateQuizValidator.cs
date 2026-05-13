@@ -1,4 +1,5 @@
 using FluentValidation;
+using Domain.Entities;
 
 namespace Web.Features.Admins.Quiz.CreateQuiz;
 
@@ -25,9 +26,13 @@ public class CreateQuizQuestionValidator : AbstractValidator<CreateQuizQuestionR
         RuleFor(x => x.QuestionText)
             .NotEmpty().WithMessage("Question text is required");
 
+        RuleFor(x => x.QuestionType)
+            .IsInEnum().WithMessage("Invalid question type");
+
         RuleFor(x => x.Responses)
             .NotEmpty().WithMessage("Question must have responses")
-            .Must(r => r.Count > 0).WithMessage("At least one response is required");
+            .Must(r => r.Count > 0).WithMessage("At least one response is required")
+            .When(x => x.QuestionType == QuizQuestionType.MultipleChoice);
 
         RuleForEach(x => x.Responses).SetValidator(new CreateQuizResponseValidator());
     }

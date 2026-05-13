@@ -248,6 +248,14 @@ async function handleSubmit() {
     return
   }
 
+  const invalidMultipleChoiceIndex = form.value.questions.findIndex(
+    (question: any) => question.questionType === 1 && getResponsesForRequest(question).length === 0
+  )
+  if (invalidMultipleChoiceIndex !== -1) {
+    notify({ type: 'error', text: `La question ${invalidMultipleChoiceIndex + 1} doit avoir au moins une réponse.` })
+    return
+  }
+
   submitting.value = true
   apiErrors.value = []
 
@@ -274,10 +282,7 @@ async function handleSubmit() {
           scaleMidLabel: q.scaleMidLabel || (q.scaleLabels?.[4] ?? 'Parfois'),
           scaleMaxLabel: q.scaleMaxLabel || (q.scaleLabels?.[9] ?? 'Toujours'),
           scaleLabels: q.scaleLabels || undefined,
-        responses: q.responses.map((r: any, ridx: number) => ({
-          responseText: r.responseText,
-          order: ridx
-        }))
+        responses: getResponsesForRequest(q)
       }))
     })
 
@@ -298,7 +303,7 @@ async function handleSubmit() {
 function addQuestion() {
   form.value.questions.push({
     questionText: '',
-    questionType: 1,
+    questionType: 0,
     placeholder: '',
     scaleMinLabel: 'Jamais',
     scaleMidLabel: 'Parfois',
@@ -310,8 +315,19 @@ function addQuestion() {
       if (i === 9) return 'Toujours'
       return ''
     }),
-    responses: [{ responseText: '', order: 0 }]
+    responses: []
   })
+}
+
+function getResponsesForRequest(question: any) {
+  if (question.questionType !== 1) return []
+
+  return question.responses
+    .filter((response: any) => response.responseText?.trim())
+    .map((response: any, index: number) => ({
+      responseText: response.responseText.trim(),
+      order: index
+    }))
 }
 
 function moveQuestionUp(index: number) {

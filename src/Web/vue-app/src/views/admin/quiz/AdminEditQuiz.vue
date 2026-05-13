@@ -313,7 +313,7 @@ onMounted(async () => {
               if (i === 9) return q.scaleMaxLabel || 'Toujours'
               return ''
             }),
-        responses: q.responses.map((r: any) => ({
+        responses: (q.responses || []).map((r: any) => ({
           id: r.id,
           responseText: r.responseText,
           order: r.order
@@ -394,6 +394,14 @@ async function handleSubmit() {
     return
   }
 
+  const invalidMultipleChoiceIndex = form.value.questions.findIndex(
+    (question: any) => question.questionType === 1 && getResponsesForRequest(question).length === 0
+  )
+  if (invalidMultipleChoiceIndex !== -1) {
+    notify({ type: 'error', text: `La question ${invalidMultipleChoiceIndex + 1} doit avoir au moins une réponse.` })
+    return
+  }
+
   submitting.value = true
   apiErrors.value = []
 
@@ -438,11 +446,7 @@ async function handleSubmit() {
           scaleMidLabel: question.scaleMidLabel || 'Parfois',
           scaleMaxLabel: question.scaleMaxLabel || 'Toujours',
           scaleLabels: question.scaleLabels || undefined,
-          responses: question.responses.map((r: any) => ({
-            id: r.id && r.id.trim() !== '' ? r.id : undefined,
-            responseText: r.responseText,
-            order: r.order
-          }))
+          responses: getResponsesForRequest(question, true)
         })
       } else {
         await quizService.createQuestion({
@@ -455,10 +459,7 @@ async function handleSubmit() {
           scaleMidLabel: question.scaleMidLabel || 'Parfois',
           scaleMaxLabel: question.scaleMaxLabel || 'Toujours',
           scaleLabels: question.scaleLabels || undefined,
-          responses: question.responses.map((r: any) => ({
-            responseText: r.responseText,
-            order: r.order
-          }))
+          responses: getResponsesForRequest(question)
         })
       }
     }
@@ -481,14 +482,39 @@ function addQuestion() {
   form.value.questions.push({
     id: '',
     questionText: '',
-    questionType: 1,
+    questionType: 0,
     order: form.value.questions.length,
     placeholder: '',
     scaleMinLabel: 'Jamais',
     scaleMidLabel: 'Parfois',
     scaleMaxLabel: 'Toujours',
-    responses: [{ id: '', responseText: '', order: 0 }]
+    scaleLabels: Array.from({ length: 10 }, (_, i) => {
+      if (i === 0) return 'Jamais'
+      if (i === 4) return 'Parfois'
+      if (i === 9) return 'Toujours'
+      return ''
+    }),
+    responses: []
   })
+}
+
+function getResponsesForRequest(question: any, includeIds = false) {
+  if (question.questionType !== 1) return []
+
+  return question.responses
+    .filter((response: any) => response.responseText?.trim())
+    .map((response: any, index: number) => {
+      const request: any = {
+        responseText: response.responseText.trim(),
+        order: index
+      }
+
+      if (includeIds && response.id?.trim()) {
+        request.id = response.id
+      }
+
+      return request
+    })
 }
 
 function removeQuestion(index: number) {
