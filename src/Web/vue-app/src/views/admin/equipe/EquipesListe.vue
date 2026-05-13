@@ -172,7 +172,6 @@ import { useI18n } from "vue3-i18n";
 import { useNotification } from "@kyvg/vue3-notification";
 import {
   Plus,
-  Search,
   Pencil,
   Trash2,
   ChevronLeft,
@@ -200,15 +199,15 @@ const pageSize = 10;
 const equipeToDelete = ref<Equipe | null>(null);
 
 function equipeId(equipe: Equipe): string {
-  return String(equipe.id ?? equipe.Id ?? "");
+  return String(equipe.id ?? equipe.Id ?? "").trim().toLowerCase();
 }
 
 function equipeName(equipe: Equipe): string {
-  return String(equipe.nameFr ?? equipe.nameEn ?? "");
+  return String(equipe.nameFr ?? equipe.NameFr ?? equipe.nameEn ?? equipe.NameEn ?? "");
 }
 
 function parentEquipeId(equipe: Equipe): string {
-  return String(equipe.parentEquipeId ?? "");
+  return String(equipe.parentEquipeId ?? equipe.ParentEquipeId ?? "").trim().toLowerCase();
 }
 
 const filtered = computed(() => {
@@ -232,11 +231,17 @@ const hierarchicalRows = computed<EquipeRow[]>(() => {
     childrenByParent.set(parentId, children);
   });
 
+  childrenByParent.forEach(children => children.sort((a, b) => equipeName(a).localeCompare(equipeName(b))));
+
   const rows: EquipeRow[] = [];
-  const append = (equipe: Equipe, depth: number) => {
+  const append = (equipe: Equipe, depth: number, visited = new Set<string>()) => {
     const id = equipeId(equipe);
+    if (!id || visited.has(id)) return;
+
     rows.push({ id, name: equipeName(equipe), depth, equipe });
-    (childrenByParent.get(id) ?? []).forEach(child => append(child, depth + 1));
+    const nextVisited = new Set(visited);
+    nextVisited.add(id);
+    (childrenByParent.get(id) ?? []).forEach(child => append(child, depth + 1, nextVisited));
   };
 
   filtered.value
@@ -244,6 +249,7 @@ const hierarchicalRows = computed<EquipeRow[]>(() => {
       const parentId = parentEquipeId(equipe);
       return !parentId || !byId.has(parentId);
     })
+    .sort((a, b) => equipeName(a).localeCompare(equipeName(b)))
     .forEach(equipe => append(equipe, 0));
 
   return rows;

@@ -32,6 +32,24 @@ export interface MyEquipeModule {
   isCompleted: boolean;
 }
 
+function normalizeEquipe(equipe: Equipe): Equipe {
+  const source = equipe as Equipe & {
+    Id?: string;
+    NameFr?: string;
+    NameEn?: string;
+    ParentEquipeId?: string;
+  };
+
+  return {
+    ...equipe,
+    Id: String(source.id ?? source.Id ?? ""),
+    id: String(source.id ?? source.Id ?? ""),
+    nameFr: source.nameFr ?? source.NameFr ?? "",
+    nameEn: source.nameEn ?? source.NameEn ?? "",
+    parentEquipeId: source.parentEquipeId ?? source.ParentEquipeId ?? "",
+  };
+}
+
 @injectable()
 export class EquipeService extends ApiService implements IEquipesService {
   public async getMyEquipe(): Promise<MyEquipeResponse | null> {
@@ -53,7 +71,7 @@ export class EquipeService extends ApiService implements IEquipesService {
       const response = await this._httpClient.get<Equipe[]>(
         `${import.meta.env.VITE_API_BASE_URL}/equipes`,
       );
-      return response.data ?? [];
+      return (response.data ?? []).map(normalizeEquipe);
     } catch (error) {
       console.error("Erreur lors de la récupération des équipes:", error);
       return [];
@@ -68,7 +86,7 @@ export class EquipeService extends ApiService implements IEquipesService {
       const response = await this._httpClient.get<Equipe>(
         `${import.meta.env.VITE_API_BASE_URL}/equipe/${id}`,
       );
-      return response.data;
+      return normalizeEquipe(response.data);
     } catch (error) {
       console.error(`Erreur lors de la récupération de l'équipe ${id}:`, error);
       throw error;
