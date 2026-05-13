@@ -11,6 +11,7 @@ import ResetPassword from "@/views/ResetPassword.vue";
 import Account from "@/views/shared/Account.vue";
 import Dashboard from "@/views/shared/Dashboard.vue";
 import MemberDashboard from "@/views/member/MemberDashboard.vue";
+import Equipe from "@/views/member/Equipe.vue";
 
 import Admin from "@/views/admin/Admin.vue";
 import AdminAvailability from "@/views/admin/AdminAvailability.vue";
@@ -115,6 +116,15 @@ export function getRouter(): Router {
         meta: {
           requiredRole: Role.Member,
           title: "Notifications",
+        },
+      },
+      {
+        path: i18n.t("routes.equipe.path"),
+        name: "equipe.liste",
+        component: Equipe,
+        meta: {
+          requiredRole: Role.Member,
+          title: "routes.equipe.name",
         },
       },
       {
