@@ -120,6 +120,11 @@
             "fullPath": "/administration/equipes/:id/modifier",
             "name": "Modifier une equipe"
           }
+        },
+        "notes": {
+          "path": "notes",
+          "fullPath": "/administration/notes",
+          "name": "Notes"
         }
       }
     },

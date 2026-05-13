@@ -119,6 +119,11 @@
             "fullPath": "/administration/equipes/:id/edit",
             "name": "Edit a team"
           }
+        },
+        "notes": {
+          "path": "notes",
+          "fullPath": "/administration/notes",
+          "name": "Notes"
         }
       }
     },

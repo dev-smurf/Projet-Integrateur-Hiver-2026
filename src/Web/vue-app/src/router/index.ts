@@ -25,6 +25,7 @@ import AdminMemberIndex from "@/views/admin/members/AdminMemberIndex.vue";
 import AdminModuleEdit from "@/views/admin/members/AdminModuleEdit.vue";
 import AdminModuleList from "@/views/admin/members/AdminModuleList.vue";
 import AdminModulePreview from "@/views/admin/members/AdminModulePreview.vue";
+import AdminNotes from "@/views/admin/notes/AdminNotes.vue";
 import AdminAddQuiz from "@/views/admin/quiz/AdminAddQuiz.vue";
 import AdminEditQuiz from "@/views/admin/quiz/AdminEditQuiz.vue";
 import AdminQuizIndex from "@/views/admin/quiz/AdminQuizIndex.vue";
@@ -173,6 +174,11 @@ export function getRouter(): Router {
             path: "disponibilites",
             name: "admin.children.availability",
             component: AdminAvailability,
+          },
+          {
+            path: i18n.t("routes.admin.children.notes.path"),
+            name: "admin.children.notes.index",
+            component: AdminNotes,
           },
           {
             path: i18n.t("routes.admin.children.equipes.path"),

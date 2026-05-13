@@ -273,6 +273,7 @@ import { useRoute } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
 import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
+import { todayDateInputValue, toDateInputValue } from "@/utils/dateInput";
 
 const route = useRoute();
 const { notify } = useNotification();
@@ -430,20 +431,6 @@ async function saveNotes() {
     notify({type: "error", text: "Impossible d'enregistrer les notes."});
   }
   savingNotes.value = false;
-}
-
-function todayDateInputValue() {
-  const date = new Date();
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return offsetDate.toISOString().slice(0, 10);
-}
-
-function toDateInputValue(value?: string) {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return offsetDate.toISOString().slice(0, 10);
 }
 
 onMounted(loadData);
