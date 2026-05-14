@@ -258,8 +258,8 @@
                             <div class="flex items-center justify-between gap-2 mb-2">
                                 <div class="flex flex-col">
                                     <span class="text-xs font-semibold text-gray-700">{{ note.createdByAdminName }}</span>
-                                    <span class="text-[10px] uppercase font-bold" :class="note.equipeId ? 'text-blue-500' : 'text-purple-500'">
-                                        {{ note.equipeId ? ('Équipe: ' + note.equipeName) : 'Personnel' }}
+                                    <span class="text-[10px] uppercase font-bold" :class="('equipeId' in note && note.equipeId) ? 'text-blue-500' : 'text-purple-500'">
+                                        {{ ('equipeId' in note && note.equipeId) ? ('Équipe: ' + (note as EquipeNoteDto).equipeName) : 'Personnel' }}
                                     </span>
                                 </div>
                                 <span class="text-[10px] text-gray-400">{{ formatDate(note.created) }}</span>
@@ -321,8 +321,8 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="text-sm font-semibold text-gray-800">{{ note.createdByAdminName }}</span>
-                                    <span class="text-[10px] uppercase font-bold" :class="note.equipeId ? 'text-blue-500' : 'text-purple-500'">
-                                        {{ note.equipeId ? ('Équipe: ' + note.equipeName) : 'Personnel' }}
+                                    <span class="text-[10px] uppercase font-bold" :class="('equipeId' in note && note.equipeId) ? 'text-blue-500' : 'text-purple-500'">
+                                        {{ ('equipeId' in note && note.equipeId) ? ('Équipe: ' + (note as EquipeNoteDto).equipeName) : 'Personnel' }}
                                     </span>
                                 </div>
                             </div>
