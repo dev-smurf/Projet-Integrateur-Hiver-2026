@@ -839,7 +839,9 @@
       "delete": "Delete"
     },
     "view": "View",
-    "appName": "My App"
+    "appName": "My App",
+    "adminGuide": "Administrator guide",
+    "userHelp": "User help"
   },
   "textEditorLinkPopup": {
     "addLink": "Add link",

@@ -839,7 +839,9 @@
       "delete": "Supprimer"
     },
     "view": "Voir",
-    "appName": "Mon App"
+    "appName": "Mon App",
+    "adminGuide": "Guide administrateur",
+    "userHelp": "Aide utilisateur"
   },
   "textEditorLinkPopup": {
     "addLink": "Ajouter un lien",

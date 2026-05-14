@@ -41,6 +41,15 @@
                     {{ $t('routes.quiz.name') }}
                 </router-link>
 
+                <a v-if="userStore.hasRole(Role.Member)"
+                   :href="memberHelpHref"
+                   target="_blank"
+                   rel="noopener"
+                   class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition inactive-link">
+                    <CircleHelp class="w-4 h-4 shrink-0" />
+                    {{ $t('global.userHelp') }}
+                </a>
+
 
                 <div v-if="userStore.hasRole(Role.Admin)" class="my-2 border-t" style="border-color: #907288;" />
 
@@ -88,6 +97,14 @@
                     <FileText class="w-4 h-4 shrink-0" />
                     {{ $t('pages.adminNotes.title') }}
                 </router-link>
+                <a v-if="userStore.hasRole(Role.Admin)"
+                   :href="adminGuideHref"
+                   target="_blank"
+                   rel="noopener"
+                   class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition inactive-link">
+                    <CircleHelp class="w-4 h-4 shrink-0" />
+                    {{ $t('global.adminGuide') }}
+                </a>
             </div>
 
             <div class="border-t px-3 py-4 flex flex-col gap-1" style="border-color: #907288;">
@@ -183,7 +200,7 @@
     import {
         LayoutDashboard, BookOpen, Shield, LogOut, Languages, Bell,
         CheckCircle2, XCircle, X, Users, Layers, UsersRound,
-        ClipboardCheck,Brain,Calendar, FileText
+        ClipboardCheck, Brain, Calendar, FileText, CircleHelp
     } from "lucide-vue-next";
     import { useUserStore } from "@/stores/userStore";
     import { usePersonStore } from "@/stores/personStore";
@@ -224,6 +241,9 @@
         const memberIdentifier = userStore.user.email || userStore.username || "";
         return hasUnreadMemberAdminNote(memberIdentifier, personStore.person.visibleAdminNotes) ? 1 : 0;
     });
+
+    const adminGuideHref = "/docs/guide-administrateur-fr.pdf";
+    const memberHelpHref = "/docs/aide-utilisateur-fr.pdf";
 
     function onMemberNoteRead() {
         noteReadVersion.value += 1;

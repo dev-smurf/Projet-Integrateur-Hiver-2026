@@ -1,0 +1,709 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R 5 0 R 6 0 R 7 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 8 0 R /F2 9 0 R /F3 10 0 R >> >> /Contents 11 0 R >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 8 0 R /F2 9 0 R /F3 10 0 R >> >> /Contents 12 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 8 0 R /F2 9 0 R /F3 10 0 R >> >> /Contents 13 0 R >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 8 0 R /F2 9 0 R /F3 10 0 R >> >> /Contents 14 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 8 0 R /F2 9 0 R /F3 10 0 R >> >> /Contents 15 0 R >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+9 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+10 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+11 0 obj
+<< /Length 6085 >>
+stream
+BT /F3 20 Tf 42 792 Td (Guide d'utilisation - Administrateur) Tj ET
+BT /F2 9 Tf 42 767 Td (Dernière mise à jour : 13 mai 2026) Tj ET
+BT /F1 9.5 Tf 42 745 Td (Ce guide explique chaque page importante de l'application. Les actions sont présentées dans des) Tj ET
+BT /F1 9.5 Tf 42 732 Td (tableaux avec les étapes à suivre et le résultat attendu.) Tj ET
+q 0.88 0.88 0.88 rg 42 689 511 25 re f Q
+42 689 511 25 re S
+BT /F3 13 Tf 50 697 Td (1. Connexion et accès administrateur) Tj ET
+BT /F1 9.2 Tf 50 675 Td (Cette page permet à un administrateur de se connecter et d'accéder aux fonctions de gestion.) Tj ET
+q 0.82 0.82 0.82 rg 42 634 511 22 re f Q
+42 634 511 22 re S
+42 634 108 22 re S
+150 634 270 22 re S
+420 634 133 22 re S
+BT /F3 9.5 Tf 47 642 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 642 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 642 Td (Résultat attendu) Tj ET
+42 590.5 511 43.5 re S
+42 590.5 108 43.5 re S
+150 590.5 270 43.5 re S
+420 590.5 133 43.5 re S
+BT /F3 8.7 Tf 47 620 Td (Se connecter) Tj ET
+BT /F1 8.5 Tf 155 620 Td (Entrer le courriel et le mot de passe dans les champs) Tj ET
+BT /F1 8.5 Tf 155 609.5 Td (prévus, puis cliquer sur Connexion.) Tj ET
+BT /F1 8.5 Tf 425 620 Td (Le tableau de bord) Tj ET
+BT /F1 8.5 Tf 425 609.5 Td (administrateur s'ouvre si les) Tj ET
+BT /F1 8.5 Tf 425 599 Td (informations sont valides.) Tj ET
+q 0.965 0.965 0.965 rg 42 547 511 43.5 re f Q
+42 547 511 43.5 re S
+42 547 108 43.5 re S
+150 547 270 43.5 re S
+420 547 133 43.5 re S
+BT /F3 8.7 Tf 47 576.5 Td (Changer la langue) Tj ET
+BT /F1 8.5 Tf 155 576.5 Td (Ouvrir le menu Changer de langue dans la barre latérale) Tj ET
+BT /F1 8.5 Tf 155 566 Td (et choisir Français ou English.) Tj ET
+BT /F1 8.5 Tf 425 576.5 Td (Les textes de l'interface) Tj ET
+BT /F1 8.5 Tf 425 566 Td (changent selon la langue) Tj ET
+BT /F1 8.5 Tf 425 555.5 Td (choisie.) Tj ET
+42 514 511 33 re S
+42 514 108 33 re S
+150 514 270 33 re S
+420 514 133 33 re S
+BT /F3 8.7 Tf 47 533 Td (Se déconnecter) Tj ET
+BT /F1 8.5 Tf 155 533 Td (Cliquer sur Déconnexion dans le bas du menu latéral.) Tj ET
+BT /F1 8.5 Tf 425 533 Td (La session se termine et la) Tj ET
+BT /F1 8.5 Tf 425 522.5 Td (page de connexion est affichée.) Tj ET
+q 0.88 0.88 0.88 rg 42 468 511 25 re f Q
+42 468 511 25 re S
+BT /F3 13 Tf 50 476 Td (2. Tableau de bord administrateur) Tj ET
+BT /F1 9.2 Tf 50 454 Td (Le tableau de bord donne une vue rapide des activités et des raccourcis de gestion.) Tj ET
+q 0.82 0.82 0.82 rg 42 413 511 22 re f Q
+42 413 511 22 re S
+42 413 108 22 re S
+150 413 270 22 re S
+420 413 133 22 re S
+BT /F3 9.5 Tf 47 421 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 421 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 421 Td (Résultat attendu) Tj ET
+42 369.5 511 43.5 re S
+42 369.5 108 43.5 re S
+150 369.5 270 43.5 re S
+420 369.5 133 43.5 re S
+BT /F3 8.7 Tf 47 399 Td (Voir les membres) Tj ET
+BT /F3 8.7 Tf 47 388.5 Td (récents) Tj ET
+BT /F1 8.5 Tf 155 399 Td (Lire la section des derniers membres inscrits, puis) Tj ET
+BT /F1 8.5 Tf 155 388.5 Td (ouvrir un membre au besoin.) Tj ET
+BT /F1 8.5 Tf 425 399 Td (Le dossier du membre) Tj ET
+BT /F1 8.5 Tf 425 388.5 Td (sélectionné peut être consulté) Tj ET
+BT /F1 8.5 Tf 425 378 Td (rapidement.) Tj ET
+q 0.965 0.965 0.965 rg 42 336.5 511 33 re f Q
+42 336.5 511 33 re S
+42 336.5 108 33 re S
+150 336.5 270 33 re S
+420 336.5 133 33 re S
+BT /F3 8.7 Tf 47 355.5 Td (Créer un module) Tj ET
+BT /F1 8.5 Tf 155 355.5 Td (Cliquer sur l'action rapide de création de module.) Tj ET
+BT /F1 8.5 Tf 425 355.5 Td (Le formulaire de création de) Tj ET
+BT /F1 8.5 Tf 425 345 Td (module s'ouvre.) Tj ET
+42 303.5 511 33 re S
+42 303.5 108 33 re S
+150 303.5 270 33 re S
+420 303.5 133 33 re S
+BT /F3 8.7 Tf 47 322.5 Td (Créer un quiz) Tj ET
+BT /F1 8.5 Tf 155 322.5 Td (Cliquer sur l'action rapide Créer un quiz.) Tj ET
+BT /F1 8.5 Tf 425 322.5 Td (Le formulaire de création de) Tj ET
+BT /F1 8.5 Tf 425 312 Td (quiz s'ouvre.) Tj ET
+q 0.965 0.965 0.965 rg 42 281 511 22.5 re f Q
+42 281 511 22.5 re S
+42 281 108 22.5 re S
+150 281 270 22.5 re S
+420 281 133 22.5 re S
+BT /F3 8.7 Tf 47 289.5 Td (Voir les quiz) Tj ET
+BT /F1 8.5 Tf 155 289.5 Td (Cliquer sur Voir les quiz dans les actions rapides.) Tj ET
+BT /F1 8.5 Tf 425 289.5 Td (La liste des quiz est affichée.) Tj ET
+q 0.88 0.88 0.88 rg 42 235 511 25 re f Q
+42 235 511 25 re S
+BT /F3 13 Tf 50 243 Td (3. Page Membres) Tj ET
+BT /F1 9.2 Tf 50 221 Td (Cette page liste les membres et permet de créer, modifier ou consulter un dossier.) Tj ET
+q 0.82 0.82 0.82 rg 42 180 511 22 re f Q
+42 180 511 22 re S
+42 180 108 22 re S
+150 180 270 22 re S
+420 180 133 22 re S
+BT /F3 9.5 Tf 47 188 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 188 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 188 Td (Résultat attendu) Tj ET
+42 136.5 511 43.5 re S
+42 136.5 108 43.5 re S
+150 136.5 270 43.5 re S
+420 136.5 133 43.5 re S
+BT /F3 8.7 Tf 47 166 Td (Ajouter un membre) Tj ET
+BT /F1 8.5 Tf 155 166 Td (Cliquer sur Ajouter, remplir les champs obligatoires,) Tj ET
+BT /F1 8.5 Tf 155 155.5 Td (vérifier les informations, puis enregistrer.) Tj ET
+BT /F1 8.5 Tf 425 166 Td (Un nouveau membre est créé et) Tj ET
+BT /F1 8.5 Tf 425 155.5 Td (devient disponible dans la) Tj ET
+BT /F1 8.5 Tf 425 145 Td (liste.) Tj ET
+q 0.965 0.965 0.965 rg 42 93 511 43.5 re f Q
+42 93 511 43.5 re S
+42 93 108 43.5 re S
+150 93 270 43.5 re S
+420 93 133 43.5 re S
+BT /F3 8.7 Tf 47 122.5 Td (Modifier un membre) Tj ET
+BT /F1 8.5 Tf 155 122.5 Td (Cliquer sur l'action Modifier sur la ligne du membre à) Tj ET
+BT /F1 8.5 Tf 155 112 Td (corriger.) Tj ET
+BT /F1 8.5 Tf 425 122.5 Td (Le formulaire de modification) Tj ET
+BT /F1 8.5 Tf 425 112 Td (s'ouvre avec les informations) Tj ET
+BT /F1 8.5 Tf 425 101.5 Td (du membre.) Tj ET
+42 60 511 33 re S
+42 60 108 33 re S
+150 60 270 33 re S
+420 60 133 33 re S
+BT /F3 8.7 Tf 47 79 Td (Consulter un membre) Tj ET
+BT /F1 8.5 Tf 155 79 Td (Cliquer sur Détails ou sur le nom du membre dans la) Tj ET
+BT /F1 8.5 Tf 155 68.5 Td (liste.) Tj ET
+BT /F1 8.5 Tf 425 79 Td (Le dossier complet du membre) Tj ET
+BT /F1 8.5 Tf 425 68.5 Td (est affiché.) Tj ET
+BT /F2 8 Tf 42 28 Td (Guide d'utilisation - Administrateur - page 1) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Length 6272 >>
+stream
+q 0.82 0.82 0.82 rg 42 770 511 22 re f Q
+42 770 511 22 re S
+42 770 108 22 re S
+150 770 270 22 re S
+420 770 133 22 re S
+BT /F3 9.5 Tf 47 778 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 778 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 778 Td (Résultat attendu) Tj ET
+q 0.965 0.965 0.965 rg 42 737 511 33 re f Q
+42 737 511 33 re S
+42 737 108 33 re S
+150 737 270 33 re S
+420 737 133 33 re S
+BT /F3 8.7 Tf 47 756 Td (Rechercher un membre) Tj ET
+BT /F1 8.5 Tf 155 756 Td (Utiliser la barre de recherche ou les filtres disponibles) Tj ET
+BT /F1 8.5 Tf 155 745.5 Td (pour réduire la liste.) Tj ET
+BT /F1 8.5 Tf 425 756 Td (Seuls les membres correspondant) Tj ET
+BT /F1 8.5 Tf 425 745.5 Td (aux critères sont affichés.) Tj ET
+BT /F3 10 Tf 50 723 Td (Notes importantes) Tj ET
+BT /F1 8.8 Tf 58 709 Td (- Le dossier membre contient les modules, la progression, les quiz assignés et les notes) Tj ET
+BT /F1 8.8 Tf 58 696 Td (administratives.) Tj ET
+q 0.88 0.88 0.88 rg 42 645 511 25 re f Q
+42 645 511 25 re S
+BT /F3 13 Tf 50 653 Td (4. Détail d'un membre) Tj ET
+BT /F1 9.2 Tf 50 631 Td (Le détail d'un membre centralise les informations utiles au suivi.) Tj ET
+q 0.82 0.82 0.82 rg 42 590 511 22 re f Q
+42 590 511 22 re S
+42 590 108 22 re S
+150 590 270 22 re S
+420 590 133 22 re S
+BT /F3 9.5 Tf 47 598 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 598 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 598 Td (Résultat attendu) Tj ET
+42 557 511 33 re S
+42 557 108 33 re S
+150 557 270 33 re S
+420 557 133 33 re S
+BT /F3 8.7 Tf 47 576 Td (Assigner un module) Tj ET
+BT /F1 8.5 Tf 155 576 Td (Choisir un module dans la section des modules, puis) Tj ET
+BT /F1 8.5 Tf 155 565.5 Td (cliquer sur Ajouter.) Tj ET
+BT /F1 8.5 Tf 425 576 Td (Le module est assigné au membre) Tj ET
+BT /F1 8.5 Tf 425 565.5 Td (et apparaît dans sa liste.) Tj ET
+q 0.965 0.965 0.965 rg 42 524 511 33 re f Q
+42 524 511 33 re S
+42 524 108 33 re S
+150 524 270 33 re S
+420 524 133 33 re S
+BT /F3 8.7 Tf 47 543 Td (Retirer un module) Tj ET
+BT /F1 8.5 Tf 155 543 Td (Cliquer sur Retirer pour un module déjà assigné au) Tj ET
+BT /F1 8.5 Tf 155 532.5 Td (membre.) Tj ET
+BT /F1 8.5 Tf 425 543 Td (Le module est retiré du dossier) Tj ET
+BT /F1 8.5 Tf 425 532.5 Td (du membre.) Tj ET
+42 491 511 33 re S
+42 491 108 33 re S
+150 491 270 33 re S
+420 491 133 33 re S
+BT /F3 8.7 Tf 47 510 Td (Voir les quiz assignés) Tj ET
+BT /F1 8.5 Tf 155 510 Td (Consulter la section des quiz assignés dans le dossier du) Tj ET
+BT /F1 8.5 Tf 155 499.5 Td (membre.) Tj ET
+BT /F1 8.5 Tf 425 510 Td (L'état des quiz du membre est) Tj ET
+BT /F1 8.5 Tf 425 499.5 Td (visible.) Tj ET
+q 0.965 0.965 0.965 rg 42 458 511 33 re f Q
+42 458 511 33 re S
+42 458 108 33 re S
+150 458 270 33 re S
+420 458 133 33 re S
+BT /F3 8.7 Tf 47 477 Td (Ajouter une note) Tj ET
+BT /F1 8.5 Tf 155 477 Td (Saisir une note interne ou visible selon le besoin, puis) Tj ET
+BT /F1 8.5 Tf 155 466.5 Td (enregistrer.) Tj ET
+BT /F1 8.5 Tf 425 477 Td (La note est conservée pour le) Tj ET
+BT /F1 8.5 Tf 425 466.5 Td (suivi administratif.) Tj ET
+q 0.88 0.88 0.88 rg 42 412 511 25 re f Q
+42 412 511 25 re S
+BT /F3 13 Tf 50 420 Td (5. Page Modules) Tj ET
+BT /F1 9.2 Tf 50 398 Td (La page Modules affiche les modules existants sous forme de cartes.) Tj ET
+q 0.82 0.82 0.82 rg 42 357 511 22 re f Q
+42 357 511 22 re S
+42 357 108 22 re S
+150 357 270 22 re S
+420 357 133 22 re S
+BT /F3 9.5 Tf 47 365 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 365 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 365 Td (Résultat attendu) Tj ET
+42 324 511 33 re S
+42 324 108 33 re S
+150 324 270 33 re S
+420 324 133 33 re S
+BT /F3 8.7 Tf 47 343 Td (Ajouter un module) Tj ET
+BT /F1 8.5 Tf 155 343 Td (Cliquer sur Ajouter un module dans le haut de la page.) Tj ET
+BT /F1 8.5 Tf 425 343 Td (Le formulaire de création de) Tj ET
+BT /F1 8.5 Tf 425 332.5 Td (module s'ouvre.) Tj ET
+q 0.965 0.965 0.965 rg 42 291 511 33 re f Q
+42 291 511 33 re S
+42 291 108 33 re S
+150 291 270 33 re S
+420 291 133 33 re S
+BT /F3 8.7 Tf 47 310 Td (Modifier un module) Tj ET
+BT /F1 8.5 Tf 155 310 Td (Cliquer sur Modifier sur la carte du module visé.) Tj ET
+BT /F1 8.5 Tf 425 310 Td (La page d'édition du module) Tj ET
+BT /F1 8.5 Tf 425 299.5 Td (s'ouvre.) Tj ET
+42 258 511 33 re S
+42 258 108 33 re S
+150 258 270 33 re S
+420 258 133 33 re S
+BT /F3 8.7 Tf 47 277 Td (Ouvrir l'aperçu) Tj ET
+BT /F1 8.5 Tf 155 277 Td (Cliquer sur la zone d'aperçu d'une carte de module.) Tj ET
+BT /F1 8.5 Tf 425 277 Td (L'aperçu s'ouvre et le retour) Tj ET
+BT /F1 8.5 Tf 425 266.5 Td (ramène à la liste des modules.) Tj ET
+q 0.965 0.965 0.965 rg 42 225 511 33 re f Q
+42 225 511 33 re S
+42 225 108 33 re S
+150 225 270 33 re S
+420 225 133 33 re S
+BT /F3 8.7 Tf 47 244 Td (Assigner un module) Tj ET
+BT /F1 8.5 Tf 155 244 Td (Cliquer sur Assigner sur la carte du module.) Tj ET
+BT /F1 8.5 Tf 425 244 Td (Le panneau d'assignation permet) Tj ET
+BT /F1 8.5 Tf 425 233.5 Td (de choisir les destinataires.) Tj ET
+q 0.88 0.88 0.88 rg 42 179 511 25 re f Q
+42 179 511 25 re S
+BT /F3 13 Tf 50 187 Td (6. Création et édition d'un module) Tj ET
+BT /F1 9.2 Tf 50 165 Td (Cette page sert à définir le contenu du module, ses pages et ses sections.) Tj ET
+q 0.82 0.82 0.82 rg 42 124 511 22 re f Q
+42 124 511 22 re S
+42 124 108 22 re S
+150 124 270 22 re S
+420 124 133 22 re S
+BT /F3 9.5 Tf 47 132 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 132 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 132 Td (Résultat attendu) Tj ET
+42 91 511 33 re S
+42 91 108 33 re S
+150 91 270 33 re S
+420 91 133 33 re S
+BT /F3 8.7 Tf 47 110 Td (Modifier les) Tj ET
+BT /F3 8.7 Tf 47 99.5 Td (informations) Tj ET
+BT /F1 8.5 Tf 155 110 Td (Entrer ou modifier le nom, le sujet, le contenu principal) Tj ET
+BT /F1 8.5 Tf 155 99.5 Td (et l'image du module.) Tj ET
+BT /F1 8.5 Tf 425 110 Td (Les informations du module sont) Tj ET
+BT /F1 8.5 Tf 425 99.5 Td (sauvegardées.) Tj ET
+q 0.965 0.965 0.965 rg 42 58 511 33 re f Q
+42 58 511 33 re S
+42 58 108 33 re S
+150 58 270 33 re S
+420 58 133 33 re S
+BT /F3 8.7 Tf 47 77 Td (Ajouter une page) Tj ET
+BT /F1 8.5 Tf 155 77 Td (Cliquer sur Ajouter une page dans la liste des pages du) Tj ET
+BT /F1 8.5 Tf 155 66.5 Td (module.) Tj ET
+BT /F1 8.5 Tf 425 77 Td (Une nouvelle page est ajoutée) Tj ET
+BT /F1 8.5 Tf 425 66.5 Td (au module.) Tj ET
+BT /F2 8 Tf 42 28 Td (Guide d'utilisation - Administrateur - page 2) Tj ET
+endstream
+endobj
+13 0 obj
+<< /Length 6465 >>
+stream
+q 0.82 0.82 0.82 rg 42 770 511 22 re f Q
+42 770 511 22 re S
+42 770 108 22 re S
+150 770 270 22 re S
+420 770 133 22 re S
+BT /F3 9.5 Tf 47 778 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 778 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 778 Td (Résultat attendu) Tj ET
+42 737 511 33 re S
+42 737 108 33 re S
+150 737 270 33 re S
+420 737 133 33 re S
+BT /F3 8.7 Tf 47 756 Td (Ajouter une section) Tj ET
+BT /F1 8.5 Tf 155 756 Td (Dans une page, ajouter une section de contenu et saisir) Tj ET
+BT /F1 8.5 Tf 155 745.5 Td (le texte nécessaire.) Tj ET
+BT /F1 8.5 Tf 425 756 Td (La section devient visible dans) Tj ET
+BT /F1 8.5 Tf 425 745.5 Td (le module.) Tj ET
+q 0.965 0.965 0.965 rg 42 704 511 33 re f Q
+42 704 511 33 re S
+42 704 108 33 re S
+150 704 270 33 re S
+420 704 133 33 re S
+BT /F3 8.7 Tf 47 723 Td (Prévisualiser) Tj ET
+BT /F1 8.5 Tf 155 723 Td (Cliquer sur Aperçu depuis la page d'édition.) Tj ET
+BT /F1 8.5 Tf 425 723 Td (L'aperçu s'ouvre et le bouton) Tj ET
+BT /F1 8.5 Tf 425 712.5 Td (Retour ramène à l'édition.) Tj ET
+q 0.88 0.88 0.88 rg 42 658 511 25 re f Q
+42 658 511 25 re S
+BT /F3 13 Tf 50 666 Td (7. Aperçu d'un module) Tj ET
+BT /F1 9.2 Tf 50 644 Td (L'aperçu montre le module tel qu'il sera vu par les membres.) Tj ET
+q 0.82 0.82 0.82 rg 42 603 511 22 re f Q
+42 603 511 22 re S
+42 603 108 22 re S
+150 603 270 22 re S
+420 603 133 22 re S
+BT /F3 9.5 Tf 47 611 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 611 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 611 Td (Résultat attendu) Tj ET
+42 570 511 33 re S
+42 570 108 33 re S
+150 570 270 33 re S
+420 570 133 33 re S
+BT /F3 8.7 Tf 47 589 Td (Naviguer entre les) Tj ET
+BT /F3 8.7 Tf 47 578.5 Td (pages) Tj ET
+BT /F1 8.5 Tf 155 589 Td (Utiliser les boutons Précédent et Suivant, ou la liste) Tj ET
+BT /F1 8.5 Tf 155 578.5 Td (des pages à droite.) Tj ET
+BT /F1 8.5 Tf 425 589 Td (La page sélectionnée est) Tj ET
+BT /F1 8.5 Tf 425 578.5 Td (affichée.) Tj ET
+q 0.965 0.965 0.965 rg 42 537 511 33 re f Q
+42 537 511 33 re S
+42 537 108 33 re S
+150 537 270 33 re S
+420 537 133 33 re S
+BT /F3 8.7 Tf 47 556 Td (Modifier rapidement) Tj ET
+BT /F1 8.5 Tf 155 556 Td (Cliquer sur un titre de page ou une section dans) Tj ET
+BT /F1 8.5 Tf 155 545.5 Td (l'aperçu.) Tj ET
+BT /F1 8.5 Tf 425 556 Td (L'édition s'ouvre directement à) Tj ET
+BT /F1 8.5 Tf 425 545.5 Td (l'endroit sélectionné.) Tj ET
+42 493.5 511 43.5 re S
+42 493.5 108 43.5 re S
+150 493.5 270 43.5 re S
+420 493.5 133 43.5 re S
+BT /F3 8.7 Tf 47 523 Td (Retourner) Tj ET
+BT /F1 8.5 Tf 155 523 Td (Cliquer sur Retour dans l'entête de l'aperçu.) Tj ET
+BT /F1 8.5 Tf 425 523 Td (Le retour mène vers la liste ou) Tj ET
+BT /F1 8.5 Tf 425 512.5 Td (vers l'édition selon l'origine) Tj ET
+BT /F1 8.5 Tf 425 502 Td (de l'aperçu.) Tj ET
+q 0.88 0.88 0.88 rg 42 447.5 511 25 re f Q
+42 447.5 511 25 re S
+BT /F3 13 Tf 50 455.5 Td (8. Page Quiz) Tj ET
+BT /F1 9.2 Tf 50 433.5 Td (La page Quiz regroupe les questionnaires créés par l'administrateur.) Tj ET
+q 0.82 0.82 0.82 rg 42 392.5 511 22 re f Q
+42 392.5 511 22 re S
+42 392.5 108 22 re S
+150 392.5 270 22 re S
+420 392.5 133 22 re S
+BT /F3 9.5 Tf 47 400.5 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 400.5 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 400.5 Td (Résultat attendu) Tj ET
+42 359.5 511 33 re S
+42 359.5 108 33 re S
+150 359.5 270 33 re S
+420 359.5 133 33 re S
+BT /F3 8.7 Tf 47 378.5 Td (Ajouter un quiz) Tj ET
+BT /F1 8.5 Tf 155 378.5 Td (Cliquer sur Ajouter un quiz dans le haut de la page.) Tj ET
+BT /F1 8.5 Tf 425 378.5 Td (Le formulaire de création de) Tj ET
+BT /F1 8.5 Tf 425 368 Td (quiz s'ouvre.) Tj ET
+q 0.965 0.965 0.965 rg 42 326.5 511 33 re f Q
+42 326.5 511 33 re S
+42 326.5 108 33 re S
+150 326.5 270 33 re S
+420 326.5 133 33 re S
+BT /F3 8.7 Tf 47 345.5 Td (Modifier un quiz) Tj ET
+BT /F1 8.5 Tf 155 345.5 Td (Cliquer sur Modifier sur la carte du quiz.) Tj ET
+BT /F1 8.5 Tf 425 345.5 Td (La page d'édition du quiz) Tj ET
+BT /F1 8.5 Tf 425 335 Td (s'ouvre.) Tj ET
+42 293.5 511 33 re S
+42 293.5 108 33 re S
+150 293.5 270 33 re S
+420 293.5 133 33 re S
+BT /F3 8.7 Tf 47 312.5 Td (Ouvrir l'aperçu) Tj ET
+BT /F1 8.5 Tf 155 312.5 Td (Cliquer sur l'aperçu du quiz depuis la liste.) Tj ET
+BT /F1 8.5 Tf 425 312.5 Td (Le retour de l'aperçu ramène à) Tj ET
+BT /F1 8.5 Tf 425 302 Td (la liste des quiz.) Tj ET
+q 0.965 0.965 0.965 rg 42 260.5 511 33 re f Q
+42 260.5 511 33 re S
+42 260.5 108 33 re S
+150 260.5 270 33 re S
+420 260.5 133 33 re S
+BT /F3 8.7 Tf 47 279.5 Td (Assigner un quiz) Tj ET
+BT /F1 8.5 Tf 155 279.5 Td (Cliquer sur Assigner pour choisir des membres ou des) Tj ET
+BT /F1 8.5 Tf 155 269 Td (équipes.) Tj ET
+BT /F1 8.5 Tf 425 279.5 Td (Le quiz est envoyé aux) Tj ET
+BT /F1 8.5 Tf 425 269 Td (destinataires sélectionnés.) Tj ET
+q 0.88 0.88 0.88 rg 42 214.5 511 25 re f Q
+42 214.5 511 25 re S
+BT /F3 13 Tf 50 222.5 Td (9. Création et édition d'un quiz) Tj ET
+BT /F1 9.2 Tf 50 200.5 Td (Cette page permet de définir le titre, la description, les questions et les réponses.) Tj ET
+q 0.82 0.82 0.82 rg 42 159.5 511 22 re f Q
+42 159.5 511 22 re S
+42 159.5 108 22 re S
+150 159.5 270 22 re S
+420 159.5 133 22 re S
+BT /F3 9.5 Tf 47 167.5 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 167.5 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 167.5 Td (Résultat attendu) Tj ET
+42 126.5 511 33 re S
+42 126.5 108 33 re S
+150 126.5 270 33 re S
+420 126.5 133 33 re S
+BT /F3 8.7 Tf 47 145.5 Td (Ajouter une question) Tj ET
+BT /F1 8.5 Tf 155 145.5 Td (Cliquer sur Ajouter une question, puis choisir le type de) Tj ET
+BT /F1 8.5 Tf 155 135 Td (question.) Tj ET
+BT /F1 8.5 Tf 425 145.5 Td (Une question est ajoutée au) Tj ET
+BT /F1 8.5 Tf 425 135 Td (quiz.) Tj ET
+q 0.965 0.965 0.965 rg 42 93.5 511 33 re f Q
+42 93.5 511 33 re S
+42 93.5 108 33 re S
+150 93.5 270 33 re S
+420 93.5 133 33 re S
+BT /F3 8.7 Tf 47 112.5 Td (Configurer une échelle) Tj ET
+BT /F1 8.5 Tf 155 112.5 Td (Remplir les libellés minimum, milieu et maximum pour les) Tj ET
+BT /F1 8.5 Tf 155 102 Td (questions à échelle.) Tj ET
+BT /F1 8.5 Tf 425 112.5 Td (L'échelle est affichée) Tj ET
+BT /F1 8.5 Tf 425 102 Td (correctement dans le quiz.) Tj ET
+42 60.5 511 33 re S
+42 60.5 108 33 re S
+150 60.5 270 33 re S
+420 60.5 133 33 re S
+BT /F3 8.7 Tf 47 79.5 Td (Ajouter des réponses) Tj ET
+BT /F1 8.5 Tf 155 79.5 Td (Ajouter ou modifier les choix de réponse disponibles pour) Tj ET
+BT /F1 8.5 Tf 155 69 Td (la question.) Tj ET
+BT /F1 8.5 Tf 425 79.5 Td (Les options de réponse sont) Tj ET
+BT /F1 8.5 Tf 425 69 Td (sauvegardées.) Tj ET
+BT /F2 8 Tf 42 28 Td (Guide d'utilisation - Administrateur - page 3) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Length 6076 >>
+stream
+q 0.82 0.82 0.82 rg 42 770 511 22 re f Q
+42 770 511 22 re S
+42 770 108 22 re S
+150 770 270 22 re S
+420 770 133 22 re S
+BT /F3 9.5 Tf 47 778 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 778 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 778 Td (Résultat attendu) Tj ET
+q 0.965 0.965 0.965 rg 42 737 511 33 re f Q
+42 737 511 33 re S
+42 737 108 33 re S
+150 737 270 33 re S
+420 737 133 33 re S
+BT /F3 8.7 Tf 47 756 Td (Prévisualiser) Tj ET
+BT /F1 8.5 Tf 155 756 Td (Cliquer sur Aperçu depuis la page d'édition du quiz.) Tj ET
+BT /F1 8.5 Tf 425 756 Td (L'aperçu s'ouvre et Retour) Tj ET
+BT /F1 8.5 Tf 425 745.5 Td (ramène à l'édition du quiz.) Tj ET
+q 0.88 0.88 0.88 rg 42 691 511 25 re f Q
+42 691 511 25 re S
+BT /F3 13 Tf 50 699 Td (10. Équipes et sous-équipes) Tj ET
+BT /F1 9.2 Tf 50 677 Td (Les équipes regroupent les membres et simplifient les suivis.) Tj ET
+q 0.82 0.82 0.82 rg 42 636 511 22 re f Q
+42 636 511 22 re S
+42 636 108 22 re S
+150 636 270 22 re S
+420 636 133 22 re S
+BT /F3 9.5 Tf 47 644 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 644 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 644 Td (Résultat attendu) Tj ET
+42 603 511 33 re S
+42 603 108 33 re S
+150 603 270 33 re S
+420 603 133 33 re S
+BT /F3 8.7 Tf 47 622 Td (Créer une équipe) Tj ET
+BT /F1 8.5 Tf 155 622 Td (Cliquer sur Ajouter, entrer le nom de l'équipe et choisir) Tj ET
+BT /F1 8.5 Tf 155 611.5 Td (les membres.) Tj ET
+BT /F1 8.5 Tf 425 622 Td (L'équipe est créée.) Tj ET
+q 0.965 0.965 0.965 rg 42 570 511 33 re f Q
+42 570 511 33 re S
+42 570 108 33 re S
+150 570 270 33 re S
+420 570 133 33 re S
+BT /F3 8.7 Tf 47 589 Td (Modifier une équipe) Tj ET
+BT /F1 8.5 Tf 155 589 Td (Ouvrir l'édition depuis la liste ou depuis le détail de) Tj ET
+BT /F1 8.5 Tf 155 578.5 Td (l'équipe.) Tj ET
+BT /F1 8.5 Tf 425 589 Td (Le nom et les membres de) Tj ET
+BT /F1 8.5 Tf 425 578.5 Td (l'équipe peuvent être modifiés.) Tj ET
+42 537 511 33 re S
+42 537 108 33 re S
+150 537 270 33 re S
+420 537 133 33 re S
+BT /F3 8.7 Tf 47 556 Td (Consulter le détail) Tj ET
+BT /F1 8.5 Tf 155 556 Td (Cliquer sur Détails pour une équipe.) Tj ET
+BT /F1 8.5 Tf 425 556 Td (Les membres et les sous-équipes) Tj ET
+BT /F1 8.5 Tf 425 545.5 Td (sont affichés.) Tj ET
+q 0.965 0.965 0.965 rg 42 504 511 33 re f Q
+42 504 511 33 re S
+42 504 108 33 re S
+150 504 270 33 re S
+420 504 133 33 re S
+BT /F3 8.7 Tf 47 523 Td (Créer une sous-équipe) Tj ET
+BT /F1 8.5 Tf 155 523 Td (Depuis le détail d'une équipe, cliquer sur Ajouter une) Tj ET
+BT /F1 8.5 Tf 155 512.5 Td (sous-équipe.) Tj ET
+BT /F1 8.5 Tf 425 523 Td (La sous-équipe est rattachée à) Tj ET
+BT /F1 8.5 Tf 425 512.5 Td (l'équipe parent.) Tj ET
+q 0.88 0.88 0.88 rg 42 458 511 25 re f Q
+42 458 511 25 re S
+BT /F3 13 Tf 50 466 Td (11. Disponibilités) Tj ET
+BT /F1 9.2 Tf 50 444 Td (La page Disponibilités sert à définir les plages de rendez-vous disponibles.) Tj ET
+q 0.82 0.82 0.82 rg 42 403 511 22 re f Q
+42 403 511 22 re S
+42 403 108 22 re S
+150 403 270 22 re S
+420 403 133 22 re S
+BT /F3 9.5 Tf 47 411 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 411 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 411 Td (Résultat attendu) Tj ET
+42 370 511 33 re S
+42 370 108 33 re S
+150 370 270 33 re S
+420 370 133 33 re S
+BT /F3 8.7 Tf 47 389 Td (Ajouter une plage) Tj ET
+BT /F1 8.5 Tf 155 389 Td (Choisir les jours et les heures disponibles dans le) Tj ET
+BT /F1 8.5 Tf 155 378.5 Td (formulaire.) Tj ET
+BT /F1 8.5 Tf 425 389 Td (La plage de disponibilité est) Tj ET
+BT /F1 8.5 Tf 425 378.5 Td (enregistrée.) Tj ET
+q 0.965 0.965 0.965 rg 42 337 511 33 re f Q
+42 337 511 33 re S
+42 337 108 33 re S
+150 337 270 33 re S
+420 337 133 33 re S
+BT /F3 8.7 Tf 47 356 Td (Modifier une plage) Tj ET
+BT /F1 8.5 Tf 155 356 Td (Changer les heures ou les jours d'une disponibilité) Tj ET
+BT /F1 8.5 Tf 155 345.5 Td (existante.) Tj ET
+BT /F1 8.5 Tf 425 356 Td (Le calendrier est mis à jour.) Tj ET
+42 304 511 33 re S
+42 304 108 33 re S
+150 304 270 33 re S
+420 304 133 33 re S
+BT /F3 8.7 Tf 47 323 Td (Sauvegarder) Tj ET
+BT /F1 8.5 Tf 155 323 Td (Cliquer sur Sauvegarder après les changements.) Tj ET
+BT /F1 8.5 Tf 425 323 Td (Les membres voient les) Tj ET
+BT /F1 8.5 Tf 425 312.5 Td (disponibilités à jour.) Tj ET
+q 0.88 0.88 0.88 rg 42 258 511 25 re f Q
+42 258 511 25 re S
+BT /F3 13 Tf 50 266 Td (12. Notes administratives) Tj ET
+BT /F1 9.2 Tf 50 244 Td (Les notes servent au suivi interne et peuvent être privées ou visibles au membre.) Tj ET
+q 0.82 0.82 0.82 rg 42 203 511 22 re f Q
+42 203 511 22 re S
+42 203 108 22 re S
+150 203 270 22 re S
+420 203 133 22 re S
+BT /F3 9.5 Tf 47 211 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 211 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 211 Td (Résultat attendu) Tj ET
+42 170 511 33 re S
+42 170 108 33 re S
+150 170 270 33 re S
+420 170 133 33 re S
+BT /F3 8.7 Tf 47 189 Td (Ajouter une note) Tj ET
+BT /F1 8.5 Tf 155 189 Td (Choisir le membre concerné, saisir le contenu, choisir la) Tj ET
+BT /F1 8.5 Tf 155 178.5 Td (visibilité, puis enregistrer.) Tj ET
+BT /F1 8.5 Tf 425 189 Td (La note est ajoutée au dossier) Tj ET
+BT /F1 8.5 Tf 425 178.5 Td (administratif.) Tj ET
+q 0.965 0.965 0.965 rg 42 137 511 33 re f Q
+42 137 511 33 re S
+42 137 108 33 re S
+150 137 270 33 re S
+420 137 133 33 re S
+BT /F3 8.7 Tf 47 156 Td (Filtrer les notes) Tj ET
+BT /F1 8.5 Tf 155 156 Td (Utiliser les filtres par membre, date ou contenu.) Tj ET
+BT /F1 8.5 Tf 425 156 Td (Le tableau affiche seulement) Tj ET
+BT /F1 8.5 Tf 425 145.5 Td (les notes correspondantes.) Tj ET
+42 114.5 511 22.5 re S
+42 114.5 108 22.5 re S
+150 114.5 270 22.5 re S
+420 114.5 133 22.5 re S
+BT /F3 8.7 Tf 47 123 Td (Modifier une note) Tj ET
+BT /F1 8.5 Tf 155 123 Td (Cliquer sur Modifier pour la note à corriger.) Tj ET
+BT /F1 8.5 Tf 425 123 Td (La note peut être mise à jour.) Tj ET
+q 0.965 0.965 0.965 rg 42 92 511 22.5 re f Q
+42 92 511 22.5 re S
+42 92 108 22.5 re S
+150 92 270 22.5 re S
+420 92 133 22.5 re S
+BT /F3 8.7 Tf 47 100.5 Td (Supprimer une note) Tj ET
+BT /F1 8.5 Tf 155 100.5 Td (Cliquer sur Supprimer et confirmer la suppression.) Tj ET
+BT /F1 8.5 Tf 425 100.5 Td (La note est retirée.) Tj ET
+BT /F2 8 Tf 42 28 Td (Guide d'utilisation - Administrateur - page 4) Tj ET
+endstream
+endobj
+15 0 obj
+<< /Length 1691 >>
+stream
+q 0.88 0.88 0.88 rg 42 768 511 25 re f Q
+42 768 511 25 re S
+BT /F3 13 Tf 50 776 Td (13. Compte administrateur et aide) Tj ET
+BT /F1 9.2 Tf 50 754 Td (La page Compte gère les informations personnelles. Le guide est disponible dans le menu) Tj ET
+BT /F1 9.2 Tf 50 741 Td (latéral.) Tj ET
+q 0.82 0.82 0.82 rg 42 700 511 22 re f Q
+42 700 511 22 re S
+42 700 108 22 re S
+150 700 270 22 re S
+420 700 133 22 re S
+BT /F3 9.5 Tf 47 708 Td (Action) Tj ET
+BT /F3 9.5 Tf 155 708 Td (Étapes à suivre) Tj ET
+BT /F3 9.5 Tf 425 708 Td (Résultat attendu) Tj ET
+42 667 511 33 re S
+42 667 108 33 re S
+150 667 270 33 re S
+420 667 133 33 re S
+BT /F3 8.7 Tf 47 686 Td (Modifier le profil) Tj ET
+BT /F1 8.5 Tf 155 686 Td (Ouvrir Compte, modifier les champs permis, puis) Tj ET
+BT /F1 8.5 Tf 155 675.5 Td (sauvegarder.) Tj ET
+BT /F1 8.5 Tf 425 686 Td (Le profil administrateur est) Tj ET
+BT /F1 8.5 Tf 425 675.5 Td (mis à jour.) Tj ET
+q 0.965 0.965 0.965 rg 42 634 511 33 re f Q
+42 634 511 33 re S
+42 634 108 33 re S
+150 634 270 33 re S
+420 634 133 33 re S
+BT /F3 8.7 Tf 47 653 Td (Ouvrir le guide) Tj ET
+BT /F1 8.5 Tf 155 653 Td (Cliquer sur Guide administrateur dans le menu latéral.) Tj ET
+BT /F1 8.5 Tf 425 653 Td (Ce PDF s'ouvre dans un nouvel) Tj ET
+BT /F1 8.5 Tf 425 642.5 Td (onglet.) Tj ET
+42 601 511 33 re S
+42 601 108 33 re S
+150 601 270 33 re S
+420 601 133 33 re S
+BT /F3 8.7 Tf 47 620 Td (Utiliser la messagerie) Tj ET
+BT /F1 8.5 Tf 155 620 Td (Cliquer sur la bulle de discussion lorsque disponible.) Tj ET
+BT /F1 8.5 Tf 425 620 Td (La conversation avec un membre) Tj ET
+BT /F1 8.5 Tf 425 609.5 Td (ou une équipe s'ouvre.) Tj ET
+BT /F2 8 Tf 42 28 Td (Guide d'utilisation - Administrateur - page 5) Tj ET
+endstream
+endobj
+xref
+0 16
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000139 00000 n 
+0000000287 00000 n 
+0000000435 00000 n 
+0000000583 00000 n 
+0000000731 00000 n 
+0000000879 00000 n 
+0000000976 00000 n 
+0000001081 00000 n 
+0000001184 00000 n 
+0000007322 00000 n 
+0000013647 00000 n 
+0000020165 00000 n 
+0000026294 00000 n 
+trailer
+<< /Size 16 /Root 1 0 R >>
+startxref
+28038
+%%EOF
