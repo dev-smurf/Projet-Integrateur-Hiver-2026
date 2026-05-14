@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(GarneauTemplateDbContext))]
-    partial class GarneauTemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514205225_AddEquipeNotes")]
+    partial class AddEquipeNotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AdminId");
 
-                    b.ToTable("AdminAvailabilities", (string)null);
+                    b.ToTable("AdminAvailabilities");
                 });
 
             modelBuilder.Entity("Domain.Entities.AdminAvailabilityOverride", b =>
@@ -108,7 +111,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AdminId");
 
-                    b.ToTable("AdminAvailabilityOverrides", (string)null);
+                    b.ToTable("AdminAvailabilityOverrides");
                 });
 
             modelBuilder.Entity("Domain.Entities.Administrator", b =>
@@ -150,7 +153,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Administrators", (string)null);
+                    b.ToTable("Administrators");
                 });
 
             modelBuilder.Entity("Domain.Entities.Appointment", b =>
@@ -211,7 +214,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Archive", b =>
@@ -255,7 +258,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("RdvId");
 
-                    b.ToTable("Archives", (string)null);
+                    b.ToTable("Archives");
                 });
 
             modelBuilder.Entity("Domain.Entities.Authentication.RefreshToken", b =>
@@ -290,7 +293,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Domain.Entities.Books.Book", b =>
@@ -364,7 +367,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("Domain.Entities.Conversation", b =>
@@ -406,7 +409,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Conversations", (string)null);
+                    b.ToTable("Conversations");
                 });
 
             modelBuilder.Entity("Domain.Entities.Equipe", b =>
@@ -450,11 +453,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ParentEquipeId");
 
-<<<<<<< HEAD
-                    b.ToTable("Equipes", (string)null);
-=======
                     b.ToTable("Equipe", (string)null);
->>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeConversation", b =>
@@ -491,7 +490,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EquipeId");
 
-                    b.ToTable("EquipeConversations", (string)null);
+                    b.ToTable("EquipeConversations");
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeMessage", b =>
@@ -545,7 +544,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ExpediteurId");
 
-                    b.ToTable("EquipeMessages", (string)null);
+                    b.ToTable("EquipeMessages");
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeMessageRead", b =>
@@ -563,7 +562,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EquipeMessageReads", (string)null);
+                    b.ToTable("EquipeMessageReads");
                 });
 
             modelBuilder.Entity("Domain.Entities.EquipeNote", b =>
@@ -808,7 +807,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Domain.Entities.MemberModule", b =>
@@ -859,7 +858,7 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasFilter("Deleted IS NULL");
 
-                    b.ToTable("MemberModules", (string)null);
+                    b.ToTable("MemberModules");
                 });
 
             modelBuilder.Entity("Domain.Entities.MemberModuleSectionProgress", b =>
@@ -908,7 +907,7 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasFilter("Deleted IS NULL");
 
-                    b.ToTable("MemberModuleSectionProgress", (string)null);
+                    b.ToTable("MemberModuleSectionProgress");
                 });
 
             modelBuilder.Entity("Domain.Entities.MemberNote", b =>
@@ -954,7 +953,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("MemberNotes", (string)null);
+                    b.ToTable("MemberNotes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
@@ -1026,7 +1025,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ReceveurId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Domain.Entities.Module", b =>
@@ -1072,7 +1071,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Modules", (string)null);
+                    b.ToTable("Modules");
                 });
 
             modelBuilder.Entity("Domain.Entities.ModuleSection", b =>
@@ -1117,7 +1116,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ModuleId", "SortOrder");
 
-                    b.ToTable("ModuleSections", (string)null);
+                    b.ToTable("ModuleSections");
                 });
 
             modelBuilder.Entity("Domain.Entities.Progression", b =>
@@ -1154,7 +1153,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Progression", (string)null);
+                    b.ToTable("Progression");
                 });
 
             modelBuilder.Entity("Domain.Entities.Quiz", b =>
@@ -1193,7 +1192,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Quizz", (string)null);
+                    b.ToTable("Quizz");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuizAssignment", b =>
@@ -1249,7 +1248,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("QuizAssignments", (string)null);
+                    b.ToTable("QuizAssignments");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuizQuestion", b =>
@@ -1312,7 +1311,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("QuizQuestions", (string)null);
+                    b.ToTable("QuizQuestions");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuizQuestionResponse", b =>
@@ -1353,7 +1352,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("QuizQuestionId");
 
-                    b.ToTable("QuizQuestionResponses", (string)null);
+                    b.ToTable("QuizQuestionResponses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Rdv", b =>
@@ -1403,7 +1402,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rdv", (string)null);
+                    b.ToTable("Rdv");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserQuizResponse", b =>
@@ -1457,7 +1456,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("QuizQuestionId");
 
-                    b.ToTable("UserQuizResponses", (string)null);
+                    b.ToTable("UserQuizResponses");
                 });
 
             modelBuilder.Entity("EquipeUser", b =>

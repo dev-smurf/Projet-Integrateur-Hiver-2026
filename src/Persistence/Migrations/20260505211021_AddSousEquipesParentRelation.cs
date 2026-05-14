@@ -19,6 +19,7 @@ namespace Persistence.Migrations
                 name: "FK_MemberNotes_Members_MemberId",
                 table: "MemberNotes");
 
+<<<<<<< HEAD
             // ✅ Ajoute la colonne seulement si elle n'existe pas déjà
             migrationBuilder.Sql(@"
                 IF NOT EXISTS (
@@ -53,6 +54,32 @@ namespace Persistence.Migrations
                     ON DELETE NO ACTION;
                 END
             ");
+=======
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Equipe', 'ParentEquipeId') IS NULL
+                    ALTER TABLE [Equipe] ADD [ParentEquipeId] uniqueidentifier NULL;
+                """);
+
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE [name] = 'IX_Equipes_ParentEquipeId'
+                        AND [object_id] = OBJECT_ID('Equipe')
+                )
+                    CREATE INDEX [IX_Equipes_ParentEquipeId] ON [Equipe] ([ParentEquipeId]);
+                """);
+
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE [name] = 'FK_Equipes_Equipes_ParentEquipeId'
+                )
+                    ALTER TABLE [Equipe] ADD CONSTRAINT [FK_Equipes_Equipes_ParentEquipeId]
+                    FOREIGN KEY ([ParentEquipeId]) REFERENCES [Equipe] ([Id]) ON DELETE NO ACTION;
+                """);
+>>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
 
             migrationBuilder.AddForeignKey(
                 name: "FK_MemberNotes_Administrators_CreatedByAdminId",
@@ -74,9 +101,20 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+<<<<<<< HEAD
             migrationBuilder.DropForeignKey(
                 name: "FK_Equipes_Equipes_ParentEquipeId",
                 table: "Equipes");
+=======
+            migrationBuilder.Sql("""
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE [name] = 'FK_Equipes_Equipes_ParentEquipeId'
+                )
+                    ALTER TABLE [Equipe] DROP CONSTRAINT [FK_Equipes_Equipes_ParentEquipeId];
+                """);
+>>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
 
             migrationBuilder.DropForeignKey(
                 name: "FK_MemberNotes_Administrators_CreatedByAdminId",
@@ -86,6 +124,7 @@ namespace Persistence.Migrations
                 name: "FK_MemberNotes_Members_MemberId",
                 table: "MemberNotes");
 
+<<<<<<< HEAD
             migrationBuilder.DropIndex(
                 name: "IX_Equipes_ParentEquipeId",
                 table: "Equipes");
@@ -93,6 +132,22 @@ namespace Persistence.Migrations
             migrationBuilder.DropColumn(
                 name: "ParentEquipeId",
                 table: "Equipes");
+=======
+            migrationBuilder.Sql("""
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE [name] = 'IX_Equipes_ParentEquipeId'
+                        AND [object_id] = OBJECT_ID('Equipe')
+                )
+                    DROP INDEX [IX_Equipes_ParentEquipeId] ON [Equipe];
+                """);
+
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Equipe', 'ParentEquipeId') IS NOT NULL
+                    ALTER TABLE [Equipe] DROP COLUMN [ParentEquipeId];
+                """);
+>>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
 
             migrationBuilder.AddForeignKey(
                 name: "FK_MemberNotes_Administrators_CreatedByAdminId",

@@ -66,6 +66,17 @@
                                 <p class="text-sm font-medium text-gray-900 truncate">{{ m.name }}</p>
                             </div>
                         </li>
+                        <li v-for="n in loginNotifications.notes" :key="`n-${n.id}`"
+                            class="flex items-start gap-2 rounded-lg border border-emerald-100 bg-white/70 px-3 py-2">
+                            <FileText class="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                            <div class="min-w-0">
+                                <p class="text-xs font-medium uppercase tracking-wide text-emerald-600">
+                                    {{ n.type }}
+                                </p>
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ n.content }}</p>
+                                <p class="text-xs text-gray-500 truncate">Par: {{ n.author }}</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <button type="button"
@@ -227,7 +238,11 @@
 
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-center justify-between mb-3">
+<<<<<<< HEAD
                         <h3 class="font-semibold text-gray-900">{{ t('pages.memberDashboard.notes.title') }}</h3>
+=======
+                        <h3 class="font-semibold text-gray-900">Notes administratives</h3>
+>>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
                         <FileText class="h-4 w-4" style="color: #4c6367;" />
                     </div>
                     <div v-if="notesLoading" class="space-y-2">
@@ -237,9 +252,20 @@
                         {{ t('pages.memberDashboard.notes.empty') }}
                     </div>
                     <div v-else class="space-y-3 pr-1">
-                        <div v-for="note in myNotes.slice(0, 3)" :key="note.id" class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        <div v-for="note in myNotes.slice(0, 3)" :key="note.id" 
+                             class="border rounded-lg p-3 transition-all duration-500"
+                             :class="[
+                                 newNotesIds.includes(note.id) 
+                                    ? 'new-note-highlight shake-anim border-emerald-400 bg-emerald-50' 
+                                    : 'border-gray-200 bg-gray-50'
+                             ]">
                             <div class="flex items-center justify-between gap-2 mb-2">
-                                <span class="text-xs font-semibold text-gray-700">{{ note.createdByAdminName }}</span>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold text-gray-700">{{ note.createdByAdminName }}</span>
+                                    <span class="text-[10px] uppercase font-bold" :class="('equipeId' in note && note.equipeId) ? 'text-blue-500' : 'text-purple-500'">
+                                        {{ ('equipeId' in note && note.equipeId) ? ('Équipe: ' + (note as EquipeNoteDto).equipeName) : 'Personnel' }}
+                                    </span>
+                                </div>
                                 <span class="text-[10px] text-gray-400">{{ formatDate(note.created) }}</span>
                             </div>
                             <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ note.content }}</p>
@@ -268,6 +294,7 @@
                     </button>
                 </div>
                 
+<<<<<<< HEAD
                 <div class="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row gap-4 bg-gray-50">
                     <div class="flex-1">
                         <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('global.search') }}</label>
@@ -275,6 +302,23 @@
                     </div>
                     <div class="flex-1">
                         <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('pages.memberDashboard.notes.filterByDate') }}</label>
+=======
+                <div class="p-4 sm:p-5 border-b border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50">
+                    <div class="sm:col-span-1">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Rechercher</label>
+                        <input type="text" v-model="notesSearchQuery" placeholder="Mots-clés..." class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par type</label>
+                        <select v-model="notesTypeFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none bg-white">
+                            <option value="all">Toutes les notes</option>
+                            <option value="personal">Personnel uniquement</option>
+                            <option value="team">Équipes uniquement</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par date</label>
+>>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
                         <input type="date" v-model="notesDateFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
                     </div>
                 </div>
@@ -289,7 +333,12 @@
                                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 text-xs font-bold">
                                     {{ note.createdByAdminName.substring(0, 2).toUpperCase() }}
                                 </div>
-                                <span class="text-sm font-semibold text-gray-800">{{ note.createdByAdminName }}</span>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-semibold text-gray-800">{{ note.createdByAdminName }}</span>
+                                    <span class="text-[10px] uppercase font-bold" :class="('equipeId' in note && note.equipeId) ? 'text-blue-500' : 'text-purple-500'">
+                                        {{ ('equipeId' in note && note.equipeId) ? ('Équipe: ' + (note as EquipeNoteDto).equipeName) : 'Personnel' }}
+                                    </span>
+                                </div>
                             </div>
                             <span class="text-xs font-medium px-2 py-1 rounded-md" style="background-color: rgba(76, 99, 103, 0.1); color: #4c6367;">
                                 {{ formatDate(note.created) }}
@@ -309,6 +358,27 @@
     </div>
 </template>
 
+<style scoped>
+.new-note-highlight {
+    border-width: 2px !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.shake-anim {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+</style>
+
  <script lang="ts" setup>
  import {computed, onMounted, onUnmounted, onActivated, ref} from "vue";
  import {useI18n} from "vue3-i18n";
@@ -322,7 +392,7 @@
  import {notifySuccess} from "@/notify";
  import type {MemberModuleDto} from "@/types/entities";
  import type {AssignedQuiz} from "@/services/quizService";
- import type {NoteDto} from "@/services/NotesService";
+ import type {NoteDto, EquipeNoteDto} from "@/services/NotesService";
 
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "");
 
@@ -339,16 +409,18 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
   const quizzesLoading = ref(true);
   const assignedQuizzes = ref<AssignedQuiz[]>([]);
   const notesLoading = ref(true);
-  const myNotes = ref<NoteDto[]>([]);
-  const loginNotifications = ref<LoginNotifications>({quizzes: [], modules: []});
+  const myNotes = ref<(NoteDto | EquipeNoteDto)[]>([]);
+  const loginNotifications = ref<LoginNotifications>({quizzes: [], modules: [], notes: []});
   const hasNewAssignments = computed(() =>
-    loginNotifications.value.quizzes.length + loginNotifications.value.modules.length > 0
+    loginNotifications.value.quizzes.length + loginNotifications.value.modules.length + loginNotifications.value.notes.length > 0
   );
 
   async function fetchLoginNotifications() {
     if (!userStore.hasRole(Role.Member)) return;
     try {
       loginNotifications.value = await memberService.getLoginNotifications();
+      // Track IDs of new notes for highlighting
+      newNotesIds.value = loginNotifications.value.notes.map(n => n.id);
     } catch {
       // Best-effort — banner stays hidden if the API is unreachable.
     }
@@ -356,7 +428,8 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
 
   async function dismissLoginNotifications() {
     const previous = loginNotifications.value;
-    loginNotifications.value = {quizzes: [], modules: []};
+    loginNotifications.value = {quizzes: [], modules: [], notes: []};
+    newNotesIds.value = []; // Clear highlights when banner is dismissed
     try {
       await memberService.dismissLoginNotifications();
     } catch {
@@ -367,6 +440,8 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
   const showNotesModal = ref(false);
   const notesSearchQuery = ref("");
   const notesDateFilter = ref("");
+  const notesTypeFilter = ref("all");
+  const newNotesIds = ref<string[]>([]);
 
  const displayName = computed(() => {
    const fullName = personStore.person.fullName?.trim();
@@ -413,13 +488,23 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
    });
  });
 
- const filteredNotes = computed(() => {
-     return myNotes.value.filter(note => {
-         const matchContent = note.content.toLowerCase().includes(notesSearchQuery.value.toLowerCase());
-         const matchDate = !notesDateFilter.value || note.created.startsWith(notesDateFilter.value);
-         return matchContent && matchDate;
-     });
- });
+  const filteredNotes = computed(() => {
+      return myNotes.value.filter(note => {
+          const matchContent = note.content.toLowerCase().includes(notesSearchQuery.value.toLowerCase());
+          const matchDate = !notesDateFilter.value || note.created.startsWith(notesDateFilter.value);
+          
+          let matchType = true;
+          const isTeamNote = 'equipeId' in note && !!note.equipeId;
+          
+          if (notesTypeFilter.value === "personal") {
+              matchType = !isTeamNote;
+          } else if (notesTypeFilter.value === "team") {
+              matchType = isTeamNote;
+          }
+          
+          return matchContent && matchDate && matchType;
+      });
+  });
 
   const totalModules = computed(() => modules.value.length);
   const completedModules = computed(() => modules.value.filter((mod) => mod.isCompleted || (mod.progressPercent ?? 0) >= 100).length);
@@ -448,10 +533,11 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
         if (profile) personStore.setPerson(profile);
       }
 
-      const [modData, quizData, noteData] = await Promise.all([
+      const [modData, quizData, noteData, teamNoteData] = await Promise.all([
         memberService.getMyModules(),
         quizService.getAssignedQuizzes(),
-        notesService.getMyNotes()
+        notesService.getMyNotes(),
+        notesService.getMyEquipeNotes()
       ]);
 
       void fetchLoginNotifications();
@@ -459,8 +545,9 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
       modules.value = modData;
       assignedQuizzes.value = quizData;
       
-      noteData.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-      myNotes.value = noteData;
+      const combinedNotes = [...noteData, ...teamNoteData];
+      combinedNotes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      myNotes.value = combinedNotes;
 
     } catch (err) {
       console.error("Error fetching dashboard data", err);
@@ -482,7 +569,12 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
         const oldLatestNoteId = oldNotesCount > 0 ? myNotes.value[0].id : null;
         
         try {
-          const newNotes = await notesService.getMyNotes();
+          const [personalNotes, teamNotes] = await Promise.all([
+            notesService.getMyNotes(),
+            notesService.getMyEquipeNotes()
+          ]);
+          
+          const newNotes = [...personalNotes, ...teamNotes];
           newNotes.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
           
           if (newNotes.length > 0) {
@@ -492,6 +584,15 @@ const backendUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/api$/, "
             
             if (isNewFirstNote || isDifferentTopNote) {
               notifySuccess("Une nouvelle note administrative a été publiée !");
+              // Highlight the new note(s)
+              const existingIds = myNotes.value.map(n => n.id);
+              const brandNewIds = newNotes.filter(n => !existingIds.includes(n.id)).map(n => n.id);
+              if (brandNewIds.length > 0) {
+                  newNotesIds.value = [...newNotesIds.value, ...brandNewIds];
+              } else if (isDifferentTopNote) {
+                  // If top note changed but count didn't (rare), highlight the new top one
+                  newNotesIds.value = [currentLatestNote.id];
+              }
             }
           }
           myNotes.value = newNotes;

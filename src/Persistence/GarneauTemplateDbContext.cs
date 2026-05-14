@@ -66,6 +66,7 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
     public DbSet<UserQuizResponse> UserQuizResponses { get; set; } = null!;
     public DbSet<QuizAssignment> QuizAssignments { get; set; } = null!;
     public DbSet<MemberNote> MemberNotes { get; set; } = null!;
+    public DbSet<EquipeNote> EquipeNotes { get; set; } = null!;
 
     public GarneauTemplateDbContext()
     {
@@ -162,6 +163,21 @@ public class GarneauTemplateDbContext : IdentityDbContext<User, Role, Guid,
             .HasOne(m => m.Member)
             .WithMany(m => m.Notes)
             .HasForeignKey(m => m.MemberId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // =========================
+        // ✅ EquipeNote fix (no cascade)
+        // =========================
+        builder.Entity<EquipeNote>()
+            .HasOne(m => m.CreatedByAdmin)
+            .WithMany()
+            .HasForeignKey(m => m.CreatedByAdminId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<EquipeNote>()
+            .HasOne(m => m.Equipe)
+            .WithMany(e => e.Notes)
+            .HasForeignKey(m => m.EquipeId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // =========================

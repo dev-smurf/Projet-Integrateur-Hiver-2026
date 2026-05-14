@@ -72,6 +72,7 @@ public static class ConfigureServices
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IMemberNoteRepository, MemberNoteRepository>();
         services.AddScoped<IEquipeRepository, EquipeRepository>();
+        services.AddScoped<IEquipeNoteRepository, EquipeNoteRepository>();
         services.AddScoped<IMemberEquipeRepository, MemberEquipeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();

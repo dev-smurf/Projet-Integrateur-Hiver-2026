@@ -16,6 +16,12 @@
                     {{ $t('global.back') }}
                 </router-link>
                 <router-link v-if="equipe?.id"
+                             :to="{ name: 'admin.children.notes.index', query: { equipeId: equipe.id } }"
+                             class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
+                    <FileText class="w-4 h-4" />
+                    Notes
+                </router-link>
+                <router-link v-if="equipe?.id"
                              :to="{ name: 'admin.children.equipes.edit', params: { id: equipe.id } }"
                              class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition">
                     {{ $t('global.edit') }}
@@ -182,7 +188,7 @@
     import { useRoute } from "vue-router";
     import { useI18n } from "vue3-i18n";
     import { useNotification } from "@kyvg/vue3-notification";
-    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save, Plus } from "lucide-vue-next";
+    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save, Plus, FileText } from "lucide-vue-next";
     import { useEquipesService, useMemberService } from "@/inversify.config";
     import Select2Single from "@/components/forms/Select2Single.vue";
     import type { Member, Equipe } from "@/types/entities";

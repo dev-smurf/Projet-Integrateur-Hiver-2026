@@ -72,6 +72,7 @@ public class GarneauTemplateDbContextInitializer
                     }
                 }
 
+                await EnsureEquipeTableNameAsync();
                 await _context.Database.MigrateAsync();
             }
 
@@ -410,5 +411,14 @@ public class GarneauTemplateDbContextInitializer
                 "ALTER TABLE [Members] ADD [AdminNotesVisibleToMember] bit NOT NULL CONSTRAINT [DF_Members_AdminNotesVisibleToMember] DEFAULT(0)");
             _logger.LogInformation("Added missing column Members.AdminNotesVisibleToMember");
         }
+    }
+
+    private async Task EnsureEquipeTableNameAsync()
+    {
+        if (await TableExistsAsync("Equipe") || !await TableExistsAsync("Equipes"))
+            return;
+
+        await _context.Database.ExecuteSqlRawAsync("EXEC sp_rename 'Equipes', 'Equipe'");
+        _logger.LogInformation("Renamed legacy table Equipes to Equipe before applying migrations.");
     }
 }

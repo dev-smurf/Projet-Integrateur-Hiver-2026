@@ -319,8 +319,7 @@ export function getRouter(): Router {
                     },
                 },
                 {
-                    path: i18n.t("routes.equipe.children.myEquipe.path"),
-                    alias: getLocalizedRoutes("routes.equipe.children.myEquipe.path"),
+                    path: `${i18n.t("routes.equipe.children.myEquipe.path")}/:id`,
                     name: "equipe.myEquipe",
                     component: Equipe,
                     props: true,

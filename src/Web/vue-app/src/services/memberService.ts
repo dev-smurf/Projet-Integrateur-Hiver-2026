@@ -204,4 +204,13 @@ export class MemberService extends ApiService implements IMemberService {
         })
     return new SucceededOrNotResponse(response.status === 204)
   }
+
+  public async getMyEquipeNotes(): Promise<any[]> {
+    const response = await this
+      ._httpClient
+      .get<any[], AxiosResponse<any[]>>(
+        `${import.meta.env.VITE_API_BASE_URL}/members/me/equipe-notes`
+      )
+    return response.data
+  }
 }

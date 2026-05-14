@@ -88,6 +88,88 @@ public class GetMyEquipeEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
     }
 }
 
+public class GetMyEquipeByIdEndpoint : EndpointWithoutRequest<GetMyEquipeResponse?>
+{
+    private readonly IAuthenticatedMemberService _authenticatedMemberService;
+    private readonly IEquipeRepository _equipeRepository;
+    private readonly IMemberRepository _memberRepository;
+
+    public GetMyEquipeByIdEndpoint(
+        IAuthenticatedMemberService authenticatedMemberService,
+        IEquipeRepository equipeRepository,
+        IMemberRepository memberRepository)
+    {
+        _authenticatedMemberService = authenticatedMemberService;
+        _equipeRepository = equipeRepository;
+        _memberRepository = memberRepository;
+    }
+
+    public override void Configure()
+    {
+        Get("members/me/equipes/{id}");
+        Roles(Domain.Constants.User.Roles.MEMBER);
+        AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
+        DontCatchExceptions();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var idString = Route<string>("id");
+        if (!Guid.TryParse(idString, out var equipeId))
+        {
+            HttpContext.Response.StatusCode = 400;
+            return;
+        }
+
+        var authenticatedMember = _authenticatedMemberService.GetAuthenticatedMember();
+        var equipeIds = await _equipeRepository.GetEquipeIdsForUser(authenticatedMember.User.Id);
+        if (!equipeIds.Contains(equipeId))
+        {
+            HttpContext.Response.StatusCode = 404;
+            return;
+        }
+
+        var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
+        if (equipe == null)
+        {
+            HttpContext.Response.StatusCode = 404;
+            return;
+        }
+
+        var memberModules = await _memberRepository.GetMemberModules(authenticatedMember.Id);
+
+        var response = new GetMyEquipeResponse
+        {
+            Id = equipe.Id.ToString(),
+            NameFr = equipe.NameFr,
+            NameEn = equipe.NameEn,
+            Members = equipe.Membres
+                .Select(user => _memberRepository.FindByUserId(user.Id))
+                .Where(member => member != null)
+                .Select(member => new GetMyEquipeMemberDto
+                {
+                    Id = member!.Id.ToString(),
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    Email = member.Email
+                })
+                .DistinctBy(member => member.Id)
+                .ToList(),
+            Modules = memberModules.Select(mm => new GetMyEquipeModuleDto
+            {
+                ModuleId = mm.ModuleId.ToString(),
+                NameFr = mm.Module.Name,
+                NameEn = mm.Module.Name,
+                CardImageUrl = mm.Module.CardImageUrl,
+                ProgressPercent = mm.ProgressPercent,
+                IsCompleted = mm.IsCompleted
+            }).ToList()
+        };
+
+        await Send.OkAsync(response, cancellation: ct);
+    }
+}
+
 public class GetMyEquipeResponse
 {
     public string Id { get; set; } = null!;
