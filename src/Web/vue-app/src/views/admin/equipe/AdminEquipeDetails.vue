@@ -31,7 +31,7 @@
 
         <template v-else>
             <!-- Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-white border border-gray-200 rounded-xl p-4">
                     <div class="flex items-center justify-between">
                         <p class="text-sm text-gray-500">{{ $t('pages.equipeDetails.memberCount') }}</p>
@@ -46,9 +46,16 @@
                     </div>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ availableMembersCount }}</p>
                 </div>
+                <div class="bg-white border border-gray-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm text-gray-500">Modules assignés</p>
+                        <BookOpen class="h-5 w-5 text-brand-600" />
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ equipeModules.length }}</p>
+                </div>
             </div>
 
-            <!-- Sous-équipes (seulement pour les équipes parentes) -->
+            <!-- Sous-équipes -->
             <div v-if="!equipe?.parentEquipeId" class="bg-white border border-gray-200 rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-sm font-semibold text-gray-900">
@@ -60,15 +67,12 @@
                         Nouvelle sous-équipe
                     </router-link>
                 </div>
-
                 <div v-if="equipe?.sousEquipes?.length" class="space-y-2">
                     <div v-for="sousEquipe in equipe.sousEquipes" :key="sousEquipe.id"
                          class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="flex items-center gap-3">
                             <Users class="w-4 h-4 text-brand-500" />
-                            <span class="text-sm font-medium text-gray-900">
-                                {{ sousEquipe.nameFr || sousEquipe.nameEn }}
-                            </span>
+                            <span class="text-sm font-medium text-gray-900">{{ sousEquipe.nameFr || sousEquipe.nameEn }}</span>
                         </div>
                         <router-link :to="{ name: 'admin.children.equipes.details', params: { id: sousEquipe.id } }"
                                      class="text-xs text-brand-600 hover:underline">
@@ -81,7 +85,7 @@
                 </div>
             </div>
 
-            <!-- {{ t('pages.equipe.parentTeam') }} -->
+            <!-- Équipe parente -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ t('pages.equipe.parentTeam') }}</h2>
                 <div class="flex items-end gap-3">
@@ -106,27 +110,22 @@
             <!-- Gestion des membres -->
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">{{ $t('pages.equipeDetails.memberManagement') }}</h2>
-                <!-- Avertissement si sous-équipe sans parent chargé -->
                 <div v-if="equipe?.parentEquipeId && parentEquipeMembers.length === 0"
                      class="flex items-center gap-2 mb-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">
                     <GitBranch class="w-4 h-4 shrink-0" />
-                    <p>{{ $t('pages.equipe.sous-equipes.noMembersParentWarn')}}</p>
+                    <p>{{ $t('pages.equipe.sous-equipes.noMembersParentWarn') }}</p>
                 </div>
-
                 <div class="flex flex-wrap items-end gap-3 mb-4">
                     <div class="flex-1 min-w-[220px]">
                         <label class="text-xs font-medium text-gray-500">{{ $t('pages.equipeDetails.searchMember') }}</label>
-                        <input v-model="memberSearch"
-                               type="text"
+                        <input v-model="memberSearch" type="text"
                                :placeholder="$t('pages.equipeDetails.searchPlaceholder')"
                                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" />
                     </div>
                     <div class="flex-1 min-w-[220px]">
                         <label class="text-xs font-medium text-gray-500">
                             {{ $t('pages.equipeDetails.selectMember') }}
-                            <!-- Indicateur de filtre actif -->
-                            <span v-if="equipe?.parentEquipeId"
-                                  class="ml-1 text-amber-600 font-normal">
+                            <span v-if="equipe?.parentEquipeId" class="ml-1 text-amber-600 font-normal">
                                 (membres de l'équipe parente uniquement)
                             </span>
                         </label>
@@ -144,17 +143,13 @@
                         {{ addingMember ? $t('pages.equipeDetails.adding') : $t('global.add') }}
                     </button>
                 </div>
-
                 <h3 class="text-sm font-medium text-gray-900 mb-3">{{ $t('pages.equipeDetails.assignedMembers') }} ({{ equipeMembers.length }})</h3>
-
                 <div v-if="equipeMembers.length === 0" class="text-center py-8 text-gray-500">
                     <UsersRound class="w-8 h-8 mx-auto mb-2 opacity-30" />
                     <p class="text-sm">{{ $t('pages.equipeDetails.noMembersAssigned') }}</p>
                 </div>
-
                 <div v-else class="space-y-2 max-h-96 overflow-y-auto">
-                    <div v-for="member in equipeMembers"
-                         :key="member.memberId"
+                    <div v-for="member in equipeMembers" :key="member.memberId"
                          class="flex items-center justify-between gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                         <div class="flex items-center gap-3 min-w-0">
                             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-sm font-semibold">
@@ -173,6 +168,59 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ✅ Gestion des modules -->
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900">Modules assignés à l'équipe</h2>
+                        <p class="text-xs text-gray-500 mt-1">Le module sera assigné à tous les membres de l'équipe</p>
+                    </div>
+                </div>
+
+                <!-- Assignation d'un nouveau module -->
+                <div class="flex flex-wrap items-end gap-3 mb-6">
+                    <div class="flex-1 min-w-[220px]">
+                        <label class="text-xs font-medium text-gray-500">Sélectionner un module</label>
+                        <select v-model="selectedModuleId"
+                                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm">
+                            <option value="">Choisir un module...</option>
+                            <option v-for="mod in availableModules" :key="mod.id" :value="mod.id">
+                                {{ mod.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <button @click="assignModule"
+                            :disabled="!selectedModuleId || assigningModule"
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Loader2 v-if="assigningModule" class="w-4 h-4 animate-spin" />
+                        <BookOpen v-else class="w-4 h-4" />
+                        Assigner
+                    </button>
+                </div>
+
+                <!-- Liste des modules assignés -->
+                <div v-if="equipeModules.length === 0" class="text-center py-8 text-gray-500">
+                    <BookOpen class="w-8 h-8 mx-auto mb-2 opacity-30" />
+                    <p class="text-sm">Aucun module assigné à cette équipe</p>
+                </div>
+                <div v-else class="space-y-2">
+                    <div v-for="mod in equipeModules" :key="mod.moduleId"
+                         class="flex items-center justify-between gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                                <BookOpen class="w-5 h-5" />
+                            </div>
+                            <p class="text-sm font-medium text-gray-900 truncate">{{ mod.name }}</p>
+                        </div>
+                        <button @click="unassignModule(mod.moduleId)"
+                                :disabled="removingModuleId === mod.moduleId"
+                                class="p-2 text-gray-400 hover:text-red-600 transition disabled:opacity-50 shrink-0">
+                            <Trash2 class="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+            </div>
         </template>
     </div>
 </template>
@@ -182,8 +230,8 @@
     import { useRoute } from "vue-router";
     import { useI18n } from "vue3-i18n";
     import { useNotification } from "@kyvg/vue3-notification";
-    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save, Plus } from "lucide-vue-next";
-    import { useEquipesService, useMemberService } from "@/inversify.config";
+    import { Users, CheckCircle2, UsersRound, Trash2, GitBranch, Loader2, Save, Plus, BookOpen } from "lucide-vue-next";
+    import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
     import Select2Single from "@/components/forms/Select2Single.vue";
     import type { Member, Equipe } from "@/types/entities";
 
@@ -192,12 +240,15 @@
     const { notify } = useNotification();
     const equipesService = useEquipesService();
     const memberService = useMemberService();
+    const modulesService = useModulesService();
 
     const equipe = ref<any>(null);
     const parentEquipes = ref<Equipe[]>([]);
     const parentEquipeMembers = ref<string[]>([]);
     const equipeMembers = ref<any[]>([]);
     const allMembers = ref<Member[]>([]);
+    const equipeModules = ref<{ moduleId: string; name: string; cardImageUrl?: string }[]>([]);
+    const allModules = ref<{ id: string; name: string }[]>([]);
     const loading = ref(true);
     const savingParent = ref(false);
     const selectedParentEquipeId = ref<string | undefined>(undefined);
@@ -205,6 +256,9 @@
     const selectedMemberId = ref("");
     const addingMember = ref(false);
     const removingMemberId = ref<string | null>(null);
+    const selectedModuleId = ref("");
+    const assigningModule = ref(false);
+    const removingModuleId = ref<string | null>(null);
 
     const equipeId = computed(() => String(route.params.id || ""));
 
@@ -212,25 +266,24 @@
 
     const parentEquipeOptions = computed(() =>
         parentEquipes.value
-            .map(e => ({
-                value: String(e.id ?? e.Id ?? ""),
-                label: String(e.nameFr ?? e.nameEn ?? ""),
-            }))
-            .filter(option => option.value && option.label),
+            .map(e => ({ value: String(e.id ?? e.Id ?? ""), label: String(e.nameFr ?? e.nameEn ?? "") }))
+            .filter(o => o.value && o.label),
+    );
+
+    const assignedModuleIds = computed(() => new Set(equipeModules.value.map(m => m.moduleId)));
+
+    const availableModules = computed(() =>
+        allModules.value.filter(m => !assignedModuleIds.value.has(m.id))
     );
 
     const filteredAvailableMembers = computed(() => {
         const q = memberSearch.value.toLowerCase().trim();
         const assignedIds = new Set(equipeMembers.value.map(m => m.memberId));
-
         let candidates = allMembers.value;
-
-        // Si sous-équipe, restreindre aux membres du parent uniquement
         if (equipe.value?.parentEquipeId && parentEquipeMembers.value.length > 0) {
             const parentMemberIdSet = new Set(parentEquipeMembers.value);
             candidates = candidates.filter(m => parentMemberIdSet.has(m.id!));
         }
-
         return candidates
             .filter(m => !assignedIds.has(m.id))
             .filter(m => {
@@ -262,6 +315,24 @@
         }
     }
 
+    async function loadEquipeModules() {
+        try {
+            const response = await equipesService.getEquipeModules(equipeId.value);
+            equipeModules.value = response?.modules ?? [];
+        } catch {
+            equipeModules.value = [];
+        }
+    }
+
+    async function loadAllModules() {
+        try {
+            const modules = await modulesService.getAllModules();
+            allModules.value = (modules || []).map(m => ({ id: (m as any).id ?? (m as any).Id ?? "", name: (m as any).name ?? (m as any).Name ?? "" }));
+        } catch {
+            allModules.value = [];
+        }
+    }
+
     async function loadData() {
         loading.value = true;
         try {
@@ -274,17 +345,17 @@
             const allMembersResponse = await memberService.search(1, 9999, "");
             allMembers.value = allMembersResponse.items || [];
 
-            //Charger les membres du parent si sous-équipe
             if (equipe.value?.parentEquipeId) {
                 await loadParentEquipeMembers(equipe.value.parentEquipeId);
             }
+
+            await loadEquipeModules();
         } catch (error) {
             notify({ type: "error", text: t("pages.equipeDetails.notify.loadError") });
         } finally {
             loading.value = false;
         }
     }
-
 
     async function saveParentEquipe() {
         savingParent.value = true;
@@ -295,7 +366,6 @@
                 memberIds: equipeMembers.value.map(m => m.memberId),
                 parentEquipeId: selectedParentEquipeId.value,
             });
-
             if (response?.succeeded) {
                 equipe.value.parentEquipeId = selectedParentEquipeId.value;
                 notify({ type: "success", text: t("pages.equipes.edit.successMessage") });
@@ -314,8 +384,7 @@
         addingMember.value = true;
         try {
             const currentMemberIds = equipeMembers.value.map(m => m.memberId);
-            const allMemberIds = [...currentMemberIds, selectedMemberId.value];
-            const response = await equipesService.assignMembersToEquipe(equipeId.value, allMemberIds);
+            const response = await equipesService.assignMembersToEquipe(equipeId.value, [...currentMemberIds, selectedMemberId.value]);
             if (response.succeeded) {
                 notify({ type: "success", text: t("pages.equipeDetails.notify.memberAdded") });
                 selectedMemberId.value = "";
@@ -349,7 +418,43 @@
         }
     }
 
+    async function assignModule() {
+        if (!selectedModuleId.value) return;
+        assigningModule.value = true;
+        try {
+            const response = await modulesService.assignModuleToEquipe(selectedModuleId.value, equipeId.value);
+            if (response.succeeded) {
+                notify({ type: "success", text: "Module assigné à l'équipe avec succès." });
+                selectedModuleId.value = "";
+                await loadEquipeModules();
+            } else {
+                notify({ type: "error", text: response.errors?.join(", ") || "Impossible d'assigner le module." });
+            }
+        } catch {
+            notify({ type: "error", text: "Impossible d'assigner le module." });
+        } finally {
+            assigningModule.value = false;
+        }
+    }
+
+    async function unassignModule(moduleId: string) {
+        removingModuleId.value = moduleId;
+        try {
+            const response = await equipesService.unassignModuleFromEquipe(equipeId.value, moduleId);
+            if (response.succeeded) {
+                notify({ type: "success", text: "Module désassigné de l'équipe." });
+                await loadEquipeModules();
+            } else {
+                notify({ type: "error", text: "Impossible de désassigner le module." });
+            }
+        } catch {
+            notify({ type: "error", text: "Impossible de désassigner le module." });
+        } finally {
+            removingModuleId.value = null;
+        }
+    }
+
     onMounted(async () => {
-        await Promise.all([loadData(), loadParentEquipes()]);
+        await Promise.all([loadData(), loadParentEquipes(), loadAllModules()]);
     });
 </script>
