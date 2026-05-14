@@ -3,19 +3,19 @@
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-3 mb-6">
         <router-link
-          :to="{ name: 'admin.children.quiz.edit', params: { id: props.id } }"
+          :to="backRoute"
           class="flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
         >
           <ArrowLeft class="w-4 h-4" />
-          Retour a l'edition
+          {{ backLabel }}
         </router-link>
         <span class="text-sm text-gray-400">|</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
           <Eye class="w-3.5 h-3.5" />
-          Apercu
+          {{ t('quiz.preview.title') }}
         </span>
         <span class="text-xs text-gray-400 italic">
-          Cliquer pour modifier
+          {{ t('modulePages.clickToEdit') }}
         </span>
       </div>
 
@@ -33,7 +33,7 @@
         <div
           class="cursor-pointer group"
           @click="goToEdit"
-          title="Modifier les informations du quiz"
+          :title="t('quiz.preview.editInfo')"
         >
           <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
             {{ quiz.titre }}
@@ -216,7 +216,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue3-i18n'
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, Eye, Pencil } from 'lucide-vue-next'
 import { useQuizService } from '../../../inversify.config'
@@ -225,6 +225,7 @@ import { QuizQuestionType, type Quiz, type QuizQuestion, type QuizResponse } fro
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '')
 const props = defineProps<{ id: string }>()
 const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
 const quizService = useQuizService()
 
@@ -245,6 +246,15 @@ const sortedQuestions = computed(() => {
 })
 
 const currentQuestion = computed(() => sortedQuestions.value[currentQuestionIndex.value])
+const cameFromList = computed(() => route.query.from === 'list')
+const backRoute = computed(() => cameFromList.value
+  ? { name: 'admin.children.quiz.index' }
+  : { name: 'admin.children.quiz.edit', params: { id: props.id } }
+)
+const backLabel = computed(() => cameFromList.value
+  ? t('quiz.preview.backToList')
+  : t('quiz.preview.backToEdit')
+)
 
 const answeredCount = computed(() => sortedQuestions.value.filter(question => {
   const response = responses.value[question.id]

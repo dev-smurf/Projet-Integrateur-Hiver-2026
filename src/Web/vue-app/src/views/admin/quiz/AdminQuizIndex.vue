@@ -29,7 +29,7 @@
 
           <!-- Test Quiz Button Overlay -->
           <router-link
-            :to="{ name: 'admin.children.quiz.preview', params: { id: quiz.id } }"
+            :to="{ name: 'admin.children.quiz.preview', params: { id: quiz.id }, query: { from: 'list' } }"
             class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none group-hover:pointer-events-auto"
           >
             <div class="flex flex-col items-center gap-2">
@@ -63,7 +63,7 @@
               class="flex-1 min-w-24 flex items-center justify-center gap-1 bg-green-50 text-green-600 hover:bg-green-100 py-2 px-3 rounded text-sm font-medium transition"
             >
               <Users class="w-4 h-4" />
-              {{ $t('quiz.assign') }}
+              {{ $t('quiz.assign_button') }}
             </button>
             <button
               @click="confirmDelete(quiz)"
@@ -148,6 +148,7 @@ import AssignQuizModal from './AssignQuizModal.vue'
 import { useQuizService } from '@/inversify.config'
 import { useNotification } from '@kyvg/vue3-notification'
 import type { Quiz } from '@/services/quizService'
+import { useI18n } from 'vue3-i18n'
 
 let quizService: any
 try {
@@ -158,6 +159,7 @@ try {
 
 const route = useRoute()
 const { notify } = useNotification()
+const { t } = useI18n()
 const quizzes = ref<Quiz[]>([])
 const loading = ref(false)
 const quizToDelete = ref<Quiz | null>(null)
@@ -169,13 +171,13 @@ async function loadQuizzes() {
   loading.value = true
   try {
     if (!quizService) {
-      notify({ type: 'error', text: 'Quiz service is not available' })
+      notify({ type: 'error', text: t('quiz.validation.serviceUnavailable') })
       return
     }
     quizzes.value = await quizService.getAll()
   } catch (error: any) {
     console.error('Error loading quizzes:', error)
-    notify({ type: 'error', text: 'Failed to load quizzes' })
+    notify({ type: 'error', text: t('quiz.validation.loadQuizzesError') })
   } finally {
     loading.value = false
   }
@@ -188,17 +190,17 @@ function confirmDelete(quiz: Quiz) {
 async function deleteQuiz() {
   if (!quizToDelete.value) return
   if (!quizService) {
-    notify({ type: 'error', text: 'Quiz service is not available' })
+    notify({ type: 'error', text: t('quiz.validation.serviceUnavailable') })
     return
   }
   try {
     await quizService.delete(quizToDelete.value.id)
     quizzes.value = quizzes.value.filter(q => q.id !== quizToDelete.value!.id)
     quizToDelete.value = null
-    notify({ type: 'success', text: 'Quiz deleted successfully' })
+    notify({ type: 'success', text: t('quiz.delete.validation.successMessage') })
   } catch (error: any) {
     console.error('Error deleting quiz:', error)
-    notify({ type: 'error', text: 'Failed to delete quiz' })
+    notify({ type: 'error', text: t('quiz.delete.validation.failedMessage') })
   }
 }
 

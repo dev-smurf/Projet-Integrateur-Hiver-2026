@@ -14,5 +14,7 @@ public class EquipeMessageReadConfiguration : IEntityTypeConfiguration<EquipeMes
             .WithMany()
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasQueryFilter(r => r.EquipeMessage.Deleted == null);
     }
 }

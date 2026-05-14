@@ -25,13 +25,13 @@
                 </h2>
                     <span v-if="equipe.parentEquipeId"
                           class="inline-flex shrink-0 items-center rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
-                        Sous-equipe
+                        {{ $t('pages.equipe.subteam') }}
                     </span>
                 </div>
                 <p class="text-sm text-gray-500 mt-1">{{ $t("pages.equipe.myEquipe") }}</p>
                 <p v-if="parentEquipeLabel(equipe)"
                    class="mt-2 text-xs text-gray-500">
-                    Equipe parente : {{ parentEquipeLabel(equipe) }}
+                    {{ $t('pages.equipe.parentTeam') }}: {{ parentEquipeLabel(equipe) }}
                 </p>
             </router-link>
         </div>

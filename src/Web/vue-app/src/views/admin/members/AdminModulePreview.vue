@@ -5,16 +5,16 @@
       <!-- Header -->
       <div class="flex items-center gap-3 mb-6">
         <router-link
-          :to="{ name: 'admin.children.modules.edit', params: { id: props.id } }"
+          :to="backRoute"
           class="flex items-center gap-1.5 text-sm text-brand-600 hover:underline"
         >
           <ArrowLeft class="w-4 h-4" />
-          Retour à l'édition
+          {{ backLabel }}
         </router-link>
         <span class="text-sm text-gray-400">|</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
           <Eye class="w-3.5 h-3.5" />
-          Aperçu
+          {{ $t('modulePages.preview') }}
         </span>
         <span class="text-xs text-gray-400 italic">
           {{ $t('modulePages.clickToEdit') }}
@@ -153,7 +153,8 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue3-i18n";
 import { ArrowLeft, Eye, ChevronLeft, ChevronRight, Pencil } from "lucide-vue-next";
 import { useModulesService } from "@/inversify.config";
 import type { ModuleDto } from "@/types/entities";
@@ -165,6 +166,8 @@ import '@/components/editor/module-blocks.css';
 const backendUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api$/, '');
 const props = defineProps<{ id: string }>();
 const router = useRouter();
+const route = useRoute();
+const { t } = useI18n();
 const modulesService = useModulesService();
 
 const mod = ref<ModuleDto | null>(null);
@@ -178,6 +181,15 @@ const sortedPages = computed(() => {
 });
 
 const currentPage = computed<ModuleSectionDto | undefined>(() => sortedPages.value[currentPageIndex.value]);
+const cameFromList = computed(() => route.query.from === 'list');
+const backRoute = computed(() => cameFromList.value
+  ? { name: 'admin.children.modules.index' }
+  : { name: 'admin.children.modules.edit', params: { id: props.id } }
+);
+const backLabel = computed(() => cameFromList.value
+  ? t('modulePages.backToList')
+  : t('modulePages.backToEdit')
+);
 
 const currentPageSections = computed<PageSection[]>(() =>
   currentPage.value ? parsePageContent(currentPage.value.content ?? '') : []

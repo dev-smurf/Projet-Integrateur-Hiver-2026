@@ -6,7 +6,7 @@
           <h2 class="text-xl font-bold">{{ t('pages.moduleAssignment.modalTitle') }}</h2>
           <p class="mt-1 text-sm text-gray-600">{{ moduleTitle }}</p>
         </div>
-        <button @click="$emit('close')" class="text-2xl font-bold leading-none text-gray-500 hover:text-gray-700">x</button>
+        <button @click="$emit('close')" class="text-2xl font-bold leading-none text-gray-500 hover:text-gray-700">{{ t('pages.adminNotes.close') }}</button>
       </div>
 
       <div class="flex-1 space-y-4 overflow-y-auto p-4">

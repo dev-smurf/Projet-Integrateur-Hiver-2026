@@ -239,7 +239,12 @@
       "pendingValidation": "Pending validation",
       "errorLoadMembers": "Unable to load members.",
       "errorLoadMemberModules": "Unable to load member modules.",
-      "completed": "Completed"
+      "completed": "Completed",
+      "lastRegistered": "Last {count} registered",
+      "selectMemberWarning": "Select a member from the list above first.",
+      "moduleFallback": "Module",
+      "createQuiz": "Create a quiz",
+      "viewQuizzes": "View quizzes"
     },
     "memberDashboard": {
       "welcomeLabel": "Welcome",
@@ -280,6 +285,15 @@
         "notStarted": "Not started",
         "inProgress": "In progress",
         "completed": "Completed"
+      },
+      "notes": {
+        "title": "Administration notes",
+        "empty": "No public note available.",
+        "viewMore": "View more ({count})",
+        "allNotes": "All notes ({count})",
+        "searchPlaceholder": "Keywords in content...",
+        "filterByDate": "Filter by date",
+        "noResults": "No note matches the search criteria."
       }
     },
     "memberModules": {
@@ -336,7 +350,22 @@
       "partialAssignError": "Some assignments failed.",
       "assignSuccess": "Module assigned successfully.",
       "loadRecipientsError": "Unable to load recipients.",
-      "teamFallback": "Team"
+      "teamFallback": "Team",
+      "subtitle": "Assign this module to a full team or to specific members.",
+      "assignedCount": "{count} assigned",
+      "addRecipients": "Add recipients",
+      "team": "Team",
+      "chooseTeam": "Choose a team...",
+      "assign": "Assign",
+      "teamAssignHint": "All active team members will receive the module. Duplicates are ignored.",
+      "individualMember": "Individual member",
+      "noMembersForSearch": "No member available for this search.",
+      "assignedMembers": "Assigned members",
+      "remove": "Remove",
+      "memberAssignedSuccess": "Member assigned to the module.",
+      "teamAssignedSuccess": "Module assigned to the team.",
+      "teamAssignError": "Error assigning the team.",
+      "memberUnassignedSuccess": "Member removed from the module."
     },
     "memberForm": {
       "teams": "Teams",
@@ -374,7 +403,16 @@
       },
       "sous-equipes": {
         "noMembersParentWarn": "Add members to the parent team before creating a subteam."
-      }
+      },
+      "indexTitle": "Team index",
+      "subteamsEmpty": "No subteam yet.",
+      "parentTeam": "Parent team",
+      "noParentTeam": "- None (main team) -",
+      "chooseParentTeam": "Choose a parent team",
+      "preselected": "Preselected",
+      "addSubteam": "Add a new subteam",
+      "subteamOf": "Subteam of",
+      "subteam": "Subteam"
     },
     "equipes": {
       "create": {
@@ -415,7 +453,8 @@
       "readOnly": "This field cannot be modified.",
       "updateSuccess": "Profile updated successfully.",
       "updateError": "An error occurred while updating your profile.",
-      "loginInfos": "Login information"
+      "loginInfos": "Login information",
+      "lineHere": "Line here:"
     },
     "loginNotifications": {
       "title": "What's new for you",
@@ -564,7 +603,7 @@
       }
     },
     "memberDetails": {
-      "subtitle": "Full details, progress and modules",
+      "subtitle": "Full details, progress, and modules",
       "na": "N/A",
       "progression": "Progress",
       "summary": "Summary",
@@ -575,7 +614,7 @@
       "lastName": "Last name",
       "createdAt": "Created on",
       "status": "Status",
-      "accountActive": "Account active",
+      "accountActive": "Active account",
       "pendingValidation": "Pending validation",
       "teams": "Teams",
       "contactAndAddress": "Contact and address",
@@ -588,7 +627,7 @@
       "selected": "selected",
       "assigning": "Assigning...",
       "assignModulesBtn": "Assign modules",
-      "noModulesAssigned": "No modules assigned.",
+      "noModulesAssigned": "No module assigned to this member.",
       "module": "Module",
       "subject": "Subject",
       "general": "General",
@@ -601,8 +640,14 @@
       "notify": {
         "modulesAssigned": "Modules assigned",
         "updated": "Updated",
-        "notesSaved": "Notes saved.",
-        "notesError": "Unable to save notes."
+        "notesSaved": "Notes saved locally.",
+        "notesError": "Unable to save notes.",
+        "moduleAdded": "Module added.",
+        "moduleAddError": "Unable to add the module.",
+        "progressUpdated": "Progress updated.",
+        "progressError": "Unable to update progress.",
+        "moduleRemoved": "Module removed.",
+        "moduleRemoveError": "Unable to remove the module."
       },
       "notes": {
         "title": "Internal notes",
@@ -611,12 +656,82 @@
         "placeholder": "Add notes about this member...",
         "visibleToMember": "Make these notes visible to this member",
         "hint": "These notes are saved on the server. Check the box if the member should see them."
-      }
+      },
+      "title": "Member",
+      "progress": "Progress",
+      "completed": "completed",
+      "assignedQuizzes": "Assigned quizzes",
+      "loadingQuizzes": "Loading quizzes...",
+      "noAssignedQuizzes": "No quiz assigned to this member.",
+      "viewAnswers": "View answers",
+      "quizNotCompleted": "Quiz not completed",
+      "searchModule": "Search for a module",
+      "searchModulePlaceholder": "Search by name or subject",
+      "selectModule": "Select a module",
+      "chooseModule": "Choose a module",
+      "adding": "Adding...",
+      "addModule": "Add module",
+      "removing": "Removing...",
+      "internalNotes": "Internal notes",
+      "notesPlaceholder": "Add confidential notes about this member...",
+      "localNotesHint": "Notes are saved locally on this device.",
+      "memberInitial": "M",
+      "consoleLoadQuizzesError": "Failed to load member quizzes:",
+      "quizSummary": "{assigned} assigned quiz(es) - {completed} completed"
     },
     "memberIndex": {
       "accountStatus": "Account status",
       "accountActive": "Account active",
       "pendingValidation": "Pending validation"
+    },
+    "adminNotes": {
+      "title": "Internal notes",
+      "subtitle": "Manage confidential or shared notes for all members.",
+      "addNote": "Add note",
+      "filterByMember": "Filter by member",
+      "allMembersPlaceholder": "All members (search for a member...)",
+      "from": "From",
+      "to": "To",
+      "clearDates": "Clear dates",
+      "table": {
+        "member": "Member",
+        "author": "Author",
+        "note": "Note",
+        "visibility": "Visibility",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "private": "Private",
+      "shared": "Shared",
+      "details": "Details",
+      "noNotes": "No notes found.",
+      "concernedMember": "Concerned member",
+      "searchMemberPlaceholder": "Search for the member...",
+      "noteContent": "Note content",
+      "notePlaceholder": "Enter the note here...",
+      "privateNote": "Private note",
+      "privateHelp": "Visible only to administrators. If unchecked, the member will be able to see this note.",
+      "adding": "Adding...",
+      "editNote": "Edit note",
+      "noteDetails": "Note details",
+      "content": "Content",
+      "createdDate": "Creation date",
+      "privateOnlyHelp": "Visible only to administrators.",
+      "close": "Close",
+      "saving": "Saving...",
+      "confirmDelete": "Do you really want to delete this note? This action cannot be undone.",
+      "notify": {
+        "loadError": "Error loading data.",
+        "addSuccess": "Note added successfully.",
+        "addImpossible": "Unable to add the note.",
+        "addError": "Error adding the note.",
+        "editSuccess": "Note updated successfully.",
+        "editImpossible": "Unable to update the note.",
+        "editError": "Error updating the note.",
+        "deleteSuccess": "Note deleted.",
+        "deleteImpossible": "Unable to delete the note.",
+        "deleteError": "Error deleting the note."
+      }
     }
   },
   "products": {
@@ -723,7 +838,10 @@
       "update": "Update",
       "delete": "Delete"
     },
-    "view": "View"
+    "view": "View",
+    "appName": "My App",
+    "adminGuide": "Administrator guide",
+    "userHelp": "User help"
   },
   "textEditorLinkPopup": {
     "addLink": "Add link",
@@ -882,6 +1000,11 @@
     "editSection": "Edit this section",
     "moveToPosition": "Move to position",
     "currentPosition": "Current position",
+    "preview": "Preview",
+    "backToEdit": "Back to editing",
+    "backToList": "Back to modules",
+    "saving": "Saving...",
+    "saved": "Saved",
     "finish": "Finish"
   },
   "common": {
@@ -1015,7 +1138,16 @@
       "assignSelected": "Assign ({count})",
       "createFollowUpSelected": "Create follow-up point ({count})",
       "emptyInitial": "All players have already received this quiz.",
-      "emptyFollowUp": "No player has received this quiz yet."
+      "emptyFollowUp": "No player has received this quiz yet.",
+      "recipients": "Recipients",
+      "teams": "Teams",
+      "teamsSelectedCount": "{count} selected",
+      "searchTeamPlaceholder": "Search for a team...",
+      "noTeamsAvailable": "No team available.",
+      "eligibleMembersCount": "{count} eligible member(s)",
+      "planning": "Planning",
+      "teamFallback": "Team",
+      "loadUsersError": "Failed to load users"
     },
     "assign_button": "Assign to Users",
     "assigning": "Assigning...",
@@ -1100,7 +1232,9 @@
     },
     "preview": {
       "title": "Preview",
-      "textPlaceholder": "Text input..."
+      "textPlaceholder": "Text input...",
+      "backToEdit": "Back to editing",
+      "editInfo": "Edit quiz information"
     },
     "typeMultipleSelection": "Multiple Choice (Multiple Selection)",
     "singleSelectionHint": "The member will be able to select one answer.",
@@ -1112,6 +1246,46 @@
     "createFollowUpPoint": "Create a new follow-up point for selected players",
     "followUpSelectionHint": "Select only the already assigned players who should receive this new follow-up point.",
     "availableAt": "Availability date and time",
-    "overdue": "Overdue"
+    "overdue": "Overdue",
+    "optional": "optional",
+    "validation": {
+      "serviceUnavailable": "Service unavailable",
+      "titleRequired": "Quiz title is required",
+      "questionRequired": "The quiz must have at least one question",
+      "createConsoleError": "Error during creation:",
+      "loadConsoleError": "Error loading quiz:",
+      "submitConsoleError": "Error during submission:",
+      "missingId": "Missing quiz ID",
+      "loadError": "Unable to load quiz",
+      "loadQuizzesError": "Failed to load quizzes"
+    },
+    "submitError": "Failed to submit quiz. Please try again."
+  },
+  "editorToolbar": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "textColor": "Text color",
+    "highlight": "Highlight",
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "checklist": "Checklist",
+    "quote": "Quote",
+    "alignLeft": "Align left",
+    "alignCenter": "Center",
+    "alignRight": "Align right",
+    "link": "Link",
+    "undo": "Undo",
+    "redo": "Redo"
+  },
+  "callout": {
+    "info": "Info",
+    "warning": "Warning",
+    "success": "Success",
+    "error": "Error"
   }
 }

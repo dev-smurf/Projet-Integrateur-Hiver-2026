@@ -79,6 +79,11 @@ public class MemberModuleRepository : IMemberModuleRepository
 
     public async Task MarkSectionReadAsync(Guid memberId, Guid moduleId, Guid sectionId)
     {
+        var sectionExists = await _context.ModuleSections
+            .AnyAsync(s => s.Id == sectionId && s.ModuleId == moduleId && s.Deleted == null);
+
+        if (!sectionExists) return;
+
         var memberModule = await _context.MemberModules
             .Include(mm => mm.SectionProgress.Where(sp => sp.Deleted == null))
             .FirstOrDefaultAsync(mm => mm.MemberId == memberId && mm.ModuleId == moduleId && mm.Deleted == null);

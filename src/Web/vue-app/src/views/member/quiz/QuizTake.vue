@@ -325,7 +325,7 @@ async function submitQuiz() {
     router.push({ name: 'quiz.results', params: { assignmentId: route.params.assignmentId as string } })
   } catch (error) {
     console.error('Failed to submit quiz:', error)
-    alert('Failed to submit quiz. Please try again.')
+    alert(t('quiz.submitError'))
   } finally {
     submitting.value = false
   }

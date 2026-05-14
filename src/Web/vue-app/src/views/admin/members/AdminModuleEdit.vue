@@ -5,11 +5,11 @@
       <div v-if="!loading && !loadError" class="flex items-center gap-2 text-sm text-gray-500">
         <span v-if="autoSaving" class="flex items-center gap-1">
           <Loader2 class="w-3.5 h-3.5 animate-spin" />
-          Sauvegarde...
+          {{ $t('modulePages.saving') }}
         </span>
         <span v-else-if="lastSaved" class="flex items-center gap-1 text-green-600">
           <Check class="w-3.5 h-3.5" />
-          Sauvegardé
+          {{ $t('modulePages.saved') }}
         </span>
       </div>
     </div>
@@ -89,11 +89,11 @@
           {{ $t('global.cancel') }}
         </router-link>
         <router-link
-          :to="{ name: 'admin.children.modules.preview', params: { id: props.id } }"
+          :to="{ name: 'admin.children.modules.preview', params: { id: props.id }, query: { from: 'edit' } }"
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
           <Eye class="w-4 h-4" />
-          Aperçu
+          {{ $t('modulePages.preview') }}
         </router-link>
         <button
           type="submit"

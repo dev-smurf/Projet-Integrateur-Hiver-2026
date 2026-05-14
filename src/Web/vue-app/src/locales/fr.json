@@ -239,7 +239,12 @@
       "pendingValidation": "En attente de validation",
       "errorLoadMembers": "Impossible de charger les membres.",
       "errorLoadMemberModules": "Impossible de charger les modules du membre.",
-      "completed": "Terminé"
+      "completed": "Terminé",
+      "lastRegistered": "Les {count} derniers inscrits",
+      "selectMemberWarning": "Sélectionnez d’abord un membre dans la liste ci-dessus.",
+      "moduleFallback": "Module",
+      "createQuiz": "Créer un quiz",
+      "viewQuizzes": "Voir les quiz"
     },
     "memberDashboard": {
       "welcomeLabel": "Bienvenue",
@@ -280,6 +285,15 @@
         "notStarted": "Non commencé",
         "inProgress": "En cours",
         "completed": "Terminé"
+      },
+      "notes": {
+        "title": "Notes de l’administration",
+        "empty": "Aucune note publique disponible.",
+        "viewMore": "Voir plus ({count})",
+        "allNotes": "Toutes les notes ({count})",
+        "searchPlaceholder": "Mots-clés dans le contenu...",
+        "filterByDate": "Filtrer par date",
+        "noResults": "Aucune note ne correspond aux critères de recherche."
       }
     },
     "memberModules": {
@@ -336,7 +350,22 @@
       "partialAssignError": "Certaines assignations ont échoué.",
       "assignSuccess": "Module assigné avec succès.",
       "loadRecipientsError": "Impossible de charger les destinataires.",
-      "teamFallback": "Équipe"
+      "teamFallback": "Équipe",
+      "subtitle": "Assigner ce module à une équipe complète ou à des membres précis.",
+      "assignedCount": "{count} assigné(s)",
+      "addRecipients": "Ajouter des destinataires",
+      "team": "Équipe",
+      "chooseTeam": "Choisir une équipe...",
+      "assign": "Assigner",
+      "teamAssignHint": "Tous les membres actifs de l’équipe recevront le module. Les doublons sont ignorés.",
+      "individualMember": "Membre individuel",
+      "noMembersForSearch": "Aucun membre disponible pour cette recherche.",
+      "assignedMembers": "Membres assignés",
+      "remove": "Retirer",
+      "memberAssignedSuccess": "Membre assigné au module.",
+      "teamAssignedSuccess": "Module assigné à l’équipe.",
+      "teamAssignError": "Erreur lors de l’assignation de l’équipe.",
+      "memberUnassignedSuccess": "Membre retiré du module."
     },
     "memberForm": {
       "teams": "Équipes",
@@ -374,7 +403,16 @@
       },
       "sous-equipes": {
         "noMembersParentWarn": "Ajoutez des membres à l’équipe parent avant de créer une sous-équipe."
-      }
+      },
+      "indexTitle": "Index des équipes",
+      "subteamsEmpty": "Aucune sous-équipe pour le moment.",
+      "parentTeam": "Équipe parente",
+      "noParentTeam": "- Aucune (équipe principale) -",
+      "chooseParentTeam": "Choisir une équipe parente",
+      "preselected": "Présélectionné",
+      "addSubteam": "Ajouter une nouvelle sous-équipe",
+      "subteamOf": "Sous-équipe de",
+      "subteam": "Sous-équipe"
     },
     "equipes": {
       "create": {
@@ -415,7 +453,8 @@
       "readOnly": "Ce champ ne peut pas être modifié.",
       "updateSuccess": "Profil mis à jour avec succès.",
       "updateError": "Une erreur est survenue lors de la mise à jour du profil.",
-      "loginInfos": "Informations de connexion"
+      "loginInfos": "Informations de connexion",
+      "lineHere": "Ligne ici :"
     },
     "loginNotifications": {
       "title": "Du nouveau pour toi",
@@ -510,7 +549,7 @@
       "na": "N/A",
       "progression": "Progression",
       "summary": "Résumé",
-      "modulesAssigned": "module(s) assignés",
+      "modulesAssigned": "module(s) assigné(s)",
       "modulesCompleted": "terminé(s)",
       "personalInfo": "Informations personnelles",
       "firstName": "Prénom",
@@ -530,21 +569,27 @@
       "selected": "sélectionné(s)",
       "assigning": "Assignation...",
       "assignModulesBtn": "Assigner les modules",
-      "noModulesAssigned": "Aucun module assigné.",
+      "noModulesAssigned": "Aucun module assigné pour ce membre.",
       "module": "Module",
       "subject": "Sujet",
       "general": "Général",
       "active": "Actif",
       "inProgress": "En cours",
-      "saving": "En cours...",
+      "saving": "Enregistrement...",
       "updateBtn": "Mettre à jour",
       "modulesProgress": "Progression des modules",
       "assignedModules": "Modules assignés",
       "notify": {
         "modulesAssigned": "Modules assignés",
         "updated": "Mis à jour",
-        "notesSaved": "Notes enregistrées.",
-        "notesError": "Impossible d'enregistrer les notes."
+        "notesSaved": "Notes enregistrées localement.",
+        "notesError": "Impossible d'enregistrer les notes.",
+        "moduleAdded": "Module ajouté.",
+        "moduleAddError": "Impossible d’ajouter le module.",
+        "progressUpdated": "Progression mise à jour.",
+        "progressError": "Impossible de mettre à jour la progression.",
+        "moduleRemoved": "Module retiré.",
+        "moduleRemoveError": "Impossible de retirer le module."
       },
       "notes": {
         "title": "Notes internes",
@@ -553,7 +598,28 @@
         "placeholder": "Ajouter des notes sur ce membre...",
         "visibleToMember": "Rendre ces notes visibles par ce membre",
         "hint": "Ces notes sont sauvegardées sur le serveur. Cochez la case si le membre doit les voir."
-      }
+      },
+      "title": "Membre",
+      "progress": "Progression",
+      "completed": "terminé(s)",
+      "assignedQuizzes": "Quiz assignés",
+      "loadingQuizzes": "Chargement des quiz...",
+      "noAssignedQuizzes": "Aucun quiz assigné pour ce membre.",
+      "viewAnswers": "Consulter les réponses",
+      "quizNotCompleted": "Quiz non complété",
+      "searchModule": "Rechercher un module",
+      "searchModulePlaceholder": "Rechercher par nom ou sujet",
+      "selectModule": "Sélectionner un module",
+      "chooseModule": "Choisir un module",
+      "adding": "Ajout...",
+      "addModule": "Ajouter le module",
+      "removing": "Retrait...",
+      "internalNotes": "Notes internes",
+      "notesPlaceholder": "Ajouter des notes confidentielles sur ce membre...",
+      "localNotesHint": "Notes sauvegardées localement pour cet appareil.",
+      "memberInitial": "M",
+      "consoleLoadQuizzesError": "Impossible de charger les quiz du membre :",
+      "quizSummary": "{assigned} quiz assigné(s) - {completed} complété(s)"
     },
     "memberIndex": {
       "accountStatus": "Statut du compte",
@@ -616,6 +682,55 @@
           "failedMessage": "Une erreur s'est produite lors de la suppression du membre.",
           "memberNotFoundException": "Le membre n'a pas pu être trouvé."
         }
+      }
+    },
+    "adminNotes": {
+      "title": "Notes internes",
+      "subtitle": "Gérez les notes confidentielles ou partagées pour tous les membres.",
+      "addNote": "Ajouter une note",
+      "filterByMember": "Filtrer par membre",
+      "allMembersPlaceholder": "Tous les membres (rechercher un membre...)",
+      "from": "Du",
+      "to": "Au",
+      "clearDates": "Effacer dates",
+      "table": {
+        "member": "Membre",
+        "author": "Auteur",
+        "note": "Note",
+        "visibility": "Visibilité",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "private": "Privée",
+      "shared": "Partagée",
+      "details": "Détails",
+      "noNotes": "Aucune note trouvée.",
+      "concernedMember": "Membre concerné",
+      "searchMemberPlaceholder": "Rechercher le membre...",
+      "noteContent": "Contenu de la note",
+      "notePlaceholder": "Saisir la note ici...",
+      "privateNote": "Note privée",
+      "privateHelp": "Visible uniquement par les administrateurs. Si décoché, le membre pourra voir cette note.",
+      "adding": "Ajout en cours...",
+      "editNote": "Modifier la note",
+      "noteDetails": "Détails de la note",
+      "content": "Contenu",
+      "createdDate": "Date de création",
+      "privateOnlyHelp": "Visible uniquement par les administrateurs.",
+      "close": "Fermer",
+      "saving": "Sauvegarde...",
+      "confirmDelete": "Voulez-vous vraiment supprimer cette note ? Cette action est irréversible.",
+      "notify": {
+        "loadError": "Erreur lors du chargement des données.",
+        "addSuccess": "Note ajoutée avec succès.",
+        "addImpossible": "Impossible d’ajouter la note.",
+        "addError": "Erreur lors de l’ajout de la note.",
+        "editSuccess": "Note modifiée avec succès.",
+        "editImpossible": "Impossible de modifier la note.",
+        "editError": "Erreur lors de la modification.",
+        "deleteSuccess": "Note supprimée.",
+        "deleteImpossible": "Impossible de supprimer la note.",
+        "deleteError": "Erreur lors de la suppression."
       }
     }
   },
@@ -723,7 +838,10 @@
       "update": "Modifier",
       "delete": "Supprimer"
     },
-    "view": "Voir"
+    "view": "Voir",
+    "appName": "Mon App",
+    "adminGuide": "Guide administrateur",
+    "userHelp": "Aide utilisateur"
   },
   "textEditorLinkPopup": {
     "addLink": "Ajouter un lien",
@@ -882,6 +1000,11 @@
     "editSection": "Modifier cette section",
     "moveToPosition": "Déplacer à la position",
     "currentPosition": "Position actuelle",
+    "preview": "Aperçu",
+    "backToEdit": "Retour à l'édition",
+    "backToList": "Retour aux modules",
+    "saving": "Sauvegarde...",
+    "saved": "Sauvegardé",
     "finish": "Terminer"
   },
   "common": {
@@ -1015,7 +1138,16 @@
       "assignSelected": "Assigner ({count})",
       "createFollowUpSelected": "Créer le point de suivi ({count})",
       "emptyInitial": "Tous les joueurs ont déjà reçu ce quiz.",
-      "emptyFollowUp": "Aucun joueur n’a encore reçu ce quiz."
+      "emptyFollowUp": "Aucun joueur n’a encore reçu ce quiz.",
+      "recipients": "Destinataires",
+      "teams": "Équipes",
+      "teamsSelectedCount": "{count} sélectionnée(s)",
+      "searchTeamPlaceholder": "Rechercher une équipe...",
+      "noTeamsAvailable": "Aucune équipe disponible.",
+      "eligibleMembersCount": "{count} membre(s) admissible(s)",
+      "planning": "Planification",
+      "teamFallback": "Équipe",
+      "loadUsersError": "Impossible de charger les utilisateurs"
     },
     "assign_button": "Assigner aux utilisateurs",
     "assigning": "Attribution en cours...",
@@ -1100,7 +1232,9 @@
     },
     "preview": {
       "title": "Aperçu",
-      "textPlaceholder": "Entrée texte..."
+      "textPlaceholder": "Entrée texte...",
+      "backToEdit": "Retour à l’édition",
+      "editInfo": "Modifier les informations du quiz"
     },
     "typeMultipleSelection": "Choix multiples (Sélection multiple)",
     "singleSelectionHint": "Le membre pourra sélectionner une seule réponse.",
@@ -1112,6 +1246,46 @@
     "createFollowUpPoint": "Créer un nouveau point de suivi pour les joueurs sélectionnés",
     "followUpSelectionHint": "Sélectionnez, dans la colonne des joueurs déjà assignés, seulement les joueurs qui doivent recevoir ce nouveau point de suivi.",
     "availableAt": "Date et heure de disponibilité",
-    "overdue": "En retard"
+    "overdue": "En retard",
+    "optional": "optionnel",
+    "validation": {
+      "serviceUnavailable": "Service non disponible",
+      "titleRequired": "Le titre du quiz est requis",
+      "questionRequired": "Le quiz doit avoir au moins une question",
+      "createConsoleError": "Erreur lors de la création :",
+      "loadConsoleError": "Erreur lors du chargement du quiz :",
+      "submitConsoleError": "Erreur lors de la soumission :",
+      "missingId": "ID du quiz manquant",
+      "loadError": "Impossible de charger le quiz",
+      "loadQuizzesError": "Impossible de charger les quiz"
+    },
+    "submitError": "Impossible de soumettre le quiz. Veuillez réessayer."
+  },
+  "editorToolbar": {
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strike": "Barré",
+    "textColor": "Couleur du texte",
+    "highlight": "Surlignage",
+    "heading1": "Titre 1",
+    "heading2": "Titre 2",
+    "heading3": "Titre 3",
+    "bulletList": "Liste à puces",
+    "orderedList": "Liste numérotée",
+    "checklist": "Checklist",
+    "quote": "Citation",
+    "alignLeft": "Aligner à gauche",
+    "alignCenter": "Centrer",
+    "alignRight": "Aligner à droite",
+    "link": "Lien",
+    "undo": "Annuler",
+    "redo": "Refaire"
+  },
+  "callout": {
+    "info": "Info",
+    "warning": "Attention",
+    "success": "Succès",
+    "error": "Erreur"
   }
 }
