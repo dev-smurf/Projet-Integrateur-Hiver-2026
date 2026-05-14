@@ -57,6 +57,19 @@ public class GarneauTemplateDbContextInitializer
                             "Marked baseline migration {MigrationId} as applied because the schema already exists.",
                             baselineMigration);
                     }
+
+                    // Special case for MemberModuleSectionProgress table which might already exist
+                    var migrationId = "20260513150000_AddMissingMemberModuleSectionProgressTable";
+                    if (pendingMigrations.Contains(migrationId) && await TableExistsAsync("MemberModuleSectionProgress"))
+                    {
+                        await _context.Database.ExecuteSqlRawAsync(
+                            "IF NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {0}) " +
+                            "INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES ({0}, {1})",
+                            migrationId, "10.0.2");
+                        _logger.LogInformation(
+                            "Marked migration {MigrationId} as applied because the table already exists.",
+                            migrationId);
+                    }
                 }
 
                 await _context.Database.MigrateAsync();
