@@ -60,9 +60,18 @@ export interface LoginNotificationModule {
   assignedAt: string;
 }
 
+export interface LoginNotificationNote {
+  id: string;
+  content: string;
+  author: string;
+  type: string;
+  createdAt: string;
+}
+
 export interface LoginNotifications {
   quizzes: LoginNotificationQuiz[];
   modules: LoginNotificationModule[];
+  notes: LoginNotificationNote[];
 }
 
 export interface IMemberService {
@@ -70,6 +79,7 @@ export interface IMemberService {
 
   getLoginNotifications(): Promise<LoginNotifications>;
   dismissLoginNotifications(): Promise<void>;
+  getMyEquipeNotes(): Promise<any[]>;
 
 
   search(

@@ -14,6 +14,14 @@
         </router-link>
         <router-link
           v-if="member?.id"
+          :to="{ name: 'admin.children.notes.index', query: { memberId: member?.id } }"
+          class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center gap-2"
+        >
+          <FileText class="w-4 h-4" />
+          Notes
+        </router-link>
+        <router-link
+          v-if="member?.id"
           :to="{ name: 'admin.children.members.edit', params: { id: member?.id } }"
           class="px-3 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
         >
@@ -361,6 +369,7 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useNotification } from "@kyvg/vue3-notification";
 import { useEquipesService, useMemberService, useModulesService } from "@/inversify.config";
+import { FileText } from "lucide-vue-next";
 import type { Equipe, Member, MemberModuleDto, ModuleDto } from "@/types/entities";
 
 const route = useRoute();

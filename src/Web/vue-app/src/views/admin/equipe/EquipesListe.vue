@@ -83,6 +83,14 @@
                                      class="p-1.5 text-gray-400 hover:text-brand-600 transition">
                             <Pencil class="w-4 h-4" />
                         </router-link>
+                        <router-link @click.stop :to="{
+                    name: 'admin.children.notes.index',
+                    query: { equipeId: equipe.id },
+                  }"
+                                     class="p-1.5 text-gray-400 hover:text-brand-600 transition"
+                                     title="Voir les notes">
+                            <FileText class="w-4 h-4" />
+                        </router-link>
                         <button @click.stop="confirmDelete(equipe)"
                                 class="p-1.5 text-gray-400 hover:text-brand-600 transition">
                             <Trash2 class="w-4 h-4" />
@@ -158,6 +166,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  FileText
 } from "lucide-vue-next";
 import { useEquipesService } from "@/inversify.config";
 import type { Equipe } from "@/types/entities";
