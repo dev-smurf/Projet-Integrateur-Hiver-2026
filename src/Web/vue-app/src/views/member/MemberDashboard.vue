@@ -14,10 +14,10 @@
                 </p>
                  <div class="mt-5 flex flex-wrap gap-3">
                      <router-link :to="{ name: 'member.modules.index' }"
-                                  class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
-                                  style="background-color: rgba(152,255,152,0.2); color: #98ff98;"
-                                  @mouseover="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.3)'"
-                                  @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.2)'">
+                                   class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+                                   style="background-color: rgba(152,255,152,0.2); color: #98ff98;"
+                                   @mouseover="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.3)'"
+                                   @mouseleave="e => e.currentTarget.style.backgroundColor='rgba(152,255,152,0.2)'">
                          <BookOpen class="h-4 w-4" />
                          {{ $t("pages.memberDashboard.viewModules") }}
                      </router-link>
@@ -238,11 +238,7 @@
 
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-center justify-between mb-3">
-<<<<<<< HEAD
-                        <h3 class="font-semibold text-gray-900">{{ t('pages.memberDashboard.notes.title') }}</h3>
-=======
-                        <h3 class="font-semibold text-gray-900">Notes administratives</h3>
->>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
+                        <h3 class="font-semibold text-gray-900">{{ t('pages.memberDashboard.notes.title') || 'Notes administratives' }}</h3>
                         <FileText class="h-4 w-4" style="color: #4c6367;" />
                     </div>
                     <div v-if="notesLoading" class="space-y-2">
@@ -294,31 +290,21 @@
                     </button>
                 </div>
                 
-<<<<<<< HEAD
-                <div class="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row gap-4 bg-gray-50">
-                    <div class="flex-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('global.search') }}</label>
-                        <input type="text" v-model="notesSearchQuery" :placeholder="t('pages.memberDashboard.notes.searchPlaceholder')" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('pages.memberDashboard.notes.filterByDate') }}</label>
-=======
                 <div class="p-4 sm:p-5 border-b border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50">
                     <div class="sm:col-span-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Rechercher</label>
-                        <input type="text" v-model="notesSearchQuery" placeholder="Mots-clés..." class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
+                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('global.search') || 'Rechercher' }}</label>
+                        <input type="text" v-model="notesSearchQuery" :placeholder="t('pages.memberDashboard.notes.searchPlaceholder')" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
                     </div>
                     <div class="sm:col-span-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par type</label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('pages.memberDashboard.notes.filterByType') || 'Filtrer par type' }}</label>
                         <select v-model="notesTypeFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none bg-white">
-                            <option value="all">Toutes les notes</option>
-                            <option value="personal">Personnel uniquement</option>
-                            <option value="team">Équipes uniquement</option>
+                            <option value="all">{{ t('global.allNotes') || 'Toutes les notes' }}</option>
+                            <option value="personal">{{ t('pages.memberDashboard.notes.personalOnly') || 'Personnel uniquement' }}</option>
+                            <option value="team">{{ t('pages.memberDashboard.notes.teamOnly') || 'Équipes uniquement' }}</option>
                         </select>
                     </div>
                     <div class="sm:col-span-1">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Filtrer par date</label>
->>>>>>> 4895c6c70ef8607163c66e71f7a1785d1a95efe3
+                        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('pages.memberDashboard.notes.filterByDate') }}</label>
                         <input type="date" v-model="notesDateFilter" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#4c6367] focus:outline-none" />
                     </div>
                 </div>
@@ -350,7 +336,7 @@
                 
                 <div class="p-4 border-t border-gray-100 flex justify-end bg-gray-50">
                     <button @click="showNotesModal = false" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition">
-                        Fermer
+                        {{ t('global.close') || 'Fermer' }}
                     </button>
                 </div>
             </div>

@@ -731,8 +731,21 @@
         "deleteSuccess": "Note supprimée.",
         "deleteImpossible": "Impossible de supprimer la note.",
         "deleteError": "Erreur lors de la suppression."
+      },
+      "memberNotesTitle": "Notes des membres",
+      "teamNotesTitle": "Notes des équipes",
+      "notesRecorded": "Notes enregistrées",
+      "allTeamsPlaceholder": "Toutes les équipes (rechercher une équipe...)",
+      "filterByTeam": "Filtrer par équipe",
+      "table": {
+        "member": "Membre",
+        "team": "Équipe",
+        "author": "Auteur",
+        "note": "Note",
+        "visibility": "Visibilité",
+        "date": "Date",
+        "actions": "Actions"
       }
-    }
   },
   "products": {
     "form": {
