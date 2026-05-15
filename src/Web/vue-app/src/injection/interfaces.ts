@@ -11,38 +11,24 @@ import {PaginatedResponse, SucceededOrNotResponse} from "@/types/responses"
 import {Administrator, Book, ChatMessage, Conversation, EquipeConversation, EquipeMessage, Member, User,Equipe} from "@/types/entities"
 import {Guid} from "@/types";
 import type {AvailableSlot, AvailabilityData, AvailabilitySlot, AvailabilityOverride} from "@/types/entities";
-import type { MyEquipeListItem, MyEquipeResponse } from "@/services/equipeService";
+import type { MyEquipeListItem, MyEquipeResponse, GetEquipeModulesResponse } from "@/services/equipeService";
 
 export interface IApiService {
   headersWithJsonContentType(): any;
-
   headersWithFormDataContentType(): any;
-
   buildEmptyBody(): string;
 }
 
 export interface IAdministratorService {
   getAuthenticated(): Promise<Administrator | undefined>;
-
-  updateMyProfile(data: {
-    firstName: string;
-    lastName: string;
-  }): Promise<SucceededOrNotResponse>;
+  updateMyProfile(data: { firstName: string; lastName: string; }): Promise<SucceededOrNotResponse>;
 }
 
 export interface IAuthenticationService {
   login(request: ILoginRequest): Promise<SucceededOrNotResponse>;
-
   twoFactor(request: ITwoFactorRequest): Promise<SucceededOrNotResponse>;
-
-  forgotPassword(
-    request: IForgotPasswordRequest,
-  ): Promise<SucceededOrNotResponse>;
-
-  resetPassword(
-    request: IResetPasswordRequest,
-  ): Promise<SucceededOrNotResponse>;
-
+  forgotPassword(request: IForgotPasswordRequest): Promise<SucceededOrNotResponse>;
+  resetPassword(request: IResetPasswordRequest): Promise<SucceededOrNotResponse>;
   logout(): Promise<SucceededOrNotResponse>;
 }
 
@@ -67,23 +53,12 @@ export interface LoginNotifications {
 
 export interface IMemberService {
   getAuthenticated(): Promise<Member | undefined>;
-
   getLoginNotifications(): Promise<LoginNotifications>;
   dismissLoginNotifications(): Promise<void>;
-
-
-  search(
-    pageIndex: number,
-    pageSize: number,
-    searchValue: string,
-  ): Promise<PaginatedResponse<Member>>;
-
+  search(pageIndex: number, pageSize: number, searchValue: string): Promise<PaginatedResponse<Member>>;
   getMember(id: string): Promise<Member>;
-
   createMember(member: Member): Promise<SucceededOrNotResponse>;
-
   updateMember(member: Member): Promise<SucceededOrNotResponse>;
-
   updateMyProfile(data: {
     firstName: string;
     lastName: string;
@@ -94,19 +69,14 @@ export interface IMemberService {
     city?: string;
     zipCode?: string;
   }): Promise<SucceededOrNotResponse>;
-
   deleteMember(id: Guid): Promise<SucceededOrNotResponse>;
 }
 
 export interface IBookService {
   getAllBooks(): Promise<Book[]>;
-
   getBook(bookId: string): Promise<Book>;
-
   deleteBook(bookId: string): Promise<SucceededOrNotResponse>;
-
   createBook(request: ICreateBookRequest): Promise<SucceededOrNotResponse>;
-
   editBook(request: IEditBookRequest): Promise<SucceededOrNotResponse>;
 }
 
@@ -142,6 +112,8 @@ export interface IEquipesService {
   removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse>;
   getMyEquipes(): Promise<MyEquipeListItem[]>;
   getMyEquipeDetails(equipeId: string): Promise<MyEquipeResponse | null>;
+  getEquipeModules(equipeId: string): Promise<GetEquipeModulesResponse>;
+  unassignModuleFromEquipe(equipeId: string, moduleId: string): Promise<SucceededOrNotResponse>;
 }
 
 export interface IUserService {
@@ -183,9 +155,9 @@ export interface IQuizService {
   delete(id: string): Promise<void>
   getAssignedQuizzes(): Promise<any[]>
   submitResponse(response: any): Promise<any>
-    assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date, equipeIds?: string[]): Promise<void>
-    getAssignments(quizId: string): Promise<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[]>
+  assignQuiz(quizId: string, userIds: string[], followUpLabel?: string, availableAt?: Date, dueDate?: Date, equipeIds?: string[]): Promise<void>
+  getAssignments(quizId: string): Promise<{ id: string; userId: string; version: number; followUpLabel?: string; availableAt?: string; dueDate?: string; completedAt?: string }[]>
   unassignQuiz(quizId: string, userIds: string[]): Promise<void>
-    getUserResponses(quizAssignmentId: string): Promise<any>
-    completeQuiz(quizAssignmentId: string): Promise<void>
-  }
+  getUserResponses(quizAssignmentId: string): Promise<any>
+  completeQuiz(quizAssignmentId: string): Promise<void>
+}

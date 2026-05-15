@@ -34,29 +34,38 @@ public class UnassignModuleFromEquipeEndpoint : EndpointWithoutRequest<Succeeded
         if (!Guid.TryParse(Route<string>("equipeId"), out var equipeId)
             || !Guid.TryParse(Route<string>("moduleId"), out var moduleId))
         {
-            await Send.OkAsync(new SucceededOrNotResponse(false,
-                new Error("InvalidId", "ID invalide.")), ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
         var equipe = await _equipeRepository.FindByIdWithMembers(equipeId);
         if (equipe == null)
         {
-            await Send.OkAsync(new SucceededOrNotResponse(false,
-                new Error("TeamNotFound", "Équipe introuvable.")), ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
-        foreach (var user in equipe.Membres)
+        if (equipe.Membres.Count == 0)
         {
-            var member = _memberRepository.FindByUserId(user.Id);
-            if (member == null) continue;
-
-            var assignment = await _memberModuleRepository.GetByMemberAndModuleAsync(member.Id, moduleId);
-            if (assignment != null)
-                await _memberModuleRepository.UnassignAsync(assignment);
+            await Send.OkAsync(new SucceededOrNotResponse(true), ct);
+            return;
         }
 
+        var tasks = equipe.Membres
+            .Select(user => UnassignModuleFromMemberAsync(user.Id, moduleId));
+
+        await Task.WhenAll(tasks);
+
         await Send.OkAsync(new SucceededOrNotResponse(true), ct);
+    }
+
+    private async Task UnassignModuleFromMemberAsync(Guid userId, Guid moduleId)
+    {
+        var member = _memberRepository.FindByUserId(userId);
+        if (member == null) return;
+
+        var assignment = await _memberModuleRepository.GetByMemberAndModuleAsync(member.Id, moduleId);
+        if (assignment != null)
+            await _memberModuleRepository.UnassignAsync(assignment);
     }
 }

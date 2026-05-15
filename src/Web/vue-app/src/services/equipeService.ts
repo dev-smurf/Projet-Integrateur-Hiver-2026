@@ -44,6 +44,15 @@ export interface GetEquipeMembersResponse {
   }[];
 }
 
+export interface GetEquipeModulesResponse {
+  equipeId: string;
+  modules: {
+    moduleId: string;
+    name: string;
+    cardImageUrl?: string;
+  }[];
+}
+
 export interface MyEquipeListItem {
   id: string;
   nameFr?: string;
@@ -61,24 +70,22 @@ export class EquipeService extends ApiService implements IEquipesService {
       { memberIds },
       this.headersWithJsonContentType(),
     );
-
     const data = response.data;
-      return new SucceededOrNotResponse(
-          data?.succeeded ?? (response.status >= 200 && response.status < 300),
-          data?.errors ?? [],
-      );
+    return new SucceededOrNotResponse(
+      data?.succeeded ?? (response.status >= 200 && response.status < 300),
+      data?.errors ?? [],
+    );
   }
 
   public async removeMemberFromEquipe(equipeId: string, memberId: string): Promise<SucceededOrNotResponse> {
     const response = await this._httpClient.delete<any, import("axios").AxiosResponse<SucceededOrNotResponse>>(
       `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/members/${memberId}`,
     );
-
     const data = response.data;
-      return new SucceededOrNotResponse(
-          data?.succeeded ?? (response.status >= 200 && response.status < 300),
-          data?.errors ?? [],
-      );
+    return new SucceededOrNotResponse(
+      data?.succeeded ?? (response.status >= 200 && response.status < 300),
+      data?.errors ?? [],
+    );
   }
 
   public async getMyEquipes(): Promise<MyEquipeListItem[]> {
@@ -138,8 +145,8 @@ export class EquipeService extends ApiService implements IEquipesService {
       return await this.getEquipe(id);
     } catch {
       try {
-          const list = await this.getAllEquipes();
-          const found = list.find((m: Equipe) => m.id === id);
+        const list = await this.getAllEquipes();
+        const found = list.find((m: Equipe) => m.id === id);
         if (found) return found;
         return null;
       } catch (e) {
@@ -149,63 +156,33 @@ export class EquipeService extends ApiService implements IEquipesService {
     }
   }
 
-  public async createEquipe(
-    request: ICreateEquipeRequest,
-  ): Promise<SucceededOrNotResponse> {
+  public async createEquipe(request: ICreateEquipeRequest): Promise<SucceededOrNotResponse> {
     try {
-      const response = await this._httpClient.post<
-        ICreateEquipeRequest,
-        import("axios").AxiosResponse<any>
-      >(
+      const response = await this._httpClient.post<ICreateEquipeRequest, import("axios").AxiosResponse<any>>(
         `${import.meta.env.VITE_API_BASE_URL}/equipes`,
         request,
         { headers: { "Content-Type": "application/json" } },
       );
-
-      const errors = Array.isArray(response.data?.errors)
-        ? response.data.errors
-        : [];
-      return new SucceededOrNotResponse(
-        response.data?.succeeded ?? true,
-        errors,
-      );
+      const errors = Array.isArray(response.data?.errors) ? response.data.errors : [];
+      return new SucceededOrNotResponse(response.data?.succeeded ?? true, errors);
     } catch (error: any) {
-      const message = error.response?.data?.errors || [
-        "Une erreur de communication est survenue.",
-      ];
-      return new SucceededOrNotResponse(
-        false,
-        Array.isArray(message) ? message : [message],
-      );
+      const message = error.response?.data?.errors || ["Une erreur de communication est survenue."];
+      return new SucceededOrNotResponse(false, Array.isArray(message) ? message : [message]);
     }
   }
 
-  public async updateEquipe(
-    id: string,
-    request: IEditEquipeRequest,
-  ): Promise<SucceededOrNotResponse> {
+  public async updateEquipe(id: string, request: IEditEquipeRequest): Promise<SucceededOrNotResponse> {
     try {
       const response = await this._httpClient.put<SucceededOrNotResponse>(
         `${import.meta.env.VITE_API_BASE_URL}/equipe/${id}`,
         request,
         { headers: { "Content-Type": "application/json" } },
       );
-
-      const errors = Array.isArray(response.data?.errors)
-        ? response.data.errors
-        : [];
-      return new SucceededOrNotResponse(
-        response.data?.succeeded ?? true,
-        errors,
-      );
+      const errors = Array.isArray(response.data?.errors) ? response.data.errors : [];
+      return new SucceededOrNotResponse(response.data?.succeeded ?? true, errors);
     } catch (error: any) {
-      const message = error.response?.data?.errors || [
-        "Impossible de modifier l'équipe.",
-      ];
-      return new SucceededOrNotResponse(
-        false,
-        Array.isArray(message) ? message : [message],
-      );
+      const message = error.response?.data?.errors || ["Impossible de modifier l'équipe."];
+      return new SucceededOrNotResponse(false, Array.isArray(message) ? message : [message]);
     }
   }
 
@@ -215,22 +192,12 @@ export class EquipeService extends ApiService implements IEquipesService {
         `${import.meta.env.VITE_API_BASE_URL}/equipe/${id}`,
       );
       const data = response.data;
-      const succeeded =
-        data?.succeeded ?? data?.Succeeded ?? response.status === 200;
-      const errors = Array.isArray(data?.errors)
-        ? data.errors
-        : Array.isArray(data?.Errors)
-          ? data.Errors
-          : [];
+      const succeeded = data?.succeeded ?? data?.Succeeded ?? response.status === 200;
+      const errors = Array.isArray(data?.errors) ? data.errors : Array.isArray(data?.Errors) ? data.Errors : [];
       return new SucceededOrNotResponse(succeeded, errors);
     } catch (error: any) {
-      const message = error.response?.data?.errors || [
-        "Impossible de supprimer l'équipe.",
-      ];
-      return new SucceededOrNotResponse(
-        false,
-        Array.isArray(message) ? message : [message],
-      );
+      const message = error.response?.data?.errors || ["Impossible de supprimer l'équipe."];
+      return new SucceededOrNotResponse(false, Array.isArray(message) ? message : [message]);
     }
   }
 
@@ -238,7 +205,31 @@ export class EquipeService extends ApiService implements IEquipesService {
     const response = await this._httpClient.get<GetEquipeMembersResponse>(
       `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/members`,
     );
-
     return response.data;
+  }
+
+  // Récupère les modules assignés à tous les membres de l'équipe
+  public async getEquipeModules(equipeId: string): Promise<GetEquipeModulesResponse> {
+    try {
+      const response = await this._httpClient.get<GetEquipeModulesResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/modules`,
+      );
+      return response.data ?? { equipeId, modules: [] };
+    } catch {
+      return { equipeId, modules: [] };
+    }
+  }
+
+  // Désassigne un module de tous les membres de l'équipe
+  public async unassignModuleFromEquipe(equipeId: string, moduleId: string): Promise<SucceededOrNotResponse> {
+    try {
+      const response = await this._httpClient.delete<any>(
+        `${import.meta.env.VITE_API_BASE_URL}/equipes/${equipeId}/modules/${moduleId}`,
+      );
+      const data = response.data;
+      return new SucceededOrNotResponse(data?.succeeded ?? true, data?.errors ?? []);
+    } catch (error: any) {
+      return new SucceededOrNotResponse(false, ["Impossible de désassigner le module."]);
+    }
   }
 }
