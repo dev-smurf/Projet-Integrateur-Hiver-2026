@@ -13,6 +13,7 @@ namespace Domain.Entities
         public Equipe? ParentEquipe { get; private set; }
         public ICollection<Equipe> SousEquipes { get; private set; } = new List<Equipe>();
         public ICollection<User> Membres { get; private set; } = new List<User>();
+        public ICollection<EquipeModule> EquipeModules { get; set; } = new List<EquipeModule>();
 
         public void SanitazeForSaving()
         {

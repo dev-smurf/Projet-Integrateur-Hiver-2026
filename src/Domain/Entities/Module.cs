@@ -10,5 +10,6 @@ namespace Domain.Entities
         public string? CardImageUrl { get; set; }
         public ICollection<ModuleSection> Sections { get; set; } = new List<ModuleSection>();
         public ICollection<MemberModule> MemberModules { get; private set; } = new List<MemberModule>();
+        public ICollection<EquipeModule> EquipeModules { get; set; } = new List<EquipeModule>();
     }
 }
